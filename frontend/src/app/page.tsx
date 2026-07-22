@@ -7,9 +7,11 @@ type FixtureRow = {
   ticker: string;
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 async function getFixtureDifficulty(): Promise<FixtureRow[]> {
   const res = await fetch(
-    "http://localhost:8000/api/fixtures/difficulty?start_event=24&window_size=5"
+    `${API_URL}/api/fixtures/difficulty?start_event=24&window_size=5`
   );
   if (!res.ok) {
     throw new Error(`Backend request failed: ${res.status}`);

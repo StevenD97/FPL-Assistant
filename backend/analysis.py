@@ -33,6 +33,29 @@ def fetch_entry_picks(team_id, event):
     return response.json()
 
 
+def ensure_data_fetched():
+    """
+    Fetch bootstrap-static + fixtures if they're not already cached on disk.
+    Needed for deployment: some hosting platforms wipe local disk between
+    deploys/restarts, so we can't assume data/ survives - this lets the app
+    self-populate on startup instead of requiring a manual fetch step.
+    """
+    bootstrap_path = f"{DATA_DIR}/bootstrap_static.json"
+    fixtures_path = f"{DATA_DIR}/fixtures.json"
+    if os.path.exists(bootstrap_path) and os.path.exists(fixtures_path):
+        return
+
+    os.makedirs(DATA_DIR, exist_ok=True)
+    for url, path in [
+        (f"{FPL_API_BASE}/bootstrap-static/", bootstrap_path),
+        (f"{FPL_API_BASE}/fixtures/", fixtures_path),
+    ]:
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(response.json(), f)
+
+
 def load_bootstrap():
     with open(f"{DATA_DIR}/bootstrap_static.json", encoding="utf-8") as f:
         return json.load(f)

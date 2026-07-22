@@ -23,9 +23,11 @@ type PlayerScore = {
   penalties_missed: number;
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 async function fetchDifferentials(maxOwnership: number, limit: number): Promise<PlayerScore[]> {
   const res = await fetch(
-    `http://localhost:8000/api/players/scores?max_ownership=${maxOwnership}&limit=${limit}`
+    `${API_URL}/api/players/scores?max_ownership=${maxOwnership}&limit=${limit}`
   );
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
   return res.json();

@@ -2,6 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 type ChipRow = {
   event: number;
   squad_total_score: number;
@@ -34,7 +36,7 @@ export default function ChipsPage() {
     setError(null);
     setData(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/squad/${teamId}/chips`);
+      const res = await fetch(`${API_URL}/api/squad/${teamId}/chips`);
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       setData(await res.json());
     } catch (err) {

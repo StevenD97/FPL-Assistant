@@ -2,6 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 type SquadPlayer = {
   position: number;
   web_name: string;
@@ -63,7 +65,7 @@ export default function SquadPage() {
     setError(null);
     setData(null);
     try {
-      const res = await fetch(`http://localhost:8000/api/squad/${teamId}`);
+      const res = await fetch(`${API_URL}/api/squad/${teamId}`);
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       setData(await res.json());
     } catch (err) {

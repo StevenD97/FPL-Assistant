@@ -10,9 +10,12 @@ published yet - see analysis.py and the other scripts in this folder for
 the same caveat. Once the new season is live, update these defaults.
 """
 
+import os
+from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Optional
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,15 +24,30 @@ from analysis import (
     build_squad_analysis,
     compute_fixture_difficulty,
     compute_player_scores,
+    ensure_data_fetched,
     top_differentials,
 )
 
-app = FastAPI(title="FPL Assistant API")
+load_dotenv()
 
-# Allow the Next.js dev server to call this API during development.
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    ensure_data_fetched()
+    yield
+
+
+app = FastAPI(title="FPL Assistant API", lifespan=lifespan)
+
+# Allowed frontend origins, comma-separated. Defaults to local dev; set
+# ALLOWED_ORIGINS in the deployment environment to the real frontend URL(s).
+allowed_origins = os.environ.get(
+    "ALLOWED_ORIGINS", "http://localhost:3000,http://192.168.0.19:3000"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
