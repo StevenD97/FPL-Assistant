@@ -163,6 +163,49 @@ def optimizer_best_squad(
     return optimize_best_squad(pool, budget=budget)
 
 
+@app.get("/api/squad-builder/players")
+def squad_builder_players(
+    reference_date: str = "2025-11-30",
+    next_event: int = 10,
+    gw_count: int = 5,
+):
+    """
+    The full player pool for the manual Squad Builder page: id, cost,
+    predicted_points (multi-gameweek, same rationale as the optimizer
+    endpoints above), position, team, and penalties_order (for the "no
+    penalty taker" diagnostic). Fetched once by the frontend and used to
+    compute every draft diagnostic client-side as the user adds/removes
+    players - no round trip per click.
+    """
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    next_events = list(range(next_event, next_event + gw_count))
+    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    predicted = predict_multi_gw_points(
+        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+    )
+    pool = build_player_pool(predicted, bootstrap)
+    cols = ["id", "web_name", "team_short", "position", "now_cost", "predicted_points", "penalties_order", "fixture_ticker"]
+    df = pool[cols].rename(columns={"now_cost": "cost_raw"})
+    df["cost"] = (df["cost_raw"] / 10).round(1)
+    return df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).to_dict(orient="records")
+
+
+@app.get("/api/squad-builder/fixtures")
+def squad_builder_fixtures(next_event: int = 10, gw_count: int = 5):
+    """
+    Team-level fixture difficulty for the Squad Builder's diagnostics
+    (tough-run / missing-strong-fixture-team checks) - deliberately
+    pinned to the archived season, matching squad_builder_players()
+    above, NOT the live-data default /api/fixtures/difficulty uses.
+    FPL reassigns team ids every season (see optimizer.py's docstrings),
+    so this must never mix a live-season team mapping with the archived
+    player pool it's compared against.
+    """
+    return compute_fixture_difficulty(
+        next_event, gw_count, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+    ).to_dict(orient="records")
+
+
 @app.get("/api/squad/{team_id}")
 def squad_analysis(
     team_id: int,

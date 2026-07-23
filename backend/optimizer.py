@@ -43,15 +43,16 @@ DEFAULT_BUDGET = 1000  # £100.0m, the standard starting budget
 
 def build_player_pool(predicted_df, bootstrap):
     """
-    Merges now_cost + numeric team id into predict_multi_gw_points()'s
-    output - needed for the budget and max-3-per-club constraints, and
-    not returned by that function itself. `bootstrap` must be the same
-    season's file predicted_df was computed against - see
-    predict_player_points' docstring on why (team ids get reassigned
-    every season).
+    Merges now_cost + numeric team id + penalties_order into
+    predict_multi_gw_points()'s output - needed for the budget/club-limit
+    constraints and set-piece-duty checks, none of which that function
+    returns itself. `bootstrap` must be the same season's file
+    predicted_df was computed against - see predict_player_points'
+    docstring on why (team ids get reassigned every season).
     """
-    prices = pd.DataFrame(bootstrap["elements"])[["id", "now_cost", "team"]]
-    return predicted_df.merge(prices, on="id", how="inner")
+    extra = pd.DataFrame(bootstrap["elements"])[["id", "now_cost", "team", "penalties_order"]].copy()
+    extra["penalties_order"] = extra["penalties_order"].fillna(0).astype(int)
+    return predicted_df.merge(extra, on="id", how="inner")
 
 
 def _build_squad_vars(players_df):

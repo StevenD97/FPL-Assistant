@@ -197,6 +197,24 @@ frontend/   Next.js (TypeScript) web app
   historical 2025/26 squad - only against a squad from a gameweek that
   manager's picks still exist for. Not fully worked around yet; flagged
   clearly in the Optimizer page's UI rather than silently broken.
+- **Squad Builder** (`/squad-builder`) is a manual drafting tool, distinct
+  from both `optimizer.py` (automated, from-scratch or transfer-based)
+  and My Squad (views a real existing squad): pick your own 15 within
+  budget and get live diagnostic feedback as you go - club concentration
+  (3+ from one team), missing exposure to one of the league's easier
+  upcoming fixture runs, a tough run among teams you already own, and no
+  recognized primary penalty taker - each paired with concrete
+  affordable players (filtered to positions you still need, where any
+  remain) to fix it, one click to add.
+  Architecturally the opposite of the optimizer endpoints: only two
+  lightweight backend endpoints exist
+  (`/api/squad-builder/players` and `/api/squad-builder/fixtures`, both
+  pinned to the archived season like everything else player-scoring -
+  `/api/squad-builder/fixtures` deliberately does NOT reuse
+  `/api/fixtures/difficulty`'s live-data default, for the same
+  team-id-reassignment reason documented throughout this file), fetched
+  once on page load; every diagnostic recomputes instantly client-side
+  as you add/remove players, with no round trip per click.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 
