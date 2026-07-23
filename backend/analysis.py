@@ -108,26 +108,41 @@ def _team_name_to_id_map(history):
     return mapping
 
 
-def compute_recency_weighted_form(reference_date, half_life_days=21, season="2025_26"):
+def recency_weights(kickoff_times, reference_date, half_life_days):
+    """Weight halves every half_life_days - shared by every recency-weighted stat below."""
+    days_ago = (reference_date - kickoff_times).dt.total_seconds() / 86400
+    return 0.5 ** (days_ago / half_life_days)
+
+
+def compute_recency_weighted_stat(reference_date, column, half_life_days=21, season="2025_26"):
     """
-    element -> exponentially recency-weighted average of total_points,
-    using only fixtures strictly before reference_date (no lookahead).
-    Weight halves every half_life_days, so recent matches dominate more
-    than FPL's own `form` field (a flat 30-day average) while still
-    factoring in the whole season rather than a hard cutoff.
+    element -> exponentially recency-weighted average of `column` from
+    gw_history, using only fixtures strictly before reference_date (no
+    lookahead bias). Generic version of compute_recency_weighted_form -
+    used by team_model.py for every per-appearance stat (bonus, saves,
+    cards, defensive contributions, etc.), not just total_points.
     """
     history = load_gw_history(season)
     past = history[history["kickoff_time"] < reference_date]
     if past.empty:
         return {}
 
-    days_ago = (reference_date - past["kickoff_time"]).dt.total_seconds() / 86400
-    weight = 0.5 ** (days_ago / half_life_days)
-    weighted_points = weight * past["total_points"]
+    weight = recency_weights(past["kickoff_time"], reference_date, half_life_days)
+    weighted_value = weight * past[column]
 
     weight_sum = weight.groupby(past["element"]).sum()
-    weighted_points_sum = weighted_points.groupby(past["element"]).sum()
-    return (weighted_points_sum / weight_sum).to_dict()
+    weighted_value_sum = weighted_value.groupby(past["element"]).sum()
+    return (weighted_value_sum / weight_sum).to_dict()
+
+
+def compute_recency_weighted_form(reference_date, half_life_days=21, season="2025_26"):
+    """
+    element -> exponentially recency-weighted average of total_points.
+    Weight halves every half_life_days, so recent matches dominate more
+    than FPL's own `form` field (a flat 30-day average) while still
+    factoring in the whole season rather than a hard cutoff.
+    """
+    return compute_recency_weighted_stat(reference_date, "total_points", half_life_days, season)
 
 
 def build_fixtures_by_team_event(fixtures):

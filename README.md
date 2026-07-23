@@ -38,9 +38,16 @@ frontend/   Next.js (TypeScript) web app
   attack/defence strength model predicts each side's expected goals for
   a fixture from recency-weighted goals scored/conceded, then splits
   that across players by their historical share of their team's
-  goals/assists. Exposed via `/api/players/predicted-points`. v1 scope
-  is goals/assists/clean-sheets/appearance only - no bonus points,
-  defensive contribution, saves, or cards yet.
+  goals/assists. Covers every category in FPL's 2025/26 scoring rules
+  (appearance, goals, assists, clean sheets, goals conceded, bonus,
+  saves, penalty saves/misses, cards, own goals, and the new defensive
+  contribution threshold) - see the module docstring for which of those
+  come from the fixture-level model vs. a recency-weighted personal
+  rate, and the approximations involved (bonus is a flat historical
+  average rather than a simulated BPS system; defensive
+  contribution/saves assume a Poisson distribution around the
+  recency-weighted average count). Exposed via
+  `/api/players/predicted-points`.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 
