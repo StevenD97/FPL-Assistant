@@ -48,6 +48,32 @@ frontend/   Next.js (TypeScript) web app
   contribution/saves assume a Poisson distribution around the
   recency-weighted average count). Exposed via
   `/api/players/predicted-points`.
+- `backtest.py` walk-forward tests `team_model.py` against every 2025/26
+  gameweek (GW2-38): predicts every player using only data strictly
+  before that gameweek, then checks the prediction against what they
+  actually scored. Current baseline (run `venv\Scripts\python.exe backtest.py`
+  to reproduce): pooled Pearson r = 0.52 (r² = 0.27), Spearman rank
+  correlation = 0.72, MAE = 0.96 pts/player/gameweek, top-20 precision
+  (overlap between predicted and actual top 20 scorers) = 13%. Reads as:
+  the model is meaningfully better than chance at *ranking* players
+  (Spearman 0.72), noticeably worse at nailing the *exact* points total
+  (Pearson 0.52) - expected, given how much of FPL scoring (bonus points,
+  explosive one-off hauls) is inherently high-variance. No strong
+  systematic bias by position (mean predicted-minus-actual error is
+  within ±0.15 pts for every position) and accuracy is stable across the
+  season rather than degrading late on.
+  **Known issue found by the backtest**: a handful of predictions blow up
+  to unrealistic values (e.g. Richarlison predicted 21.9 pts for GW4,
+  actually scored 1) because the Dixon-Coles-style team-strength ratios
+  in `compute_team_goal_strengths()` aren't regularized - early in the
+  season (or for a team with few home/away games so far), one match's
+  worth of noise can push a ratio to an extreme (seen: a team's
+  `defence_home` ratio of 4.16, another team's `defence_away` ratio of
+  exactly 0), and multiplying two such ratios together produces a
+  nonsensical expected-goals figure. Only ~14 of 31,117 backtested
+  predictions are affected this severely, but it's the clearest concrete
+  next fix (shrink ratios toward the league average, weighted by sample
+  size, rather than trusting a handful of games outright).
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 

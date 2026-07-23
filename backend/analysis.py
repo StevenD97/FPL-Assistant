@@ -57,13 +57,15 @@ def ensure_data_fetched():
             json.dump(response.json(), f)
 
 
-def load_bootstrap():
-    with open(f"{DATA_DIR}/bootstrap_static.json", encoding="utf-8") as f:
+def load_bootstrap(filename="bootstrap_static.json"):
+    """filename lets backtest.py point this at bootstrap_static_2025_26_final.json instead."""
+    with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
 
-def load_fixtures():
-    with open(f"{DATA_DIR}/fixtures.json", encoding="utf-8") as f:
+def load_fixtures(filename="fixtures.json"):
+    """filename lets backtest.py point this at fixtures_2025_26_final.json instead."""
+    with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
 

@@ -310,14 +310,21 @@ _BREAKDOWN_KEYS = [
 ]
 
 
-def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26"):
+def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26",
+                           bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json"):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
     _fixture_points) - covering the full FPL 2025/26 scoring system.
+
+    bootstrap_file/fixtures_file default to the live-fetched files, but
+    backtest.py points these at the archived bootstrap_static_2025_26_final.json
+    / fixtures_2025_26_final.json instead, since predicting historical
+    gameweeks needs that season's player/fixture data, not whatever
+    season happens to be live.
     """
-    bootstrap = load_bootstrap()
-    fixtures = load_fixtures()
+    bootstrap = load_bootstrap(bootstrap_file)
+    fixtures = load_fixtures(fixtures_file)
     fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
 
     team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season)
