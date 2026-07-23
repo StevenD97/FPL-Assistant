@@ -103,7 +103,8 @@ def _poisson_expected_floor_division(lam, divisor, max_k=60):
     return sum(_poisson_pmf(k, lam) * (k // divisor) for k in range(max_k + 1))
 
 
-def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_26"):
+def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_26",
+                                 shrinkage_games=SHRINKAGE_GAMES):
     """
     team_id -> {attack_home, attack_away, defence_home, defence_away}:
     recency-weighted goals scored/conceded, home/away split, each
@@ -143,12 +144,12 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
         home_weight = team_home["weight"].sum()
         away_weight = team_away["weight"].sum()
         strengths[team_id] = {
-            "attack_home": _shrink_ratio(weighted_mean(team_home, "goals_for"), home_weight, avg_home_goals),
-            "attack_away": _shrink_ratio(weighted_mean(team_away, "goals_for"), away_weight, avg_away_goals),
+            "attack_home": _shrink_ratio(weighted_mean(team_home, "goals_for"), home_weight, avg_home_goals, shrinkage_games),
+            "attack_away": _shrink_ratio(weighted_mean(team_away, "goals_for"), away_weight, avg_away_goals, shrinkage_games),
             # Conceded-at-home is compared against the away-scoring average (what
             # a typical away side would put past them), and vice versa.
-            "defence_home": _shrink_ratio(weighted_mean(team_home, "goals_against"), home_weight, avg_away_goals),
-            "defence_away": _shrink_ratio(weighted_mean(team_away, "goals_against"), away_weight, avg_home_goals),
+            "defence_home": _shrink_ratio(weighted_mean(team_home, "goals_against"), home_weight, avg_away_goals, shrinkage_games),
+            "defence_away": _shrink_ratio(weighted_mean(team_away, "goals_against"), away_weight, avg_home_goals, shrinkage_games),
         }
 
     return strengths, {"avg_home_goals": avg_home_goals, "avg_away_goals": avg_away_goals}
@@ -336,7 +337,8 @@ _BREAKDOWN_KEYS = [
 
 
 def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26",
-                           bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json"):
+                           bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json",
+                           shrinkage_games=SHRINKAGE_GAMES):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -352,7 +354,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     fixtures = load_fixtures(fixtures_file)
     fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
 
-    team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season)
+    team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
     involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
     appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)

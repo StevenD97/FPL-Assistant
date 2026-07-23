@@ -35,6 +35,7 @@ from datetime import datetime
 
 import pandas as pd
 
+import team_model
 from analysis import load_bootstrap, load_gw_history
 from team_model import predict_player_points
 
@@ -62,7 +63,9 @@ def _top_n_precision(merged, n=20):
     return len(predicted_top & actual_top) / n
 
 
-def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS):
+def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
+                  shrinkage_games=team_model.SHRINKAGE_GAMES, gameweeks=None):
+    """gameweeks overrides min_gw/max_gw with an explicit list - tune.py uses this to sample every Nth week."""
     bootstrap = load_bootstrap(BOOTSTRAP_FILE)
     event_deadlines = {
         e["id"]: datetime.strptime(e["deadline_time"], "%Y-%m-%dT%H:%M:%SZ")
@@ -73,13 +76,13 @@ def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS):
     per_gw_rows = []
     compiled = []
 
-    for gw in range(min_gw, max_gw + 1):
+    for gw in (gameweeks if gameweeks is not None else range(min_gw, max_gw + 1)):
         if gw not in event_deadlines:
             continue
 
         predicted = predict_player_points(
             event_deadlines[gw], gw, half_life_days=half_life_days, season=SEASON,
-            bootstrap_file=BOOTSTRAP_FILE, fixtures_file=FIXTURES_FILE,
+            bootstrap_file=BOOTSTRAP_FILE, fixtures_file=FIXTURES_FILE, shrinkage_games=shrinkage_games,
         )
         actual = _actual_points_by_gw(history, gw).rename("actual_points")
 
