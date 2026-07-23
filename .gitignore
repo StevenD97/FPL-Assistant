@@ -4,6 +4,7 @@ backend/venv/
 backend/data/*
 !backend/data/bootstrap_static_2025_26_final.json
 !backend/data/fixtures_2025_26_final.json
+!backend/data/gw_history_2025_26.csv
 __pycache__/
 *.pyc
 

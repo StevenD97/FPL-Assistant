@@ -23,6 +23,16 @@ frontend/   Next.js (TypeScript) web app
   final data (useful for a future "draft helper" feature, since new-season
   stats reset to zero pre-season and these numbers become irreplaceable
   once FPL resets its API for the new season).
+- `backend/data/gw_history_2025_26.csv` is 2025/26's gameweek-by-gameweek
+  player data (one row per player per GW - points, minutes, xG/xA, ICT,
+  bps, etc.), pulled via `fetch_gw_history.py` from the
+  [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
+  community archive. The live FPL API only keeps this level of detail for
+  the *current* season - once 2026/27 went live, 2025/26 collapsed into a
+  single aggregated row per player with no gameweek breakdown, so this
+  archive is the only way to get it now. Intended as the training/backtest
+  data for a recency-weighted form score (see `analysis.py`'s `form` field,
+  which currently just uses FPL's own canned 30-day average).
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 
