@@ -74,6 +74,30 @@ frontend/   Next.js (TypeScript) web app
   backtested player-gameweeks is 13.3 (down from 21.9), and every
   remaining large miss traces back to a genuine explosive real
   performance (a 24-point haul, etc.) rather than a model artifact.
+  Tried tuning `half_life_days`/`SHRINKAGE_GAMES` (`tune.py`, a 36-combo
+  grid search validated out-of-sample against the full backtest, not
+  just the search sample) - no combination meaningfully beat the
+  defaults (21 days / 3 games); results were essentially flat across a
+  wide range of both, so this pair of knobs is tapped out as a lever for
+  further accuracy.
+- `multi_gw_backtest.py` answers the question that actually matters for
+  whether this is sellable: is the ~14% single-gameweek top-20 hit rate
+  a modeling shortfall, or just football's inherent single-match
+  variance? (For context: random guessing gets ~2.4% here, so single-
+  gameweek predictions are already a real 6x edge over chance, not
+  noise - but "14%" alone undersells that.) Tested by summing
+  predictions over wider windows (3 and 5 gameweeks, still using only
+  data available before the window starts) and checking whether
+  correlation improves - if the model's signal is real and weekly
+  scoring is just noisy, averaging over more weeks should cancel that
+  noise out and reveal it. It does, cleanly: r² goes from 0.30 (1 GW) to
+  0.44 (3 GW) to 0.49 (5 GW), Spearman from 0.73 to 0.82, with no change
+  to the model itself. Conclusion: the single-gameweek ceiling is mostly
+  variance, not a data or modeling gap - the product implication is to
+  lead with multi-week outlooks ("best transfer targets for the next 5
+  gameweeks") rather than single-gameweek point predictions, which is
+  both more accurate and closer to how FPL managers actually plan
+  transfers anyway.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 
