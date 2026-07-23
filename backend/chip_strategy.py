@@ -28,8 +28,12 @@ pd.set_option("display.width", 200)
 SCAN_START_EVENT = 24
 SCAN_END_EVENT = 37  # exclusive; scans GW24..GW36
 
-bootstrap = load_bootstrap()
-fixtures = load_fixtures()
+# Archived 2025/26 files, matching compute_player_scores' own default below -
+# FPL reassigns team ids every season, so mixing this with live fixture data
+# would silently detect blank/double gameweeks for the wrong teams, and
+# event_deadlines would resolve GW24 etc. to the wrong season's real dates.
+bootstrap = load_bootstrap("bootstrap_static_2025_26_final.json")
+fixtures = load_fixtures("fixtures_2025_26_final.json")
 
 event_deadlines = {
     e["id"]: datetime.strptime(e["deadline_time"], "%Y-%m-%dT%H:%M:%SZ")

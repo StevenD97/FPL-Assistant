@@ -13,11 +13,45 @@ frontend/   Next.js (TypeScript) web app
 
 ## Current status / known limitations
 
-- The 2026/27 season hadn't started yet as of this writing, so several
-  scripts/endpoints use hardcoded "demo dates" pointing at last season
-  (2025/26) instead of the real current gameweek. Search for `REFERENCE_DATE`,
-  `NEXT_EVENT`, `START_EVENT` in `backend/` to find these - they'll need
-  updating once the new season's fixtures are published.
+- The 2026/27 season hadn't started as of this writing (GW1 deadline:
+  2026-08-21), but its fixture calendar and team list (Coventry City,
+  Hull City, Ipswich Town promoted; Burnley, West Ham, Wolves relegated)
+  are already live on the FPL API - `check_new_season.py` confirms this.
+  Player-level stats (total_points, minutes, ep_next, etc.) are NOT yet
+  reset though - they still carry last season's final values until FPL
+  resets them nearer kickoff, so this app deliberately uses **two
+  different data sources depending on what a feature needs**:
+  - Team/fixture-only features (fixture difficulty ranking on the
+    Fixtures page) use the live-fetched files (`bootstrap_static.json`/
+    `fixtures.json`) - safe now, since they never touch player stats.
+  - Player-scoring features (`recommendation_score`, `team_model.py`,
+    squad/chip planning) default to the archived 2025/26 files
+    (`bootstrap_static_2025_26_final.json`/`fixtures_2025_26_final.json`)
+    instead, to avoid silently scoring off stale pre-reset numbers.
+
+  **This split has a sharp edge**: FPL reassigns numeric team ids
+  alphabetically every season - team id 3 was Burnley in 2025/26, is
+  Bournemouth in 2026/27 - so any code that merges a live-season result
+  with an archived-season result by team id (as `build_squad_analysis`
+  and `build_chip_strategy` do internally, joining player scores against
+  a fixture ticker) would silently attach the wrong team's fixtures to a
+  player if the two calls used different seasons' files. Every function
+  that does this kind of merge (`build_squad_analysis`,
+  `build_chip_strategy`, and the standalone `my_squad.py`/
+  `chip_strategy.py` scripts) now takes explicit `bootstrap_file`/
+  `fixtures_file` params and passes the *same* season's files to every
+  internal call - see analysis.py's docstrings before changing any of
+  these defaults individually.
+
+  Search `REFERENCE_DATE`, `NEXT_EVENT`, `START_EVENT` in `backend/` for
+  the demo dates still pointing at 2025/26 - once FPL resets player
+  stats for the new season (watch for it with `check_new_season.py`)
+  and a matching `gw_history_2026_27.csv` archive exists (`fetch_gw_history.py`,
+  once vaastav's repo has this season's data), those + every
+  `bootstrap_file`/`fixtures_file`/`season` default flagged above are
+  what need updating - not a quick swap, since team_model.py's learned
+  attack/defence ratios and involvement shares are trained on whichever
+  archive `season` points at.
 - `backend/data/bootstrap_static_2025_26_final.json` and
   `fixtures_2025_26_final.json` are backed-up snapshots of last season's
   final data (useful for a future "draft helper" feature, since new-season

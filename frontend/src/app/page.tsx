@@ -10,8 +10,11 @@ type FixtureRow = {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getFixtureDifficulty(): Promise<FixtureRow[]> {
+  // GW1 of the real, live 2026/27 fixture calendar - unlike player scoring
+  // (still demo/archived data until FPL resets stats), fixture difficulty
+  // only needs the team/fixture calendar, which is already live. See README.
   const res = await fetch(
-    `${API_URL}/api/fixtures/difficulty?start_event=24&window_size=5`
+    `${API_URL}/api/fixtures/difficulty?start_event=1&window_size=5`
   );
   if (!res.ok) {
     throw new Error(`Backend request failed: ${res.status}`);
@@ -29,7 +32,9 @@ export default async function Home() {
           FPL Assistant
         </h1>
         <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-          Fixture difficulty ranking - next 5 gameweeks (demo data, GW24-28)
+          Fixture difficulty ranking - next 5 gameweeks of the real 2026/27
+          season (GW1-5). Player-level pages still use demo data from
+          2025/26 until FPL resets player stats for the new season.
         </p>
         <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
           <table className="w-full text-left text-sm">

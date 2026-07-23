@@ -337,18 +337,24 @@ _BREAKDOWN_KEYS = [
 
 
 def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26",
-                           bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json",
+                           bootstrap_file="bootstrap_static_2025_26_final.json",
+                           fixtures_file="fixtures_2025_26_final.json",
                            shrinkage_games=SHRINKAGE_GAMES):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
     _fixture_points) - covering the full FPL 2025/26 scoring system.
 
-    bootstrap_file/fixtures_file default to the live-fetched files, but
-    backtest.py points these at the archived bootstrap_static_2025_26_final.json
-    / fixtures_2025_26_final.json instead, since predicting historical
-    gameweeks needs that season's player/fixture data, not whatever
-    season happens to be live.
+    bootstrap_file/fixtures_file default to the archived 2025/26 season,
+    matching `season` - all of team_strengths/involvement/appearance/
+    history_rates are trained on that archive, and FPL reassigns team
+    ids alphabetically every season (team id 3 was Burnley in 2025/26,
+    is Bournemouth in 2026/27), so pointing bootstrap_file/fixtures_file
+    at a *different* season than `season` would silently apply one
+    team's learned attack/defence ratios to a different team's fixtures.
+    Keep all three in sync. Once FPL resets player stats for the live
+    season and a matching gw_history archive exists for it, this is the
+    one place that would need updating - not a quick swap otherwise.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
@@ -410,7 +416,8 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 
 
 def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
-                             bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json",
+                             bootstrap_file="bootstrap_static_2025_26_final.json",
+                             fixtures_file="fixtures_2025_26_final.json",
                              shrinkage_games=SHRINKAGE_GAMES):
     """
     Returns a DataFrame, one row per player, with predicted_points summed
@@ -423,6 +430,11 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     single-gameweek "miss" is real football variance (bonus points,
     one-off explosive performances) rather than a modeling gap, and
     summing over several weeks cancels that noise out. See README.
+
+    bootstrap_file/fixtures_file/season default to the archived 2025/26
+    season and must stay in sync with each other - see
+    predict_player_points' docstring on why (team ids get reassigned
+    every season).
 
     Also includes fixture_count (how many of the window's gameweeks this
     player actually has a fixture in - 0 means blank for the whole

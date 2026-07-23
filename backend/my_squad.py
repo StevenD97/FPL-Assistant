@@ -36,7 +36,14 @@ with open("data/my_picks_demo.json", encoding="utf-8") as f:
 picks = pd.DataFrame(picks_data["picks"])
 
 player_scores = compute_player_scores(REFERENCE_DATE, NEXT_EVENT)
-fixture_scores = compute_fixture_difficulty(FIXTURE_START_EVENT, WINDOW_SIZE).set_index("team_id")
+# Must point at the same season as player_scores (compute_player_scores now
+# defaults to the archived 2025/26 files) - FPL reassigns team ids every
+# season, so merging this against live fixture data would silently attach
+# the wrong team's fixture ticker to a player. See analysis.py's docstrings.
+fixture_scores = compute_fixture_difficulty(
+    FIXTURE_START_EVENT, WINDOW_SIZE,
+    bootstrap_file="bootstrap_static_2025_26_final.json", fixtures_file="fixtures_2025_26_final.json",
+).set_index("team_id")
 
 squad = picks.merge(player_scores, left_on="element", right_on="id", suffixes=("", "_score"))
 squad = squad.merge(

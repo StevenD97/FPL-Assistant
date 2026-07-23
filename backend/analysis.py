@@ -219,7 +219,9 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
                            w_opponent_adjustment=0.4, w_rotation_risk=0.3,
                            w_underlying_quality=0.3, w_defensive_contribution=0.15,
                            set_piece_bonus_primary=0.15, set_piece_bonus_backup=0.05,
-                           penalty_miss_penalty=0.02, form_half_life_days=21):
+                           penalty_miss_penalty=0.02, form_half_life_days=21,
+                           bootstrap_file="bootstrap_static_2025_26_final.json",
+                           fixtures_file="fixtures_2025_26_final.json"):
     """
     Returns a DataFrame, one row per player, with a recommendation_score
     combining:
@@ -242,9 +244,22 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
       - an opponent-strength adjustment for the player's next fixture
         (attackers vs opponent defence, defenders/keepers vs opponent attack)
       - a blank/double gameweek multiplier (0 fixtures = 0 score, 2 = ~doubled)
+
+    bootstrap_file/fixtures_file default to the archived 2025/26 season,
+    not the live-fetched files: FPL publishes each new season's fixture
+    calendar and team list well before it resets player-level stats
+    (total_points, minutes, ep_next, etc. stay as last season's final
+    values until close to kickoff), so pointing this at live data too
+    early would silently compute recommendation_score off stale numbers.
+    FPL also reassigns team ids alphabetically each season - team id 3
+    was Burnley in 2025/26 and is Bournemouth in 2026/27 - so this must
+    never mix an archived-season file with a live one; both params
+    always need to point at the same season. See compute_fixture_difficulty,
+    which is safe to point at live data since it doesn't touch player
+    stats at all.
     """
-    bootstrap = load_bootstrap()
-    fixtures = load_fixtures()
+    bootstrap = load_bootstrap(bootstrap_file)
+    fixtures = load_fixtures(fixtures_file)
 
     players = pd.DataFrame(bootstrap["elements"])
     teams_df = pd.DataFrame(bootstrap["teams"])
@@ -400,10 +415,21 @@ def top_differentials(df, max_ownership=10.0, top_n=15):
     return pool.sort_values("recommendation_score", ascending=False).head(top_n)
 
 
-def compute_fixture_difficulty(start_event, window_size=5):
-    """Per-team fixture difficulty score over [start_event, start_event + window_size)."""
-    bootstrap = load_bootstrap()
-    fixtures = load_fixtures()
+def compute_fixture_difficulty(start_event, window_size=5,
+                                bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json"):
+    """
+    Per-team fixture difficulty score over [start_event, start_event + window_size).
+    Defaults to the live-fetched files (unlike compute_player_scores) -
+    this only touches team/fixture data, never player stats, so it's safe
+    to point at the current season as soon as its fixture calendar is
+    published, well before FPL resets player-level stats. build_squad_analysis
+    overrides this to the archived season instead, to stay consistent with
+    the player scores it's merged against - team ids get reassigned each
+    season (see compute_player_scores), so mixing a live fixture_scores
+    with archived player_scores here would silently merge the wrong teams.
+    """
+    bootstrap = load_bootstrap(bootstrap_file)
+    fixtures = load_fixtures(fixtures_file)
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
     fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
 
@@ -454,20 +480,32 @@ def detect_blank_double_gameweeks(bootstrap=None, fixtures=None):
     return blanks, doubles
 
 
-def build_squad_analysis(team_id, event, reference_date, next_event, fixture_start_event, window_size=5):
+def build_squad_analysis(team_id, event, reference_date, next_event, fixture_start_event, window_size=5,
+                          bootstrap_file="bootstrap_static_2025_26_final.json",
+                          fixtures_file="fixtures_2025_26_final.json"):
     """
     Phase C: pulls a manager's squad live (by team_id) for a specific
     gameweek and returns full squad detail, category scores, bench depth,
     captaincy options, and fixture outlook - the same shape my_squad.py
     prints, but as JSON for the API.
+
+    bootstrap_file/fixtures_file default to the archived 2025/26 season
+    and are passed to BOTH internal calls below - they must always match,
+    since the two results get merged by team id and FPL reassigns team
+    ids each season (see compute_player_scores' docstring). Mixing an
+    archived player_scores with a live fixture_scores here would silently
+    attach the wrong team's fixture ticker to a player.
     """
     entry = fetch_entry_info(team_id)
     picks_data = fetch_entry_picks(team_id, event)
 
     picks = pd.DataFrame(picks_data["picks"])
 
-    player_scores = compute_player_scores(reference_date, next_event)
-    fixture_scores = compute_fixture_difficulty(fixture_start_event, window_size).set_index("team_id")
+    player_scores = compute_player_scores(reference_date, next_event,
+                                           bootstrap_file=bootstrap_file, fixtures_file=fixtures_file)
+    fixture_scores = compute_fixture_difficulty(fixture_start_event, window_size,
+                                                 bootstrap_file=bootstrap_file,
+                                                 fixtures_file=fixtures_file).set_index("team_id")
 
     squad = picks.merge(player_scores, left_on="element", right_on="id", suffixes=("", "_score"))
     squad = squad.merge(
@@ -523,7 +561,9 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     }
 
 
-def build_chip_strategy(team_id, scan_start_event, scan_end_event):
+def build_chip_strategy(team_id, scan_start_event, scan_end_event,
+                         bootstrap_file="bootstrap_static_2025_26_final.json",
+                         fixtures_file="fixtures_2025_26_final.json"):
     """
     Phase D: scans a gameweek window and recommends timing for Bench Boost,
     Triple Captain, Free Hit (based on the manager's squad) and Wildcard
@@ -532,9 +572,15 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event):
     Assumes the manager's squad (taken from their current gameweek) stays
     unchanged across the scan window - a simplifying assumption for a demo;
     a real planner would need to re-run this after every transfer.
+
+    bootstrap_file/fixtures_file default to the archived 2025/26 season -
+    every event_deadlines/compute_player_scores/detect_blank_double_gameweeks
+    call below must use the same season's files, since FPL reassigns team
+    ids each season (see compute_player_scores' docstring); mixing seasons
+    here would silently scan the wrong fixtures against the wrong scores.
     """
-    bootstrap = load_bootstrap()
-    fixtures = load_fixtures()
+    bootstrap = load_bootstrap(bootstrap_file)
+    fixtures = load_fixtures(fixtures_file)
 
     event_deadlines = {
         e["id"]: datetime.strptime(e["deadline_time"], "%Y-%m-%dT%H:%M:%SZ")
@@ -553,7 +599,8 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event):
     rows = []
     for event in scan_events:
         reference_date = event_deadlines[event]
-        scores = compute_player_scores(reference_date, event)
+        scores = compute_player_scores(reference_date, event,
+                                        bootstrap_file=bootstrap_file, fixtures_file=fixtures_file)
 
         squad_scores = scores[scores["id"].isin(squad_element_ids)]
         bench_scores = scores[scores["id"].isin(bench_element_ids)]
