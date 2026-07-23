@@ -251,11 +251,33 @@ frontend/   Next.js (TypeScript) web app
     team **name** between the two bootstraps' team lists. Promoted teams
     with no top-flight history in the archive (Coventry City, Hull City,
     Ipswich Town for 2026/27) get neutral `DEFAULT_TEAM_STRENGTH` ratios
-    rather than a fabricated number. Player-level dicts (involvement
-    shares, appearance probabilities, personal history rates) need no
-    remapping - they're keyed by `element` (player id), which is stable
-    across the season boundary (verified: zero new/removed element ids
-    between the archived and live bootstraps' `elements` lists).
+    rather than a fabricated number.
+  - **Player-id remapping.** The same problem, one level down, and it
+    shipped as a real bug before being caught: an earlier version of this
+    assumed a player's `id` field is stable across the season boundary
+    (verified only that the *set* of live ids was a subset of the
+    archive's - true, but irrelevant) and used it directly to look up
+    involvement shares/appearance probabilities/history rates. It isn't
+    stable - FPL recompacts/reassigns `id` every season for players no
+    longer fielded, exactly like it does with team ids. Checked directly:
+    of the 555 live-roster element ids that also happen to exist as ids
+    in the 2025/26 archive, **550 refer to a different real player**
+    once compared by FPL's actually-stable `code` field (e.g. live id
+    303 is Cédric Kipré at newly-promoted Ipswich; that same id was James
+    Garner at Everton in the 2025/26 archive). The bug's symptoms were
+    exactly what you'd expect: promoted-club players with zero real
+    Premier League history showing large predicted points (borrowed from
+    whoever's old id they inherited), James Maddison's real injury-hit
+    2025/26 season replaced by a healthy stranger's, and an optimizer
+    squad that underspent its budget because several "bargains" were
+    actually mispriced ghosts of unrelated players. Fixed by
+    `_map_player_stats_to_roster()`, which re-keys involvement/
+    appearance_probs/history_rates from the archive's id space to the
+    roster's by matching `code` instead of `id` - of the 555 live-roster
+    players, 453 have a genuine 2025/26 top-flight record this way; the
+    rest (new-to-the-PL signings, promoted-club players) correctly get
+    no history and default to a neutral/zero prediction rather than a
+    fabricated one.
   - **Half-life recalibration.** The default `half_life_days=21` is
     tuned for *within-season* recency (weeks apart) and decays a ~90-day
     close-season gap (2025/26 ended 2026-05-24; 2026/27 GW1 is

@@ -221,6 +221,37 @@ def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams
     return remapped
 
 
+def _map_player_stats_to_roster(stats_by_element, training_elements, roster_elements):
+    """
+    Remaps a dict keyed by *training*-season element (player) ids to
+    *roster*-season element ids, matching by FPL's `code` field - the
+    actually-stable per-player identifier across seasons. `id` is NOT
+    stable: FPL recompacts/reassigns it every season, the same failure
+    mode this file already handles for team ids, just for players
+    instead - confirmed empirically: of the 555 element ids in the live
+    2026/27 roster that also happen to exist as ids in the 2025/26
+    archive, 550 refer to a *different* real player once compared by
+    code (e.g. id 303 was James Garner at Everton in 2025/26, is Cédric
+    Kipré at Ipswich in 2026/27 - a promoted club with zero 2025/26 top-
+    flight history of its own). Trusting `id` directly here silently
+    attributed a random departed player's history to whichever new
+    player inherited their old numeric id.
+
+    Players with no code match (genuinely new to the Premier League, or
+    who left it) are simply absent from the result - every caller
+    already falls back to "no history" defaults for any element id with
+    no entry, which is the honest answer for a player with no top-flight
+    record in the training archive.
+    """
+    code_to_training_id = {p["code"]: p["id"] for p in training_elements}
+    remapped = {}
+    for p in roster_elements:
+        training_id = code_to_training_id.get(p["code"])
+        if training_id is not None and training_id in stats_by_element:
+            remapped[p["id"]] = stats_by_element[training_id]
+    return remapped
+
+
 def predict_fixture_xg(home_team_id, away_team_id, team_strengths, league_avgs):
     """Expected goals for both sides of a fixture (Dixon-Coles multiplicative form)."""
     home = team_strengths.get(home_team_id, DEFAULT_TEAM_STRENGTH)
@@ -476,8 +507,12 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     See predict_player_points' docstring for roster_bootstrap_file/
     roster_fixtures_file - when set, the *training* data (bootstrap_file/
     fixtures_file/season) and the *roster* data (who players are, which
-    fixtures they have) come from different season snapshots, and
-    team_strengths must be remapped from one team-id space to the other.
+    fixtures they have) come from different season snapshots, and both
+    team_strengths (by team id) and involvement/appearance_probs/
+    history_rates (by player id) must be remapped from one season's id
+    space to the other - see _remap_team_strengths_to_roster and
+    _map_player_stats_to_roster for why neither id is stable across a
+    season boundary on its own.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
@@ -486,12 +521,15 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     fixtures_by_team_event = build_fixtures_by_team_event(roster_fixtures)
 
     team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
-    if roster_bootstrap_file:
-        team_strengths = _remap_team_strengths_to_roster(team_strengths, bootstrap["teams"], roster_bootstrap["teams"])
-
     involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
     appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
+    if roster_bootstrap_file:
+        team_strengths = _remap_team_strengths_to_roster(team_strengths, bootstrap["teams"], roster_bootstrap["teams"])
+        involvement = _map_player_stats_to_roster(involvement, bootstrap["elements"], roster_bootstrap["elements"])
+        appearance_probs = _map_player_stats_to_roster(appearance_probs, bootstrap["elements"], roster_bootstrap["elements"])
+        history_rates = _map_player_stats_to_roster(history_rates, bootstrap["elements"], roster_bootstrap["elements"])
+
     live_availability = compute_live_availability(roster_bootstrap) if apply_live_signals else {}
 
     teams_df = pd.DataFrame(roster_bootstrap["teams"])
