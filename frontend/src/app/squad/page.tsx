@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card, StatTile } from "@/components/ui/Card";
+import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
@@ -11,6 +12,8 @@ import { TeamBadge } from "@/components/pitch/TeamBadge";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type SquadPlayer = {
+  id: number;
+  live_id: number | null;
   position: number;
   web_name: string;
   team_short: string;
@@ -76,6 +79,15 @@ type OptimizerResponse = {
   transferred_in: TransferPlayer[];
 };
 
+type Alternative = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  cost: number;
+  predicted_points: number;
+  value: number;
+};
+
 export default function SquadPage() {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
@@ -86,6 +98,30 @@ export default function SquadPage() {
   const [optimizer, setOptimizer] = useState<OptimizerResponse | null>(null);
   const [optimizerLoading, setOptimizerLoading] = useState(false);
   const [optimizerError, setOptimizerError] = useState<string | null>(null);
+
+  const [suggestFor, setSuggestFor] = useState<{ liveId: number; name: string } | null>(null);
+  const [alternatives, setAlternatives] = useState<Alternative[] | null>(null);
+  const [alternativesLoading, setAlternativesLoading] = useState(false);
+
+  async function loadAlternatives(liveId: number, name: string) {
+    if (suggestFor?.liveId === liveId) {
+      setSuggestFor(null);
+      setAlternatives(null);
+      return;
+    }
+    setSuggestFor({ liveId, name });
+    setAlternatives(null);
+    setAlternativesLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/players/${liveId}/alternatives?limit=5`);
+      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+      setAlternatives(await res.json());
+    } catch {
+      setAlternatives([]);
+    } finally {
+      setAlternativesLoading(false);
+    }
+  }
 
   async function loadOptimizer(id: string) {
     setOptimizerLoading(true);
@@ -127,12 +163,11 @@ export default function SquadPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           My squad
         </h1>
-        <p className="mb-6 text-text-secondary">
-          Enter your FPL team ID to see your squad analysis (demo data: GW38
-          of last season, since the 2026/27 season hasn&apos;t started).
+        <p className="mb-6 text-sm text-text-secondary">
+          Enter your team ID for squad analysis and suggested transfers (demo data: GW38, 2025/26).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
           <TextField
@@ -275,13 +310,14 @@ export default function SquadPage() {
                     <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ICT</th>
                     <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Def/90</th>
                     <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Set-piece duty</th>
+                    <th className="px-3 py-2.5"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.squad.map((p) => (
                     <tr key={p.position} className="border-t border-border">
                       <td className="px-3 py-2.5 font-medium">
-                        {p.web_name} {p.captain_flag}
+                        <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
                       </td>
                       <td className="px-3 py-2.5">
                         <TeamBadge teamShort={p.team_short} name={p.team_short} />
@@ -299,11 +335,44 @@ export default function SquadPage() {
                       <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
                       <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
                       <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
+                      <td className="px-3 py-2.5">
+                        {p.live_id != null && (
+                          <button
+                            onClick={() => loadAlternatives(p.live_id!, p.web_name)}
+                            className="text-xs text-pl-purple hover:underline"
+                          >
+                            {suggestFor?.liveId === p.live_id ? "Hide" : "Suggest"}
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
+            {suggestFor && (
+              <Card>
+                <h3 className="mb-3 font-semibold text-text-primary">
+                  Replacements for {suggestFor.name}
+                </h3>
+                {alternativesLoading ? (
+                  <p className="text-sm text-text-muted">Loading...</p>
+                ) : alternatives && alternatives.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {alternatives.map((a) => (
+                      <PlayerLink key={a.id} id={a.id}>
+                        <span className="inline-block rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50">
+                          {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
+                        </span>
+                      </PlayerLink>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-text-muted">No alternatives found.</p>
+                )}
+              </Card>
+            )}
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
               {Object.entries(data.category_scores).map(([pos, score]) => (

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { Select } from "@/components/ui/Select";
 import { TextField } from "@/components/ui/TextField";
@@ -9,6 +10,7 @@ import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 type OutlookRow = {
   id: number;
+  live_id: number | null;
   web_name: string;
   team_short: string;
   position: string;
@@ -74,18 +76,12 @@ export default function OutlookPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Multi-gameweek outlook
         </h1>
-        <p className="mb-6 max-w-2xl text-text-secondary">
-          Predicted points summed over a run of upcoming gameweeks (demo
-          data: last season, since the 2026/27 season hasn&apos;t started).
-          Backtesting found this window-based total tracks what actually
-          happens noticeably better than a single-gameweek prediction does
-          - most of a single week&apos;s &quot;miss&quot; is real football
-          variance that averages out over several fixtures, not a modeling
-          gap. Use this for transfer targets, not a promise of next week&apos;s
-          score.
+        <p className="mb-6 max-w-2xl text-sm text-text-secondary">
+          Predicted points summed over your chosen run of gameweeks - tracks reality better than a single-week
+          guess (demo data: 2025/26, since 2026/27 hasn&apos;t started).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
           <TextField
@@ -156,7 +152,9 @@ export default function OutlookPage() {
                 {filtered.map((row, i) => (
                   <tr key={row.id} className="border-t border-border">
                     <td className="px-3 py-2.5 font-mono text-text-muted">{i + 1}</td>
-                    <td className="px-3 py-2.5 font-medium">{row.web_name}</td>
+                    <td className="px-3 py-2.5 font-medium">
+                      <PlayerLink id={row.live_id}>{row.web_name}</PlayerLink>
+                    </td>
                     <td className="px-3 py-2.5">
                       <TeamBadge teamShort={row.team_short} name={row.team_short} />
                     </td>

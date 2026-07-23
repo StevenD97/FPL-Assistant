@@ -337,6 +337,54 @@ conventions rather than dropped in as-is. No dark mode.
   roster/pool now too, but the manager-picks half of that endpoint is
   still blocked on the season-boundary reset noted above: no team id has
   a fetchable squad until its first 2026/27 gameweek deadline passes.
+- **All Players, Player Detail, Schedule, and Leagues pages.** Every
+  player in the live 2026/27 game is browsable (`/players`, sortable,
+  searchable) and clickable through to a full detail page
+  (`/players/{id}`: live identity/price/status, 2025/26 season totals,
+  a per-gameweek points chart, and the model's predicted-points
+  breakdown by category for the next few gameweeks) - and every player
+  name across the whole app (Outlook, Differentials, My Squad, Squad
+  Builder, Optimizer) now links there too. My Squad and Squad Builder
+  can also surface 3-5 same-position alternatives for any player on
+  demand (`/api/players/{id}/alternatives`) - a quick "who else could I
+  play here" without leaving the page. `/schedule` shows the full
+  2026/27 fixture list one gameweek at a time (with results once
+  played). `/leagues` shows a manager's classic mini-leagues, their
+  standings, and a gameweek-by-gameweek total-points line chart per
+  member.
+  - **Two id-space bugs, found and fixed in the same pass.** Several of
+    these endpoints score players against the *archived* 2025/26
+    bootstrap (`/api/players/scores`, `/api/players/predicted-points-outlook`,
+    `/api/squad/{team_id}`) but need to link to the *live* 2026/27
+    player-detail page - the exact archived-vs-live id mismatch this
+    file already documents at length for team ids and (more recently)
+    player ids. `analysis.map_archived_ids_to_live()` resolves this the
+    same way `team_model.py` does (matching FPL's stable `code` field),
+    attaching a `live_id` alongside the archived-season `id` so the
+    frontend never has to reason about which id space a page is in.
+  - Getting `live_id` into the JSON response surfaced a second, subtler
+    bug: assigning a dict with some `None` values onto a DataFrame
+    column via `.map()` silently upcasts the column to `float64`,
+    turning `None` into `NaN` - and Starlette's `JSONResponse` sets
+    `allow_nan=False`, so a single `NaN` anywhere in the payload 500s
+    the *entire* endpoint (a real bug this project hit while building
+    this feature, not a hypothetical - `curl` showed a bare `Internal
+    Server Error` with no other detail). Re-assigning a plain Python
+    list of `int`/`None` back into the column doesn't fix it either -
+    pandas re-triggers the same upcast on assignment. The fix
+    (`analysis.nullable_int_column()`) has to pin `dtype=object`
+    explicitly at Series construction time.
+  - The Leagues trend chart is honest about a real limitation, not
+    silently broken: FPL's `/entry/{id}/history/` only keeps
+    gameweek-by-gameweek scores for the *current* season - 2025/26 is
+    now "past" and collapsed to one aggregate row per season, and
+    2026/27 has zero gameweeks played as of writing, so `/leagues`
+    currently shows a clear "no standings yet" state rather than an
+    empty chart. It's wired to real data and will fill in once 2026/27
+    gameweeks start completing. Standings fetches are capped at 20
+    league members (`LEAGUE_STANDINGS_ENTRY_CAP`) since each one needs
+    its own live API call for history - unbounded would mean hundreds
+    of requests for a large public league.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 

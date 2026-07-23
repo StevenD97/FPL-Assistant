@@ -52,12 +52,11 @@ export default function ChipsPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Chip strategy
         </h1>
-        <p className="mb-6 text-text-secondary">
-          Enter your FPL team ID to scan for chip timing (demo window: GW24-36
-          of last season, since the 2026/27 season hasn&apos;t started).
+        <p className="mb-6 text-sm text-text-secondary">
+          Enter your team ID to scan for chip timing (demo window: GW24-36, 2025/26).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-3">
           <TextField

@@ -30,13 +30,11 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
-          Fixtures
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
+          Fixture difficulty
         </h1>
-        <p className="mb-6 max-w-xl text-text-secondary">
-          Fixture difficulty ranking - next 5 gameweeks of the real 2026/27
-          season (GW1-5). Player-level pages still use demo data from
-          2025/26 until FPL resets player stats for the new season.
+        <p className="mb-6 max-w-xl text-sm text-text-secondary">
+          Next 5 gameweeks, 2026/27. Player pages still use 2025/26 demo data until FPL resets stats.
         </p>
         <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
           <table className="w-full text-left text-sm">

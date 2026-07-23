@@ -409,6 +409,46 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     return df
 
 
+def map_archived_ids_to_live(archived_ids, archived_bootstrap, live_bootstrap):
+    """
+    archived element id -> live element id, matching by FPL's stable
+    `code` field - element `id` gets recompacted every season (a player
+    who left the game can have their old id reused by an unrelated
+    player next season - see team_model.py's map_player_stats_to_roster
+    for the same problem on the prediction side, and the README for the
+    concrete bug this caused before it was caught). Used by endpoints
+    that compute scores against the archived season but still want to
+    link a row to the live player-detail page. Returns None for an id
+    with no live match (retired, or left the Premier League).
+    """
+    archived_by_id = {p["id"]: p for p in archived_bootstrap["elements"]}
+    live_code_to_id = {p["code"]: p["id"] for p in live_bootstrap["elements"]}
+    result = {}
+    for aid in archived_ids:
+        player = archived_by_id.get(aid)
+        result[aid] = live_code_to_id.get(player["code"]) if player else None
+    return result
+
+
+def nullable_int_column(series):
+    """
+    A pandas Series of ids-or-None (e.g. from mapping map_archived_ids_to_live
+    over a column) as plain Python ints/None, ready for to_dict()/JSON.
+    Needed because assigning a dict with some None values via Series.map()
+    silently upcasts the column to float64, turning None into NaN - and
+    Starlette's JSONResponse sets allow_nan=False, so a raw NaN in the
+    response blows up the whole endpoint with a 500 (a real bug this
+    project hit once already - see README). Returns an object-dtype
+    Series (not a plain list): assigning a plain Python list of ints/None
+    back into a DataFrame column re-triggers the exact same float64/NaN
+    upcast this function exists to avoid, so the dtype has to be pinned
+    explicitly at construction time.
+    """
+    return pd.Series(
+        [None if pd.isna(v) else int(v) for v in series], index=series.index, dtype=object,
+    )
+
+
 def top_differentials(df, max_ownership=10.0, top_n=15):
     """Same recommendation_score, filtered to low-ownership players."""
     pool = df[df["selected_by_percent"] <= max_ownership]
@@ -540,12 +580,18 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         .drop_duplicates().sort_values("fixture_score", ascending=False).to_dict(orient="records")
 
     squad_cols = [
-        "position", "web_name", "team_short", "pos", "role", "captain_flag",
+        "id", "position", "web_name", "team_short", "pos", "role", "captain_flag",
         "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
         "form", "recency_weighted_form", "ep_next", "expected_minutes",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
         "set_piece_duty_score",
     ]
+    squad_rows = squad[squad_cols].copy()
+    # `id` above is this bootstrap_file's element id (archived-2025/26 by
+    # default) - add live_id so the frontend can link to /players/{live_id}
+    # without mixing season id-spaces (see map_archived_ids_to_live).
+    live_ids = map_archived_ids_to_live(squad_rows["id"].tolist(), load_bootstrap(bootstrap_file), load_bootstrap())
+    squad_rows["live_id"] = nullable_int_column(squad_rows["id"].map(live_ids))
 
     return {
         "entry_name": entry["name"],
@@ -553,7 +599,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         "points": picks_data["entry_history"]["points"],
         "squad_value": picks_data["entry_history"]["value"] / 10,
         "bank": picks_data["entry_history"]["bank"] / 10,
-        "squad": squad[squad_cols].to_dict(orient="records"),
+        "squad": squad_rows.to_dict(orient="records"),
         "category_scores": category_scores,
         "bench_depth_score": round(bench["recommendation_score"].mean(), 3) if len(bench) else None,
         "captaincy_options": captaincy_options,

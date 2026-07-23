@@ -5,22 +5,25 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   { href: "/", label: "Fixtures" },
+  { href: "/schedule", label: "Schedule" },
+  { href: "/players", label: "Players" },
   { href: "/outlook", label: "Outlook" },
   { href: "/squad", label: "My Squad" },
-  { href: "/optimizer", label: "Optimizer" },
   { href: "/squad-builder", label: "Squad Builder" },
+  { href: "/optimizer", label: "Optimizer" },
   { href: "/differentials", label: "Differentials" },
-  { href: "/chips", label: "Chip Strategy" },
+  { href: "/chips", label: "Chips" },
+  { href: "/leagues", label: "Leagues" },
 ];
 
 export function NavBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-6 border-b border-border bg-white px-8 py-4">
+    <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-border bg-white px-8 py-4">
       <span className="mr-2 font-sans text-md font-bold text-pl-purple">FPL Assistant</span>
       {NAV_ITEMS.map((item) => {
-        const active = pathname === item.href;
+        const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}

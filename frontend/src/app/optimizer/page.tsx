@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { CaptainBadge } from "@/components/ui/CaptainBadge";
+import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { TextField } from "@/components/ui/TextField";
@@ -78,7 +79,7 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
             <tr key={p.id} className="border-t border-border">
               <td className="px-3 py-2.5 text-text-muted">{p.role === "Starting XI" ? "XI" : "Bench"}</td>
               <td className="px-3 py-2.5 font-medium">
-                {p.web_name}
+                <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
                 {p.captain && <CaptainBadge />}
                 <StatusBadge status={p.status} />
               </td>
@@ -128,15 +129,9 @@ function BestSquadPanel() {
 
   return (
     <div>
-      <p className="mb-2 max-w-2xl text-text-secondary">
-        The provably optimal 15-man squad under budget alone - no existing squad to
-        work around. Solves the real constrained decision (budget, 2 GKP/5 DEF/5 MID/3 FWD,
-        max 3 per club) with integer linear programming, not just ranking. Useful for
-        Wildcard/Free Hit planning, or building from scratch.
-      </p>
-      <p className="mb-6 text-sm text-text-muted">
-        Drafts from the live 2026/27 player pool and prices - trained on last
-        season&apos;s (2025/26) results, since no 2026/27 match data exists yet.
+      <p className="mb-6 max-w-2xl text-sm text-text-secondary">
+        Best 15-man squad under budget, from scratch - ideal for Wildcard/Free Hit planning. Drafts from the live
+        2026/27 pool, trained on 2025/26 results.
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <TextField
@@ -229,17 +224,13 @@ function TransfersPanel() {
 
   return (
     <div>
-      <p className="mb-6 max-w-2xl text-text-secondary">
-        Fetches your real squad and bank, then finds the provably optimal set of
-        transfers - weighing predicted points gained against the -4 hit for every
-        transfer beyond your free ones. Zero transfers is a valid, sometimes-optimal
-        answer this can return, not something forced.
+      <p className="mb-6 max-w-2xl text-sm text-text-secondary">
+        Your real squad and bank, optimally transferred - weighing points gained against the -4 hit per transfer
+        beyond your free ones. Zero transfers is a valid answer.
       </p>
       <Alert kind="warning">
-        FPL appears to reset manager pick history at each season boundary, so a
-        squad only exists for a gameweek once that gameweek&apos;s deadline has
-        passed. 2026/27 GW1 locks 2026-08-21 - until then, no team ID has a
-        fetchable squad here yet.
+        No team ID has a fetchable squad until 2026/27 GW1 locks (2026-08-21) - FPL resets pick history each
+        season boundary.
       </Alert>
       <form onSubmit={handleSubmit} className="mb-6 mt-6 flex flex-wrap items-end gap-4">
         <TextField
@@ -324,7 +315,7 @@ function TransfersPanel() {
                 <ul className="text-sm">
                   {result.transferred_out.map((p) => (
                     <li key={p.id} className="border-t border-border px-1 py-1.5">
-                      {p.web_name}{" "}
+                      <PlayerLink id={p.id}>{p.web_name}</PlayerLink>{" "}
                       <span className="text-text-muted">
                         ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
                       </span>
@@ -337,7 +328,7 @@ function TransfersPanel() {
                 <ul className="text-sm">
                   {result.transferred_in.map((p) => (
                     <li key={p.id} className="border-t border-border px-1 py-1.5">
-                      {p.web_name}{" "}
+                      <PlayerLink id={p.id}>{p.web_name}</PlayerLink>{" "}
                       <span className="text-text-muted">
                         ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
                       </span>
@@ -365,12 +356,11 @@ export default function OptimizerPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Squad optimizer
         </h1>
-        <p className="mb-6 text-text-secondary">
-          Not just a ranking - an integer-linear-programming solver that finds the
-          provably optimal squad or transfers under FPL&apos;s real rules.
+        <p className="mb-6 text-sm text-text-secondary">
+          The provably optimal squad or transfers, solved under FPL&apos;s real rules.
         </p>
 
         <div className="mb-6 flex gap-2 border-b border-border">

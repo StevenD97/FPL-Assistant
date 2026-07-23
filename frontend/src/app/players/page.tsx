@@ -1,0 +1,163 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { PositionBadge } from "@/components/ui/PositionBadge";
+import { Select } from "@/components/ui/Select";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { TextField } from "@/components/ui/TextField";
+import { PlayerLink } from "@/components/ui/PlayerLink";
+import { TeamBadge } from "@/components/pitch/TeamBadge";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
+
+type Player = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  position: string;
+  cost: number;
+  predicted_points: number;
+  value: number;
+  selected_by_percent: number;
+  status: string;
+  news: string;
+  season_stats: { total_points: number } | null;
+};
+
+type SortKey = "predicted_points" | "cost" | "value" | "selected_by_percent" | "season_points";
+
+const COLUMNS: { key: SortKey; label: string }[] = [
+  { key: "predicted_points", label: "Predicted pts" },
+  { key: "cost", label: "Cost" },
+  { key: "value", label: "Value" },
+  { key: "selected_by_percent", label: "Own%" },
+  { key: "season_points", label: "25/26 pts" },
+];
+
+export default function PlayersPage() {
+  const [players, setPlayers] = useState<Player[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [position, setPosition] = useState<(typeof POSITIONS)[number]>("All");
+  const [sortKey, setSortKey] = useState<SortKey>("predicted_points");
+  const [sortDesc, setSortDesc] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${API_URL}/api/players`);
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        setPlayers(await res.json());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  function sortValue(p: Player, key: SortKey): number {
+    if (key === "season_points") return p.season_stats?.total_points ?? -1;
+    return p[key];
+  }
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDesc((d) => !d);
+    } else {
+      setSortKey(key);
+      setSortDesc(true);
+    }
+  }
+
+  const rows = useMemo(() => {
+    if (!players) return [];
+    let pool = players;
+    if (position !== "All") pool = pool.filter((p) => p.position === position);
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      pool = pool.filter((p) => p.web_name.toLowerCase().includes(q) || p.team_short.toLowerCase().includes(q));
+    }
+    return [...pool].sort((a, b) => (sortValue(b, sortKey) - sortValue(a, sortKey)) * (sortDesc ? 1 : -1));
+  }, [players, position, search, sortKey, sortDesc]);
+
+  return (
+    <main className="min-h-screen bg-white p-8">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
+          All players
+        </h1>
+        <p className="mb-6 text-sm text-text-secondary">
+          Every player in the live 2026/27 game - click a column to sort, click a name for full detail.
+        </p>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search name or team..."
+            wrapperClassName="w-56"
+          />
+          <Select
+            value={position}
+            onChange={(e) => setPosition(e.target.value as (typeof POSITIONS)[number])}
+            options={POSITIONS}
+            wrapperClassName="w-28"
+          />
+        </div>
+
+        {loading && <p className="text-text-muted">Loading players...</p>}
+        {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
+        {players && <p className="mb-2 text-xs text-text-muted">{rows.length} players</p>}
+
+        {players && (
+          <div className="max-h-[70vh] overflow-auto rounded-lg border border-border shadow-sm">
+            <table className="w-full text-left text-sm">
+              <thead className="sticky top-0 bg-surface-sunken">
+                <tr>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                  {COLUMNS.map((c) => (
+                    <th key={c.key} className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      <button onClick={() => toggleSort(c.key)} className="flex items-center gap-1 hover:text-text-primary">
+                        {c.label}
+                        {sortKey === c.key && <span>{sortDesc ? "↓" : "↑"}</span>}
+                      </button>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((p) => (
+                  <tr key={p.id} className="border-t border-border">
+                    <td className="px-3 py-2.5 font-medium">
+                      <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                      <StatusBadge status={p.status} news={p.news} />
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <PositionBadge position={p.position} />
+                    </td>
+                    <td className="px-3 py-2.5 font-mono font-medium">{p.predicted_points.toFixed(1)}</td>
+                    <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                    <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                    <td className="px-3 py-2.5 font-mono">{p.season_stats?.total_points ?? "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

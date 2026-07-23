@@ -221,7 +221,7 @@ def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams
     return remapped
 
 
-def _map_player_stats_to_roster(stats_by_element, training_elements, roster_elements):
+def map_player_stats_to_roster(stats_by_element, training_elements, roster_elements):
     """
     Remaps a dict keyed by *training*-season element (player) ids to
     *roster*-season element ids, matching by FPL's `code` field - the
@@ -511,7 +511,7 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     team_strengths (by team id) and involvement/appearance_probs/
     history_rates (by player id) must be remapped from one season's id
     space to the other - see _remap_team_strengths_to_roster and
-    _map_player_stats_to_roster for why neither id is stable across a
+    map_player_stats_to_roster for why neither id is stable across a
     season boundary on its own.
     """
     bootstrap = load_bootstrap(bootstrap_file)
@@ -526,9 +526,9 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
     if roster_bootstrap_file:
         team_strengths = _remap_team_strengths_to_roster(team_strengths, bootstrap["teams"], roster_bootstrap["teams"])
-        involvement = _map_player_stats_to_roster(involvement, bootstrap["elements"], roster_bootstrap["elements"])
-        appearance_probs = _map_player_stats_to_roster(appearance_probs, bootstrap["elements"], roster_bootstrap["elements"])
-        history_rates = _map_player_stats_to_roster(history_rates, bootstrap["elements"], roster_bootstrap["elements"])
+        involvement = map_player_stats_to_roster(involvement, bootstrap["elements"], roster_bootstrap["elements"])
+        appearance_probs = map_player_stats_to_roster(appearance_probs, bootstrap["elements"], roster_bootstrap["elements"])
+        history_rates = map_player_stats_to_roster(history_rates, bootstrap["elements"], roster_bootstrap["elements"])
 
     live_availability = compute_live_availability(roster_bootstrap) if apply_live_signals else {}
 
@@ -629,45 +629,28 @@ def _predict_for_event(context, next_event):
     return pd.DataFrame(rows)
 
 
-def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
-                             bootstrap_file="bootstrap_static_2025_26_final.json",
-                             fixtures_file="fixtures_2025_26_final.json",
-                             shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
-                             roster_bootstrap_file=None, roster_fixtures_file=None):
+def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, season="2025_26",
+                                bootstrap_file="bootstrap_static_2025_26_final.json",
+                                fixtures_file="fixtures_2025_26_final.json",
+                                shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
+                                roster_bootstrap_file=None, roster_fixtures_file=None):
     """
-    Returns a DataFrame, one row per player, with predicted_points summed
-    across next_events - all conditioned on data strictly before
-    reference_date (the start of the window), not re-predicting week to
-    week with hindsight. This is deliberately the headline metric for the
-    app, not single-gameweek predict_player_points(): multi_gw_backtest.py
-    found single-gameweek predictions explain ~30% of variance (r^2=0.30)
-    while a 5-gameweek window explains ~49% (r^2=0.49) - most of the
-    single-gameweek "miss" is real football variance (bonus points,
-    one-off explosive performances) rather than a modeling gap, and
-    summing over several weeks cancels that noise out. See README.
-
-    bootstrap_file/fixtures_file/season default to the archived 2025/26
-    season and must stay in sync with each other - see
-    predict_player_points' docstring on why (team ids get reassigned
-    every season).
-
-    Also includes fixture_count (how many of the window's gameweeks this
-    player actually has a fixture in - 0 means blank for the whole
-    window) and a fixture_ticker (e.g. "BOU(H) | CRY(A) | MCI(H)") so the
-    UI can show what's driving the total, not just the number itself.
+    Returns a DataFrame, one row per player, with every _BREAKDOWN_KEYS
+    category (goal_points, assist_points, clean_sheet_points, bonus_points,
+    etc. - not just predicted_points) summed across next_events - all
+    conditioned on data strictly before reference_date (the start of the
+    window), not re-predicting week to week with hindsight. predict_multi_gw_points()
+    below is a thin wrapper around this that keeps only the headline total;
+    this fuller version exists for callers that want to show what a
+    prediction is made of (e.g. the player-detail page), not just the sum.
+    See predict_player_points' docstring for why bootstrap_file/fixtures_file/
+    season must stay in sync, and for roster_bootstrap_file/roster_fixtures_file.
 
     Builds one prediction context (team strengths, involvement shares,
     appearance probabilities, history rates) and reuses it across every
-    gameweek in next_events, rather than recomputing it once per
-    gameweek - all of that depends only on reference_date, which doesn't
-    change across the window. This used to call predict_player_points()
-    in a loop, silently redoing that work N times for an N-gameweek
-    window (a real, measured ~5x cost on the default 5-gameweek window -
-    this is what made the Outlook/Optimizer/Squad Builder pages slow to
-    load).
-
-    See predict_player_points' docstring for roster_bootstrap_file/
-    roster_fixtures_file.
+    gameweek in next_events, rather than recomputing it once per gameweek -
+    all of that depends only on reference_date, which doesn't change across
+    the window (see README on the ~5x cost this avoided).
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
@@ -676,17 +659,63 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 
     first_event = next_events[0]
-    outlook = per_gw[first_event][["web_name", "team_short", "position"]].copy()
-    outlook["predicted_points"] = sum(df["predicted_points"] for df in per_gw.values())
-    outlook["fixture_count"] = sum((df["next_opponent"] != "BLANK").astype(int) for df in per_gw.values())
+    result = per_gw[first_event][["web_name", "team_short", "position"]].copy()
+    for key in _BREAKDOWN_KEYS:
+        result[key] = sum(df[key] for df in per_gw.values())
+    # clean_sheet_prob is an average across fixtures/gameweeks, not a sum.
+    result["clean_sheet_prob"] = result["clean_sheet_prob"] / len(next_events)
+    result["fixture_count"] = sum((df["next_opponent"] != "BLANK").astype(int) for df in per_gw.values())
 
     ticker = per_gw[first_event]["next_opponent"]
     for event in next_events[1:]:
         ticker = ticker.str.cat(per_gw[event]["next_opponent"], sep=" | ")
-    outlook["fixture_ticker"] = ticker
+    result["fixture_ticker"] = ticker
 
-    outlook["predicted_points"] = outlook["predicted_points"].round(3)
-    return outlook.reset_index()
+    for key in _BREAKDOWN_KEYS:
+        result[key] = result[key].round(3)
+    return result.reset_index()
+
+
+def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
+                             bootstrap_file="bootstrap_static_2025_26_final.json",
+                             fixtures_file="fixtures_2025_26_final.json",
+                             shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
+                             roster_bootstrap_file=None, roster_fixtures_file=None):
+    """
+    predict_multi_gw_breakdown(), collapsed to just predicted_points (plus
+    fixture_count/fixture_ticker) - the headline metric for the app, not
+    single-gameweek predict_player_points(): multi_gw_backtest.py found
+    single-gameweek predictions explain ~30% of variance (r^2=0.30) while
+    a 5-gameweek window explains ~49% (r^2=0.49) - most of the single-
+    gameweek "miss" is real football variance (bonus points, one-off
+    explosive performances) rather than a modeling gap, and summing over
+    several weeks cancels that noise out. See README.
+    """
+    breakdown = predict_multi_gw_breakdown(
+        reference_date, next_events, half_life_days, season, bootstrap_file, fixtures_file,
+        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file,
+    )
+    return breakdown[[
+        "id", "web_name", "team_short", "position", "predicted_points", "fixture_count", "fixture_ticker",
+    ]]
+
+
+def resolve_live_to_training_id(live_id, live_elements, training_elements):
+    """
+    Single-player version of the code-matching remap this file uses
+    throughout for live-roster predictions (see map_player_stats_to_roster) -
+    returns the training-season element id for a given live-season element
+    id, matched by FPL's stable `code` field (element `id` itself gets
+    recompacted every season and is not safe to use directly - see that
+    function's docstring). Returns None if the player has no top-flight
+    record in the training archive (a new signing, or a promoted club's
+    player) - the honest answer, not a guess.
+    """
+    live_player = next((p for p in live_elements if p["id"] == live_id), None)
+    if live_player is None:
+        return None
+    code_to_training_id = {p["code"]: p["id"] for p in training_elements}
+    return code_to_training_id.get(live_player["code"])
 
 
 if __name__ == "__main__":

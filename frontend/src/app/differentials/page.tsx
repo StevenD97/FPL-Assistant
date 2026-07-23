@@ -2,11 +2,14 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 type PlayerScore = {
+  id: number;
+  live_id: number | null;
   web_name: string;
   team_short: string;
   position: string;
@@ -70,12 +73,11 @@ export default function DifferentialsPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Differentials
         </h1>
-        <p className="mb-6 text-text-secondary">
-          Highest recommendation_score among low-ownership players (demo
-          data: last season, since the 2026/27 season hasn&apos;t started).
+        <p className="mb-6 text-sm text-text-secondary">
+          Top-scoring, low-ownership players (demo data: 2025/26).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
           <TextField
@@ -130,7 +132,9 @@ export default function DifferentialsPage() {
               <tbody>
                 {data.map((p, i) => (
                   <tr key={i} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-medium">{p.web_name}</td>
+                    <td className="px-3 py-2.5 font-medium">
+                      <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink>
+                    </td>
                     <td className="px-3 py-2.5">
                       <TeamBadge teamShort={p.team_short} name={p.team_short} />
                     </td>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { Select } from "@/components/ui/Select";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -46,6 +47,15 @@ type Issue = {
 type Recommendation = {
   issueMessage: string;
   suggestions: PoolPlayer[];
+};
+
+type SwapCandidate = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  cost: number;
+  predicted_points: number;
+  value: number;
 };
 
 const POSITION_ORDER: Position[] = ["GKP", "DEF", "MID", "FWD"];
@@ -202,6 +212,39 @@ export default function SquadBuilderPage() {
     setSquadIdList((prev) => prev.filter((existing) => existing !== id));
   }
 
+  const [swapTargetId, setSwapTargetId] = useState<number | null>(null);
+  const [swapOptions, setSwapOptions] = useState<SwapCandidate[] | null>(null);
+  const [swapLoading, setSwapLoading] = useState(false);
+
+  async function loadSwapOptions(player: PoolPlayer) {
+    if (swapTargetId === player.id) {
+      setSwapTargetId(null);
+      setSwapOptions(null);
+      return;
+    }
+    setSwapTargetId(player.id);
+    setSwapOptions(null);
+    setSwapLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/api/players/${player.id}/alternatives?limit=5&exclude=${squadIdList.join(",")}`
+      );
+      if (!res.ok) throw new Error("failed");
+      const alts = (await res.json()) as SwapCandidate[];
+      setSwapOptions(alts.filter((a) => a.cost <= budgetRemaining + player.cost));
+    } catch {
+      setSwapOptions([]);
+    } finally {
+      setSwapLoading(false);
+    }
+  }
+
+  function swapPlayer(oldId: number, newId: number) {
+    setSquadIdList((prev) => prev.map((id) => (id === oldId ? newId : id)));
+    setSwapTargetId(null);
+    setSwapOptions(null);
+  }
+
   const filteredPlayers = useMemo(() => {
     if (!players) return [];
     let pool = players;
@@ -216,14 +259,11 @@ export default function SquadBuilderPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-6xl">
-        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Squad builder
         </h1>
-        <p className="mb-6 text-text-secondary">
-          Draft your own squad within budget and get live feedback below - club
-          concentration, missing exposure to good fixture runs, tough fixtures
-          among your own players, and set-piece coverage - each with concrete
-          players to fix it. For a fully automated build instead, see{" "}
+        <p className="mb-6 text-sm text-text-secondary">
+          Draft within budget, get live diagnostics, and swap or click into any player. For an automated build, see{" "}
           <a href="/optimizer" className="text-pl-purple underline">
             Optimizer
           </a>
@@ -322,7 +362,7 @@ export default function SquadBuilderPage() {
                         return (
                           <tr key={p.id} className="border-t border-border">
                             <td className="px-3 py-2.5 font-medium">
-                              {p.web_name}
+                              <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
                               <StatusBadge status={p.status} news={p.news} />
                             </td>
                             <td className="px-3 py-2.5">
@@ -377,34 +417,67 @@ export default function SquadBuilderPage() {
                           <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
                           <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
                           <th className="px-3 py-2.5"></th>
+                          <th className="px-3 py-2.5"></th>
                         </tr>
                       </thead>
                       <tbody>
                         {POSITION_ORDER.flatMap((pos) =>
                           squad
                             .filter((p) => p.position === pos)
-                            .map((p) => (
-                              <tr key={p.id} className="border-t border-border">
-                                <td className="px-3 py-2.5 font-medium">
-                                  {p.web_name}
-                                  <StatusBadge status={p.status} news={p.news} />
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <TeamBadge teamShort={p.team_short} name={p.team_short} />
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <PositionBadge position={p.position} />
-                                </td>
-                                <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                                <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                                <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                                <td className="px-3 py-2.5">
-                                  <Button size="sm" variant="ghost" onClick={() => removePlayer(p.id)}>
-                                    Remove
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))
+                            .flatMap((p) => {
+                              const row = (
+                                <tr key={p.id} className="border-t border-border">
+                                  <td className="px-3 py-2.5 font-medium">
+                                    <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                                    <StatusBadge status={p.status} news={p.news} />
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <PositionBadge position={p.position} />
+                                  </td>
+                                  <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                                  <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
+                                  <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                                  <td className="px-3 py-2.5">
+                                    <button onClick={() => loadSwapOptions(p)} className="text-xs text-pl-purple hover:underline">
+                                      {swapTargetId === p.id ? "Hide" : "Swap"}
+                                    </button>
+                                  </td>
+                                  <td className="px-3 py-2.5">
+                                    <Button size="sm" variant="ghost" onClick={() => removePlayer(p.id)}>
+                                      Remove
+                                    </Button>
+                                  </td>
+                                </tr>
+                              );
+                              if (swapTargetId !== p.id) return [row];
+                              return [
+                                row,
+                                <tr key={`${p.id}-swap`} className="border-t border-border bg-surface-sunken">
+                                  <td colSpan={8} className="px-3 py-3">
+                                    {swapLoading ? (
+                                      <p className="text-xs text-text-muted">Loading...</p>
+                                    ) : swapOptions && swapOptions.length > 0 ? (
+                                      <div className="flex flex-wrap gap-2">
+                                        {swapOptions.map((a) => (
+                                          <button
+                                            key={a.id}
+                                            onClick={() => swapPlayer(p.id, a.id)}
+                                            className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                                          >
+                                            {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
+                                          </button>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <p className="text-xs text-text-muted">No affordable alternatives found.</p>
+                                    )}
+                                  </td>
+                                </tr>,
+                              ];
+                            })
                         )}
                       </tbody>
                     </table>
