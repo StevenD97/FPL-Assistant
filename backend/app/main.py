@@ -27,7 +27,7 @@ from analysis import (
     ensure_data_fetched,
     top_differentials,
 )
-from team_model import predict_player_points
+from team_model import predict_multi_gw_points, predict_player_points
 
 load_dotenv()
 
@@ -105,6 +105,29 @@ def player_predicted_points(
     """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     df = predict_player_points(ref_date, next_event)
+    return df.sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
+
+
+@app.get("/api/players/predicted-points-outlook")
+def player_predicted_points_outlook(
+    reference_date: str = "2025-11-30",
+    next_event: int = 10,
+    gw_count: int = 5,
+    limit: int = 50,
+):
+    """
+    The headline metric, not /api/players/predicted-points: sums
+    team_model.py's predicted_points over gw_count gameweeks starting at
+    next_event (still using only data available before reference_date -
+    not re-predicting week to week with hindsight). multi_gw_backtest.py
+    found this explains meaningfully more of what actually happens than
+    a single gameweek does (r^2 0.30 at 1 GW vs 0.49 at 5 GW) - most of
+    the single-gameweek "miss" is real football variance that averages
+    out over a run of fixtures, not a modeling gap. See README.
+    """
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    next_events = list(range(next_event, next_event + gw_count))
+    df = predict_multi_gw_points(ref_date, next_events)
     return df.sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
 
 

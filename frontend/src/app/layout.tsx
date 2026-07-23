@@ -33,6 +33,9 @@ export default function RootLayout({
           <Link href="/" className="text-black dark:text-zinc-50">
             Fixtures
           </Link>
+          <Link href="/outlook" className="text-black dark:text-zinc-50">
+            Outlook
+          </Link>
           <Link href="/squad" className="text-black dark:text-zinc-50">
             My Squad
           </Link>

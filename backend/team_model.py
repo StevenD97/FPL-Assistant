@@ -409,6 +409,47 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     return pd.DataFrame(rows)
 
 
+def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
+                             bootstrap_file="bootstrap_static.json", fixtures_file="fixtures.json",
+                             shrinkage_games=SHRINKAGE_GAMES):
+    """
+    Returns a DataFrame, one row per player, with predicted_points summed
+    across next_events - all conditioned on data strictly before
+    reference_date (the start of the window), not re-predicting week to
+    week with hindsight. This is deliberately the headline metric for the
+    app, not single-gameweek predict_player_points(): multi_gw_backtest.py
+    found single-gameweek predictions explain ~30% of variance (r^2=0.30)
+    while a 5-gameweek window explains ~49% (r^2=0.49) - most of the
+    single-gameweek "miss" is real football variance (bonus points,
+    one-off explosive performances) rather than a modeling gap, and
+    summing over several weeks cancels that noise out. See README.
+
+    Also includes fixture_count (how many of the window's gameweeks this
+    player actually has a fixture in - 0 means blank for the whole
+    window) and a fixture_ticker (e.g. "BOU(H) | CRY(A) | MCI(H)") so the
+    UI can show what's driving the total, not just the number itself.
+    """
+    per_gw = {
+        event: predict_player_points(
+            reference_date, event, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games,
+        ).set_index("id")
+        for event in next_events
+    }
+
+    first_event = next_events[0]
+    outlook = per_gw[first_event][["web_name", "team_short", "position"]].copy()
+    outlook["predicted_points"] = sum(df["predicted_points"] for df in per_gw.values())
+    outlook["fixture_count"] = sum((df["next_opponent"] != "BLANK").astype(int) for df in per_gw.values())
+
+    ticker = per_gw[first_event]["next_opponent"]
+    for event in next_events[1:]:
+        ticker = ticker.str.cat(per_gw[event]["next_opponent"], sep=" | ")
+    outlook["fixture_ticker"] = ticker
+
+    outlook["predicted_points"] = outlook["predicted_points"].round(3)
+    return outlook.reset_index()
+
+
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     pd.set_option("display.max_columns", None)
