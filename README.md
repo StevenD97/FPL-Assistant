@@ -30,9 +30,17 @@ frontend/   Next.js (TypeScript) web app
   community archive. The live FPL API only keeps this level of detail for
   the *current* season - once 2026/27 went live, 2025/26 collapsed into a
   single aggregated row per player with no gameweek breakdown, so this
-  archive is the only way to get it now. Intended as the training/backtest
-  data for a recency-weighted form score (see `analysis.py`'s `form` field,
-  which currently just uses FPL's own canned 30-day average).
+  archive is the only way to get it now. Backs a recency-weighted form
+  score (`analysis.py`'s `compute_recency_weighted_form`, replacing FPL's
+  own canned 30-day `form` average) and `team_model.py` (below).
+- `team_model.py` is a second, independent points estimate, run
+  alongside (not replacing) `recommendation_score`: a Dixon-Coles-style
+  attack/defence strength model predicts each side's expected goals for
+  a fixture from recency-weighted goals scored/conceded, then splits
+  that across players by their historical share of their team's
+  goals/assists. Exposed via `/api/players/predicted-points`. v1 scope
+  is goals/assists/clean-sheets/appearance only - no bonus points,
+  defensive contribution, saves, or cards yet.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 

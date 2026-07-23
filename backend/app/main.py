@@ -27,6 +27,7 @@ from analysis import (
     ensure_data_fetched,
     top_differentials,
 )
+from team_model import predict_player_points
 
 load_dotenv()
 
@@ -86,6 +87,25 @@ def player_scores(
     else:
         df = df.sort_values("recommendation_score", ascending=False).head(limit)
     return df[PLAYER_SCORE_COLUMNS].to_dict(orient="records")
+
+
+@app.get("/api/players/predicted-points")
+def player_predicted_points(
+    reference_date: str = "2025-11-30",
+    next_event: int = 10,
+    limit: int = 50,
+):
+    """
+    A second, independent points estimate - see team_model.py. Predicts
+    each side's expected goals from recency-weighted attack/defence
+    strength (Dixon-Coles-style), then splits that across players by
+    their historical share of their team's goals/assists. Not used by
+    recommendation_score/api/players/scores; meant for comparing the two
+    approaches.
+    """
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    df = predict_player_points(ref_date, next_event)
+    return df.sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
 
 
 @app.get("/api/squad/{team_id}")

@@ -81,7 +81,31 @@ def load_gw_history(season="2025_26"):
     # naive UTC, so strip the tz info pandas infers from the "Z" suffix -
     # otherwise comparisons against a naive reference_date raise.
     df["kickoff_time"] = pd.to_datetime(df["kickoff_time"], utc=True).dt.tz_localize(None)
+    df["team_id"] = df["team"].map(_team_name_to_id_map(df))
     return df
+
+
+def _team_name_to_id_map(history):
+    """
+    Builds {team full name -> numeric team id} from the history's own
+    fixture/opponent_team columns instead of joining against bootstrap:
+    the `team` column is a name string ("Sunderland"), but each row's
+    `opponent_team` is the numeric id of the *other* side - so a
+    fixture's home-row opponent_team is the away team's id and vice
+    versa. Deriving it this way means it doesn't depend on whichever
+    bootstrap file happens to be loaded (e.g. a newer season's, with a
+    different set of promoted/relegated teams) matching this archive's
+    season.
+    """
+    mapping = {}
+    for _, fixture_rows in history.groupby("fixture"):
+        home_rows = fixture_rows[fixture_rows["was_home"]]
+        away_rows = fixture_rows[~fixture_rows["was_home"]]
+        if home_rows.empty or away_rows.empty:
+            continue
+        mapping[home_rows["team"].iloc[0]] = away_rows["opponent_team"].iloc[0]
+        mapping[away_rows["team"].iloc[0]] = home_rows["opponent_team"].iloc[0]
+    return mapping
 
 
 def compute_recency_weighted_form(reference_date, half_life_days=21, season="2025_26"):
