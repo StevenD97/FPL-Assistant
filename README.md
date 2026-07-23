@@ -215,6 +215,25 @@ frontend/   Next.js (TypeScript) web app
   team-id-reassignment reason documented throughout this file), fetched
   once on page load; every diagnostic recomputes instantly client-side
   as you add/remove players, with no round trip per click.
+  **Fixed a real ~2x slowdown found while investigating why this page
+  loaded slowly**: `predict_multi_gw_points()` was calling
+  `predict_player_points()` once per gameweek in the window, and each
+  call independently recomputed team strengths, involvement shares,
+  appearance probabilities, and history rates from scratch - all of
+  which depend only on `reference_date`, not on which gameweek is being
+  predicted, so a 5-gameweek window was silently doing that setup work
+  5 times over. Split into `_build_prediction_context()` (the
+  reference_date-dependent setup, now built once) and
+  `_predict_for_event()` (the actual per-gameweek loop, reused across
+  the window) - `predict_player_points()` itself is unchanged in
+  behavior, just internally composed from the same two pieces. This
+  wasn't Squad-Builder-specific: it also speeds up the Outlook page and
+  every Optimizer endpoint, all of which call `predict_multi_gw_points()`.
+  Verified as a pure performance fix, not a behavior change: diffed the
+  full player list's JSON output before/after (byte-identical) and
+  re-ran the full backtest (identical Pearson r/Spearman/MAE numbers to
+  the existing baseline above). Measured warm-cache improvement:
+  `/api/squad-builder/players` dropped from ~1.4s to ~0.7s.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 

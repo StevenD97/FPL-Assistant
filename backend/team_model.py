@@ -405,6 +405,24 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     during the season. Only turn this on where bootstrap_file is a
     snapshot genuinely current for reference_date.
     """
+    context = _build_prediction_context(
+        reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
+    )
+    return _predict_for_event(context, next_event)
+
+
+def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
+                               shrinkage_games, apply_live_signals):
+    """
+    Everything predict_player_points() needs that depends only on
+    reference_date (not on which gameweek is being predicted) - team
+    strengths, involvement shares, appearance probabilities, personal
+    history rates, live signals, and the players dataframe. Building
+    this once and reusing it across every gameweek in a window is what
+    predict_multi_gw_points() does below; predict_player_points() builds
+    one fresh per call for a single gameweek, exactly as before this was
+    split out.
+    """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
     fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
@@ -414,10 +432,6 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
     live_availability = compute_live_availability(bootstrap) if apply_live_signals else {}
-
-    default_involvement = {"goal_share": 0.0, "assist_share": 0.0}
-    default_appearance = {"p_any": 0.0, "p_60_plus": 0.0}
-    default_history = {stat: 0.0 for stat in HISTORY_STAT_COLUMNS}
 
     teams_df = pd.DataFrame(bootstrap["teams"])
     positions = pd.DataFrame(bootstrap["element_types"])[["id", "singular_name_short"]]
@@ -432,6 +446,37 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     df = df.merge(teams_df[["id", "short_name"]], left_on="team", right_on="id", suffixes=("", "_team"))
     df = df.merge(positions, left_on="element_type", right_on="id", suffixes=("", "_pos"))
     df = df.rename(columns={"short_name": "team_short", "singular_name_short": "position"})
+
+    return {
+        "df": df,
+        "fixtures_by_team_event": fixtures_by_team_event,
+        "team_strengths": team_strengths,
+        "league_avgs": league_avgs,
+        "involvement": involvement,
+        "appearance_probs": appearance_probs,
+        "history_rates": history_rates,
+        "live_availability": live_availability,
+        "team_short_lookup": team_short_lookup,
+        "apply_live_signals": apply_live_signals,
+    }
+
+
+def _predict_for_event(context, next_event):
+    """The per-gameweek prediction loop, given a context from _build_prediction_context()."""
+    df = context["df"]
+    fixtures_by_team_event = context["fixtures_by_team_event"]
+    team_strengths = context["team_strengths"]
+    league_avgs = context["league_avgs"]
+    involvement = context["involvement"]
+    appearance_probs = context["appearance_probs"]
+    history_rates = context["history_rates"]
+    live_availability = context["live_availability"]
+    team_short_lookup = context["team_short_lookup"]
+    apply_live_signals = context["apply_live_signals"]
+
+    default_involvement = {"goal_share": 0.0, "assist_share": 0.0}
+    default_appearance = {"p_any": 0.0, "p_60_plus": 0.0}
+    default_history = {stat: 0.0 for stat in HISTORY_STAT_COLUMNS}
 
     rows = []
     for _, player in df.iterrows():
@@ -510,14 +555,21 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     player actually has a fixture in - 0 means blank for the whole
     window) and a fixture_ticker (e.g. "BOU(H) | CRY(A) | MCI(H)") so the
     UI can show what's driving the total, not just the number itself.
+
+    Builds one prediction context (team strengths, involvement shares,
+    appearance probabilities, history rates) and reuses it across every
+    gameweek in next_events, rather than recomputing it once per
+    gameweek - all of that depends only on reference_date, which doesn't
+    change across the window. This used to call predict_player_points()
+    in a loop, silently redoing that work N times for an N-gameweek
+    window (a real, measured ~5x cost on the default 5-gameweek window -
+    this is what made the Outlook/Optimizer/Squad Builder pages slow to
+    load).
     """
-    per_gw = {
-        event: predict_player_points(
-            reference_date, event, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games,
-            apply_live_signals,
-        ).set_index("id")
-        for event in next_events
-    }
+    context = _build_prediction_context(
+        reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
+    )
+    per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 
     first_event = next_events[0]
     outlook = per_gw[first_event][["web_name", "team_short", "position"]].copy()
