@@ -1,6 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/Button";
+import { CaptainBadge } from "@/components/ui/CaptainBadge";
+import { PositionBadge } from "@/components/ui/PositionBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { TextField } from "@/components/ui/TextField";
+import { Alert } from "@/components/ui/Alert";
+import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 type SquadRow = {
   id: number;
@@ -32,17 +39,6 @@ type TransferPlayer = {
   selected_by_percent: number;
 };
 
-const STATUS_LABELS: Record<string, string> = { d: "Doubtful", i: "Injured", s: "Suspended", u: "Unavailable", n: "Not in squad" };
-
-function StatusBadge({ status }: { status: string }) {
-  if (status === "a") return null;
-  return (
-    <span className="ml-1 rounded bg-red-100 px-1 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-950 dark:text-red-300">
-      {STATUS_LABELS[status] ?? status}
-    </span>
-  );
-}
-
 type TransferResult = BestSquadResult & {
   transfers_made: number;
   free_transfers: number;
@@ -63,35 +59,39 @@ function sortSquad(squad: SquadRow[]): SquadRow[] {
 
 function SquadTable({ squad }: { squad: SquadRow[] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
       <table className="w-full text-left text-sm">
-        <thead className="bg-zinc-100 dark:bg-zinc-900">
+        <thead className="bg-surface-sunken">
           <tr>
-            <th className="px-3 py-2">Role</th>
-            <th className="px-3 py-2">Player</th>
-            <th className="px-3 py-2">Team</th>
-            <th className="px-3 py-2">Pos</th>
-            <th className="px-3 py-2">Cost</th>
-            <th className="px-3 py-2">Predicted pts</th>
-            <th className="px-3 py-2">Value</th>
-            <th className="px-3 py-2">Own%</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Role</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Predicted pts</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
           </tr>
         </thead>
         <tbody>
           {sortSquad(squad).map((p) => (
-            <tr key={p.id} className="border-t border-zinc-200 dark:border-zinc-800">
-              <td className="px-3 py-2 text-zinc-500">{p.role === "Starting XI" ? "XI" : "Bench"}</td>
-              <td className="px-3 py-2 font-medium">
+            <tr key={p.id} className="border-t border-border">
+              <td className="px-3 py-2.5 text-text-muted">{p.role === "Starting XI" ? "XI" : "Bench"}</td>
+              <td className="px-3 py-2.5 font-medium">
                 {p.web_name}
-                {p.captain && <span className="ml-1 text-zinc-500">(C)</span>}
+                {p.captain && <CaptainBadge />}
                 <StatusBadge status={p.status} />
               </td>
-              <td className="px-3 py-2">{p.team_short}</td>
-              <td className="px-3 py-2">{p.position}</td>
-              <td className="px-3 py-2">£{p.cost.toFixed(1)}m</td>
-              <td className="px-3 py-2 font-medium">{p.predicted_points.toFixed(2)}</td>
-              <td className="px-3 py-2">{p.value.toFixed(2)}</td>
-              <td className="px-3 py-2">{p.selected_by_percent.toFixed(1)}%</td>
+              <td className="px-3 py-2.5">
+                <TeamBadge teamShort={p.team_short} name={p.team_short} />
+              </td>
+              <td className="px-3 py-2.5">
+                <PositionBadge position={p.position} />
+              </td>
+              <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+              <td className="px-3 py-2.5 font-mono font-medium">{p.predicted_points.toFixed(2)}</td>
+              <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+              <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
             </tr>
           ))}
         </tbody>
@@ -128,70 +128,68 @@ function BestSquadPanel() {
 
   return (
     <div>
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-2 max-w-2xl text-text-secondary">
         The provably optimal 15-man squad under budget alone - no existing squad to
         work around. Solves the real constrained decision (budget, 2 GKP/5 DEF/5 MID/3 FWD,
         max 3 per club) with integer linear programming, not just ranking. Useful for
         Wildcard/Free Hit planning, or building from scratch.
       </p>
-      <p className="mb-6 text-sm text-zinc-500">
+      <p className="mb-6 text-sm text-text-muted">
         Drafts from the live 2026/27 player pool and prices - trained on last
         season&apos;s (2025/26) results, since no 2026/27 match data exists yet.
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          As of
-          <input
-            type="date"
-            value={referenceDate}
-            onChange={(e) => setReferenceDate(e.target.value)}
-            className="mt-1 w-40 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Starting GW
-          <input
-            type="number" min={1} max={38}
-            value={nextEvent}
-            onChange={(e) => setNextEvent(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Window (GWs)
-          <input
-            type="number" min={1} max={10}
-            value={gwCount}
-            onChange={(e) => setGwCount(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Budget (£m)
-          <input
-            type="number" min={80} max={120} step={0.5}
-            value={budget / 10}
-            onChange={(e) => setBudget(Math.round(Number(e.target.value) * 10))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
-        >
+        <TextField
+          label="As of"
+          type="date"
+          value={referenceDate}
+          onChange={(e) => setReferenceDate(e.target.value)}
+          wrapperClassName="w-40"
+        />
+        <TextField
+          label="Starting GW"
+          type="number"
+          min={1}
+          max={38}
+          value={nextEvent}
+          onChange={(e) => setNextEvent(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <TextField
+          label="Window (GWs)"
+          type="number"
+          min={1}
+          max={10}
+          value={gwCount}
+          onChange={(e) => setGwCount(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <TextField
+          label="Budget (£m)"
+          type="number"
+          min={80}
+          max={120}
+          step={0.5}
+          value={budget / 10}
+          onChange={(e) => setBudget(Math.round(Number(e.target.value) * 10))}
+          wrapperClassName="w-24"
+        />
+        <Button type="submit" disabled={loading}>
           {loading ? "Solving..." : "Build best squad"}
-        </button>
+        </Button>
       </form>
 
-      {error && <p className="mb-4 text-red-600">{error}</p>}
+      {error && (
+        <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+      )}
 
       {result && (
         <>
-          <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-            Total cost <span className="font-medium text-black dark:text-zinc-50">£{result.total_cost.toFixed(1)}m</span>
+          <p className="mb-4 text-sm text-text-secondary">
+            Total cost <span className="font-mono font-medium text-text-primary">£{result.total_cost.toFixed(1)}m</span>
             {" · "}
-            Predicted starting XI points <span className="font-medium text-black dark:text-zinc-50">{result.predicted_points.toFixed(2)}</span>
+            Predicted starting XI points{" "}
+            <span className="font-mono font-medium text-text-primary">{result.predicted_points.toFixed(2)}</span>
           </p>
           <SquadTable squad={result.squad} />
         </>
@@ -231,108 +229,103 @@ function TransfersPanel() {
 
   return (
     <div>
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 max-w-2xl text-text-secondary">
         Fetches your real squad and bank, then finds the provably optimal set of
         transfers - weighing predicted points gained against the -4 hit for every
         transfer beyond your free ones. Zero transfers is a valid, sometimes-optimal
         answer this can return, not something forced.
       </p>
-      <p className="mb-6 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
+      <Alert kind="warning">
         FPL appears to reset manager pick history at each season boundary, so a
         squad only exists for a gameweek once that gameweek&apos;s deadline has
         passed. 2026/27 GW1 locks 2026-08-21 - until then, no team ID has a
         fetchable squad here yet.
-      </p>
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Team ID
-          <input
-            type="number"
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}
-            placeholder="e.g. 1234567"
-            className="mt-1 w-32 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Squad from GW
-          <input
-            type="number" min={1} max={38}
-            value={event}
-            onChange={(e) => setEvent(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          As of
-          <input
-            type="date"
-            value={referenceDate}
-            onChange={(e) => setReferenceDate(e.target.value)}
-            className="mt-1 w-40 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Starting GW
-          <input
-            type="number" min={1} max={38}
-            value={nextEvent}
-            onChange={(e) => setNextEvent(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Window (GWs)
-          <input
-            type="number" min={1} max={10}
-            value={gwCount}
-            onChange={(e) => setGwCount(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-          Free transfers
-          <input
-            type="number" min={0} max={5}
-            value={freeTransfers}
-            onChange={(e) => setFreeTransfers(Number(e.target.value))}
-            className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={loading || !teamId}
-          className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
-        >
+      </Alert>
+      <form onSubmit={handleSubmit} className="mb-6 mt-6 flex flex-wrap items-end gap-4">
+        <TextField
+          label="Team ID"
+          type="number"
+          value={teamId}
+          onChange={(e) => setTeamId(e.target.value)}
+          placeholder="e.g. 1234567"
+          wrapperClassName="w-32"
+        />
+        <TextField
+          label="Squad from GW"
+          type="number"
+          min={1}
+          max={38}
+          value={event}
+          onChange={(e) => setEvent(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <TextField
+          label="As of"
+          type="date"
+          value={referenceDate}
+          onChange={(e) => setReferenceDate(e.target.value)}
+          wrapperClassName="w-40"
+        />
+        <TextField
+          label="Starting GW"
+          type="number"
+          min={1}
+          max={38}
+          value={nextEvent}
+          onChange={(e) => setNextEvent(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <TextField
+          label="Window (GWs)"
+          type="number"
+          min={1}
+          max={10}
+          value={gwCount}
+          onChange={(e) => setGwCount(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <TextField
+          label="Free transfers"
+          type="number"
+          min={0}
+          max={5}
+          value={freeTransfers}
+          onChange={(e) => setFreeTransfers(Number(e.target.value))}
+          wrapperClassName="w-24"
+        />
+        <Button type="submit" disabled={loading || !teamId}>
           {loading ? "Solving..." : "Optimize transfers"}
-        </button>
+        </Button>
       </form>
 
-      {error && <p className="mb-4 text-red-600">{error}</p>}
+      {error && (
+        <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+      )}
 
       {result && (
         <>
-          <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-            <span className="font-medium text-black dark:text-zinc-50">{result.transfers_made}</span> transfer{result.transfers_made === 1 ? "" : "s"}
+          <p className="mb-4 text-sm text-text-secondary">
+            <span className="font-mono font-medium text-text-primary">{result.transfers_made}</span> transfer{result.transfers_made === 1 ? "" : "s"}
             {" · "}
             {result.points_hit > 0 ? (
-              <span className="text-red-600 dark:text-red-400">-{result.points_hit} pt hit</span>
+              <span className="font-mono text-danger">-{result.points_hit} pt hit</span>
             ) : (
               <span>no hit</span>
             )}
             {" · "}
-            Predicted XI points (after hit) <span className="font-medium text-black dark:text-zinc-50">{result.predicted_points.toFixed(2)}</span>
+            Predicted XI points (after hit){" "}
+            <span className="font-mono font-medium text-text-primary">{result.predicted_points.toFixed(2)}</span>
           </p>
 
           {result.transferred_out.length > 0 ? (
             <div className="mb-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <p className="mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">Transfer out</p>
+                <p className="mb-2 text-sm font-medium text-text-secondary">Transfer out</p>
                 <ul className="text-sm">
                   {result.transferred_out.map((p) => (
-                    <li key={p.id} className="border-t border-zinc-200 px-1 py-1.5 dark:border-zinc-800">
+                    <li key={p.id} className="border-t border-border px-1 py-1.5">
                       {p.web_name}{" "}
-                      <span className="text-zinc-500">
+                      <span className="text-text-muted">
                         ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
                       </span>
                     </li>
@@ -340,12 +333,12 @@ function TransfersPanel() {
                 </ul>
               </div>
               <div>
-                <p className="mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">Transfer in</p>
+                <p className="mb-2 text-sm font-medium text-text-secondary">Transfer in</p>
                 <ul className="text-sm">
                   {result.transferred_in.map((p) => (
-                    <li key={p.id} className="border-t border-zinc-200 px-1 py-1.5 dark:border-zinc-800">
+                    <li key={p.id} className="border-t border-border px-1 py-1.5">
                       {p.web_name}{" "}
-                      <span className="text-zinc-500">
+                      <span className="text-text-muted">
                         ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
                       </span>
                     </li>
@@ -354,7 +347,7 @@ function TransfersPanel() {
               </div>
             </div>
           ) : (
-            <p className="mb-6 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mb-6 text-sm text-text-secondary">
               No changes recommended - your squad is already optimal for this window.
             </p>
           )}
@@ -370,33 +363,33 @@ export default function OptimizerPage() {
   const [mode, setMode] = useState<"best-squad" | "transfers">("best-squad");
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-8 dark:bg-black">
+    <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 text-2xl font-semibold text-black dark:text-zinc-50">
-          Squad Optimizer
+        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+          Squad optimizer
         </h1>
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-text-secondary">
           Not just a ranking - an integer-linear-programming solver that finds the
           provably optimal squad or transfers under FPL&apos;s real rules.
         </p>
 
-        <div className="mb-6 flex gap-2 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="mb-6 flex gap-2 border-b border-border">
           <button
             onClick={() => setMode("best-squad")}
-            className={`px-4 py-2 text-sm font-medium ${
+            className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
               mode === "best-squad"
-                ? "border-b-2 border-black text-black dark:border-white dark:text-white"
-                : "text-zinc-500"
+                ? "border-b-2 border-pl-purple text-pl-purple"
+                : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
             }`}
           >
             Build Best Squad
           </button>
           <button
             onClick={() => setMode("transfers")}
-            className={`px-4 py-2 text-sm font-medium ${
+            className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
               mode === "transfers"
-                ? "border-b-2 border-black text-black dark:border-white dark:text-white"
-                : "text-zinc-500"
+                ? "border-b-2 border-pl-purple text-pl-purple"
+                : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
             }`}
           >
             My Transfers

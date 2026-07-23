@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/Button";
+import { PositionBadge } from "@/components/ui/PositionBadge";
+import { TextField } from "@/components/ui/TextField";
+import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 type PlayerScore = {
   web_name: string;
@@ -64,88 +68,86 @@ export default function DifferentialsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-8 dark:bg-black">
+    <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 text-2xl font-semibold text-black dark:text-zinc-50">
+        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
           Differentials
         </h1>
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-text-secondary">
           Highest recommendation_score among low-ownership players (demo
           data: last season, since the 2026/27 season hasn&apos;t started).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Max ownership %
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.5}
-              value={maxOwnership}
-              onChange={(e) => setMaxOwnership(Number(e.target.value))}
-              className="mt-1 w-28 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Show top
-            <input
-              type="number"
-              min={1}
-              max={100}
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              className="mt-1 w-28 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
-          >
+          <TextField
+            label="Max ownership %"
+            type="number"
+            min={0}
+            max={100}
+            step={0.5}
+            value={maxOwnership}
+            onChange={(e) => setMaxOwnership(Number(e.target.value))}
+            wrapperClassName="w-28"
+          />
+          <TextField
+            label="Show top"
+            type="number"
+            min={1}
+            max={100}
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value))}
+            wrapperClassName="w-28"
+          />
+          <Button type="submit" disabled={loading}>
             {loading ? "Loading..." : "Update"}
-          </button>
+          </Button>
         </form>
 
-        {error && <p className="mb-4 text-red-600">{error}</p>}
+        {error && (
+          <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+        )}
 
         {data && (
-          <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
             <table className="w-full text-left text-sm">
-              <thead className="bg-zinc-100 dark:bg-zinc-900">
+              <thead className="bg-surface-sunken">
                 <tr>
-                  <th className="px-3 py-2">Player</th>
-                  <th className="px-3 py-2">Team</th>
-                  <th className="px-3 py-2">Pos</th>
-                  <th className="px-3 py-2">Owned %</th>
-                  <th className="px-3 py-2">Score</th>
-                  <th className="px-3 py-2">Next opp</th>
-                  <th className="px-3 py-2">ep_next</th>
-                  <th className="px-3 py-2">Form</th>
-                  <th className="px-3 py-2">Exp. mins</th>
-                  <th className="px-3 py-2">xGI</th>
-                  <th className="px-3 py-2">ICT</th>
-                  <th className="px-3 py-2">Def/90</th>
-                  <th className="px-3 py-2">Set-piece duty</th>
-                  <th className="px-3 py-2">Pens</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Owned %</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next opp</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ep_next</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Form</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Exp. mins</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">xGI</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ICT</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Def/90</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Set-piece duty</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pens</th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((p, i) => (
-                  <tr key={i} className="border-t border-zinc-200 dark:border-zinc-800">
-                    <td className="px-3 py-2 font-medium">{p.web_name}</td>
-                    <td className="px-3 py-2">{p.team_short}</td>
-                    <td className="px-3 py-2">{p.position}</td>
-                    <td className="px-3 py-2">{p.selected_by_percent}%</td>
-                    <td className="px-3 py-2">{p.recommendation_score.toFixed(3)}</td>
-                    <td className="px-3 py-2">{p.next_opponent}</td>
-                    <td className="px-3 py-2">{p.ep_next}</td>
-                    <td className="px-3 py-2">{p.form}</td>
-                    <td className="px-3 py-2">{p.expected_minutes}</td>
-                    <td className="px-3 py-2">{p.expected_goal_involvements}</td>
-                    <td className="px-3 py-2">{p.ict_index}</td>
-                    <td className="px-3 py-2">{p.defensive_contribution_per_90}</td>
-                    <td className="px-3 py-2">{p.set_piece_duty_score.toFixed(2)}</td>
-                    <td className="px-3 py-2">
+                  <tr key={i} className="border-t border-border">
+                    <td className="px-3 py-2.5 font-medium">{p.web_name}</td>
+                    <td className="px-3 py-2.5">
+                      <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <PositionBadge position={p.position} />
+                    </td>
+                    <td className="px-3 py-2.5 font-mono">{p.selected_by_percent}%</td>
+                    <td className="px-3 py-2.5 font-mono font-medium">{p.recommendation_score.toFixed(3)}</td>
+                    <td className="px-3 py-2.5">{p.next_opponent}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.ep_next}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.form}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.expected_minutes}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
+                    <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
+                    <td className="px-3 py-2.5 font-mono">
                       {p.penalties_order === 1
                         ? "1st"
                         : p.penalties_order === 2

@@ -11,6 +11,37 @@ backend/    FastAPI + Python analysis engine
 frontend/   Next.js (TypeScript) web app
 ```
 
+## Visual design
+
+The frontend uses a Premier League-branded design system (white background,
+PL purple/green/cyan/pink accents, Geist + Geist Mono, a club-colored pitch
+formation view) - originally handed off as a set of standalone design
+reference files and recreated here using the app's own Next.js/Tailwind v4
+conventions rather than dropped in as-is. No dark mode.
+
+- Design tokens live in `frontend/src/app/globals.css` as plain CSS custom
+  properties (colors, type scale, spacing, radii, shadows, all 23 Premier
+  League clubs' kit colors keyed by 3-letter code), mapped into Tailwind v4's
+  `@theme inline` block so they're usable directly as utility classes
+  (`bg-pl-purple`, `text-pos-fwd`, `rounded-lg`, etc).
+- Shared components live in `frontend/src/components/`: `ui/` (Button, Card,
+  StatTile, PositionBadge, StatusBadge, CaptainBadge, TextField, Select,
+  Alert), `pitch/` (TeamBadge, PitchFormation - the club-colored formation
+  view used by Squad Builder), and `nav/NavBar` (the purple wordmark + green
+  active-tab underline). `frontend/src/lib/teamColors.ts` maps the API's
+  3-letter team codes to the CSS color-token slugs, covering both the live
+  2026/27 roster and the archived 2025/26 season's teams (see the live/
+  archived split above) since different pages use different seasons' codes.
+- Every page (`page.tsx`, `outlook/`, `squad/`, `optimizer/`, `squad-builder/`,
+  `differentials/`, `chips/`) was restyled onto these tokens/components -
+  structure, state, and data-fetching logic unchanged, styling only. Squad
+  Builder additionally gained the pitch-formation view: the drafted squad
+  renders as a green pitch with GKP/DEF/MID/FWD rows, each player a white
+  puck ringed in their club's color, alongside the existing player-browser
+  table and diagnostics (which still work exactly as before, including
+  Remove-by-row - the pitch is a visual addition, not a replacement for the
+  functional squad list).
+
 ## Current status / known limitations
 
 - The 2026/27 season hadn't started as of this writing (GW1 deadline:

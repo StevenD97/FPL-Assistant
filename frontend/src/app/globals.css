@@ -1,26 +1,184 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Premier League brand */
+  --pl-purple: #37003c;
+  --pl-purple-light: #5f2a66;
+  --pl-purple-dark: #240028;
+  --pl-green: #00ff87;
+  --pl-cyan: #04f5ff;
+  --pl-pink: #e90052;
+  --pl-yellow: #ffdd3c;
+
+  /* Neutral scale */
+  --slate-50: #f7f7f9;
+  --slate-100: #eeeef2;
+  --slate-200: #dfdfe6;
+  --slate-300: #c7c7d1;
+  --slate-400: #9c9caa;
+  --slate-500: #71717f;
+  --slate-600: #52525e;
+  --slate-700: #3a3a44;
+  --slate-800: #252530;
+  --slate-900: #16161f;
+
+  /* Semantic */
+  --success: #00a651;
+  --success-bg: #e5f7ec;
+  --warning: #b9770e;
+  --warning-bg: #fff6e5;
+  --danger: #d6003a;
+  --danger-bg: #fde7ed;
+  --info: #0057b8;
+  --info-bg: #e6f0fc;
+
+  /* Squad Builder pitch */
+  --pitch-green-1: #0c8a3e;
+  --pitch-green-2: #0a7534;
+
+  /* Position colors - shared between PositionBadge and pitch player rings */
+  --pos-gkp: #ffdd3c;
+  --pos-def: #04f5ff;
+  --pos-mid: #00ff87;
+  --pos-fwd: #e90052;
+
+  /* Club colors - widely-known kit colors, not licensed assets */
+  --team-arsenal: #ef0107;
+  --team-aston-villa: #95bfe5;
+  --team-bournemouth: #da291c;
+  --team-brentford: #e30613;
+  --team-brighton: #0057b8;
+  --team-chelsea: #034694;
+  --team-coventry: #78d0f2;
+  --team-crystal-palace: #1b458f;
+  --team-everton: #003399;
+  --team-fulham: #000000;
+  --team-hull: #f18a00;
+  --team-ipswich: #0044a9;
+  --team-leeds: #ffcd00;
+  --team-liverpool: #c8102e;
+  --team-man-city: #6cabdd;
+  --team-man-united: #da291c;
+  --team-newcastle: #241f20;
+  --team-nottm-forest: #dd0000;
+  --team-sunderland: #eb172b;
+  --team-tottenham: #132257;
+  --team-west-ham: #7a263a;
+  --team-wolves: #fdb913;
+  --team-burnley: #6c1d45;
+
+  /* Semantic aliases */
+  --surface-default: #ffffff;
+  --surface-sunken: var(--slate-50);
+  --border-default: var(--slate-200);
+  --border-strong: var(--slate-300);
+  --fg-primary: var(--slate-900);
+  --fg-secondary: var(--slate-600);
+  --fg-muted: var(--slate-500);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-pl-purple: var(--pl-purple);
+  --color-pl-purple-light: var(--pl-purple-light);
+  --color-pl-purple-dark: var(--pl-purple-dark);
+  --color-pl-green: var(--pl-green);
+  --color-pl-cyan: var(--pl-cyan);
+  --color-pl-pink: var(--pl-pink);
+  --color-pl-yellow: var(--pl-yellow);
+
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
+
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+
+  --color-pitch-green-1: var(--pitch-green-1);
+  --color-pitch-green-2: var(--pitch-green-2);
+
+  --color-pos-gkp: var(--pos-gkp);
+  --color-pos-def: var(--pos-def);
+  --color-pos-mid: var(--pos-mid);
+  --color-pos-fwd: var(--pos-fwd);
+
+  --color-team-arsenal: var(--team-arsenal);
+  --color-team-aston-villa: var(--team-aston-villa);
+  --color-team-bournemouth: var(--team-bournemouth);
+  --color-team-brentford: var(--team-brentford);
+  --color-team-brighton: var(--team-brighton);
+  --color-team-chelsea: var(--team-chelsea);
+  --color-team-coventry: var(--team-coventry);
+  --color-team-crystal-palace: var(--team-crystal-palace);
+  --color-team-everton: var(--team-everton);
+  --color-team-fulham: var(--team-fulham);
+  --color-team-hull: var(--team-hull);
+  --color-team-ipswich: var(--team-ipswich);
+  --color-team-leeds: var(--team-leeds);
+  --color-team-liverpool: var(--team-liverpool);
+  --color-team-man-city: var(--team-man-city);
+  --color-team-man-united: var(--team-man-united);
+  --color-team-newcastle: var(--team-newcastle);
+  --color-team-nottm-forest: var(--team-nottm-forest);
+  --color-team-sunderland: var(--team-sunderland);
+  --color-team-tottenham: var(--team-tottenham);
+  --color-team-west-ham: var(--team-west-ham);
+  --color-team-wolves: var(--team-wolves);
+  --color-team-burnley: var(--team-burnley);
+
+  --color-border: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-surface: var(--surface-default);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-text-primary: var(--fg-primary);
+  --color-text-secondary: var(--fg-secondary);
+  --color-text-muted: var(--fg-muted);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Type scale (xs -> 4xl): 12/13/15/17/20/24/32/44/60 */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 17px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 44px;
+  --text-4xl: 60px;
+  --tracking-wide: 0.04em;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(22, 22, 31, 0.06);
+  --shadow-md: 0 4px 12px rgba(22, 22, 31, 0.08);
+  --shadow-lg: 0 12px 32px rgba(22, 22, 31, 0.14);
+  --shadow-focus: 0 0 0 3px rgba(4, 245, 255, 0.35);
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-default);
+  color: var(--fg-primary);
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }

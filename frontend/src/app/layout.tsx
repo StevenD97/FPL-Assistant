@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { NavBar } from "@/components/nav/NavBar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,30 +28,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <nav className="flex gap-6 border-b border-zinc-200 bg-white px-8 py-4 text-sm font-medium dark:border-zinc-800 dark:bg-black">
-          <Link href="/" className="text-black dark:text-zinc-50">
-            Fixtures
-          </Link>
-          <Link href="/outlook" className="text-black dark:text-zinc-50">
-            Outlook
-          </Link>
-          <Link href="/squad" className="text-black dark:text-zinc-50">
-            My Squad
-          </Link>
-          <Link href="/optimizer" className="text-black dark:text-zinc-50">
-            Optimizer
-          </Link>
-          <Link href="/squad-builder" className="text-black dark:text-zinc-50">
-            Squad Builder
-          </Link>
-          <Link href="/differentials" className="text-black dark:text-zinc-50">
-            Differentials
-          </Link>
-          <Link href="/chips" className="text-black dark:text-zinc-50">
-            Chip Strategy
-          </Link>
-        </nav>
+      <body className="flex min-h-full flex-col bg-white">
+        <NavBar />
         {children}
       </body>
     </html>

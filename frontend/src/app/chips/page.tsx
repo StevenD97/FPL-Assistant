@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { TextField } from "@/components/ui/TextField";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -47,118 +50,112 @@ export default function ChipsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-8 dark:bg-black">
+    <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 text-2xl font-semibold text-black dark:text-zinc-50">
-          Chip Strategy
+        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+          Chip strategy
         </h1>
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-text-secondary">
           Enter your FPL team ID to scan for chip timing (demo window: GW24-36
           of last season, since the 2026/27 season hasn&apos;t started).
         </p>
-        <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
-          <input
-            type="text"
+        <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-3">
+          <TextField
+            label="Team ID"
             value={teamId}
             onChange={(e) => setTeamId(e.target.value)}
             placeholder="e.g. 1178869"
-            className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
           />
-          <button
-            type="submit"
-            disabled={loading || !teamId}
-            className="rounded bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
-          >
+          <Button type="submit" disabled={loading || !teamId}>
             {loading ? "Scanning..." : "Scan chips"}
-          </button>
+          </Button>
         </form>
 
-        {error && <p className="mb-4 text-red-600">{error}</p>}
+        {error && (
+          <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+        )}
 
         {data && (
           <div className="space-y-8">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500">Bench Boost</p>
-                <p className="text-lg font-semibold text-black dark:text-zinc-50">
+              <Card>
+                <p className="text-sm text-text-muted">Bench Boost</p>
+                <p className="text-lg font-semibold text-text-primary">
                   GW{data.bench_boost.event}
                 </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  bench score {data.bench_boost.bench_score.toFixed(3)},{" "}
+                <p className="text-sm text-text-secondary">
+                  bench score <span className="font-mono">{data.bench_boost.bench_score.toFixed(3)}</span>,{" "}
                   {data.bench_boost.double_count} doubles
                 </p>
-              </div>
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500">Triple Captain</p>
-                <p className="text-lg font-semibold text-black dark:text-zinc-50">
+              </Card>
+              <Card>
+                <p className="text-sm text-text-muted">Triple Captain</p>
+                <p className="text-lg font-semibold text-text-primary">
                   GW{data.triple_captain.event} - {data.triple_captain.player}
                 </p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  score {data.triple_captain.score.toFixed(3)}
+                <p className="text-sm text-text-secondary">
+                  score <span className="font-mono">{data.triple_captain.score.toFixed(3)}</span>
                 </p>
-              </div>
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500">Free Hit</p>
+              </Card>
+              <Card>
+                <p className="text-sm text-text-muted">Free Hit</p>
                 {data.free_hit.recommended ? (
                   <>
-                    <p className="text-lg font-semibold text-black dark:text-zinc-50">
+                    <p className="text-lg font-semibold text-text-primary">
                       GW{data.free_hit.event}
                     </p>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <p className="text-sm text-text-secondary">
                       {data.free_hit.blank_count} of your 15 blank
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-text-secondary">
                     No strong case in this window - hold the chip
                   </p>
                 )}
-              </div>
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500">Wildcard</p>
+              </Card>
+              <Card>
+                <p className="text-sm text-text-muted">Wildcard</p>
                 {data.wildcard ? (
                   <>
-                    <p className="text-lg font-semibold text-black dark:text-zinc-50">
+                    <p className="text-lg font-semibold text-text-primary">
                       Around GW{data.wildcard.suggested_event}
                     </p>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <p className="text-sm text-text-secondary">
                       {data.wildcard.reason}
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-text-secondary">
                     No major cluster found
                   </p>
                 )}
-              </div>
+              </Card>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
               <table className="w-full text-left text-sm">
-                <thead className="bg-zinc-100 dark:bg-zinc-900">
+                <thead className="bg-surface-sunken">
                   <tr>
-                    <th className="px-3 py-2">GW</th>
-                    <th className="px-3 py-2">Squad score</th>
-                    <th className="px-3 py-2">Bench score</th>
-                    <th className="px-3 py-2">Best captain</th>
-                    <th className="px-3 py-2">Blanks</th>
-                    <th className="px-3 py-2">Doubles</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">GW</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Squad score</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Bench score</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Best captain</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Blanks</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Doubles</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.table.map((row) => (
-                    <tr
-                      key={row.event}
-                      className="border-t border-zinc-200 dark:border-zinc-800"
-                    >
-                      <td className="px-3 py-2 font-medium">GW{row.event}</td>
-                      <td className="px-3 py-2">{row.squad_total_score}</td>
-                      <td className="px-3 py-2">{row.bench_score}</td>
-                      <td className="px-3 py-2">
-                        {row.best_captain_name} ({row.best_captain_score})
+                    <tr key={row.event} className="border-t border-border">
+                      <td className="px-3 py-2.5 font-medium">GW{row.event}</td>
+                      <td className="px-3 py-2.5 font-mono">{row.squad_total_score}</td>
+                      <td className="px-3 py-2.5 font-mono">{row.bench_score}</td>
+                      <td className="px-3 py-2.5">
+                        {row.best_captain_name} (<span className="font-mono">{row.best_captain_score}</span>)
                       </td>
-                      <td className="px-3 py-2">{row.blank_count}</td>
-                      <td className="px-3 py-2">{row.double_count}</td>
+                      <td className="px-3 py-2.5 font-mono">{row.blank_count}</td>
+                      <td className="px-3 py-2.5 font-mono">{row.double_count}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Alert } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
+import { Card, StatTile } from "@/components/ui/Card";
+import { PositionBadge } from "@/components/ui/PositionBadge";
+import { TextField } from "@/components/ui/TextField";
+import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -119,92 +125,87 @@ export default function SquadPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-8 dark:bg-black">
+    <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-2 text-2xl font-semibold text-black dark:text-zinc-50">
-          My Squad
+        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+          My squad
         </h1>
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 text-text-secondary">
           Enter your FPL team ID to see your squad analysis (demo data: GW38
           of last season, since the 2026/27 season hasn&apos;t started).
         </p>
-        <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-2">
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Team ID
-            <input
-              type="text"
-              value={teamId}
-              onChange={(e) => setTeamId(e.target.value)}
-              placeholder="e.g. 1178869"
-              className="mt-1 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Free transfers
-            <input
-              type="number" min={0} max={5}
-              value={freeTransfers}
-              onChange={(e) => setFreeTransfers(Number(e.target.value))}
-              className="mt-1 w-28 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={loading || !teamId}
-            className="rounded bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
-          >
+        <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
+          <TextField
+            label="Team ID"
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            placeholder="e.g. 1178869"
+          />
+          <TextField
+            label="Free transfers"
+            type="number"
+            min={0}
+            max={5}
+            value={freeTransfers}
+            onChange={(e) => setFreeTransfers(Number(e.target.value))}
+            wrapperClassName="w-28"
+          />
+          <Button type="submit" disabled={loading || !teamId}>
             {loading ? "Loading..." : "Load squad"}
-          </button>
+          </Button>
         </form>
 
-        {error && <p className="mb-4 text-red-600">{error}</p>}
+        {error && (
+          <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+        )}
 
         {data && (
           <div className="space-y-8">
             <div>
-              <h2 className="text-lg font-semibold text-black dark:text-zinc-50">
+              <h2 className="text-lg font-semibold text-text-primary">
                 {data.entry_name} - GW{data.event}
               </h2>
-              <p className="text-zinc-600 dark:text-zinc-400">
-                {data.points} points that GW - £{data.squad_value}m squad
-                value - £{data.bank}m in bank
+              <p className="text-text-secondary">
+                <span className="font-mono">{data.points}</span> points that GW - £
+                <span className="font-mono">{data.squad_value}</span>m squad
+                value - £<span className="font-mono">{data.bank}</span>m in bank
               </p>
             </div>
 
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-              <h3 className="mb-2 font-semibold text-black dark:text-zinc-50">
+            <Card>
+              <h3 className="mb-2 font-semibold text-text-primary">
                 Suggested transfers
               </h3>
-              <p className="mb-3 text-xs text-zinc-500">
+              <p className="mb-3 text-xs text-text-muted">
                 Computed automatically from your squad and bank above - the
                 provably optimal set of transfers under FPL&apos;s real rules
                 (budget, formation, max 3 per club), weighing predicted points
                 against the -4 hit per transfer beyond your free ones. See{" "}
-                <a href="/optimizer" className="underline">
+                <a href="/optimizer" className="text-pl-purple underline">
                   Optimizer
                 </a>{" "}
                 for the from-scratch squad builder.
               </p>
 
               {optimizerLoading && (
-                <p className="text-sm text-zinc-500">Solving...</p>
+                <p className="text-sm text-text-muted">Solving...</p>
               )}
 
               {optimizerError && (
-                <p className="text-sm text-amber-700 dark:text-amber-400">
+                <Alert kind="warning">
                   Couldn&apos;t compute suggested transfers ({optimizerError}) - the squad
                   above is unaffected.
-                </p>
+                </Alert>
               )}
 
               {optimizer && (
                 <>
-                  <p className="mb-3 text-sm text-zinc-700 dark:text-zinc-300">
-                    <span className="font-medium">{optimizer.transfers_made}</span>{" "}
+                  <p className="mb-3 text-sm text-text-secondary">
+                    <span className="font-mono font-medium text-text-primary">{optimizer.transfers_made}</span>{" "}
                     transfer{optimizer.transfers_made === 1 ? "" : "s"}
                     {" · "}
                     {optimizer.points_hit > 0 ? (
-                      <span className="text-red-600 dark:text-red-400">
+                      <span className="font-mono text-danger">
                         -{optimizer.points_hit} pt hit
                       </span>
                     ) : (
@@ -212,7 +213,7 @@ export default function SquadPage() {
                     )}
                     {" · "}
                     predicted XI points (after hit){" "}
-                    <span className="font-medium">
+                    <span className="font-mono font-medium text-text-primary">
                       {optimizer.predicted_points.toFixed(2)}
                     </span>
                   </p>
@@ -220,14 +221,14 @@ export default function SquadPage() {
                   {optimizer.transferred_out.length > 0 ? (
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <p className="mb-1 text-xs font-medium uppercase text-zinc-500">
+                        <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
                           Out
                         </p>
                         <ul className="text-sm">
                           {optimizer.transferred_out.map((p) => (
-                            <li key={p.id} className="border-t border-zinc-200 py-1 dark:border-zinc-800">
+                            <li key={p.id} className="border-t border-border py-1">
                               {p.web_name}{" "}
-                              <span className="text-zinc-500">
+                              <span className="text-text-muted">
                                 ({p.team_short}, {p.position})
                               </span>
                             </li>
@@ -235,14 +236,14 @@ export default function SquadPage() {
                         </ul>
                       </div>
                       <div>
-                        <p className="mb-1 text-xs font-medium uppercase text-zinc-500">
+                        <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
                           In
                         </p>
                         <ul className="text-sm">
                           {optimizer.transferred_in.map((p) => (
-                            <li key={p.id} className="border-t border-zinc-200 py-1 dark:border-zinc-800">
+                            <li key={p.id} className="border-t border-border py-1">
                               {p.web_name}{" "}
-                              <span className="text-zinc-500">
+                              <span className="text-text-muted">
                                 ({p.team_short}, {p.position})
                               </span>
                             </li>
@@ -251,52 +252,53 @@ export default function SquadPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    <Alert kind="success">
                       No changes recommended - your squad is already optimal for this window.
-                    </p>
+                    </Alert>
                   )}
                 </>
               )}
-            </div>
+            </Card>
 
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
               <table className="w-full text-left text-sm">
-                <thead className="bg-zinc-100 dark:bg-zinc-900">
+                <thead className="bg-surface-sunken">
                   <tr>
-                    <th className="px-3 py-2">Player</th>
-                    <th className="px-3 py-2">Team</th>
-                    <th className="px-3 py-2">Pos</th>
-                    <th className="px-3 py-2">Role</th>
-                    <th className="px-3 py-2">Score</th>
-                    <th className="px-3 py-2">Next opp</th>
-                    <th className="px-3 py-2">ep_next</th>
-                    <th className="px-3 py-2">xGI</th>
-                    <th className="px-3 py-2">ICT</th>
-                    <th className="px-3 py-2">Def/90</th>
-                    <th className="px-3 py-2">Set-piece duty</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Role</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next opp</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ep_next</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">xGI</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ICT</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Def/90</th>
+                    <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Set-piece duty</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.squad.map((p) => (
-                    <tr
-                      key={p.position}
-                      className="border-t border-zinc-200 dark:border-zinc-800"
-                    >
-                      <td className="px-3 py-2 font-medium">
+                    <tr key={p.position} className="border-t border-border">
+                      <td className="px-3 py-2.5 font-medium">
                         {p.web_name} {p.captain_flag}
                       </td>
-                      <td className="px-3 py-2">{p.team_short}</td>
-                      <td className="px-3 py-2">{p.pos}</td>
-                      <td className="px-3 py-2">{p.role}</td>
-                      <td className="px-3 py-2">
+                      <td className="px-3 py-2.5">
+                        <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <PositionBadge position={p.pos} />
+                      </td>
+                      <td className="px-3 py-2.5">{p.role}</td>
+                      <td className="px-3 py-2.5 font-mono">
                         {p.recommendation_score.toFixed(3)}
                       </td>
-                      <td className="px-3 py-2">{p.next_opponent}</td>
-                      <td className="px-3 py-2">{p.ep_next}</td>
-                      <td className="px-3 py-2">{p.expected_goal_involvements}</td>
-                      <td className="px-3 py-2">{p.ict_index}</td>
-                      <td className="px-3 py-2">{p.defensive_contribution_per_90}</td>
-                      <td className="px-3 py-2">{p.set_piece_duty_score.toFixed(2)}</td>
+                      <td className="px-3 py-2.5">{p.next_opponent}</td>
+                      <td className="px-3 py-2.5 font-mono">{p.ep_next}</td>
+                      <td className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
+                      <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
+                      <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
+                      <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -305,47 +307,35 @@ export default function SquadPage() {
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
               {Object.entries(data.category_scores).map(([pos, score]) => (
-                <div
-                  key={pos}
-                  className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
-                >
-                  <p className="text-sm text-zinc-500">{pos}</p>
-                  <p className="text-xl font-semibold text-black dark:text-zinc-50">
-                    {score.toFixed(3)}
-                  </p>
-                </div>
+                <StatTile key={pos} label={pos} value={score.toFixed(3)} />
               ))}
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500">Bench depth</p>
-                <p className="text-xl font-semibold text-black dark:text-zinc-50">
-                  {data.bench_depth_score?.toFixed(3) ?? "-"}
-                </p>
-              </div>
+              <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} />
             </div>
 
             <div>
-              <h3 className="mb-2 font-semibold text-black dark:text-zinc-50">
+              <h3 className="mb-2 font-semibold text-text-primary">
                 Captaincy options
               </h3>
-              <ul className="space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+              <ul className="space-y-1 text-sm text-text-secondary">
                 {data.captaincy_options.map((c, i) => (
                   <li key={i}>
                     {c.web_name} ({c.team_short}, {c.pos}) - score{" "}
-                    {c.recommendation_score.toFixed(3)}, ep_next {c.ep_next}
+                    <span className="font-mono">{c.recommendation_score.toFixed(3)}</span>, ep_next{" "}
+                    <span className="font-mono">{c.ep_next}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-2 font-semibold text-black dark:text-zinc-50">
+              <h3 className="mb-2 font-semibold text-text-primary">
                 Fixture outlook
               </h3>
-              <ul className="space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+              <ul className="space-y-1 text-sm text-text-secondary">
                 {data.fixture_outlook.map((f, i) => (
                   <li key={i}>
-                    {f.team_short}: score {f.fixture_score} (avg FDR{" "}
-                    {f.avg_difficulty}) - {f.ticker}
+                    {f.team_short}: score <span className="font-mono">{f.fixture_score}</span> (avg FDR{" "}
+                    <span className="font-mono">{f.avg_difficulty}</span>) - {f.ticker}
                   </li>
                 ))}
               </ul>

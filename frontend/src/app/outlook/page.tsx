@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Button } from "@/components/ui/Button";
+import { PositionBadge } from "@/components/ui/PositionBadge";
+import { Select } from "@/components/ui/Select";
+import { TextField } from "@/components/ui/TextField";
+import { TeamBadge } from "@/components/pitch/TeamBadge";
 
 type OutlookRow = {
   id: number;
@@ -67,12 +72,12 @@ export default function OutlookPage() {
   }, [data, position]);
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-8 dark:bg-black">
+    <main className="min-h-screen bg-white p-8">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-2 text-2xl font-semibold text-black dark:text-zinc-50">
-          Multi-Gameweek Outlook
+        <h1 className="mb-2 font-sans text-2xl font-bold text-pl-purple">
+          Multi-gameweek outlook
         </h1>
-        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        <p className="mb-6 max-w-2xl text-text-secondary">
           Predicted points summed over a run of upcoming gameweeks (demo
           data: last season, since the 2026/27 season hasn&apos;t started).
           Backtesting found this window-based total tracks what actually
@@ -83,99 +88,84 @@ export default function OutlookPage() {
           score.
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            As of
-            <input
-              type="date"
-              value={referenceDate}
-              onChange={(e) => setReferenceDate(e.target.value)}
-              className="mt-1 w-40 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Starting GW
-            <input
-              type="number"
-              min={1}
-              max={38}
-              value={nextEvent}
-              onChange={(e) => setNextEvent(Number(e.target.value))}
-              className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Window (GWs)
-            <input
-              type="number"
-              min={1}
-              max={10}
-              value={gwCount}
-              onChange={(e) => setGwCount(Number(e.target.value))}
-              className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Show top
-            <input
-              type="number"
-              min={1}
-              max={200}
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              className="mt-1 w-24 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </label>
-          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
-            Position
-            <select
-              value={position}
-              onChange={(e) => setPosition(e.target.value as (typeof POSITIONS)[number])}
-              className="mt-1 w-28 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-            >
-              {POSITIONS.map((pos) => (
-                <option key={pos} value={pos}>
-                  {pos}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
-          >
+          <TextField
+            label="As of"
+            type="date"
+            value={referenceDate}
+            onChange={(e) => setReferenceDate(e.target.value)}
+            wrapperClassName="w-40"
+          />
+          <TextField
+            label="Starting GW"
+            type="number"
+            min={1}
+            max={38}
+            value={nextEvent}
+            onChange={(e) => setNextEvent(Number(e.target.value))}
+            wrapperClassName="w-24"
+          />
+          <TextField
+            label="Window (GWs)"
+            type="number"
+            min={1}
+            max={10}
+            value={gwCount}
+            onChange={(e) => setGwCount(Number(e.target.value))}
+            wrapperClassName="w-24"
+          />
+          <TextField
+            label="Show top"
+            type="number"
+            min={1}
+            max={200}
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value))}
+            wrapperClassName="w-24"
+          />
+          <Select
+            label="Position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value as (typeof POSITIONS)[number])}
+            options={POSITIONS}
+            wrapperClassName="w-28"
+          />
+          <Button type="submit" disabled={loading}>
             {loading ? "Loading..." : "Update"}
-          </button>
+          </Button>
         </form>
 
-        {error && <p className="mb-4 text-red-600">{error}</p>}
+        {error && (
+          <p className="mb-4 text-sm font-medium text-danger">{error}</p>
+        )}
 
         {filtered && (
-          <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
             <table className="w-full text-left text-sm">
-              <thead className="bg-zinc-100 dark:bg-zinc-900">
+              <thead className="bg-surface-sunken">
                 <tr>
-                  <th className="px-3 py-2">#</th>
-                  <th className="px-3 py-2">Player</th>
-                  <th className="px-3 py-2">Team</th>
-                  <th className="px-3 py-2">Pos</th>
-                  <th className="px-3 py-2">Predicted pts</th>
-                  <th className="px-3 py-2">Fixtures</th>
-                  <th className="px-3 py-2">Ticker</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">#</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Predicted pts</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Fixtures</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Ticker</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((row, i) => (
-                  <tr key={row.id} className="border-t border-zinc-200 dark:border-zinc-800">
-                    <td className="px-3 py-2 text-zinc-500">{i + 1}</td>
-                    <td className="px-3 py-2 font-medium">{row.web_name}</td>
-                    <td className="px-3 py-2">{row.team_short}</td>
-                    <td className="px-3 py-2">{row.position}</td>
-                    <td className="px-3 py-2 font-medium">{row.predicted_points.toFixed(2)}</td>
-                    <td className="px-3 py-2">{row.fixture_count}</td>
-                    <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
-                      {row.fixture_ticker}
+                  <tr key={row.id} className="border-t border-border">
+                    <td className="px-3 py-2.5 font-mono text-text-muted">{i + 1}</td>
+                    <td className="px-3 py-2.5 font-medium">{row.web_name}</td>
+                    <td className="px-3 py-2.5">
+                      <TeamBadge teamShort={row.team_short} name={row.team_short} />
                     </td>
+                    <td className="px-3 py-2.5">
+                      <PositionBadge position={row.position} />
+                    </td>
+                    <td className="px-3 py-2.5 font-mono font-medium">{row.predicted_points.toFixed(2)}</td>
+                    <td className="px-3 py-2.5 font-mono">{row.fixture_count}</td>
+                    <td className="px-3 py-2.5 text-text-secondary">{row.fixture_ticker}</td>
                   </tr>
                 ))}
               </tbody>
