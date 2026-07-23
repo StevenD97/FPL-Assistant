@@ -175,7 +175,12 @@ frontend/   Next.js (TypeScript) web app
   the single-gameweek predictor, matching the multi-week finding above.
   Exposed via `/api/optimizer/best-squad` and
   `/api/squad/{team_id}/optimize-transfers`, and a new Optimizer page
-  in the frontend with both modes.
+  in the frontend with both modes. Also wired into the My Squad page:
+  loading a squad automatically fires the transfers optimizer alongside
+  it (no separate button) and shows a "Suggested transfers" panel above
+  the squad table - a non-blocking failure there (e.g. the picks-reset
+  issue below) doesn't affect the squad view, which loaded successfully
+  already since both share the same underlying picks fetch.
   **v1 simplification**: treats a player's current price as their sale
   price for transfer purposes, which isn't always exactly true in real
   FPL (selling a risen-in-price player only refunds part of the profit)

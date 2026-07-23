@@ -53,11 +53,53 @@ type SquadResponse = {
   fixture_outlook: FixtureOutlookRow[];
 };
 
+type TransferPlayer = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  position: string;
+  predicted_points: number;
+};
+
+type OptimizerResponse = {
+  transfers_made: number;
+  free_transfers: number;
+  points_hit: number;
+  predicted_points: number;
+  transferred_out: TransferPlayer[];
+  transferred_in: TransferPlayer[];
+};
+
 export default function SquadPage() {
   const [teamId, setTeamId] = useState("");
+  const [freeTransfers, setFreeTransfers] = useState(1);
   const [data, setData] = useState<SquadResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [optimizer, setOptimizer] = useState<OptimizerResponse | null>(null);
+  const [optimizerLoading, setOptimizerLoading] = useState(false);
+  const [optimizerError, setOptimizerError] = useState<string | null>(null);
+
+  async function loadOptimizer(id: string) {
+    setOptimizerLoading(true);
+    setOptimizerError(null);
+    setOptimizer(null);
+    try {
+      const res = await fetch(
+        `${API_URL}/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`
+      );
+      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+      setOptimizer(await res.json());
+    } catch (err) {
+      // Suggested transfers are a bonus on top of the squad view, not a
+      // blocker - if this fails (e.g. FPL's picks-history reset - see
+      // README) the squad above still loaded fine, so fail quietly here.
+      setOptimizerError(err instanceof Error ? err.message : "Couldn't compute suggested transfers");
+    } finally {
+      setOptimizerLoading(false);
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -68,6 +110,7 @@ export default function SquadPage() {
       const res = await fetch(`${API_URL}/api/squad/${teamId}`);
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       setData(await res.json());
+      loadOptimizer(teamId); // fires automatically alongside the squad view, not gated on a separate action
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -85,14 +128,26 @@ export default function SquadPage() {
           Enter your FPL team ID to see your squad analysis (demo data: GW38
           of last season, since the 2026/27 season hasn&apos;t started).
         </p>
-        <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
-          <input
-            type="text"
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}
-            placeholder="e.g. 1178869"
-            className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-          />
+        <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-2">
+          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
+            Team ID
+            <input
+              type="text"
+              value={teamId}
+              onChange={(e) => setTeamId(e.target.value)}
+              placeholder="e.g. 1178869"
+              className="mt-1 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
+            Free transfers
+            <input
+              type="number" min={0} max={5}
+              value={freeTransfers}
+              onChange={(e) => setFreeTransfers(Number(e.target.value))}
+              className="mt-1 w-28 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            />
+          </label>
           <button
             type="submit"
             disabled={loading || !teamId}
@@ -114,6 +169,94 @@ export default function SquadPage() {
                 {data.points} points that GW - £{data.squad_value}m squad
                 value - £{data.bank}m in bank
               </p>
+            </div>
+
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+              <h3 className="mb-2 font-semibold text-black dark:text-zinc-50">
+                Suggested transfers
+              </h3>
+              <p className="mb-3 text-xs text-zinc-500">
+                Computed automatically from your squad and bank above - the
+                provably optimal set of transfers under FPL&apos;s real rules
+                (budget, formation, max 3 per club), weighing predicted points
+                against the -4 hit per transfer beyond your free ones. See{" "}
+                <a href="/optimizer" className="underline">
+                  Optimizer
+                </a>{" "}
+                for the from-scratch squad builder.
+              </p>
+
+              {optimizerLoading && (
+                <p className="text-sm text-zinc-500">Solving...</p>
+              )}
+
+              {optimizerError && (
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  Couldn&apos;t compute suggested transfers ({optimizerError}) - the squad
+                  above is unaffected.
+                </p>
+              )}
+
+              {optimizer && (
+                <>
+                  <p className="mb-3 text-sm text-zinc-700 dark:text-zinc-300">
+                    <span className="font-medium">{optimizer.transfers_made}</span>{" "}
+                    transfer{optimizer.transfers_made === 1 ? "" : "s"}
+                    {" · "}
+                    {optimizer.points_hit > 0 ? (
+                      <span className="text-red-600 dark:text-red-400">
+                        -{optimizer.points_hit} pt hit
+                      </span>
+                    ) : (
+                      <span>no hit</span>
+                    )}
+                    {" · "}
+                    predicted XI points (after hit){" "}
+                    <span className="font-medium">
+                      {optimizer.predicted_points.toFixed(2)}
+                    </span>
+                  </p>
+
+                  {optimizer.transferred_out.length > 0 ? (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <p className="mb-1 text-xs font-medium uppercase text-zinc-500">
+                          Out
+                        </p>
+                        <ul className="text-sm">
+                          {optimizer.transferred_out.map((p) => (
+                            <li key={p.id} className="border-t border-zinc-200 py-1 dark:border-zinc-800">
+                              {p.web_name}{" "}
+                              <span className="text-zinc-500">
+                                ({p.team_short}, {p.position})
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="mb-1 text-xs font-medium uppercase text-zinc-500">
+                          In
+                        </p>
+                        <ul className="text-sm">
+                          {optimizer.transferred_in.map((p) => (
+                            <li key={p.id} className="border-t border-zinc-200 py-1 dark:border-zinc-800">
+                              {p.web_name}{" "}
+                              <span className="text-zinc-500">
+                                ({p.team_short}, {p.position})
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      No changes recommended - your squad is already optimal for this window.
+                    </p>
+                  )}
+                </>
+              )}
             </div>
 
             <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
