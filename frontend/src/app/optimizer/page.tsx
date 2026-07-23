@@ -8,6 +8,9 @@ type SquadRow = {
   team_short: string;
   position: string;
   predicted_points: number;
+  value: number;
+  selected_by_percent: number;
+  status: string;
   role: "Starting XI" | "Bench";
   captain: boolean;
   cost: number;
@@ -25,7 +28,20 @@ type TransferPlayer = {
   team_short: string;
   position: string;
   predicted_points: number;
+  value: number;
+  selected_by_percent: number;
 };
+
+const STATUS_LABELS: Record<string, string> = { d: "Doubtful", i: "Injured", s: "Suspended", u: "Unavailable", n: "Not in squad" };
+
+function StatusBadge({ status }: { status: string }) {
+  if (status === "a") return null;
+  return (
+    <span className="ml-1 rounded bg-red-100 px-1 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-950 dark:text-red-300">
+      {STATUS_LABELS[status] ?? status}
+    </span>
+  );
+}
 
 type TransferResult = BestSquadResult & {
   transfers_made: number;
@@ -57,6 +73,8 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
             <th className="px-3 py-2">Pos</th>
             <th className="px-3 py-2">Cost</th>
             <th className="px-3 py-2">Predicted pts</th>
+            <th className="px-3 py-2">Value</th>
+            <th className="px-3 py-2">Own%</th>
           </tr>
         </thead>
         <tbody>
@@ -66,11 +84,14 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
               <td className="px-3 py-2 font-medium">
                 {p.web_name}
                 {p.captain && <span className="ml-1 text-zinc-500">(C)</span>}
+                <StatusBadge status={p.status} />
               </td>
               <td className="px-3 py-2">{p.team_short}</td>
               <td className="px-3 py-2">{p.position}</td>
               <td className="px-3 py-2">£{p.cost.toFixed(1)}m</td>
               <td className="px-3 py-2 font-medium">{p.predicted_points.toFixed(2)}</td>
+              <td className="px-3 py-2">{p.value.toFixed(2)}</td>
+              <td className="px-3 py-2">{p.selected_by_percent.toFixed(1)}%</td>
             </tr>
           ))}
         </tbody>
@@ -80,8 +101,8 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
 }
 
 function BestSquadPanel() {
-  const [referenceDate, setReferenceDate] = useState("2025-11-30");
-  const [nextEvent, setNextEvent] = useState(10);
+  const [referenceDate, setReferenceDate] = useState("2026-08-20");
+  const [nextEvent, setNextEvent] = useState(1);
   const [gwCount, setGwCount] = useState(5);
   const [budget, setBudget] = useState(1000);
   const [result, setResult] = useState<BestSquadResult | null>(null);
@@ -112,6 +133,10 @@ function BestSquadPanel() {
         work around. Solves the real constrained decision (budget, 2 GKP/5 DEF/5 MID/3 FWD,
         max 3 per club) with integer linear programming, not just ranking. Useful for
         Wildcard/Free Hit planning, or building from scratch.
+      </p>
+      <p className="mb-6 text-sm text-zinc-500">
+        Drafts from the live 2026/27 player pool and prices - trained on last
+        season&apos;s (2025/26) results, since no 2026/27 match data exists yet.
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
@@ -177,9 +202,9 @@ function BestSquadPanel() {
 
 function TransfersPanel() {
   const [teamId, setTeamId] = useState("");
-  const [event, setEvent] = useState(38);
-  const [referenceDate, setReferenceDate] = useState("2025-11-30");
-  const [nextEvent, setNextEvent] = useState(10);
+  const [event, setEvent] = useState(1);
+  const [referenceDate, setReferenceDate] = useState("2026-08-20");
+  const [nextEvent, setNextEvent] = useState(1);
   const [gwCount, setGwCount] = useState(5);
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [result, setResult] = useState<TransferResult | null>(null);
@@ -214,8 +239,9 @@ function TransfersPanel() {
       </p>
       <p className="mb-6 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
         FPL appears to reset manager pick history at each season boundary, so a
-        real, previously-usable team ID may return &quot;not found&quot; right now for a
-        2025/26 gameweek - this hasn&apos;t been fully worked around yet.
+        squad only exists for a gameweek once that gameweek&apos;s deadline has
+        passed. 2026/27 GW1 locks 2026-08-21 - until then, no team ID has a
+        fetchable squad here yet.
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <label className="flex flex-col text-sm text-zinc-600 dark:text-zinc-400">
@@ -305,7 +331,10 @@ function TransfersPanel() {
                 <ul className="text-sm">
                   {result.transferred_out.map((p) => (
                     <li key={p.id} className="border-t border-zinc-200 px-1 py-1.5 dark:border-zinc-800">
-                      {p.web_name} <span className="text-zinc-500">({p.team_short}, {p.position})</span>
+                      {p.web_name}{" "}
+                      <span className="text-zinc-500">
+                        ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -315,7 +344,10 @@ function TransfersPanel() {
                 <ul className="text-sm">
                   {result.transferred_in.map((p) => (
                     <li key={p.id} className="border-t border-zinc-200 px-1 py-1.5 dark:border-zinc-800">
-                      {p.web_name} <span className="text-zinc-500">({p.team_short}, {p.position})</span>
+                      {p.web_name}{" "}
+                      <span className="text-zinc-500">
+                        ({p.team_short}, {p.position}, value {p.value.toFixed(2)}, {p.selected_by_percent.toFixed(1)}% owned)
+                      </span>
                     </li>
                   ))}
                 </ul>

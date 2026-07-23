@@ -12,6 +12,10 @@ type PoolPlayer = {
   team_short: string;
   position: Position;
   predicted_points: number;
+  value: number;
+  selected_by_percent: number;
+  status: string;
+  news: string;
   penalties_order: number;
   fixture_ticker: string;
   cost: number;
@@ -43,6 +47,20 @@ const TOUGH_FIXTURE_THRESHOLD = 3.2; // rough FDR (1-5 scale) worth flagging
 const STRONG_FIXTURE_TEAMS_TO_CHECK = 4;
 const MAX_SUGGESTIONS = 3;
 const MAX_BROWSER_ROWS = 40;
+
+const STATUS_LABELS: Record<string, string> = { d: "Doubtful", i: "Injured", s: "Suspended", u: "Unavailable", n: "Not in squad" };
+
+function StatusBadge({ status, news }: { status: string; news: string }) {
+  if (status === "a") return null;
+  return (
+    <span
+      title={news || undefined}
+      className="ml-1 rounded bg-red-100 px-1 py-0.5 text-[10px] font-medium text-red-700 dark:bg-red-950 dark:text-red-300"
+    >
+      {STATUS_LABELS[status] ?? status}
+    </span>
+  );
+}
 
 function computeDiagnostics(
   squad: PoolPlayer[],
@@ -288,6 +306,8 @@ export default function SquadBuilderPage() {
                         <th className="px-3 py-2">Pos</th>
                         <th className="px-3 py-2">Cost</th>
                         <th className="px-3 py-2">Pred pts</th>
+                        <th className="px-3 py-2">Value</th>
+                        <th className="px-3 py-2">Own%</th>
                         <th className="px-3 py-2"></th>
                       </tr>
                     </thead>
@@ -296,11 +316,16 @@ export default function SquadBuilderPage() {
                         const { ok, reason } = canAdd(p);
                         return (
                           <tr key={p.id} className="border-t border-zinc-200 dark:border-zinc-800">
-                            <td className="px-3 py-2 font-medium">{p.web_name}</td>
+                            <td className="px-3 py-2 font-medium">
+                              {p.web_name}
+                              <StatusBadge status={p.status} news={p.news} />
+                            </td>
                             <td className="px-3 py-2">{p.team_short}</td>
                             <td className="px-3 py-2">{p.position}</td>
                             <td className="px-3 py-2">£{p.cost.toFixed(1)}m</td>
                             <td className="px-3 py-2">{p.predicted_points.toFixed(1)}</td>
+                            <td className="px-3 py-2">{p.value.toFixed(2)}</td>
+                            <td className="px-3 py-2">{p.selected_by_percent.toFixed(1)}%</td>
                             <td className="px-3 py-2">
                               <button
                                 onClick={() => addPlayer(p.id)}
@@ -338,6 +363,7 @@ export default function SquadBuilderPage() {
                           <th className="px-3 py-2">Pos</th>
                           <th className="px-3 py-2">Cost</th>
                           <th className="px-3 py-2">Pred pts</th>
+                          <th className="px-3 py-2">Value</th>
                           <th className="px-3 py-2"></th>
                         </tr>
                       </thead>
@@ -347,11 +373,15 @@ export default function SquadBuilderPage() {
                             .filter((p) => p.position === pos)
                             .map((p) => (
                               <tr key={p.id} className="border-t border-zinc-200 dark:border-zinc-800">
-                                <td className="px-3 py-2 font-medium">{p.web_name}</td>
+                                <td className="px-3 py-2 font-medium">
+                                  {p.web_name}
+                                  <StatusBadge status={p.status} news={p.news} />
+                                </td>
                                 <td className="px-3 py-2">{p.team_short}</td>
                                 <td className="px-3 py-2">{p.position}</td>
                                 <td className="px-3 py-2">£{p.cost.toFixed(1)}m</td>
                                 <td className="px-3 py-2">{p.predicted_points.toFixed(1)}</td>
+                                <td className="px-3 py-2">{p.value.toFixed(2)}</td>
                                 <td className="px-3 py-2">
                                   <button
                                     onClick={() => removePlayer(p.id)}

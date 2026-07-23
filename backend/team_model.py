@@ -89,6 +89,18 @@ DEFAULT_TEAM_STRENGTH = {"attack_home": 1.0, "attack_away": 1.0, "defence_home":
 # (needs more games before trusting a team-specific ratio over the average).
 SHRINKAGE_GAMES = 3
 
+# half_life_days for predicting a brand-new season from the prior season's
+# archive (no gw_history for the new season exists yet to train on) - the
+# default half_life_days=21 is tuned for within-season recency (weeks
+# apart), and decays a ~90-day close-season gap to near-zero weight,
+# collapsing _shrink_ratio's confidence toward every team looking equally
+# average (empirically: spread across teams' attack_home ratios drops from
+# ~0.52 in-season to ~0.04 at half_life=21 across a 90-day gap). 90 days
+# was chosen by matching the resulting cross-season spread/rank-correlation
+# back against the in-season, end-of-prior-season baseline (spread ~0.50,
+# Spearman ~0.81 - see README for the numbers).
+CROSS_SEASON_HALF_LIFE_DAYS = 90
+
 # Personal-history stats pulled via compute_recency_weighted_stat - every
 # category that isn't derivable from the Stage 1 team-goals model.
 HISTORY_STAT_COLUMNS = [
@@ -185,6 +197,28 @@ def _shrink_ratio(weighted_value, weight_sum, league_avg, shrinkage_games=SHRINK
     raw_ratio = weighted_value / league_avg
     shrinkage = weight_sum / (weight_sum + shrinkage_games)
     return shrinkage * raw_ratio + (1 - shrinkage) * 1.0
+
+
+def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams):
+    """
+    Remaps team_strengths (keyed by training-season team ids) to the
+    roster season's team ids, matching by team name. FPL reassigns team
+    ids alphabetically every season (team id 3 was Burnley in 2025/26, is
+    Bournemouth in 2026/27) - a bootstrap's own team ids are only ever
+    meaningful against fixtures/players from that *same* bootstrap.
+    Promoted teams with no name match in the training archive (no
+    top-flight history there - e.g. Coventry/Hull/Ipswich coming into
+    2026/27) fall back to DEFAULT_TEAM_STRENGTH (neutral 1.0 ratios)
+    rather than a fabricated number.
+    """
+    name_to_training_id = {team["name"]: team["id"] for team in training_teams}
+    remapped = {}
+    for team in roster_teams:
+        training_id = name_to_training_id.get(team["name"])
+        remapped[team["id"]] = (
+            team_strengths.get(training_id, DEFAULT_TEAM_STRENGTH) if training_id is not None else DEFAULT_TEAM_STRENGTH
+        )
+    return remapped
 
 
 def predict_fixture_xg(home_team_id, away_team_id, team_strengths, league_avgs):
@@ -375,7 +409,8 @@ _BREAKDOWN_KEYS = [
 def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26",
                            bootstrap_file="bootstrap_static_2025_26_final.json",
                            fixtures_file="fixtures_2025_26_final.json",
-                           shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False):
+                           shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
+                           roster_bootstrap_file=None, roster_fixtures_file=None):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -388,31 +423,46 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     is Bournemouth in 2026/27), so pointing bootstrap_file/fixtures_file
     at a *different* season than `season` would silently apply one
     team's learned attack/defence ratios to a different team's fixtures.
-    Keep all three in sync. Once FPL resets player stats for the live
-    season and a matching gw_history archive exists for it, this is the
-    one place that would need updating - not a quick swap otherwise.
+    Keep all three in sync.
 
-    apply_live_signals=True layers two of bootstrap's own fields on top
-    of the gw_history-trained numbers above: live injury/suspension
-    status (compute_live_availability) scales appearance probability,
-    and current primary set-piece duty boosts goal_share/assist_share.
-    Defaults to False, and backtest.py/multi_gw_backtest.py/tune.py never
-    set it: bootstrap_file is a single frozen snapshot (end-of-season for
-    the archive), so its status/duty fields are only accurate for
-    whichever moment the snapshot was taken - applying them uniformly
-    across every backtested gameweek would inject a wrong, constant
-    signal for any player whose injury/duty status actually changed
-    during the season. Only turn this on where bootstrap_file is a
-    snapshot genuinely current for reference_date.
+    roster_bootstrap_file/roster_fixtures_file let *who the players are*
+    (identity/team/price/fixtures/live status) come from a newer
+    snapshot than the one the model is trained on - the 2026/27 use
+    case: no 2026/27 gw_history exists yet to train on, so the model
+    keeps training on bootstrap_file/fixtures_file/season (2025/26)
+    while drafting its player pool from the live 2026/27 roster. Default
+    None means "same as bootstrap_file/fixtures_file" (today's
+    archived-only behaviour, unchanged). When set, team_strengths gets
+    remapped from training-season team ids to roster-season team ids by
+    team name (see _remap_team_strengths_to_roster) - player-level dicts
+    (involvement/appearance/history_rates) need no remapping since
+    they're keyed by element (player) id, which is stable across the
+    season boundary.
+
+    apply_live_signals=True layers two of the roster bootstrap's own
+    fields on top of the gw_history-trained numbers above: live
+    injury/suspension status (compute_live_availability) scales
+    appearance probability, and current primary set-piece duty boosts
+    goal_share/assist_share. Defaults to False, and
+    backtest.py/multi_gw_backtest.py/tune.py never set it: bootstrap_file
+    is a single frozen snapshot (end-of-season for the archive), so its
+    status/duty fields are only accurate for whichever moment the
+    snapshot was taken - applying them uniformly across every
+    backtested gameweek would inject a wrong, constant signal for any
+    player whose injury/duty status actually changed during the season.
+    Only turn this on where the roster bootstrap is a snapshot genuinely
+    current for reference_date.
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
+        roster_bootstrap_file, roster_fixtures_file,
     )
     return _predict_for_event(context, next_event)
 
 
 def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
-                               shrinkage_games, apply_live_signals):
+                               shrinkage_games, apply_live_signals,
+                               roster_bootstrap_file=None, roster_fixtures_file=None):
     """
     Everything predict_player_points() needs that depends only on
     reference_date (not on which gameweek is being predicted) - team
@@ -422,22 +472,33 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     predict_multi_gw_points() does below; predict_player_points() builds
     one fresh per call for a single gameweek, exactly as before this was
     split out.
+
+    See predict_player_points' docstring for roster_bootstrap_file/
+    roster_fixtures_file - when set, the *training* data (bootstrap_file/
+    fixtures_file/season) and the *roster* data (who players are, which
+    fixtures they have) come from different season snapshots, and
+    team_strengths must be remapped from one team-id space to the other.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
-    fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
+    roster_bootstrap = load_bootstrap(roster_bootstrap_file) if roster_bootstrap_file else bootstrap
+    roster_fixtures = load_fixtures(roster_fixtures_file) if roster_fixtures_file else fixtures
+    fixtures_by_team_event = build_fixtures_by_team_event(roster_fixtures)
 
     team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
+    if roster_bootstrap_file:
+        team_strengths = _remap_team_strengths_to_roster(team_strengths, bootstrap["teams"], roster_bootstrap["teams"])
+
     involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
     appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
-    live_availability = compute_live_availability(bootstrap) if apply_live_signals else {}
+    live_availability = compute_live_availability(roster_bootstrap) if apply_live_signals else {}
 
-    teams_df = pd.DataFrame(bootstrap["teams"])
-    positions = pd.DataFrame(bootstrap["element_types"])[["id", "singular_name_short"]]
+    teams_df = pd.DataFrame(roster_bootstrap["teams"])
+    positions = pd.DataFrame(roster_bootstrap["element_types"])[["id", "singular_name_short"]]
     team_short_lookup = teams_df.set_index("id")["short_name"].to_dict()
 
-    df = pd.DataFrame(bootstrap["elements"])[[
+    df = pd.DataFrame(roster_bootstrap["elements"])[[
         "id", "web_name", "team", "element_type",
         "penalties_order", "direct_freekicks_order", "corners_and_indirect_freekicks_order",
     ]].copy()
@@ -533,7 +594,8 @@ def _predict_for_event(context, next_event):
 def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
                              bootstrap_file="bootstrap_static_2025_26_final.json",
                              fixtures_file="fixtures_2025_26_final.json",
-                             shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False):
+                             shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
+                             roster_bootstrap_file=None, roster_fixtures_file=None):
     """
     Returns a DataFrame, one row per player, with predicted_points summed
     across next_events - all conditioned on data strictly before
@@ -565,9 +627,13 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     window (a real, measured ~5x cost on the default 5-gameweek window -
     this is what made the Outlook/Optimizer/Squad Builder pages slow to
     load).
+
+    See predict_player_points' docstring for roster_bootstrap_file/
+    roster_fixtures_file.
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
+        roster_bootstrap_file, roster_fixtures_file,
     )
     per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 

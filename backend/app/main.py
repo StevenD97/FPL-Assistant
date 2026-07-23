@@ -30,7 +30,7 @@ from analysis import (
     top_differentials,
 )
 from optimizer import build_player_pool, optimize_best_squad, optimize_transfers
-from team_model import predict_multi_gw_points, predict_player_points
+from team_model import CROSS_SEASON_HALF_LIFE_DAYS, predict_multi_gw_points, predict_player_points
 
 load_dotenv()
 
@@ -137,11 +137,25 @@ def player_predicted_points_outlook(
 ARCHIVED_BOOTSTRAP_FILE = "bootstrap_static_2025_26_final.json"
 ARCHIVED_FIXTURES_FILE = "fixtures_2025_26_final.json"
 
+# The live 2026/27 roster - players, teams, prices, fixtures - fetched by
+# ensure_data_fetched() at startup (load_bootstrap/load_fixtures's own
+# defaults). No 2026/27 gw_history exists yet (the season hasn't been
+# played), so the model still *trains* on the archived 2025/26 season
+# above; only *who the players are* comes from here. See
+# predict_player_points' roster_bootstrap_file/roster_fixtures_file
+# docstring in team_model.py for how the two get reconciled (team-id
+# remapping by name) without mixing seasons' team-id spaces.
+LIVE_BOOTSTRAP_FILE = "bootstrap_static.json"
+LIVE_FIXTURES_FILE = "fixtures.json"
+# 2026/27 GW1 kicks off 2026-08-21 - the day before, so all of 2025/26's
+# archive is in scope and nothing "in the future" leaks in.
+SEASON_START_REFERENCE_DATE = "2026-08-20"
+
 
 @app.get("/api/optimizer/best-squad")
 def optimizer_best_squad(
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
+    reference_date: str = SEASON_START_REFERENCE_DATE,
+    next_event: int = 1,
     gw_count: int = 5,
     budget: int = 1000,
 ):
@@ -152,12 +166,24 @@ def optimizer_best_squad(
     reason the Outlook page does: multi-week predictions track reality
     meaningfully better, and a squad is meant to hold for more than one
     week. budget is in £0.1m units (1000 = £100.0m, the standard start).
+
+    Drafts from the live 2026/27 roster (roster_bootstrap_file/
+    roster_fixtures_file) while still training on the archived 2025/26
+    season, using CROSS_SEASON_HALF_LIFE_DAYS instead of the in-season
+    default half_life_days=21 - see team_model.py for why (a flat 21-day
+    half-life decays a ~90-day close season gap to near-zero signal).
+    apply_live_signals=True since the live bootstrap is a genuinely
+    current snapshot here (injury status, set-piece duties).
     """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     next_events = list(range(next_event, next_event + gw_count))
-    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
-        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
     return optimize_best_squad(pool, budget=budget)
@@ -165,44 +191,54 @@ def optimizer_best_squad(
 
 @app.get("/api/squad-builder/players")
 def squad_builder_players(
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
+    reference_date: str = SEASON_START_REFERENCE_DATE,
+    next_event: int = 1,
     gw_count: int = 5,
 ):
     """
     The full player pool for the manual Squad Builder page: id, cost,
     predicted_points (multi-gameweek, same rationale as the optimizer
-    endpoints above), position, team, and penalties_order (for the "no
-    penalty taker" diagnostic). Fetched once by the frontend and used to
-    compute every draft diagnostic client-side as the user adds/removes
-    players - no round trip per click.
+    endpoints above), position, team, penalties_order (for the "no
+    penalty taker" diagnostic), value (points per £m), ownership %, and
+    live availability status/news. Fetched once by the frontend and used
+    to compute every draft diagnostic client-side as the user
+    adds/removes players - no round trip per click.
+
+    Drafts from the live 2026/27 roster - see optimizer_best_squad's
+    docstring above for the cross-season training/roster split.
     """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     next_events = list(range(next_event, next_event + gw_count))
-    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
-        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
-    cols = ["id", "web_name", "team_short", "position", "now_cost", "predicted_points", "penalties_order", "fixture_ticker"]
+    cols = [
+        "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
+        "selected_by_percent", "status", "news", "penalties_order", "fixture_ticker",
+    ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"})
     df["cost"] = (df["cost_raw"] / 10).round(1)
     return df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).to_dict(orient="records")
 
 
 @app.get("/api/squad-builder/fixtures")
-def squad_builder_fixtures(next_event: int = 10, gw_count: int = 5):
+def squad_builder_fixtures(next_event: int = 1, gw_count: int = 5):
     """
     Team-level fixture difficulty for the Squad Builder's diagnostics
-    (tough-run / missing-strong-fixture-team checks) - deliberately
-    pinned to the archived season, matching squad_builder_players()
-    above, NOT the live-data default /api/fixtures/difficulty uses.
+    (tough-run / missing-strong-fixture-team checks) - pinned to the
+    live 2026/27 fixtures/teams, matching squad_builder_players() above.
     FPL reassigns team ids every season (see optimizer.py's docstrings),
-    so this must never mix a live-season team mapping with the archived
-    player pool it's compared against.
+    so this must never mix a live-season team mapping with an
+    archived-season player pool, or vice versa.
     """
     return compute_fixture_difficulty(
-        next_event, gw_count, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        next_event, gw_count, bootstrap_file=LIVE_BOOTSTRAP_FILE, fixtures_file=LIVE_FIXTURES_FILE,
     ).to_dict(orient="records")
 
 
@@ -227,9 +263,9 @@ def chip_strategy(team_id: int, scan_start_event: int = 24, scan_end_event: int 
 @app.get("/api/squad/{team_id}/optimize-transfers")
 def squad_optimize_transfers(
     team_id: int,
-    event: int = 38,
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
+    event: int = 1,
+    reference_date: str = SEASON_START_REFERENCE_DATE,
+    next_event: int = 1,
     gw_count: int = 5,
     free_transfers: int = 1,
     max_transfers: Optional[int] = None,
@@ -240,9 +276,13 @@ def squad_optimize_transfers(
     Note: FPL appears to reset/purge manager pick history at each
     season boundary (confirmed directly - a real, previously-used team
     id returned "No Entry matches" once 2026/27's calendar went live),
-    so `event` needs to be a gameweek this manager's picks still exist
-    for; there's currently no way to fetch a genuinely historical
-    2025/26 squad through this endpoint until that's better understood.
+    so `event` needs to be a 2026/27 gameweek this manager's picks
+    already exist for - i.e. after that gameweek's deadline has passed.
+    Before 2026/27 GW1 locks, no team_id has a fetchable squad yet.
+
+    The buy/sell pool itself draws from the live 2026/27 roster, same as
+    optimizer_best_squad/squad_builder_players above - see those
+    docstrings for the cross-season training/roster split.
     """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     picks_data = fetch_entry_picks(team_id, event)
@@ -250,9 +290,13 @@ def squad_optimize_transfers(
     bank = picks_data["entry_history"]["bank"]
 
     next_events = list(range(next_event, next_event + gw_count))
-    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
-        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
     return optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)

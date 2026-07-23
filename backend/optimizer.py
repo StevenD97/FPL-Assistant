@@ -43,16 +43,29 @@ DEFAULT_BUDGET = 1000  # £100.0m, the standard starting budget
 
 def build_player_pool(predicted_df, bootstrap):
     """
-    Merges now_cost + numeric team id + penalties_order into
-    predict_multi_gw_points()'s output - needed for the budget/club-limit
-    constraints and set-piece-duty checks, none of which that function
-    returns itself. `bootstrap` must be the same season's file
-    predicted_df was computed against - see predict_player_points'
-    docstring on why (team ids get reassigned every season).
+    Merges now_cost + numeric team id + penalties_order + a few decision-
+    support fields into predict_multi_gw_points()'s output - needed for
+    the budget/club-limit constraints and set-piece-duty checks, plus
+    context a human wants when comparing two similarly-scored players
+    (ownership %, live availability). `bootstrap` must be the roster
+    season's file predicted_df's roster_bootstrap_file pointed at, or the
+    same file if no roster/training split was used - see
+    predict_player_points' docstring on why (team ids get reassigned
+    every season).
+
+    Adds `value` (predicted_points per GBP1m of cost) since two players
+    can have similar predicted_points at very different prices - value
+    is what actually matters for squad-building under a budget
+    constraint, not raw predicted_points alone.
     """
-    extra = pd.DataFrame(bootstrap["elements"])[["id", "now_cost", "team", "penalties_order"]].copy()
+    extra = pd.DataFrame(bootstrap["elements"])[[
+        "id", "now_cost", "team", "penalties_order", "selected_by_percent", "status", "news",
+    ]].copy()
     extra["penalties_order"] = extra["penalties_order"].fillna(0).astype(int)
-    return predicted_df.merge(extra, on="id", how="inner")
+    extra["selected_by_percent"] = extra["selected_by_percent"].astype(float)
+    pool = predicted_df.merge(extra, on="id", how="inner")
+    pool["value"] = (pool["predicted_points"] / (pool["now_cost"] / 10)).round(2)
+    return pool
 
 
 def _build_squad_vars(players_df):
@@ -106,7 +119,10 @@ def _extract_result(players_df, squad_vars, xi_vars, captain_vars):
     xi_idx = {i for i in players_df.index if pulp.value(xi_vars[i]) > 0.5}
     captain_idx = next(i for i in players_df.index if pulp.value(captain_vars[i]) > 0.5)
 
-    squad = players_df.loc[squad_idx, ["id", "web_name", "team_short", "position", "now_cost", "predicted_points"]].copy()
+    squad = players_df.loc[squad_idx, [
+        "id", "web_name", "team_short", "position", "now_cost", "predicted_points",
+        "value", "selected_by_percent", "status",
+    ]].copy()
     squad["role"] = squad.index.map(lambda i: "Starting XI" if i in xi_idx else "Bench")
     squad["captain"] = squad.index == captain_idx
     squad["cost"] = (squad["now_cost"] / 10).round(1)
@@ -209,7 +225,7 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
 
     transferred_out = [i for i in current_idx if pulp.value(squad_vars[i]) < 0.5]
     transferred_in = [i for i in players_df.index if i not in current_idx and pulp.value(squad_vars[i]) > 0.5]
-    cols = ["id", "web_name", "team_short", "position", "predicted_points"]
+    cols = ["id", "web_name", "team_short", "position", "predicted_points", "value", "selected_by_percent"]
     result["transferred_out"] = players_df.loc[transferred_out, cols].to_dict(orient="records")
     result["transferred_in"] = players_df.loc[transferred_in, cols].to_dict(orient="records")
 

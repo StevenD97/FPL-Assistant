@@ -207,14 +207,11 @@ frontend/   Next.js (TypeScript) web app
   affordable players (filtered to positions you still need, where any
   remain) to fix it, one click to add.
   Architecturally the opposite of the optimizer endpoints: only two
-  lightweight backend endpoints exist
-  (`/api/squad-builder/players` and `/api/squad-builder/fixtures`, both
-  pinned to the archived season like everything else player-scoring -
-  `/api/squad-builder/fixtures` deliberately does NOT reuse
-  `/api/fixtures/difficulty`'s live-data default, for the same
-  team-id-reassignment reason documented throughout this file), fetched
-  once on page load; every diagnostic recomputes instantly client-side
-  as you add/remove players, with no round trip per click.
+  lightweight backend endpoints exist (`/api/squad-builder/players` and
+  `/api/squad-builder/fixtures`, both pinned to the live 2026/27 roster -
+  see "Drafting from the live 2026/27 roster" below), fetched once on
+  page load; every diagnostic recomputes instantly client-side as you
+  add/remove players, with no round trip per click.
   **Fixed a real ~2x slowdown found while investigating why this page
   loaded slowly**: `predict_multi_gw_points()` was calling
   `predict_player_points()` once per gameweek in the window, and each
@@ -234,6 +231,59 @@ frontend/   Next.js (TypeScript) web app
   re-ran the full backtest (identical Pearson r/Spearman/MAE numbers to
   the existing baseline above). Measured warm-cache improvement:
   `/api/squad-builder/players` dropped from ~1.4s to ~0.7s.
+- **Drafting from the live 2026/27 roster**: Squad Builder and every
+  Optimizer endpoint (`/api/optimizer/best-squad`,
+  `/api/squad-builder/players`+`/fixtures`,
+  `/api/squad/{team_id}/optimize-transfers`) now draw their player pool,
+  prices, and fixtures from the live-fetched `bootstrap_static.json`/
+  `fixtures.json` (2026/27) instead of the archived 2025/26 files,
+  while still *training* the model on the archived 2025/26 gw_history -
+  no 2026/27 match data exists yet to train on. This split (`bootstrap_file`/
+  `fixtures_file`/`season` = what the model learns from vs
+  `roster_bootstrap_file`/`roster_fixtures_file` in `team_model.py` =
+  who it predicts for) required solving two problems the usual
+  live/archived split doesn't have to:
+  - **Team-id remapping.** `team_strengths` is keyed by *archived*
+    (2025/26) team ids, but the roster's fixtures use *live* (2026/27)
+    ids - the same reassignment risk documented throughout this file,
+    just crossing a season boundary instead of two files within one
+    season. `_remap_team_strengths_to_roster()` re-keys it by matching
+    team **name** between the two bootstraps' team lists. Promoted teams
+    with no top-flight history in the archive (Coventry City, Hull City,
+    Ipswich Town for 2026/27) get neutral `DEFAULT_TEAM_STRENGTH` ratios
+    rather than a fabricated number. Player-level dicts (involvement
+    shares, appearance probabilities, personal history rates) need no
+    remapping - they're keyed by `element` (player id), which is stable
+    across the season boundary (verified: zero new/removed element ids
+    between the archived and live bootstraps' `elements` lists).
+  - **Half-life recalibration.** The default `half_life_days=21` is
+    tuned for *within-season* recency (weeks apart) and decays a ~90-day
+    close-season gap (2025/26 ended 2026-05-24; 2026/27 GW1 is
+    2026-08-21) to near-zero weight, which collapses `_shrink_ratio`'s
+    confidence toward every team looking equally average - measured:
+    the spread across teams' `attack_home` ratios drops from ~0.52
+    in-season to ~0.04 across that gap at `half_life_days=21`.
+    `team_model.CROSS_SEASON_HALF_LIFE_DAYS=90` is used instead for
+    these endpoints, chosen empirically by matching the resulting
+    spread/rank-correlation back against the in-season, end-of-season
+    baseline (spread ~0.50, Spearman ~0.81 between the two rankings for
+    the same teams).
+
+  `apply_live_signals=True` for these endpoints (the live bootstrap is a
+  genuinely current snapshot here, unlike the frozen archived-only demo
+  paths), so injury/suspension status and current set-piece duty are
+  reflected. `build_player_pool()` also now returns `value` (predicted
+  points per £m - two players can score similarly at very different
+  prices, and value is what actually matters under a budget constraint),
+  `selected_by_percent` (ownership), and `status`/`news` (live
+  availability, shown as a badge next to a player's name when not
+  `"a"`/available) - surfaced in both the Squad Builder and Optimizer
+  pages.
+
+  `/api/squad/{team_id}/optimize-transfers` draws from the same live
+  roster/pool now too, but the manager-picks half of that endpoint is
+  still blocked on the season-boundary reset noted above: no team id has
+  a fetchable squad until its first 2026/27 gameweek deadline passes.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 
