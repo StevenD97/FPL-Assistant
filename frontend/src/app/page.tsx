@@ -1,12 +1,14 @@
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { FdrChip } from "@/components/ui/FdrChip";
+
+type Fixture = { opponent: string; is_home: boolean; difficulty: number };
 
 type FixtureRow = {
   team_id: number;
   team: string;
   fixtures_in_window: number;
-  fixture_score: number;
   avg_difficulty: number | null;
-  ticker: string;
+  fixtures: Fixture[];
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -26,37 +28,53 @@ async function getFixtureDifficulty(): Promise<FixtureRow[]> {
 
 export default async function Home() {
   const fixtures = await getFixtureDifficulty();
+  const sorted = [...fixtures].sort((a, b) => (a.avg_difficulty ?? 6) - (b.avg_difficulty ?? 6));
 
   return (
     <main className="min-h-screen bg-white p-8">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-3xl">
         <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
           Fixture difficulty
         </h1>
         <p className="mb-6 max-w-xl text-sm text-text-secondary">
-          Next 5 gameweeks, 2026/27. Player pages still use 2025/26 demo data until FPL resets stats.
+          Next 5 gameweeks, 2026/27, easiest run first. Player pages still use 2025/26 demo data until FPL resets stats.
         </p>
         <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
           <table className="w-full text-left text-sm">
             <thead className="bg-surface-sunken">
               <tr>
                 <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Fixtures</th>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
                 <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Avg FDR</th>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Ticker</th>
+                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next 5</th>
               </tr>
             </thead>
             <tbody>
-              {fixtures.map((row) => (
+              {sorted.map((row) => (
                 <tr key={row.team_id} className="border-t border-border">
                   <td className="px-3.5 py-2.5 font-medium">
                     <TeamBadge teamShort={row.team} name={row.team} />
                   </td>
-                  <td className="px-3.5 py-2.5 font-mono">{row.fixtures_in_window}</td>
-                  <td className="px-3.5 py-2.5 font-mono">{row.fixture_score}</td>
                   <td className="px-3.5 py-2.5 font-mono">{row.avg_difficulty ?? "-"}</td>
-                  <td className="px-3.5 py-2.5 text-text-secondary">{row.ticker}</td>
+                  <td className="px-3.5 py-2.5">
+                    <div className="flex flex-wrap gap-1">
+                      {row.fixtures.length > 0 ? (
+                        row.fixtures.map((fx, i) => (
+                          <FdrChip key={i} opponent={fx.opponent} isHome={fx.is_home} difficulty={fx.difficulty} />
+                        ))
+                      ) : (
+                        <span className="text-text-muted">-</span>
+                      )}
+                      {row.fixtures_in_window < 5 &&
+                        Array.from({ length: 5 - row.fixtures_in_window }).map((_, i) => (
+                          <span
+                            key={`blank-${i}`}
+                            className="inline-flex items-center justify-center rounded-sm bg-surface-sunken px-1.5 py-0.5 font-mono text-[11px] text-text-muted"
+                          >
+                            -
+                          </span>
+                        ))}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>

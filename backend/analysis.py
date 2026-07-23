@@ -481,6 +481,7 @@ def compute_fixture_difficulty(start_event, window_size=5,
         total_score = 0
         fixture_count = 0
         ticker = []
+        fixture_list = []
         for event in window_events:
             event_fixtures = fixtures_by_team_event[team_id].get(event, [])
             if not event_fixtures:
@@ -490,6 +491,9 @@ def compute_fixture_difficulty(start_event, window_size=5,
                 fixture_count += 1
                 venue = "H" if fx["is_home"] else "A"
                 ticker.append(f"{teams[fx['opponent']]}({venue},FDR{fx['difficulty']})")
+                fixture_list.append({
+                    "opponent": teams[fx["opponent"]], "is_home": fx["is_home"], "difficulty": fx["difficulty"],
+                })
         rows.append({
             "team_id": team_id,
             "team": short_name,
@@ -497,6 +501,11 @@ def compute_fixture_difficulty(start_event, window_size=5,
             "fixture_score": total_score,
             "avg_difficulty": round((6 - total_score / fixture_count), 2) if fixture_count else None,
             "ticker": " | ".join(ticker),
+            # Structured form of `ticker` above, for UIs that want to render
+            # colored per-fixture chips instead of parsing the string
+            # (Squad Builder's diagnostics still use the plain-text `ticker`
+            # directly in a sentence, so that field stays as-is).
+            "fixtures": fixture_list,
         })
     return pd.DataFrame(rows)
 
