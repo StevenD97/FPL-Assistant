@@ -72,6 +72,16 @@ OWN_GOAL_POINTS = -2
 DEFENSIVE_CONTRIBUTION_THRESHOLD = {"DEF": 10, "MID": 12, "FWD": 12}  # none for GKP
 DEFENSIVE_CONTRIBUTION_POINTS = 2
 
+# Flat, hand-calibrated involvement-share boosts for a *current* primary
+# set-piece taker - gw_history-derived goal_share/assist_share can't see a
+# duty change until goals/assists from it actually accumulate in the
+# archive. Same spirit as recommendation_score's SET_PIECE_BONUS constants
+# in analysis.py, adapted to team_model's share-based (not points-based)
+# scoring. Only applied when apply_live_signals=True - see predict_player_points.
+PENALTY_TAKER_GOAL_SHARE_BOOST = 0.08
+FREEKICK_TAKER_GOAL_SHARE_BOOST = 0.03
+CORNER_TAKER_ASSIST_SHARE_BOOST = 0.04
+
 DEFAULT_TEAM_STRENGTH = {"attack_home": 1.0, "attack_away": 1.0, "defence_home": 1.0, "defence_away": 1.0}
 
 # How many "pseudo-games" worth of trust in the league average to blend into a
@@ -249,6 +259,32 @@ def compute_appearance_probabilities(reference_date, half_life_days=21, season="
     }
 
 
+def compute_live_availability(bootstrap):
+    """
+    element -> availability multiplier in [0, 1], from FPL's own
+    chance_of_playing_next_round/status fields on whichever bootstrap was
+    loaded - a same-week injury/suspension signal that compute_appearance_probabilities
+    (built entirely from historical minutes) has no way to see on its own.
+
+    This only reflects reality when `bootstrap` is a genuinely current
+    snapshot - see predict_player_points' apply_live_signals parameter
+    for why it isn't applied unconditionally (the archived 2025/26
+    snapshot's status fields are frozen at end-of-season, not accurate
+    for an arbitrary earlier gameweek being backtested/demoed).
+    """
+    availability = {}
+    for player in bootstrap["elements"]:
+        chance = player.get("chance_of_playing_next_round")
+        status = player.get("status")
+        if chance is not None:
+            availability[player["id"]] = chance / 100
+        elif status in ("i", "s", "u", "n"):  # injured/suspended/unavailable/not-in-squad, no % given
+            availability[player["id"]] = 0.0
+        else:
+            availability[player["id"]] = 1.0
+    return availability
+
+
 def compute_personal_history_rates(reference_date, half_life_days=21, season="2025_26"):
     """element -> {stat_name: recency-weighted per-match average} for every HISTORY_STAT_COLUMNS entry."""
     rates_by_stat = {
@@ -339,7 +375,7 @@ _BREAKDOWN_KEYS = [
 def predict_player_points(reference_date, next_event, half_life_days=21, season="2025_26",
                            bootstrap_file="bootstrap_static_2025_26_final.json",
                            fixtures_file="fixtures_2025_26_final.json",
-                           shrinkage_games=SHRINKAGE_GAMES):
+                           shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -355,6 +391,19 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     Keep all three in sync. Once FPL resets player stats for the live
     season and a matching gw_history archive exists for it, this is the
     one place that would need updating - not a quick swap otherwise.
+
+    apply_live_signals=True layers two of bootstrap's own fields on top
+    of the gw_history-trained numbers above: live injury/suspension
+    status (compute_live_availability) scales appearance probability,
+    and current primary set-piece duty boosts goal_share/assist_share.
+    Defaults to False, and backtest.py/multi_gw_backtest.py/tune.py never
+    set it: bootstrap_file is a single frozen snapshot (end-of-season for
+    the archive), so its status/duty fields are only accurate for
+    whichever moment the snapshot was taken - applying them uniformly
+    across every backtested gameweek would inject a wrong, constant
+    signal for any player whose injury/duty status actually changed
+    during the season. Only turn this on where bootstrap_file is a
+    snapshot genuinely current for reference_date.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
@@ -364,6 +413,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
     appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
     history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
+    live_availability = compute_live_availability(bootstrap) if apply_live_signals else {}
 
     default_involvement = {"goal_share": 0.0, "assist_share": 0.0}
     default_appearance = {"p_any": 0.0, "p_60_plus": 0.0}
@@ -373,7 +423,12 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     positions = pd.DataFrame(bootstrap["element_types"])[["id", "singular_name_short"]]
     team_short_lookup = teams_df.set_index("id")["short_name"].to_dict()
 
-    df = pd.DataFrame(bootstrap["elements"])[["id", "web_name", "team", "element_type"]].copy()
+    df = pd.DataFrame(bootstrap["elements"])[[
+        "id", "web_name", "team", "element_type",
+        "penalties_order", "direct_freekicks_order", "corners_and_indirect_freekicks_order",
+    ]].copy()
+    for col in ["penalties_order", "direct_freekicks_order", "corners_and_indirect_freekicks_order"]:
+        df[col] = df[col].fillna(0).astype(int)
     df = df.merge(teams_df[["id", "short_name"]], left_on="team", right_on="id", suffixes=("", "_team"))
     df = df.merge(positions, left_on="element_type", right_on="id", suffixes=("", "_pos"))
     df = df.rename(columns={"short_name": "team_short", "singular_name_short": "position"})
@@ -392,6 +447,21 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
         share = involvement.get(player["id"], default_involvement)
         appearance = appearance_probs.get(player["id"], default_appearance)
         rates = history_rates.get(player["id"], default_history)
+
+        if apply_live_signals:
+            # Fresh dicts, not in-place mutation - share/appearance may be the
+            # shared default_* object above, reused across every player with
+            # no history; mutating it in place would corrupt it for all of them.
+            factor = live_availability.get(player["id"], 1.0)
+            appearance = {"p_any": appearance["p_any"] * factor, "p_60_plus": appearance["p_60_plus"] * factor}
+
+            share = dict(share)
+            if player["penalties_order"] == 1:
+                share["goal_share"] = min(1.0, share["goal_share"] + PENALTY_TAKER_GOAL_SHARE_BOOST)
+            if player["direct_freekicks_order"] == 1:
+                share["goal_share"] = min(1.0, share["goal_share"] + FREEKICK_TAKER_GOAL_SHARE_BOOST)
+            if player["corners_and_indirect_freekicks_order"] == 1:
+                share["assist_share"] = min(1.0, share["assist_share"] + CORNER_TAKER_ASSIST_SHARE_BOOST)
 
         totals = {k: 0.0 for k in _BREAKDOWN_KEYS}
         opponent_labels = []
@@ -418,7 +488,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 def predict_multi_gw_points(reference_date, next_events, half_life_days=21, season="2025_26",
                              bootstrap_file="bootstrap_static_2025_26_final.json",
                              fixtures_file="fixtures_2025_26_final.json",
-                             shrinkage_games=SHRINKAGE_GAMES):
+                             shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False):
     """
     Returns a DataFrame, one row per player, with predicted_points summed
     across next_events - all conditioned on data strictly before
@@ -444,6 +514,7 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     per_gw = {
         event: predict_player_points(
             reference_date, event, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games,
+            apply_live_signals,
         ).set_index("id")
         for event in next_events
     }

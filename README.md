@@ -82,6 +82,32 @@ frontend/   Next.js (TypeScript) web app
   contribution/saves assume a Poisson distribution around the
   recency-weighted average count). Exposed via
   `/api/players/predicted-points`.
+- `predict_player_points()`/`predict_multi_gw_points()` take an
+  `apply_live_signals` flag (default `False`) that layers two of
+  bootstrap's own fields on top of the gw_history-trained numbers: live
+  injury/suspension status (`compute_live_availability`, from
+  `chance_of_playing_next_round`/`status`) scales appearance probability,
+  and current primary set-piece duty
+  (`penalties_order`/`direct_freekicks_order`/`corners_and_indirect_freekicks_order`)
+  boosts `goal_share`/`assist_share` - closing the two biggest blind spots
+  found in a review of what data the model wasn't using (an unpatched
+  injury previously inflated every scoring category; a new penalty taker
+  wasn't reflected until goals off it actually accumulated in the
+  archive). Verified directly against live data: three Arsenal defenders
+  actually injured right now (Saliba, J.Timber, White) each had
+  predicted_points correctly collapse toward zero with the flag on,
+  unchanged with it off.
+  **Deliberately not turned on anywhere yet** - `bootstrap_file` is a
+  single frozen snapshot (end-of-season for the archive currently in
+  use), so its status/duty fields are only accurate for whichever moment
+  that snapshot was taken. Enabling this by default now would apply
+  end-of-season 2025/26 injury news to every demo-mode prediction
+  regardless of which gameweek is being predicted, and applying it
+  inside a backtest would inject a wrong, constant signal for any player
+  whose injury/duty status changed mid-season. Turn it on once
+  `bootstrap_file` is a snapshot genuinely current for `reference_date` -
+  i.e. once the app is predicting today's actual next gameweek, not a
+  demo date.
 - `backtest.py` walk-forward tests `team_model.py` against every 2025/26
   gameweek (GW2-38): predicts every player using only data strictly
   before that gameweek, then checks the prediction against what they
