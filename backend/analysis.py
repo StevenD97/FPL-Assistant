@@ -8,6 +8,7 @@ import json
 import os
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
+from functools import lru_cache
 
 import pandas as pd
 import requests
@@ -64,6 +65,45 @@ def load_bootstrap():
 def load_fixtures():
     with open(f"{DATA_DIR}/fixtures.json", encoding="utf-8") as f:
         return json.load(f)
+
+
+@lru_cache(maxsize=None)
+def load_gw_history(season="2025_26"):
+    """
+    2025/26 gameweek-by-gameweek player data (one row per player per
+    fixture), fetched by fetch_gw_history.py. Cached per season since
+    build_chip_strategy() calls compute_player_scores() - and therefore
+    this - once per scanned gameweek.
+    """
+    path = f"{DATA_DIR}/gw_history_{season}.csv"
+    df = pd.read_csv(path)
+    # Rest of the codebase (e.g. compute_congestion) treats kickoff times as
+    # naive UTC, so strip the tz info pandas infers from the "Z" suffix -
+    # otherwise comparisons against a naive reference_date raise.
+    df["kickoff_time"] = pd.to_datetime(df["kickoff_time"], utc=True).dt.tz_localize(None)
+    return df
+
+
+def compute_recency_weighted_form(reference_date, half_life_days=21, season="2025_26"):
+    """
+    element -> exponentially recency-weighted average of total_points,
+    using only fixtures strictly before reference_date (no lookahead).
+    Weight halves every half_life_days, so recent matches dominate more
+    than FPL's own `form` field (a flat 30-day average) while still
+    factoring in the whole season rather than a hard cutoff.
+    """
+    history = load_gw_history(season)
+    past = history[history["kickoff_time"] < reference_date]
+    if past.empty:
+        return {}
+
+    days_ago = (reference_date - past["kickoff_time"]).dt.total_seconds() / 86400
+    weight = 0.5 ** (days_ago / half_life_days)
+    weighted_points = weight * past["total_points"]
+
+    weight_sum = weight.groupby(past["element"]).sum()
+    weighted_points_sum = weighted_points.groupby(past["element"]).sum()
+    return (weighted_points_sum / weight_sum).to_dict()
 
 
 def build_fixtures_by_team_event(fixtures):
@@ -138,13 +178,17 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
                            w_opponent_adjustment=0.4, w_rotation_risk=0.3,
                            w_underlying_quality=0.3, w_defensive_contribution=0.15,
                            set_piece_bonus_primary=0.15, set_piece_bonus_backup=0.05,
-                           penalty_miss_penalty=0.02):
+                           penalty_miss_penalty=0.02, form_half_life_days=21):
     """
     Returns a DataFrame, one row per player, with a recommendation_score
     combining:
       - playing confidence (status/chance_of_playing, adjusted for fixture
         congestion and historical rotation risk)
-      - expected returns (ep_next), recent form, and a minutes-trend proxy
+      - expected returns (ep_next), recent form (exponentially recency-
+        weighted from gameweek-by-gameweek history - see
+        compute_recency_weighted_form - falling back to FPL's own canned
+        `form` field for players with no history, e.g. new signings), and
+        a minutes-trend proxy
       - underlying quality: season xG involvement + ICT index (a longer-run,
         more stable complement to the single-week ep_next prediction)
       - defensive contribution rate (FPL's tackles/interceptions/clearances
@@ -244,8 +288,16 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     df["starts_per_90"] = pd.to_numeric(df["starts_per_90"], errors="coerce").fillna(0)
     df["selected_by_percent"] = pd.to_numeric(df["selected_by_percent"], errors="coerce").fillna(0)
 
+    # Recency-weighted form (see compute_recency_weighted_form) drives the
+    # score; players with no gameweek history yet (new signings, or a
+    # reference_date before the archive's first fixture) fall back to
+    # FPL's own canned `form` field.
+    recency_form_by_id = compute_recency_weighted_form(reference_date, form_half_life_days)
+    df["recency_weighted_form"] = df["id"].map(recency_form_by_id)
+    df["recency_weighted_form"] = df["recency_weighted_form"].fillna(df["form"])
+
     df["ep_next_norm"] = min_max_normalize(df["ep_next"])
-    df["form_norm"] = min_max_normalize(df["form"])
+    df["form_norm"] = min_max_normalize(df["recency_weighted_form"])
     df["starts_per_90_norm"] = min_max_normalize(df["starts_per_90"])
     df["confidence_norm"] = df["confidence_adjusted"] / 100
 
@@ -411,7 +463,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     squad_cols = [
         "position", "web_name", "team_short", "pos", "role", "captain_flag",
         "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
-        "form", "ep_next", "expected_minutes",
+        "form", "recency_weighted_form", "ep_next", "expected_minutes",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
         "set_piece_duty_score",
     ]

@@ -54,8 +54,8 @@ app.add_middleware(
 
 PLAYER_SCORE_COLUMNS = [
     "web_name", "team_short", "position", "recommendation_score", "confidence_adjusted",
-    "rotation_risk", "next_opponent", "opponent_multiplier", "form", "ep_next",
-    "expected_minutes", "selected_by_percent",
+    "rotation_risk", "next_opponent", "opponent_multiplier", "form", "recency_weighted_form",
+    "ep_next", "expected_minutes", "selected_by_percent",
     "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
     "set_piece_duty_score", "penalties_order", "penalties_missed",
 ]

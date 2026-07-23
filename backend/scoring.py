@@ -28,7 +28,7 @@ ranked = df.sort_values("recommendation_score", ascending=False)
 display_cols = [
     "web_name", "team_short", "position", "recommendation_score",
     "confidence_adjusted", "rotation_risk", "next_opponent", "opponent_multiplier",
-    "form", "ep_next", "expected_minutes",
+    "form", "recency_weighted_form", "ep_next", "expected_minutes",
 ]
 
 print("=== Top 20 by recommendation score ===")
