@@ -39,6 +39,9 @@ export default function RootLayout({
           <Link href="/squad" className="text-black dark:text-zinc-50">
             My Squad
           </Link>
+          <Link href="/optimizer" className="text-black dark:text-zinc-50">
+            Optimizer
+          </Link>
           <Link href="/differentials" className="text-black dark:text-zinc-50">
             Differentials
           </Link>

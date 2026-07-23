@@ -158,6 +158,40 @@ frontend/   Next.js (TypeScript) web app
   gameweeks") rather than single-gameweek point predictions, which is
   both more accurate and closer to how FPL managers actually plan
   transfers anyway.
+- `optimizer.py` is a real integer-linear-programming solver (PuLP,
+  bundled CBC), not a ranking - the biggest gap found by the project
+  sense-check against the rest of the FPL tooling market (even free
+  open-source projects commonly solve the constrained transfer decision
+  this way; this app previously only ranked players). `optimize_best_squad()`
+  finds the provably optimal 15/XI/captain under budget alone (Wildcard/
+  Free Hit case); `optimize_transfers()` does the same starting from an
+  existing squad, weighing predicted points gained against the -4 hit
+  per transfer beyond the free allowance - the solver decides transfer
+  *count* itself, and correctly returns 0 transfers when a squad is
+  already optimal (needed a small tie-breaking term in the objective,
+  `-0.0001 * transfers_out`, since without it the solver could report a
+  "phantom" transfer between two equally-worthless bench players that
+  changed nothing). Both are built on `predict_multi_gw_points()`, not
+  the single-gameweek predictor, matching the multi-week finding above.
+  Exposed via `/api/optimizer/best-squad` and
+  `/api/squad/{team_id}/optimize-transfers`, and a new Optimizer page
+  in the frontend with both modes.
+  **v1 simplification**: treats a player's current price as their sale
+  price for transfer purposes, which isn't always exactly true in real
+  FPL (selling a risen-in-price player only refunds part of the profit)
+  - not exposed by this project's current data sources, documented the
+  same way as team_model.py's other approximations.
+  **Also discovered while building this**: FPL appears to reset/purge
+  manager pick history at each season boundary - a real, previously
+  fetchable team id (`1178869`, used by `fetch_my_team.py`) now returns
+  "No Entry matches the given query", and even fetching a fresh
+  low-numbered id (`entry/1/`) shows a `joined_time` of today, not an
+  established account. This means `/api/squad/{team_id}/optimize-transfers`
+  (and the pre-existing `/api/squad/{team_id}` and
+  `/api/squad/{team_id}/chips`) currently can't be demoed against a real
+  historical 2025/26 squad - only against a squad from a gameweek that
+  manager's picks still exist for. Not fully worked around yet; flagged
+  clearly in the Optimizer page's UI rather than silently broken.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
 

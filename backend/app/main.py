@@ -25,8 +25,11 @@ from analysis import (
     compute_fixture_difficulty,
     compute_player_scores,
     ensure_data_fetched,
+    fetch_entry_picks,
+    load_bootstrap,
     top_differentials,
 )
+from optimizer import build_player_pool, optimize_best_squad, optimize_transfers
 from team_model import predict_multi_gw_points, predict_player_points
 
 load_dotenv()
@@ -131,6 +134,35 @@ def player_predicted_points_outlook(
     return df.sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
 
 
+ARCHIVED_BOOTSTRAP_FILE = "bootstrap_static_2025_26_final.json"
+ARCHIVED_FIXTURES_FILE = "fixtures_2025_26_final.json"
+
+
+@app.get("/api/optimizer/best-squad")
+def optimizer_best_squad(
+    reference_date: str = "2025-11-30",
+    next_event: int = 10,
+    gw_count: int = 5,
+    budget: int = 1000,
+):
+    """
+    The provably optimal 15-man squad (and starting XI + captain) under
+    budget alone - see optimizer.py. Optimizes against
+    predict_multi_gw_points(), not a single gameweek, for the same
+    reason the Outlook page does: multi-week predictions track reality
+    meaningfully better, and a squad is meant to hold for more than one
+    week. budget is in £0.1m units (1000 = £100.0m, the standard start).
+    """
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    next_events = list(range(next_event, next_event + gw_count))
+    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    predicted = predict_multi_gw_points(
+        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+    )
+    pool = build_player_pool(predicted, bootstrap)
+    return optimize_best_squad(pool, budget=budget)
+
+
 @app.get("/api/squad/{team_id}")
 def squad_analysis(
     team_id: int,
@@ -147,3 +179,37 @@ def squad_analysis(
 @app.get("/api/squad/{team_id}/chips")
 def chip_strategy(team_id: int, scan_start_event: int = 24, scan_end_event: int = 37):
     return build_chip_strategy(team_id, scan_start_event, scan_end_event)
+
+
+@app.get("/api/squad/{team_id}/optimize-transfers")
+def squad_optimize_transfers(
+    team_id: int,
+    event: int = 38,
+    reference_date: str = "2025-11-30",
+    next_event: int = 10,
+    gw_count: int = 5,
+    free_transfers: int = 1,
+    max_transfers: Optional[int] = None,
+):
+    """
+    Fetches this manager's real squad (picks + bank) for `event`, then
+    finds the provably optimal set of transfers - see optimizer.py.
+    Note: FPL appears to reset/purge manager pick history at each
+    season boundary (confirmed directly - a real, previously-used team
+    id returned "No Entry matches" once 2026/27's calendar went live),
+    so `event` needs to be a gameweek this manager's picks still exist
+    for; there's currently no way to fetch a genuinely historical
+    2025/26 squad through this endpoint until that's better understood.
+    """
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    picks_data = fetch_entry_picks(team_id, event)
+    current_squad_ids = [pick["element"] for pick in picks_data["picks"]]
+    bank = picks_data["entry_history"]["bank"]
+
+    next_events = list(range(next_event, next_event + gw_count))
+    bootstrap = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    predicted = predict_multi_gw_points(
+        ref_date, next_events, bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+    )
+    pool = build_player_pool(predicted, bootstrap)
+    return optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)
