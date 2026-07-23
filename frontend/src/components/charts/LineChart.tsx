@@ -1,5 +1,5 @@
 type Point = { x: number; y: number };
-type Series = { label: string; color: string; points: Point[] };
+type Series = { label: string; color: string; points: Point[]; dashed?: boolean };
 
 const VIEW_WIDTH = 640;
 const PAD = { top: 12, right: 12, bottom: 24, left: 36 };
@@ -61,7 +61,8 @@ export function LineChart({
             points={s.points.map((p) => `${toSvgX(p.x)},${toSvgY(p.y)}`).join(" ")}
             fill="none"
             stroke={s.color}
-            strokeWidth={2}
+            strokeWidth={s.dashed ? 1.5 : 2}
+            strokeDasharray={s.dashed ? "6 4" : undefined}
             strokeLinejoin="round"
             strokeLinecap="round"
           />

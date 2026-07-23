@@ -352,6 +352,22 @@ conventions rather than dropped in as-is. No dark mode.
   played). `/leagues` shows a manager's classic mini-leagues, their
   standings, and a gameweek-by-gameweek total-points line chart per
   member.
+  - **Player comparison, on the detail page.** Add up to 4 other
+    players (search by name/team) to compare side-by-side against
+    whoever's page you're on - predicted-points breakdown and 2025/26
+    season totals as a table, each comparison column marked with a
+    green ▲/red ▼ against the primary player's number, plus every
+    added player's gameweek-by-gameweek points overlaid on the same
+    chart (`frontend/src/lib/palette.ts` picks each line's color,
+    deliberately skipping the primary player's hardcoded pl-purple -
+    that color is also the palette's first entry, so naively indexing
+    into it for the first comparison player recreated the exact same
+    color and made the two lines indistinguishable until caught).
+    With no comparison players added, the chart instead overlays a
+    dashed least-squares trend line (`frontend/src/lib/trend.ts`) over
+    the single player's raw points, since one jagged line alone shows
+    less about form direction than the same line with a trend
+    through it.
   - **Two id-space bugs, found and fixed in the same pass.** Several of
     these endpoints score players against the *archived* 2025/26
     bootstrap (`/api/players/scores`, `/api/players/predicted-points-outlook`,
