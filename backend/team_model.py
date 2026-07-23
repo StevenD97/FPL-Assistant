@@ -74,6 +74,11 @@ DEFENSIVE_CONTRIBUTION_POINTS = 2
 
 DEFAULT_TEAM_STRENGTH = {"attack_home": 1.0, "attack_away": 1.0, "defence_home": 1.0, "defence_away": 1.0}
 
+# How many "pseudo-games" worth of trust in the league average to blend into a
+# team's attack/defence ratios - see _shrink_ratio. Higher = more conservative
+# (needs more games before trusting a team-specific ratio over the average).
+SHRINKAGE_GAMES = 3
+
 # Personal-history stats pulled via compute_recency_weighted_stat - every
 # category that isn't derivable from the Stage 1 team-goals model.
 HISTORY_STAT_COLUMNS = [
@@ -135,20 +140,40 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
     for team_id, team_matches in matches.groupby("team_id"):
         team_home = team_matches[team_matches["was_home"]]
         team_away = team_matches[~team_matches["was_home"]]
-        home_attack = weighted_mean(team_home, "goals_for")
-        away_attack = weighted_mean(team_away, "goals_for")
-        home_defence = weighted_mean(team_home, "goals_against")
-        away_defence = weighted_mean(team_away, "goals_against")
+        home_weight = team_home["weight"].sum()
+        away_weight = team_away["weight"].sum()
         strengths[team_id] = {
-            "attack_home": home_attack / avg_home_goals if home_attack is not None else 1.0,
-            "attack_away": away_attack / avg_away_goals if away_attack is not None else 1.0,
+            "attack_home": _shrink_ratio(weighted_mean(team_home, "goals_for"), home_weight, avg_home_goals),
+            "attack_away": _shrink_ratio(weighted_mean(team_away, "goals_for"), away_weight, avg_away_goals),
             # Conceded-at-home is compared against the away-scoring average (what
             # a typical away side would put past them), and vice versa.
-            "defence_home": home_defence / avg_away_goals if home_defence is not None else 1.0,
-            "defence_away": away_defence / avg_home_goals if away_defence is not None else 1.0,
+            "defence_home": _shrink_ratio(weighted_mean(team_home, "goals_against"), home_weight, avg_away_goals),
+            "defence_away": _shrink_ratio(weighted_mean(team_away, "goals_against"), away_weight, avg_home_goals),
         }
 
     return strengths, {"avg_home_goals": avg_home_goals, "avg_away_goals": avg_away_goals}
+
+
+def _shrink_ratio(weighted_value, weight_sum, league_avg, shrinkage_games=SHRINKAGE_GAMES):
+    """
+    Shrinks a raw ratio (weighted_value / league_avg) toward the
+    league-average ratio of 1.0, in proportion to how much recency-
+    weighted evidence backs it. Without this, a team with only 1-2
+    games of history (or a home/away split with barely any recent
+    weight) can produce a ratio driven entirely by noise - the backtest
+    found a defence_home ratio of 4.16 and a defence_away ratio of
+    exactly 0.0 this way, and predict_fixture_xg multiplying two such
+    ratios together produced a nonsensical ~8 expected goals for a
+    single match (see README). shrinkage_games is how many "pseudo-
+    games" worth of prior trust in the league average to blend in -
+    weight_sum needs to be that large before the raw ratio gets even
+    half its normal say.
+    """
+    if weighted_value is None or weight_sum == 0:
+        return 1.0
+    raw_ratio = weighted_value / league_avg
+    shrinkage = weight_sum / (weight_sum + shrinkage_games)
+    return shrinkage * raw_ratio + (1 - shrinkage) * 1.0
 
 
 def predict_fixture_xg(home_team_id, away_team_id, team_strengths, league_avgs):
