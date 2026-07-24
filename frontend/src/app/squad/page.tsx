@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { useTeam } from "@/components/team/TeamProvider";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card, StatTile } from "@/components/ui/Card";
@@ -104,6 +105,8 @@ export default function SquadPage() {
   const [alternatives, setAlternatives] = useState<Alternative[] | null>(null);
   const [alternativesLoading, setAlternativesLoading] = useState(false);
 
+  const { teamId: connectedId } = useTeam();
+
   async function loadAlternatives(liveId: number, name: string) {
     if (suggestFor?.liveId === liveId) {
       setSuggestFor(null);
@@ -138,14 +141,14 @@ export default function SquadPage() {
     }
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  async function loadSquad(id: string) {
+    if (!id) return;
     setLoading(true);
     setError(null);
     setData(null);
     try {
-      setData(await fetchJson(`${API_URL}/api/squad/${teamId}`));
-      loadOptimizer(teamId); // fires automatically alongside the squad view, not gated on a separate action
+      setData(await fetchJson(`${API_URL}/api/squad/${id}`));
+      loadOptimizer(id); // fires automatically alongside the squad view, not gated on a separate action
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -153,14 +156,30 @@ export default function SquadPage() {
     }
   }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    loadSquad(teamId);
+  }
+
+  // If a team is connected via the sidebar, prefill the field and load it
+  // automatically - no need to re-type the ID on this page.
+  useEffect(() => {
+    if (connectedId != null) {
+      setTeamId(String(connectedId));
+      loadSquad(String(connectedId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectedId]);
+
   return (
-    <main className="min-h-screen bg-white p-8">
+    <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
           My squad
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
-          Enter your team ID for squad analysis and suggested transfers (demo data: GW38, 2025/26).
+          Enter your team ID - or connect your team once in the sidebar and it loads here automatically.
+          Squad analysis and suggested transfers (demo data: GW38, 2025/26).
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
           <TextField

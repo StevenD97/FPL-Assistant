@@ -218,8 +218,8 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
     setCompareList((prev) => prev.filter((p) => p.id !== playerId));
   }
 
-  if (loading) return <main className="min-h-screen bg-white p-8"><p className="mx-auto max-w-4xl text-text-muted">Loading...</p></main>;
-  if (error || !data) return <main className="min-h-screen bg-white p-8"><p className="mx-auto max-w-4xl text-sm font-medium text-danger">{error ?? "Player not found"}</p></main>;
+  if (loading) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-4xl text-text-muted">Loading...</p></main>;
+  if (error || !data) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-4xl text-sm font-medium text-danger">{error ?? "Player not found"}</p></main>;
 
   const p = data;
   const comparing = compareList.length > 0;
@@ -245,10 +245,10 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
       ];
 
   return (
-    <main className="min-h-screen bg-white p-8">
+    <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <h1 className="font-sans text-2xl font-bold text-pl-purple">
+          <h1 className="font-sans text-lg font-bold tracking-tight text-pl-purple">
             {p.first_name} {p.second_name}
           </h1>
           <PositionBadge position={p.position} />
