@@ -8,6 +8,7 @@ import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { fetchJson } from "@/lib/api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -113,9 +114,7 @@ export default function SquadPage() {
     setAlternatives(null);
     setAlternativesLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/players/${liveId}/alternatives?limit=5`);
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setAlternatives(await res.json());
+      setAlternatives(await fetchJson(`${API_URL}/api/players/${liveId}/alternatives?limit=5`));
     } catch {
       setAlternatives([]);
     } finally {
@@ -128,11 +127,7 @@ export default function SquadPage() {
     setOptimizerError(null);
     setOptimizer(null);
     try {
-      const res = await fetch(
-        `${API_URL}/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`
-      );
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setOptimizer(await res.json());
+      setOptimizer(await fetchJson(`${API_URL}/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`));
     } catch (err) {
       // Suggested transfers are a bonus on top of the squad view, not a
       // blocker - if this fails (e.g. FPL's picks-history reset - see
@@ -149,9 +144,7 @@ export default function SquadPage() {
     setError(null);
     setData(null);
     try {
-      const res = await fetch(`${API_URL}/api/squad/${teamId}`);
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setData(await res.json());
+      setData(await fetchJson(`${API_URL}/api/squad/${teamId}`));
       loadOptimizer(teamId); // fires automatically alongside the squad view, not gated on a separate action
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

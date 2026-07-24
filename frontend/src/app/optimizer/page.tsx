@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { TextField } from "@/components/ui/TextField";
 import { Alert } from "@/components/ui/Alert";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { fetchJson } from "@/lib/api";
 
 type SquadRow = {
   id: number;
@@ -115,11 +116,11 @@ function BestSquadPanel() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `${API_URL}/api/optimizer/best-squad?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&budget=${budget}`
+      setResult(
+        await fetchJson(
+          `${API_URL}/api/optimizer/best-squad?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&budget=${budget}`
+        )
       );
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setResult(await res.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -210,11 +211,11 @@ function TransfersPanel() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `${API_URL}/api/squad/${teamId}/optimize-transfers?event=${event}&reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&free_transfers=${freeTransfers}`
+      setResult(
+        await fetchJson(
+          `${API_URL}/api/squad/${teamId}/optimize-transfers?event=${event}&reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&free_transfers=${freeTransfers}`
+        )
       );
-      if (!res.ok) throw new Error(`Request failed (${res.status}) - this manager's picks may not exist for GW${event} anymore`);
-      setResult(await res.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {

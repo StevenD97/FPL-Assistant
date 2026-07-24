@@ -226,8 +226,34 @@ conventions rather than dropped in as-is. No dark mode.
   (and the pre-existing `/api/squad/{team_id}` and
   `/api/squad/{team_id}/chips`) currently can't be demoed against a real
   historical 2025/26 squad - only against a squad from a gameweek that
-  manager's picks still exist for. Not fully worked around yet; flagged
-  clearly in the Optimizer page's UI rather than silently broken.
+  manager's picks still exist for. Not fully worked around yet, and not
+  even consistent within one account: a real user reported Chip Strategy
+  working with their team id while My Squad failed with it, because
+  `build_chip_strategy` derives its scan basis from the manager's own
+  `current_event` (whatever FPL still reports) while `/api/squad/{team_id}`
+  defaulted to a hardcoded `event=38` - if this manager's GW38 picks
+  specifically aren't servable anymore but an earlier gameweek still is,
+  one endpoint works and the other doesn't for the exact same team id.
+  **A second, compounding bug found alongside it**: these three endpoints
+  called `fetch_entry_info`/`fetch_entry_picks` without catching the
+  `requests.HTTPError` FPL's 404 raises, so the failure reached the
+  frontend as an unhandled exception - a raw Starlette 500. Confirmed
+  directly against the deployed backend that this is worse than just an
+  unhelpful error: Starlette's `ServerErrorMiddleware` (which catches
+  genuinely unhandled exceptions) sits *outside* `CORSMiddleware` in the
+  default middleware stack, so that 500 response never gets an
+  `Access-Control-Allow-Origin` header - the browser blocks the frontend
+  from ever reading it, and `fetch()` throws a bare, unexplained "Failed
+  to fetch" instead of anything mentioning FPL, picks, or a season
+  boundary. HTTPExceptions (already used elsewhere, e.g. `/api/players/{id}`'s
+  404) don't have this problem - FastAPI's own exception handling for
+  those sits *inside* CORSMiddleware, so the headers get added correctly
+  (verified with curl against both a raw-exception and an HTTPException
+  endpoint on the live deployment - only the former was missing the
+  header). All three endpoints now catch the FPL HTTPError and re-raise
+  as an HTTPException with a message that actually explains what
+  happened, and the frontend (`frontend/src/lib/api.ts`'s `fetchJson`)
+  surfaces that message instead of a generic "Request failed (404)".
 - **Squad Builder** (`/squad-builder`) is a manual drafting tool, distinct
   from both `optimizer.py` (automated, from-scratch or transfer-based)
   and My Squad (views a real existing squad): pick your own 15 within

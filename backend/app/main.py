@@ -276,6 +276,14 @@ def squad_builder_fixtures(next_event: int = 1, gw_count: int = 5):
     ).to_dict(orient="records")
 
 
+def _not_found_detail(team_id, event):
+    return (
+        f"No picks found for team {team_id} at GW{event}. FPL appears to reset/purge "
+        "manager pick history at each season boundary, so a gameweek that isn't this "
+        "manager's most recent one may no longer be fetchable via the live API - see README."
+    )
+
+
 @app.get("/api/squad/{team_id}")
 def squad_analysis(
     team_id: int,
@@ -285,13 +293,42 @@ def squad_analysis(
     fixture_start_event: int = 10,
     window_size: int = 5,
 ):
+    """
+    Note: fetch_entry_info/fetch_entry_picks (called deep inside
+    build_squad_analysis) raise a raw requests.HTTPError on a 404 from
+    FPL's API - very common right now given the season-boundary reset
+    above. Left unhandled, that becomes a 500 with NO CORS headers
+    (confirmed directly against the deployed backend: Starlette's
+    ServerErrorMiddleware, which catches genuinely unhandled exceptions,
+    sits *outside* CORSMiddleware, so error responses it generates never
+    get Access-Control-Allow-Origin - only exceptions FastAPI itself
+    handles, like HTTPException, flow back through CORSMiddleware
+    correctly). The browser then reports a bare, unreadable "Failed to
+    fetch" instead of surfacing any real error message - this is why
+    that message doesn't explain itself. Converting to HTTPException
+    here fixes both problems: a proper CORS-correct response, and an
+    explanation the frontend can actually show.
+    """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
-    return build_squad_analysis(team_id, event, ref_date, next_event, fixture_start_event, window_size)
+    try:
+        return build_squad_analysis(team_id, event, ref_date, next_event, fixture_start_event, window_size)
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response is not None else 502
+        if status == 404:
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, event))
+        raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
 @app.get("/api/squad/{team_id}/chips")
 def chip_strategy(team_id: int, scan_start_event: int = 24, scan_end_event: int = 37):
-    return build_chip_strategy(team_id, scan_start_event, scan_end_event)
+    """See squad_analysis's docstring for why FPL API errors are caught and converted here."""
+    try:
+        return build_chip_strategy(team_id, scan_start_event, scan_end_event)
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response is not None else 502
+        if status == 404:
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, scan_start_event - 1))
+        raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
 @app.get("/api/squad/{team_id}/optimize-transfers")
@@ -317,9 +354,19 @@ def squad_optimize_transfers(
     The buy/sell pool itself draws from the live 2026/27 roster, same as
     optimizer_best_squad/squad_builder_players above - see those
     docstrings for the cross-season training/roster split.
+
+    See squad_analysis's docstring for why fetch_entry_picks' FPL API
+    errors are caught and converted to HTTPException here rather than
+    left to propagate as an unhandled exception.
     """
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
-    picks_data = fetch_entry_picks(team_id, event)
+    try:
+        picks_data = fetch_entry_picks(team_id, event)
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response is not None else 502
+        if status == 404:
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, event))
+        raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
     current_squad_ids = [pick["element"] for pick in picks_data["picks"]]
     bank = picks_data["entry_history"]["bank"]
 

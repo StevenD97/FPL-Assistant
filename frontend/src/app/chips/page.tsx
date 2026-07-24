@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { TextField } from "@/components/ui/TextField";
+import { fetchJson } from "@/lib/api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -39,9 +40,7 @@ export default function ChipsPage() {
     setError(null);
     setData(null);
     try {
-      const res = await fetch(`${API_URL}/api/squad/${teamId}/chips`);
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setData(await res.json());
+      setData(await fetchJson(`${API_URL}/api/squad/${teamId}/chips`));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
