@@ -425,6 +425,22 @@ conventions rather than dropped in as-is. No dark mode.
     of requests for a large public league.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
+- **Backend cold starts on Render's free tier.** The deployed backend
+  (`fpl-assistant-backend`, see `render.yaml`) runs on Render's free
+  plan, which spins the service down after ~15 minutes of no traffic -
+  the next request pays for both the container cold-start and (since
+  the free plan's disk is ephemeral) re-fetching `bootstrap-static`/
+  `fixtures` live from the FPL API via `ensure_data_fetched()`, on top
+  of the actual model computation. Measured: ~35s on a genuinely cold
+  request, ~3s once warm (the warm number is real work now - see the
+  caching entry above; the cold number is almost entirely Render spin-up,
+  not app code). `.github/workflows/keep-backend-alive.yml` pings
+  `/api/health` every 10 minutes (inside Render's 15-minute idle window)
+  to keep the free instance from sleeping at all - remove that workflow
+  if the backend ever moves to a plan that doesn't sleep, since it'd be
+  dead weight at that point. A paid Render plan removes the sleep/ephemeral-disk
+  behavior entirely and is the more robust long-term fix, but that's a
+  hosting-cost decision, not something this repo can decide on its own.
 
 ## Setup
 

@@ -1,0 +1,20 @@
+name: Keep backend alive
+
+# Render's free tier spins the backend down after ~15 minutes with no
+# traffic, and the next request pays for both the container cold-start
+# and re-fetching bootstrap-static/fixtures from the live FPL API (the
+# free plan's disk is ephemeral - see README). Pinging /api/health well
+# inside that 15-minute window keeps it warm instead. Remove this
+# workflow if the backend ever moves off a plan that sleeps.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: curl -sf --max-time 60 https://fpl-assistant-backend-wxtz.onrender.com/api/health
