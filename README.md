@@ -262,6 +262,28 @@ conventions rather than dropped in as-is. No dark mode.
   re-ran the full backtest (identical Pearson r/Spearman/MAE numbers to
   the existing baseline above). Measured warm-cache improvement:
   `/api/squad-builder/players` dropped from ~1.4s to ~0.7s.
+- **Caching, once the page count grew.** As more pages landed on the same
+  prediction pipeline (`/api/players`, player detail, alternatives, on
+  top of Squad Builder/Optimizer/Outlook), that remaining ~0.7s per
+  request turned out to still be dominated by two things happening from
+  scratch on *every single call*: `load_bootstrap()`/`load_fixtures()`
+  re-parsing the same ~1.4-2.7MB JSON files (they were never cached,
+  unlike `load_gw_history()`), and the full per-player, per-gameweek
+  prediction loop re-running even when `_build_prediction_context()`'s
+  setup was already cached. Fixed with `@lru_cache` in three places:
+  `load_bootstrap`/`load_fixtures` (keyed by filename - these files
+  don't change during a process's lifetime anyway), `_build_prediction_context`
+  (keyed by its own arguments - `datetime` hashes by value, so the same
+  demo reference_date across requests hits the cache), and a new
+  `_predict_multi_gw_breakdown_cached` inner function behind
+  `predict_multi_gw_breakdown`/`predict_multi_gw_points` (keyed the same
+  way, with `next_events` converted to a tuple since lru_cache needs
+  hashable arguments and it's normally a list). Measured: `/api/players`
+  warm-cache dropped from ~700ms to ~20-60ms - about 15-20x - with the
+  first request per process still paying the full ~1.5s cold cost once.
+  Verified as behavior-preserving the same way as above: identical
+  top-N predicted-points output before/after, both on the archived-only
+  path (Outlook/backtest) and the live-roster path.
 - **Drafting from the live 2026/27 roster**: Squad Builder and every
   Optimizer endpoint (`/api/optimizer/best-squad`,
   `/api/squad-builder/players`+`/fixtures`,

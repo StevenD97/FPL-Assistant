@@ -41,6 +41,7 @@ Run with: venv\\Scripts\\python.exe team_model.py
 import math
 import sys
 from datetime import datetime
+from functools import lru_cache
 
 import pandas as pd
 
@@ -491,6 +492,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     return _predict_for_event(context, next_event)
 
 
+@lru_cache(maxsize=32)
 def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
                                shrinkage_games, apply_live_signals,
                                roster_bootstrap_file=None, roster_fixtures_file=None):
@@ -503,6 +505,18 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     predict_multi_gw_points() does below; predict_player_points() builds
     one fresh per call for a single gameweek, exactly as before this was
     split out.
+
+    Cached: this is the expensive part (recency-weighted team strengths,
+    involvement shares, appearance probabilities, and personal history
+    rates, each scanning the full gw_history archive) and nearly every
+    caller across the app hits it with the exact same default arguments
+    (the demo reference_date, live vs archived bootstrap/fixtures) - so
+    without caching, every single page load recomputed all of it from
+    scratch. Safe to cache: every downstream reader (_predict_for_event)
+    treats the returned dict/DataFrame as read-only, building fresh
+    objects rather than mutating anything in it when live signals need
+    to adjust a player's numbers - see the "Fresh dicts, not in-place
+    mutation" comment below.
 
     See predict_player_points' docstring for roster_bootstrap_file/
     roster_fixtures_file - when set, the *training* data (bootstrap_file/
@@ -646,11 +660,36 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
     See predict_player_points' docstring for why bootstrap_file/fixtures_file/
     season must stay in sync, and for roster_bootstrap_file/roster_fixtures_file.
 
-    Builds one prediction context (team strengths, involvement shares,
-    appearance probabilities, history rates) and reuses it across every
-    gameweek in next_events, rather than recomputing it once per gameweek -
-    all of that depends only on reference_date, which doesn't change across
-    the window (see README on the ~5x cost this avoided).
+    Thin, cache-friendly wrapper around _predict_multi_gw_breakdown_cached:
+    next_events comes in as a list (needed elsewhere as range(...)), but
+    lru_cache needs hashable arguments, so it's converted to a tuple here
+    before the cached call.
+    """
+    result = _predict_multi_gw_breakdown_cached(
+        reference_date, tuple(next_events), half_life_days, season, bootstrap_file, fixtures_file,
+        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file,
+    )
+    return result.copy()
+
+
+@lru_cache(maxsize=32)
+def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_days, season, bootstrap_file,
+                                        fixtures_file, shrinkage_games, apply_live_signals,
+                                        roster_bootstrap_file, roster_fixtures_file):
+    """
+    The actual per-player, per-gameweek prediction loop, cached - almost
+    every caller across the app (players list, player detail, squad
+    builder, optimizer, alternatives) hits this with the same default
+    reference_date/window, and even with _build_prediction_context's setup
+    already cached, re-running the O(players x gameweeks) Poisson loop
+    from scratch on every request was still the dominant cost (measured:
+    ~450ms per /api/players call after caching the context alone, vs
+    single-digit ms once this loop's own result is cached too). Returns
+    the same DataFrame object across calls - predict_multi_gw_breakdown()
+    above copies it before handing it to a caller, since every reader in
+    this codebase only merges/filters (which already return new frames)
+    rather than mutating in place, but a defensive copy at this one
+    boundary is cheap insurance against that changing later.
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,

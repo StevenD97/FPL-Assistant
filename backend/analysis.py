@@ -57,14 +57,27 @@ def ensure_data_fetched():
             json.dump(response.json(), f)
 
 
+@lru_cache(maxsize=None)
 def load_bootstrap(filename="bootstrap_static.json"):
-    """filename lets backtest.py point this at bootstrap_static_2025_26_final.json instead."""
+    """
+    filename lets backtest.py point this at bootstrap_static_2025_26_final.json
+    instead. Cached per filename: every predicted-points endpoint (players
+    list, player detail, squad builder, optimizer) loads the same handful
+    of files repeatedly per request - measured ~50-75ms per parse of the
+    ~1.4-2.7MB bootstrap JSON, called 3-5x over in a single /api/players
+    request alone before this was cached, since each layer (the endpoint,
+    _build_prediction_context, the season-stats remap) used to load its
+    own copy independently. These files don't change during a process's
+    lifetime anyway (ensure_data_fetched only ever writes them once, at
+    startup, if missing) - see load_gw_history for the same pattern.
+    """
     with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
 
+@lru_cache(maxsize=None)
 def load_fixtures(filename="fixtures.json"):
-    """filename lets backtest.py point this at fixtures_2025_26_final.json instead."""
+    """filename lets backtest.py point this at fixtures_2025_26_final.json instead. Cached - see load_bootstrap."""
     with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
