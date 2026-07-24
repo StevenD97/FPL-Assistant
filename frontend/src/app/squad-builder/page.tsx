@@ -26,6 +26,10 @@ type PoolPlayer = {
   status: string;
   news: string;
   penalties_order: number;
+  direct_freekicks_order: number;
+  corners_and_indirect_freekicks_order: number;
+  appearance_points: number;
+  fixture_count: number;
   fixture_ticker: string;
   cost: number;
 };
@@ -65,6 +69,34 @@ const TOUGH_FIXTURE_THRESHOLD = 3.2; // rough FDR (1-5 scale) worth flagging
 const STRONG_FIXTURE_TEAMS_TO_CHECK = 4;
 const MAX_SUGGESTIONS = 3;
 const MAX_BROWSER_ROWS = 40;
+// Below this share of a "nailed" starter's appearance_points (max ~2.0 per
+// fixture: p_any + p_60_plus, see team_model.py's _fixture_points), a
+// player's own recent minutes history says they're not a safe starter.
+const ROTATION_RISK_THRESHOLD = 1.3;
+// How many of the position's best-predicted players to treat as "the
+// relevant market" when judging whether a squad player's price or output
+// is below par - comparing against the full ~140-per-position pool
+// (mostly bench fodder that'll never play) would set a bar too low to be
+// useful; this narrows it to players actually worth comparing against.
+const RELEVANT_POOL_SIZE = 24;
+const STATUS_WORDS: Record<string, string> = {
+  d: "a doubt", i: "injured", s: "suspended", u: "unavailable", n: "not in the squad",
+};
+
+function relevantPoolByPosition(allPlayers: PoolPlayer[]): Record<Position, PoolPlayer[]> {
+  const result = {} as Record<Position, PoolPlayer[]>;
+  for (const pos of POSITION_ORDER) {
+    result[pos] = allPlayers
+      .filter((p) => p.position === pos)
+      .sort((a, b) => b.predicted_points - a.predicted_points)
+      .slice(0, RELEVANT_POOL_SIZE);
+  }
+  return result;
+}
+
+function mean(values: number[]): number {
+  return values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : 0;
+}
 
 function computeDiagnostics(
   squad: PoolPlayer[],
@@ -130,6 +162,93 @@ function computeDiagnostics(
     issues.push({ severity: "warning", message });
     const suggestions = topSuggestions(allPlayers.filter((p) => p.penalties_order === 1));
     if (suggestions.length > 0) recommendations.push({ issueMessage: message, suggestions });
+  }
+
+  // No recognized primary direct free-kick taker.
+  if (!squad.some((p) => p.direct_freekicks_order === 1)) {
+    const message = "No recognized primary free-kick taker - a low-frequency but high-value extra goal source.";
+    issues.push({ severity: "info", message });
+    const suggestions = topSuggestions(allPlayers.filter((p) => p.direct_freekicks_order === 1));
+    if (suggestions.length > 0) recommendations.push({ issueMessage: message, suggestions });
+  }
+
+  // No recognized primary corner/indirect free-kick taker.
+  if (!squad.some((p) => p.corners_and_indirect_freekicks_order === 1)) {
+    const message = "No recognized primary corner-taker - missing a source of assists from set-piece deliveries.";
+    issues.push({ severity: "info", message });
+    const suggestions = topSuggestions(allPlayers.filter((p) => p.corners_and_indirect_freekicks_order === 1));
+    if (suggestions.length > 0) recommendations.push({ issueMessage: message, suggestions });
+  }
+
+  // Injured/doubtful/suspended players already in the squad - easy to miss
+  // as just a small badge on the row, worth calling out explicitly.
+  for (const p of squad) {
+    if (p.status && p.status !== "a") {
+      const word = STATUS_WORDS[p.status] ?? "flagged";
+      const message = `${p.web_name} is ${word}${p.news ? ` (${p.news})` : ""} - consider a replacement while it's unresolved.`;
+      issues.push({ severity: "warning", message });
+      const suggestions = topSuggestions(allPlayers.filter((alt) => alt.position === p.position && alt.status === "a"));
+      if (suggestions.length > 0) recommendations.push({ issueMessage: `Replace ${p.web_name}`, suggestions });
+    }
+  }
+
+  // Rotation/gametime risk - recent minutes history says less than a nailed start.
+  const rotationRisks = squad.filter(
+    (p) => p.fixture_count > 0 && p.appearance_points / p.fixture_count < ROTATION_RISK_THRESHOLD
+  );
+  if (rotationRisks.length > 0) {
+    issues.push({
+      severity: "info",
+      message: `Rotation/gametime risk: ${rotationRisks
+        .map((p) => `${p.web_name} (~${((p.appearance_points / p.fixture_count / 2) * 100).toFixed(0)}% of a nailed starter's minutes)`)
+        .join(", ")}.`,
+    });
+  }
+
+  // Value and output vs the relevant market at each position (see
+  // RELEVANT_POOL_SIZE) - comparing every squad player against the
+  // players actually worth comparing them to, not the whole ~140-deep
+  // position pool most of which will never play.
+  const relevantPool = relevantPoolByPosition(allPlayers);
+  const relevantAvg: Record<Position, { value: number; points: number }> = {} as Record<
+    Position,
+    { value: number; points: number }
+  >;
+  for (const pos of POSITION_ORDER) {
+    relevantAvg[pos] = {
+      value: mean(relevantPool[pos].map((p) => p.value)),
+      points: mean(relevantPool[pos].map((p) => p.predicted_points)),
+    };
+  }
+
+  for (const p of squad) {
+    const avg = relevantAvg[p.position];
+    if (avg.value > 0 && p.value < avg.value * 0.7) {
+      const message = `${p.web_name} returns ${p.value.toFixed(2)} pts/£m, well below the ${p.position} average of ${avg.value.toFixed(
+        2
+      )} among comparable players - his price isn't earning its keep.`;
+      issues.push({ severity: "info", message });
+      const suggestions = allPlayers
+        .filter((alt) => alt.position === p.position && alt.id !== p.id && !squadIds.has(alt.id) && alt.cost <= p.cost + budgetRemaining)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, MAX_SUGGESTIONS);
+      if (suggestions.length > 0) recommendations.push({ issueMessage: message, suggestions });
+    }
+  }
+
+  for (const pos of POSITION_ORDER) {
+    const squadAtPos = squad.filter((p) => p.position === pos);
+    if (squadAtPos.length === 0) continue;
+    const squadAvgPts = mean(squadAtPos.map((p) => p.predicted_points));
+    const avg = relevantAvg[pos];
+    if (avg.points > 0 && squadAvgPts < avg.points * 0.75) {
+      issues.push({
+        severity: "info",
+        message: `Your ${pos}s average ${squadAvgPts.toFixed(1)} predicted points this window, well below the ${avg.points.toFixed(
+          1
+        )} average among the position's top performers - an upgrade here would move the needle most.`,
+      });
+    }
   }
 
   return { issues, recommendations };

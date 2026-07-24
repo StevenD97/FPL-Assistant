@@ -224,11 +224,18 @@ def squad_builder_players(
     """
     The full player pool for the manual Squad Builder page: id, cost,
     predicted_points (multi-gameweek, same rationale as the optimizer
-    endpoints above), position, team, penalties_order (for the "no
-    penalty taker" diagnostic), value (points per £m), ownership %, and
-    live availability status/news. Fetched once by the frontend and used
-    to compute every draft diagnostic client-side as the user
-    adds/removes players - no round trip per click.
+    endpoints above), position, team, set-piece duty order (penalties,
+    direct free-kicks, corners/indirect free-kicks - for the "no
+    taker" diagnostics), appearance_points (a 0-2-per-fixture proxy for
+    how nailed a starting spot is - see _fixture_points in team_model.py;
+    used for the rotation-risk diagnostic), value (points per £m),
+    ownership %, and live availability status/news. Fetched once by the
+    frontend and used to compute every draft diagnostic client-side as
+    the user adds/removes players - no round trip per click.
+
+    Uses predict_multi_gw_breakdown() rather than predict_multi_gw_points()
+    specifically to get appearance_points - the same underlying model,
+    just not collapsed down to predicted_points alone.
 
     Drafts from the live 2026/27 roster - see optimizer_best_squad's
     docstring above for the cross-season training/roster split.
@@ -236,7 +243,7 @@ def squad_builder_players(
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    predicted = predict_multi_gw_points(
+    predicted = predict_multi_gw_breakdown(
         ref_date, next_events,
         half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
         bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
@@ -246,7 +253,8 @@ def squad_builder_players(
     pool = build_player_pool(predicted, bootstrap)
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
-        "selected_by_percent", "status", "news", "penalties_order", "fixture_ticker",
+        "selected_by_percent", "status", "news", "penalties_order", "direct_freekicks_order",
+        "corners_and_indirect_freekicks_order", "appearance_points", "fixture_count", "fixture_ticker",
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"})
     df["cost"] = (df["cost_raw"] / 10).round(1)

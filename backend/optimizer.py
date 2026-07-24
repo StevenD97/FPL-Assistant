@@ -43,7 +43,8 @@ DEFAULT_BUDGET = 1000  # £100.0m, the standard starting budget
 
 def build_player_pool(predicted_df, bootstrap):
     """
-    Merges now_cost + numeric team id + penalties_order + a few decision-
+    Merges now_cost + numeric team id + set-piece duty order (penalties,
+    direct free-kicks, corners/indirect free-kicks) + a few decision-
     support fields into predict_multi_gw_points()'s output - needed for
     the budget/club-limit constraints and set-piece-duty checks, plus
     context a human wants when comparing two similarly-scored players
@@ -59,9 +60,11 @@ def build_player_pool(predicted_df, bootstrap):
     constraint, not raw predicted_points alone.
     """
     extra = pd.DataFrame(bootstrap["elements"])[[
-        "id", "now_cost", "team", "penalties_order", "selected_by_percent", "status", "news",
+        "id", "now_cost", "team", "penalties_order", "direct_freekicks_order",
+        "corners_and_indirect_freekicks_order", "selected_by_percent", "status", "news",
     ]].copy()
-    extra["penalties_order"] = extra["penalties_order"].fillna(0).astype(int)
+    for col in ["penalties_order", "direct_freekicks_order", "corners_and_indirect_freekicks_order"]:
+        extra[col] = extra[col].fillna(0).astype(int)
     extra["selected_by_percent"] = extra["selected_by_percent"].astype(float)
     pool = predicted_df.merge(extra, on="id", how="inner")
     pool["value"] = (pool["predicted_points"] / (pool["now_cost"] / 10)).round(2)

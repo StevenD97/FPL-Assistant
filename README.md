@@ -231,12 +231,29 @@ conventions rather than dropped in as-is. No dark mode.
 - **Squad Builder** (`/squad-builder`) is a manual drafting tool, distinct
   from both `optimizer.py` (automated, from-scratch or transfer-based)
   and My Squad (views a real existing squad): pick your own 15 within
-  budget and get live diagnostic feedback as you go - club concentration
-  (3+ from one team), missing exposure to one of the league's easier
-  upcoming fixture runs, a tough run among teams you already own, and no
-  recognized primary penalty taker - each paired with concrete
-  affordable players (filtered to positions you still need, where any
-  remain) to fix it, one click to add.
+  budget and get live diagnostic feedback as you go, each paired with
+  concrete affordable players (filtered to positions you still need,
+  where any remain) to fix it, one click to add. Ten checks, each
+  computed from the actual squad rather than a generic template - club
+  concentration (3+ from one team), missing exposure to one of the
+  league's easier upcoming fixture runs, a tough run among teams you
+  already own, no recognized primary penalty/free-kick/corner taker (3
+  separate checks - full set-piece coverage, not just penalties),
+  injured/doubtful/suspended players already in the squad (named, with
+  FPL's own news text), rotation/gametime risk (players whose own
+  recent minutes history says they're not a nailed starter, via
+  `appearance_points` - see `team_model.py`), value per position
+  (players returning meaningfully less per £m than comparable players
+  at their position), and underperforming positions (a position whose
+  squad average predicted points sits well below what the position's
+  realistic contenders are producing). The value/underperformance
+  checks compare against the top ~24 predicted-points players at each
+  position, not the full ~140-deep pool - most of that pool is bench
+  players who'll never start, so comparing against the whole thing
+  would set a bar too low to mean anything. This was deliberately kept
+  rule-based rather than routed through an LLM: instant, free, and
+  fully deterministic, at the cost of writing (and reading) each check
+  by hand rather than asking a model to reason freeform over the squad.
   Architecturally the opposite of the optimizer endpoints: only two
   lightweight backend endpoints exist (`/api/squad-builder/players` and
   `/api/squad-builder/fixtures`, both pinned to the live 2026/27 roster -
