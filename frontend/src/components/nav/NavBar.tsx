@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Fixtures" },
+  { href: "/fixtures", label: "Fixtures" },
   { href: "/schedule", label: "Schedule" },
   { href: "/players", label: "Players" },
   { href: "/outlook", label: "Outlook" },
@@ -21,9 +21,11 @@ export function NavBar() {
 
   return (
     <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-border bg-white px-8 py-4">
-      <span className="mr-2 font-sans text-md font-bold text-pl-purple">FPL Assistant</span>
+      <Link href="/" className="mr-2 font-sans text-md font-bold text-pl-purple">
+        FPL Assistant
+      </Link>
       {NAV_ITEMS.map((item) => {
-        const active = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}
