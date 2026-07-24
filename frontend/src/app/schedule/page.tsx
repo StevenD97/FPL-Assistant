@@ -56,9 +56,9 @@ export default function SchedulePage() {
   const maxEvent = events[events.length - 1] ?? 38;
 
   return (
-    <main className="min-h-screen bg-white p-8">
+    <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
           Schedule &amp; results
         </h1>
         <p className="mb-6 text-sm text-text-secondary">2026/27 fixtures, gameweek by gameweek.</p>

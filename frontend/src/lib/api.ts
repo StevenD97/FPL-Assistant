@@ -1,3 +1,5 @@
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 // Backend error responses (FastAPI's HTTPException) carry a helpful
 // {"detail": "..."} body - e.g. explaining that FPL purges manager pick
 // history at each season boundary, not just a bare status code. Falls

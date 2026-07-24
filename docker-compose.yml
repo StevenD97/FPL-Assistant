@@ -1,0 +1,23 @@
+# Local Postgres that mirrors the production RDS engine. Runs under Podman
+# (`podman compose up -d`) or Docker. The app connects via DATABASE_URL; in
+# prod that same variable points at the RDS instance instead - no code change.
+services:
+  db:
+    image: docker.io/library/postgres:16
+    container_name: fpl-postgres
+    environment:
+      POSTGRES_USER: fpl
+      POSTGRES_PASSWORD: fpl_local_dev
+      POSTGRES_DB: fpl
+    ports:
+      - "5432:5432"
+    volumes:
+      - fpl_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fpl -d fpl"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  fpl_pgdata:

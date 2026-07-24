@@ -2,25 +2,30 @@ import type { HTMLAttributes, ReactNode } from "react";
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
   padded?: boolean;
+  active?: boolean;
   children: ReactNode;
 };
 
-export function Card({ padded = true, className = "", children, ...rest }: CardProps) {
+export function Card({ padded = true, active = false, className = "", children, ...rest }: CardProps) {
   return (
     <div
       {...rest}
-      className={`rounded-lg border border-border bg-white shadow-sm ${padded ? "p-5" : ""} ${className}`}
+      className={`rounded-lg border bg-white shadow-sm ${active ? "border-pl-purple" : "border-border"} ${
+        padded ? "p-5" : ""
+      } ${className}`}
     >
       {children}
     </div>
   );
 }
 
-export function StatTile({ label, value }: { label: string; value: ReactNode }) {
+// Compact stat readout: uppercase muted label over a bold monospace number,
+// on a sunken tile. The number carries the weight (design prototype rule).
+export function StatTile({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
-    <Card padded={false} className="p-4">
-      <p className="m-0 text-sm text-text-muted">{label}</p>
-      <p className="mt-1 text-xl font-semibold text-text-primary">{value}</p>
-    </Card>
+    <div className="flex flex-col gap-0.5 rounded-md bg-surface-sunken p-3">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-muted">{label}</span>
+      <span className="font-mono text-md font-bold text-pl-purple">{value}</span>
+    </div>
   );
 }

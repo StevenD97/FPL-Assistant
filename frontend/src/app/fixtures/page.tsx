@@ -1,5 +1,7 @@
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { FdrChip } from "@/components/ui/FdrChip";
+import { Card } from "@/components/ui/Card";
+import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 
 type Fixture = { opponent: string; is_home: boolean; difficulty: number };
 
@@ -31,26 +33,24 @@ export default async function Home() {
   const sorted = [...fixtures].sort((a, b) => (a.avg_difficulty ?? 6) - (b.avg_difficulty ?? 6));
 
   return (
-    <main className="min-h-screen bg-white p-8">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
-          Fixture difficulty
-        </h1>
-        <p className="mb-6 max-w-xl text-sm text-text-secondary">
-          Next 5 gameweeks, 2026/27, easiest run first. Player pages still use 2025/26 demo data until FPL resets stats.
-        </p>
-        <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
+    <PageContainer width="narrow">
+      <PageHeader
+        title="Fixture difficulty"
+        subtitle="Next 5 gameweeks, 2026/27, easiest run first. Player pages still use 2025/26 demo data until FPL resets stats."
+      />
+      <Card padded={false} className="overflow-hidden">
+        <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-surface-sunken">
               <tr>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Avg FDR</th>
-                <th className="px-3.5 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next 5</th>
+                <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Avg FDR</th>
+                <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Next 5</th>
               </tr>
             </thead>
             <tbody>
               {sorted.map((row) => (
-                <tr key={row.team_id} className="border-t border-border">
+                <tr key={row.team_id} className="border-t border-border transition-colors hover:bg-surface-sunken">
                   <td className="px-3.5 py-2.5 font-medium">
                     <TeamBadge teamShort={row.team} name={row.team} />
                   </td>
@@ -80,7 +80,7 @@ export default async function Home() {
             </tbody>
           </table>
         </div>
-      </div>
-    </main>
+      </Card>
+    </PageContainer>
   );
 }

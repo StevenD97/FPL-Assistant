@@ -27,6 +27,7 @@ from analysis import (
     compute_fixture_difficulty,
     compute_player_scores,
     ensure_data_fetched,
+    fetch_entry_info,
     fetch_entry_picks,
     load_bootstrap,
     load_fixtures,
@@ -80,7 +81,19 @@ PLAYER_SCORE_COLUMNS = [
 
 @app.get("/api/health")
 def health():
+    """Liveness: the process is up. Used by the keep-alive ping."""
     return {"status": "ok"}
+
+
+@app.get("/api/ready")
+def ready():
+    """Readiness: can we actually serve? Checks DB connectivity."""
+    from db.session import db_healthy
+
+    ok = db_healthy()
+    if not ok:
+        raise HTTPException(status_code=503, detail="database unavailable")
+    return {"status": "ready", "database": "ok"}
 
 
 @app.get("/api/fixtures/difficulty")
@@ -282,6 +295,46 @@ def _not_found_detail(team_id, event):
         "manager pick history at each season boundary, so a gameweek that isn't this "
         "manager's most recent one may no longer be fetchable via the live API - see README."
     )
+
+
+@app.get("/api/entry/{team_id}")
+def entry_summary(team_id: int):
+    """
+    Lightweight public lookup of a manager's headline info (name, team name,
+    overall rank, squad value, bank) for the "Connect your team" flow - just
+    hits entry/{id}/, no squad analysis. Values come back in tenths of a
+    million (last_deadline_value=1004 -> £100.4m). FPL 404s (unknown or
+    season-purged id) are converted to HTTPException so the response keeps its
+    CORS headers and the frontend can show a real message - see
+    squad_analysis's docstring for why a raw error wouldn't.
+    """
+    try:
+        info = fetch_entry_info(team_id)
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response is not None else 502
+        if status == 404:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    f"No FPL manager found for ID {team_id}. Copy the ID from your team's URL: "
+                    "fantasy.premierleague.com/entry/<ID>/event/..."
+                ),
+            )
+        raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
+
+    value = info.get("last_deadline_value")
+    bank = info.get("last_deadline_bank")
+    name = f"{info.get('player_first_name') or ''} {info.get('player_last_name') or ''}".strip()
+    return {
+        "id": info.get("id", team_id),
+        "player_name": name or None,
+        "team_name": info.get("name"),
+        "overall_rank": info.get("summary_overall_rank"),
+        "overall_points": info.get("summary_overall_points"),
+        "team_value": round(value / 10, 1) if isinstance(value, (int, float)) else None,
+        "bank": round(bank / 10, 1) if isinstance(bank, (int, float)) else None,
+        "gameweek": info.get("current_event"),
+    }
 
 
 @app.get("/api/squad/{team_id}")

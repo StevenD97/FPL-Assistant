@@ -21,17 +21,19 @@ FPL_API_BASE = "https://fantasy.premierleague.com/api"
 
 
 def fetch_entry_info(team_id):
-    """Live lookup of a manager's basic info (name, points, current_event, etc)."""
-    response = requests.get(f"{FPL_API_BASE}/entry/{team_id}/", timeout=30)
-    response.raise_for_status()
-    return response.json()
+    """Live lookup of a manager's basic info (name, points, current_event, etc).
+    Routed through the shared resilient session (retries/backoff, but not on
+    404 - see ingest.client) so the season-boundary 404s still surface fast."""
+    from ingest.client import get_entry
+
+    return get_entry(team_id)
 
 
 def fetch_entry_picks(team_id, event):
     """Live lookup of a manager's 15 picks for a specific (locked) gameweek."""
-    response = requests.get(f"{FPL_API_BASE}/entry/{team_id}/event/{event}/picks/", timeout=30)
-    response.raise_for_status()
-    return response.json()
+    from ingest.client import get_entry_picks
+
+    return get_entry_picks(team_id, event)
 
 
 def ensure_data_fetched():
@@ -57,27 +59,56 @@ def ensure_data_fetched():
             json.dump(response.json(), f)
 
 
+def _file_fallback_allowed():
+    """DB-first; fall back to the on-disk snapshots unless explicitly disabled."""
+    try:
+        from db.config import get_settings
+
+        return get_settings().allow_file_fallback
+    except Exception:
+        return True
+
+
 @lru_cache(maxsize=None)
 def load_bootstrap(filename="bootstrap_static.json"):
     """
-    filename lets backtest.py point this at bootstrap_static_2025_26_final.json
-    instead. Cached per filename: every predicted-points endpoint (players
-    list, player detail, squad builder, optimizer) loads the same handful
-    of files repeatedly per request - measured ~50-75ms per parse of the
-    ~1.4-2.7MB bootstrap JSON, called 3-5x over in a single /api/players
-    request alone before this was cached, since each layer (the endpoint,
-    _build_prediction_context, the season-stats remap) used to load its
-    own copy independently. These files don't change during a process's
-    lifetime anyway (ensure_data_fetched only ever writes them once, at
-    startup, if missing) - see load_gw_history for the same pattern.
+    Reads the latest bootstrap snapshot from the DB (raw_snapshots), keyed by
+    the season the filename maps to; falls back to the on-disk JSON if the DB
+    is empty/unreachable. Returns the verbatim FPL structure either way, so
+    downstream code is unchanged. `filename` still selects the season (live
+    vs the 2025/26 archive) - see db/read.py.
+
+    Cached per filename: every predicted-points endpoint loads the same
+    bootstrap repeatedly per request - measured ~50-75ms per parse of the
+    ~1.4-2.7MB JSON, called 3-5x in a single /api/players request before this
+    was cached. (Cache is process-lifetime; a fresh ingest is picked up on the
+    next process start - the ingest job runs out-of-process.)
     """
+    try:
+        from db.read import bootstrap_from_db
+
+        data = bootstrap_from_db(filename)
+        if data is not None:
+            return data
+    except Exception:
+        if not _file_fallback_allowed():
+            raise
     with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
 
 @lru_cache(maxsize=None)
 def load_fixtures(filename="fixtures.json"):
-    """filename lets backtest.py point this at fixtures_2025_26_final.json instead. Cached - see load_bootstrap."""
+    """Latest fixtures snapshot from the DB, falling back to the on-disk JSON. See load_bootstrap."""
+    try:
+        from db.read import fixtures_from_db
+
+        data = fixtures_from_db(filename)
+        if data is not None:
+            return data
+    except Exception:
+        if not _file_fallback_allowed():
+            raise
     with open(f"{DATA_DIR}/{filename}", encoding="utf-8") as f:
         return json.load(f)
 
@@ -85,16 +116,25 @@ def load_fixtures(filename="fixtures.json"):
 @lru_cache(maxsize=None)
 def load_gw_history(season="2025_26"):
     """
-    2025/26 gameweek-by-gameweek player data (one row per player per
-    fixture), fetched by fetch_gw_history.py. Cached per season since
-    build_chip_strategy() calls compute_player_scores() - and therefore
-    this - once per scanned gameweek.
+    Gameweek-by-gameweek player data (one row per player per fixture). Reads
+    from player_gw_stats in the DB, falling back to gw_history_<season>.csv.
+    Cached per season since build_chip_strategy() calls compute_player_scores()
+    - and therefore this - once per scanned gameweek.
     """
-    path = f"{DATA_DIR}/gw_history_{season}.csv"
-    df = pd.read_csv(path)
+    df = None
+    try:
+        from db.read import gw_history_from_db
+
+        df = gw_history_from_db(season)
+    except Exception:
+        df = None
+    if df is None:
+        if not _file_fallback_allowed():
+            raise RuntimeError(f"No gw_history in DB for season {season} and file fallback is disabled")
+        df = pd.read_csv(f"{DATA_DIR}/gw_history_{season}.csv")
     # Rest of the codebase (e.g. compute_congestion) treats kickoff times as
-    # naive UTC, so strip the tz info pandas infers from the "Z" suffix -
-    # otherwise comparisons against a naive reference_date raise.
+    # naive UTC, so normalize regardless of source (CSV has a "Z" suffix; the
+    # DB stores naive UTC already - this is a no-op for the latter).
     df["kickoff_time"] = pd.to_datetime(df["kickoff_time"], utc=True).dt.tz_localize(None)
     df["team_id"] = df["team"].map(_team_name_to_id_map(df))
     return df

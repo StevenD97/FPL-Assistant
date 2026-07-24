@@ -74,9 +74,9 @@ export default function OutlookPage() {
   }, [data, position]);
 
   return (
-    <main className="min-h-screen bg-white p-8">
+    <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-5xl">
-        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
+        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
           Multi-gameweek outlook
         </h1>
         <p className="mb-6 max-w-2xl text-sm text-text-secondary">

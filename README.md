@@ -508,11 +508,40 @@ not required for the app's core features to run):
 copy .env.example .env
 ```
 
-Pull the FPL data the app needs:
+### Database (local Postgres = RDS in prod)
+
+The app reads its data from Postgres, not the on-disk snapshots (those remain
+a fallback if the DB is empty/unreachable). Locally, run the same engine RDS
+hosts via a container; in prod, point `DATABASE_URL` at the RDS instance
+instead - no code change. Schema is managed by Alembic; ingestion is idempotent.
 
 ```bash
-venv\Scripts\python.exe fetch_data.py
+# 1. Start local Postgres (Podman or Docker) - see docker-compose.yml
+podman compose up -d
+
+# 2. Apply the schema
+cd backend && venv/bin/alembic upgrade head
+
+# 3. Backfill: archive (2025/26) snapshots + gw-history CSV, and the live
+#    2026/27 roster - so the DB starts with everything the files held
+venv/bin/python -m ingest backfill
+
+# Thereafter, refresh from FPL (snapshot bootstrap+fixtures, ingest any
+# newly-finished gameweeks). Idempotent - safe to run repeatedly:
+venv/bin/python -m ingest run
+venv/bin/python -m ingest status   # row counts + recent ingest runs
 ```
+
+`.github/workflows/ingest-data.yml` runs `ingest run` on a schedule against the
+production DB (needs a `DATABASE_URL` repo secret) - that's the "update after
+each game is played" trigger. `backend/db/` holds the models/session/config,
+`backend/ingest/` the pipeline + backfill, and `backend/alembic/` the
+migrations. `raw_snapshots` stores bootstrap/fixtures verbatim (so
+`load_bootstrap`/`load_fixtures` reconstruct byte-identical structures);
+`player_gw_stats` is the normalized, append-only per-gameweek history. The
+walk-forward backtest run against the DB reproduces the file-based baseline
+exactly (Pearson 0.549, Spearman 0.730, MAE 0.921 - see the numbers above),
+confirming the repoint is faithful.
 
 Run the API:
 

@@ -178,7 +178,33 @@
 }
 
 body {
-  background: var(--surface-default);
+  background: var(--surface-sunken);
   color: var(--fg-primary);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+
+/* --- Motion (mirrors the design prototype) --- */
+@keyframes fplFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fplPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-fpl-fade { animation: fplFade 0.3s var(--ease-standard); }
+.animate-fpl-pulse { animation: fplPulse 2s infinite; }
+
+/* --- Brand gradient surfaces ---
+   Bright green/cyan are fills, borders and chart strokes; dark type sits
+   on top of them. These keep the signature "accent on deep purple" look
+   out of the JSX. */
+.bg-fpl-sidebar { background: linear-gradient(180deg, #37003c, #240028); }
+.bg-fpl-hero { background: linear-gradient(125deg, #37003c 0%, #5f2a66 60%, #37003c 100%); }
+.bg-fpl-panel { background: linear-gradient(120deg, #37003c, #5f2a66); }
+.bg-fpl-logo { background: linear-gradient(140deg, #00ff87, #04f5ff); }
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 8px; }

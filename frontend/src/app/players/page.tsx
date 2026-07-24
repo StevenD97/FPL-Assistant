@@ -2,11 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { PositionBadge } from "@/components/ui/PositionBadge";
-import { Select } from "@/components/ui/Select";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { TextField } from "@/components/ui/TextField";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { Card } from "@/components/ui/Card";
+import { Pill } from "@/components/ui/Pill";
+import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
@@ -87,47 +89,46 @@ export default function PlayersPage() {
   }, [players, position, search, sortKey, sortDesc]);
 
   return (
-    <main className="min-h-screen bg-white p-8">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-1 font-sans text-2xl font-bold text-pl-purple">
-          All players
-        </h1>
-        <p className="mb-6 text-sm text-text-secondary">
-          Every player in the live 2026/27 game - click a column to sort, click a name for full detail.
-        </p>
+    <PageContainer>
+      <PageHeader
+        title="All players"
+        subtitle="Every player in the live 2026/27 game - click a column to sort, click a name for full detail."
+        action={players ? <span className="font-mono text-sm text-text-muted">{rows.length} players</span> : undefined}
+      />
 
-        <div className="mb-4 flex flex-wrap gap-2">
-          <TextField
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search name or team..."
-            wrapperClassName="w-56"
-          />
-          <Select
-            value={position}
-            onChange={(e) => setPosition(e.target.value as (typeof POSITIONS)[number])}
-            options={POSITIONS}
-            wrapperClassName="w-28"
-          />
+      <div className="flex flex-wrap items-center gap-2">
+        <TextField
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search name or team..."
+          wrapperClassName="w-56"
+        />
+        <div className="flex flex-wrap gap-1.5">
+          {POSITIONS.map((pos) => (
+            <Pill key={pos} active={position === pos} onClick={() => setPosition(pos)}>
+              {pos === "All" ? "All positions" : pos}
+            </Pill>
+          ))}
         </div>
+      </div>
 
-        {loading && <p className="text-text-muted">Loading players...</p>}
-        {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
-        {players && <p className="mb-2 text-xs text-text-muted">{rows.length} players</p>}
+      {loading && <p className="text-text-muted">Loading players...</p>}
+      {error && <p className="text-sm font-medium text-danger">{error}</p>}
 
-        {players && (
-          <div className="max-h-[70vh] overflow-auto rounded-lg border border-border shadow-sm">
+      {players && (
+        <Card padded={false} className="overflow-hidden">
+          <div className="max-h-[70vh] overflow-auto">
             <table className="w-full text-left text-sm">
-              <thead className="sticky top-0 bg-surface-sunken">
+              <thead className="sticky top-0 z-[1] bg-surface-sunken">
                 <tr>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                  <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                  <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                  <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                   {COLUMNS.map((c) => (
-                    <th key={c.key} className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <th key={c.key} className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
                       <button onClick={() => toggleSort(c.key)} className="flex items-center gap-1 hover:text-text-primary">
                         {c.label}
-                        {sortKey === c.key && <span>{sortDesc ? "↓" : "↑"}</span>}
+                        {sortKey === c.key && <span className="text-pl-purple">{sortDesc ? "↓" : "↑"}</span>}
                       </button>
                     </th>
                   ))}
@@ -135,29 +136,29 @@ export default function PlayersPage() {
               </thead>
               <tbody>
                 {rows.map((p) => (
-                  <tr key={p.id} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-medium">
+                  <tr key={p.id} className="border-t border-border transition-colors hover:bg-surface-sunken">
+                    <td className="px-3.5 py-2.5 font-medium">
                       <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
                       <StatusBadge status={p.status} news={p.news} />
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3.5 py-2.5">
                       <TeamBadge teamShort={p.team_short} name={p.team_short} />
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3.5 py-2.5">
                       <PositionBadge position={p.position} />
                     </td>
-                    <td className="px-3 py-2.5 font-mono font-medium">{p.predicted_points.toFixed(1)}</td>
-                    <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                    <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
-                    <td className="px-3 py-2.5 font-mono">{p.season_stats?.total_points ?? "-"}</td>
+                    <td className="px-3.5 py-2.5 font-mono font-semibold text-pl-purple">{p.predicted_points.toFixed(1)}</td>
+                    <td className="px-3.5 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                    <td className="px-3.5 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                    <td className="px-3.5 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                    <td className="px-3.5 py-2.5 font-mono">{p.season_stats?.total_points ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
-    </main>
+        </Card>
+      )}
+    </PageContainer>
   );
 }

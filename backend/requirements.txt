@@ -20,6 +20,12 @@ pandas==3.0.3
 pulp==3.3.2
 pydantic==2.13.4
 pydantic_core==2.46.4
+pydantic-settings==2.14.2
+SQLAlchemy==2.0.51
+alembic==1.18.5
+Mako==1.3.12
+MarkupSafe==3.0.3
+psycopg[binary]==3.3.4
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
 PyYAML==6.0.3
