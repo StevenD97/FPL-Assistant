@@ -1,6 +1,7 @@
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { FdrChip } from "@/components/ui/FdrChip";
 import { Card } from "@/components/ui/Card";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 
 type Fixture = { opponent: string; is_home: boolean; difficulty: number };
@@ -36,7 +37,12 @@ export default async function Home() {
     <PageContainer width="narrow">
       <PageHeader
         title="Fixture difficulty"
-        subtitle="Next 5 gameweeks, 2026/27, easiest run first. Player pages still use 2025/26 demo data until FPL resets stats."
+        subtitle={
+          <>
+            Next 5 gameweeks, 2026/27, easiest run first - this page is fully live (no prediction model, just the
+            fixture calendar). Player pages: <SeasonDataNote mode="blended" />
+          </>
+        }
       />
       <Card padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">

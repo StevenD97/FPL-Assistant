@@ -85,6 +85,27 @@ CORNER_TAKER_ASSIST_SHARE_BOOST = 0.04
 
 DEFAULT_TEAM_STRENGTH = {"attack_home": 1.0, "attack_away": 1.0, "defence_home": 1.0, "defence_away": 1.0}
 
+# Promoted teams (no name match anywhere in the training archive - e.g.
+# Coventry/Hull/Ipswich coming into 2026/27) get this discounted prior
+# instead of DEFAULT_TEAM_STRENGTH's neutral 1.0 - assuming a newly-
+# promoted side is exactly league-average overstates them: they spent last
+# season beating weaker Championship opposition, and that output doesn't
+# translate directly into the Premier League. These are rough, commonly-
+# cited Premier League figures (promoted teams have historically
+# underperformed a neutral prior by roughly this much in their first
+# season back), NOT calibrated against this app's own backtest - there's
+# no historical multi-season archive here to validate the exact numbers
+# against. Revisit once real 2026/27 results exist for the promoted sides
+# (see README's season-transition notes).
+PROMOTED_TEAM_ATTACK_DISCOUNT = 0.85  # <1.0 = below-average scoring
+PROMOTED_TEAM_DEFENCE_PENALTY = 1.15  # >1.0 = leakier defence
+PROMOTED_TEAM_STRENGTH = {
+    "attack_home": PROMOTED_TEAM_ATTACK_DISCOUNT,
+    "attack_away": PROMOTED_TEAM_ATTACK_DISCOUNT,
+    "defence_home": PROMOTED_TEAM_DEFENCE_PENALTY,
+    "defence_away": PROMOTED_TEAM_DEFENCE_PENALTY,
+}
+
 # How many "pseudo-games" worth of trust in the league average to blend into a
 # team's attack/defence ratios - see _shrink_ratio. Higher = more conservative
 # (needs more games before trusting a team-specific ratio over the average).
@@ -144,7 +165,13 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
         return {}, {"avg_home_goals": 0.0, "avg_away_goals": 0.0}
 
     # One row per team per fixture - player rows are duplicated per fixture.
-    matches = past.drop_duplicates(subset=["fixture", "team_id"]).copy()
+    # GW is included alongside fixture (not just team_id) as defense-in-depth:
+    # a genuine blank gameweek's row uses fixture=0 as a sentinel (see
+    # ingest/pipeline.py), and a team blanking more than once in a season
+    # would otherwise collide under fixture=0 alone. Real fixture ids
+    # (played matches, archived or live) are already season-unique, so this
+    # is a no-op for them.
+    matches = past.drop_duplicates(subset=["GW", "fixture", "team_id"]).copy()
     matches["goals_for"] = matches["team_h_score"].where(matches["was_home"], matches["team_a_score"])
     matches["goals_against"] = matches["team_a_score"].where(matches["was_home"], matches["team_h_score"])
     matches["weight"] = recency_weights(matches["kickoff_time"], reference_date, half_life_days)
@@ -200,6 +227,158 @@ def _shrink_ratio(weighted_value, weight_sum, league_avg, shrinkage_games=SHRINK
     return shrinkage * raw_ratio + (1 - shrinkage) * 1.0
 
 
+def _current_season_gws_played(reference_date, season):
+    """
+    How many of `season`'s gameweeks have kickoff data strictly before
+    reference_date - the evidence signal _blend_weight below shrinks on.
+    0 before that season has any results yet - true for 2026/27 as of this
+    writing, where there's no DB data *and* no gw_history_2026_27.csv file
+    on disk at all yet (not just an empty table/file - see load_gw_history/
+    db.read.gw_history_from_db), so this deliberately treats "no data
+    source exists for this season yet" the same as "0 games played" rather
+    than letting a FileNotFoundError propagate.
+    """
+    try:
+        history = load_gw_history(season)
+    except (FileNotFoundError, RuntimeError):
+        return 0
+    past = history[history["kickoff_time"] < reference_date]
+    return int(past["GW"].nunique()) if not past.empty else 0
+
+
+def _blend_weight(n_current_gws, shrinkage_games=SHRINKAGE_GAMES):
+    """
+    0 current-season gameweeks played -> 0 (pure archive - identical to
+    today's pre-season behaviour). Grows toward 1 as the current season
+    accumulates games, using the same "pseudo-games of trust" shrinkage
+    shape as _shrink_ratio, so the model is internally consistent about
+    how fast it starts trusting new evidence over old.
+    """
+    if n_current_gws <= 0:
+        return 0.0
+    return n_current_gws / (n_current_gws + shrinkage_games)
+
+
+def _blend_dicts(archive_dict, current_dict, weight, keys, default):
+    """Per-key weighted average of two {id: {key: value}} dicts (same id-space in both - callers remap the
+    archive side to the roster/current id-space first, same as every other cross-season merge in this file)."""
+    blended = {}
+    for entity_id in set(archive_dict) | set(current_dict):
+        a = archive_dict.get(entity_id, default)
+        c = current_dict.get(entity_id, default)
+        blended[entity_id] = {k: weight * c[k] + (1 - weight) * a[k] for k in keys}
+    return blended
+
+
+def compute_team_goal_strengths_blended(reference_date, half_life_days=21,
+                                         archive_season="2025_26", current_season="2026_27",
+                                         archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+                                         shrinkage_games=SHRINKAGE_GAMES,
+                                         archive_bootstrap=None, roster_bootstrap=None):
+    """
+    Team strengths blended across the archived and current seasons, ending
+    up in the *roster* (current-season) team-id space either way - the
+    season-transition sequel to compute_team_goal_strengths, for once the
+    current season actually has results to train on.
+
+    Before current_season has any finished gameweeks strictly before
+    reference_date, this is mathematically identical to today's archive-
+    only + by-name roster remap (_remap_team_strengths_to_roster) - the
+    blend weight is exactly 0 (see _blend_weight), so this is a strict
+    superset of existing behaviour, not a change to it, for every request
+    made before 2026/27 GW1 is actually played. As current-season
+    gameweeks accumulate, weight shifts toward that season's own (fresher,
+    but noisier) team strengths.
+
+    archive_bootstrap/roster_bootstrap, if given, must be the full
+    bootstrap dicts for their respective seasons (only ["teams"] is used) -
+    required to remap the archive side into the roster's team-id space
+    before blending (FPL reassigns team ids every season). Omit both to
+    blend two already-same-id-space seasons directly (no remap needed).
+    """
+    archive_strengths, archive_avgs = compute_team_goal_strengths(
+        reference_date, archive_half_life_days, archive_season, shrinkage_games)
+    if archive_bootstrap is not None and roster_bootstrap is not None:
+        archive_strengths = _remap_team_strengths_to_roster(
+            archive_strengths, archive_bootstrap["teams"], roster_bootstrap["teams"])
+
+    weight = _blend_weight(_current_season_gws_played(reference_date, current_season), shrinkage_games)
+    if weight == 0.0:
+        return archive_strengths, archive_avgs
+
+    current_strengths, current_avgs = compute_team_goal_strengths(
+        reference_date, half_life_days, current_season, shrinkage_games)
+    blended_strengths = _blend_dicts(
+        archive_strengths, current_strengths, weight,
+        ["attack_home", "attack_away", "defence_home", "defence_away"], DEFAULT_TEAM_STRENGTH,
+    )
+    blended_avgs = {
+        "avg_home_goals": weight * current_avgs["avg_home_goals"] + (1 - weight) * archive_avgs["avg_home_goals"],
+        "avg_away_goals": weight * current_avgs["avg_away_goals"] + (1 - weight) * archive_avgs["avg_away_goals"],
+    }
+    return blended_strengths, blended_avgs
+
+
+def compute_player_involvement_shares_blended(reference_date, half_life_days=21,
+                                               archive_season="2025_26", current_season="2026_27",
+                                               archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+                                               shrinkage_games=SHRINKAGE_GAMES,
+                                               archive_elements=None, roster_elements=None):
+    """Blended sequel to compute_player_involvement_shares - see compute_team_goal_strengths_blended's docstring
+    for the general shape (identical pre-season behaviour, shrinkage-weighted blend once current_season has games).
+    archive_elements/roster_elements, if given, are the two seasons' bootstrap["elements"] lists, for the
+    by-`code` remap (map_player_stats_to_roster) before blending - player element ids also get reassigned yearly."""
+    archive_shares = compute_player_involvement_shares(reference_date, archive_half_life_days, archive_season)
+    if archive_elements is not None and roster_elements is not None:
+        archive_shares = map_player_stats_to_roster(archive_shares, archive_elements, roster_elements)
+
+    weight = _blend_weight(_current_season_gws_played(reference_date, current_season), shrinkage_games)
+    if weight == 0.0:
+        return archive_shares
+
+    current_shares = compute_player_involvement_shares(reference_date, half_life_days, current_season)
+    default = {"goal_share": 0.0, "assist_share": 0.0}
+    return _blend_dicts(archive_shares, current_shares, weight, ["goal_share", "assist_share"], default)
+
+
+def compute_appearance_probabilities_blended(reference_date, half_life_days=21,
+                                              archive_season="2025_26", current_season="2026_27",
+                                              archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+                                              shrinkage_games=SHRINKAGE_GAMES,
+                                              archive_elements=None, roster_elements=None):
+    """Blended sequel to compute_appearance_probabilities - see compute_team_goal_strengths_blended's docstring."""
+    archive_probs = compute_appearance_probabilities(reference_date, archive_half_life_days, archive_season)
+    if archive_elements is not None and roster_elements is not None:
+        archive_probs = map_player_stats_to_roster(archive_probs, archive_elements, roster_elements)
+
+    weight = _blend_weight(_current_season_gws_played(reference_date, current_season), shrinkage_games)
+    if weight == 0.0:
+        return archive_probs
+
+    current_probs = compute_appearance_probabilities(reference_date, half_life_days, current_season)
+    default = {"p_any": 0.0, "p_60_plus": 0.0}
+    return _blend_dicts(archive_probs, current_probs, weight, ["p_any", "p_60_plus"], default)
+
+
+def compute_personal_history_rates_blended(reference_date, half_life_days=21,
+                                            archive_season="2025_26", current_season="2026_27",
+                                            archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+                                            shrinkage_games=SHRINKAGE_GAMES,
+                                            archive_elements=None, roster_elements=None):
+    """Blended sequel to compute_personal_history_rates - see compute_team_goal_strengths_blended's docstring."""
+    archive_rates = compute_personal_history_rates(reference_date, archive_half_life_days, archive_season)
+    if archive_elements is not None and roster_elements is not None:
+        archive_rates = map_player_stats_to_roster(archive_rates, archive_elements, roster_elements)
+
+    weight = _blend_weight(_current_season_gws_played(reference_date, current_season), shrinkage_games)
+    if weight == 0.0:
+        return archive_rates
+
+    current_rates = compute_personal_history_rates(reference_date, half_life_days, current_season)
+    default = {stat: 0.0 for stat in HISTORY_STAT_COLUMNS}
+    return _blend_dicts(archive_rates, current_rates, weight, HISTORY_STAT_COLUMNS, default)
+
+
 def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams):
     """
     Remaps team_strengths (keyed by training-season team ids) to the
@@ -207,18 +386,26 @@ def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams
     ids alphabetically every season (team id 3 was Burnley in 2025/26, is
     Bournemouth in 2026/27) - a bootstrap's own team ids are only ever
     meaningful against fixtures/players from that *same* bootstrap.
-    Promoted teams with no name match in the training archive (no
-    top-flight history there - e.g. Coventry/Hull/Ipswich coming into
-    2026/27) fall back to DEFAULT_TEAM_STRENGTH (neutral 1.0 ratios)
-    rather than a fabricated number.
+
+    Two different fallback cases, deliberately not conflated:
+    - Promoted teams with no name match anywhere in the training archive
+      (no top-flight history there at all - e.g. Coventry/Hull/Ipswich
+      coming into 2026/27) get PROMOTED_TEAM_STRENGTH - a discounted, not
+      neutral, prior (see its own comment for why).
+    - A team that *does* match by name but has no recency-weighted games
+      logged yet in team_strengths (e.g. very early in a season, before
+      any of its fixtures have kicked off) gets DEFAULT_TEAM_STRENGTH's
+      neutral 1.0 instead - a genuinely different case, since there's no
+      reason to assume that team specifically is below-average.
     """
     name_to_training_id = {team["name"]: team["id"] for team in training_teams}
     remapped = {}
     for team in roster_teams:
         training_id = name_to_training_id.get(team["name"])
-        remapped[team["id"]] = (
-            team_strengths.get(training_id, DEFAULT_TEAM_STRENGTH) if training_id is not None else DEFAULT_TEAM_STRENGTH
-        )
+        if training_id is None:
+            remapped[team["id"]] = PROMOTED_TEAM_STRENGTH
+        else:
+            remapped[team["id"]] = team_strengths.get(training_id, DEFAULT_TEAM_STRENGTH)
     return remapped
 
 
@@ -442,7 +629,8 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
                            bootstrap_file="bootstrap_static_2025_26_final.json",
                            fixtures_file="fixtures_2025_26_final.json",
                            shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
-                           roster_bootstrap_file=None, roster_fixtures_file=None):
+                           roster_bootstrap_file=None, roster_fixtures_file=None,
+                           current_season="2026_27"):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -459,17 +647,19 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 
     roster_bootstrap_file/roster_fixtures_file let *who the players are*
     (identity/team/price/fixtures/live status) come from a newer
-    snapshot than the one the model is trained on - the 2026/27 use
-    case: no 2026/27 gw_history exists yet to train on, so the model
-    keeps training on bootstrap_file/fixtures_file/season (2025/26)
-    while drafting its player pool from the live 2026/27 roster. Default
-    None means "same as bootstrap_file/fixtures_file" (today's
-    archived-only behaviour, unchanged). When set, team_strengths gets
-    remapped from training-season team ids to roster-season team ids by
-    team name (see _remap_team_strengths_to_roster) - player-level dicts
-    (involvement/appearance/history_rates) need no remapping since
-    they're keyed by element (player) id, which is stable across the
-    season boundary.
+    snapshot than the one the model is trained on. Default None means
+    "same as bootstrap_file/fixtures_file" (today's archived-only
+    behaviour, unchanged - see backtest.py/multi_gw_backtest.py/tune.py,
+    which never set this). When set, training also blends in
+    current_season's own gw_history once it has any (see
+    compute_team_goal_strengths_blended and friends in this file) -
+    before current_season has a single finished gameweek before
+    reference_date (true for every request made before 2026/27 GW1 is
+    actually played), the blend weight is exactly 0 and this is
+    identical to the archive-only + by-name/by-code roster remap this
+    already did (_remap_team_strengths_to_roster/
+    map_player_stats_to_roster) - neither id is stable across a season
+    boundary on its own, which is why those remaps exist at all.
 
     apply_live_signals=True layers two of the roster bootstrap's own
     fields on top of the gw_history-trained numbers above: live
@@ -487,7 +677,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file,
+        roster_bootstrap_file, roster_fixtures_file, current_season,
     )
     return _predict_for_event(context, next_event)
 
@@ -495,7 +685,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 @lru_cache(maxsize=32)
 def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
                                shrinkage_games, apply_live_signals,
-                               roster_bootstrap_file=None, roster_fixtures_file=None):
+                               roster_bootstrap_file=None, roster_fixtures_file=None, current_season="2026_27"):
     """
     Everything predict_player_points() needs that depends only on
     reference_date (not on which gameweek is being predicted) - team
@@ -519,14 +709,12 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     mutation" comment below.
 
     See predict_player_points' docstring for roster_bootstrap_file/
-    roster_fixtures_file - when set, the *training* data (bootstrap_file/
-    fixtures_file/season) and the *roster* data (who players are, which
-    fixtures they have) come from different season snapshots, and both
-    team_strengths (by team id) and involvement/appearance_probs/
-    history_rates (by player id) must be remapped from one season's id
-    space to the other - see _remap_team_strengths_to_roster and
-    map_player_stats_to_roster for why neither id is stable across a
-    season boundary on its own.
+    roster_fixtures_file/current_season - when roster_bootstrap_file is
+    set, training blends the archived `season` with current_season's own
+    gw_history (once it has any before reference_date), both remapped
+    into the roster's id-space first - see _remap_team_strengths_to_roster
+    and map_player_stats_to_roster for why neither team nor player id is
+    stable across a season boundary on its own.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
@@ -534,15 +722,36 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     roster_fixtures = load_fixtures(roster_fixtures_file) if roster_fixtures_file else fixtures
     fixtures_by_team_event = build_fixtures_by_team_event(roster_fixtures)
 
-    team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
-    involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
-    appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
-    history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
     if roster_bootstrap_file:
-        team_strengths = _remap_team_strengths_to_roster(team_strengths, bootstrap["teams"], roster_bootstrap["teams"])
-        involvement = map_player_stats_to_roster(involvement, bootstrap["elements"], roster_bootstrap["elements"])
-        appearance_probs = map_player_stats_to_roster(appearance_probs, bootstrap["elements"], roster_bootstrap["elements"])
-        history_rates = map_player_stats_to_roster(history_rates, bootstrap["elements"], roster_bootstrap["elements"])
+        # Live-roster mode: blend archived `season` (remapped by name/code
+        # into the roster's id-space) with current_season's own gw_history,
+        # once it has any - see compute_team_goal_strengths_blended's
+        # docstring. Weight is 0 (pure archive, unchanged) until
+        # current_season has a finished gameweek before reference_date.
+        team_strengths, league_avgs = compute_team_goal_strengths_blended(
+            reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
+            archive_bootstrap=bootstrap, roster_bootstrap=roster_bootstrap,
+        )
+        involvement = compute_player_involvement_shares_blended(
+            reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
+            archive_elements=bootstrap["elements"], roster_elements=roster_bootstrap["elements"],
+        )
+        appearance_probs = compute_appearance_probabilities_blended(
+            reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
+            archive_elements=bootstrap["elements"], roster_elements=roster_bootstrap["elements"],
+        )
+        history_rates = compute_personal_history_rates_blended(
+            reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
+            archive_elements=bootstrap["elements"], roster_elements=roster_bootstrap["elements"],
+        )
+    else:
+        # Archived-only mode (backtest.py/tune.py/scoring.py/player_scores):
+        # season is fully finished, so there's no "current season" to blend
+        # in and no remap needed - unchanged from before blending existed.
+        team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
+        involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
+        appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
+        history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
 
     live_availability = compute_live_availability(roster_bootstrap) if apply_live_signals else {}
 
@@ -647,7 +856,8 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
                                 bootstrap_file="bootstrap_static_2025_26_final.json",
                                 fixtures_file="fixtures_2025_26_final.json",
                                 shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
-                                roster_bootstrap_file=None, roster_fixtures_file=None):
+                                roster_bootstrap_file=None, roster_fixtures_file=None,
+                                current_season="2026_27"):
     """
     Returns a DataFrame, one row per player, with every _BREAKDOWN_KEYS
     category (goal_points, assist_points, clean_sheet_points, bonus_points,
@@ -658,7 +868,8 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
     this fuller version exists for callers that want to show what a
     prediction is made of (e.g. the player-detail page), not just the sum.
     See predict_player_points' docstring for why bootstrap_file/fixtures_file/
-    season must stay in sync, and for roster_bootstrap_file/roster_fixtures_file.
+    season must stay in sync, and for roster_bootstrap_file/roster_fixtures_file/
+    current_season.
 
     Thin, cache-friendly wrapper around _predict_multi_gw_breakdown_cached:
     next_events comes in as a list (needed elsewhere as range(...)), but
@@ -667,7 +878,7 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
     """
     result = _predict_multi_gw_breakdown_cached(
         reference_date, tuple(next_events), half_life_days, season, bootstrap_file, fixtures_file,
-        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file,
+        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
     )
     return result.copy()
 
@@ -675,7 +886,7 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
 @lru_cache(maxsize=32)
 def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_days, season, bootstrap_file,
                                         fixtures_file, shrinkage_games, apply_live_signals,
-                                        roster_bootstrap_file, roster_fixtures_file):
+                                        roster_bootstrap_file, roster_fixtures_file, current_season="2026_27"):
     """
     The actual per-player, per-gameweek prediction loop, cached - almost
     every caller across the app (players list, player detail, squad
@@ -693,7 +904,7 @@ def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_da
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file,
+        roster_bootstrap_file, roster_fixtures_file, current_season,
     )
     per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 
@@ -719,7 +930,8 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
                              bootstrap_file="bootstrap_static_2025_26_final.json",
                              fixtures_file="fixtures_2025_26_final.json",
                              shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
-                             roster_bootstrap_file=None, roster_fixtures_file=None):
+                             roster_bootstrap_file=None, roster_fixtures_file=None,
+                             current_season="2026_27"):
     """
     predict_multi_gw_breakdown(), collapsed to just predicted_points (plus
     fixture_count/fixture_ticker) - the headline metric for the app, not
@@ -732,7 +944,7 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     """
     breakdown = predict_multi_gw_breakdown(
         reference_date, next_events, half_life_days, season, bootstrap_file, fixtures_file,
-        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file,
+        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
     )
     return breakdown[[
         "id", "web_name", "team_short", "position", "predicted_points", "fixture_count", "fixture_ticker",

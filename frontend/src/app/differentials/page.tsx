@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 
@@ -77,7 +78,7 @@ export default function DifferentialsPage() {
           Differentials
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
-          Top-scoring, low-ownership players (demo data: 2025/26).
+          Top-scoring, low-ownership players. <SeasonDataNote mode="archived" />
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
           <TextField

@@ -6,6 +6,7 @@ import { CaptainBadge } from "@/components/ui/CaptainBadge";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { Alert } from "@/components/ui/Alert";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
@@ -132,7 +133,7 @@ function BestSquadPanel() {
     <div>
       <p className="mb-6 max-w-2xl text-sm text-text-secondary">
         Best 15-man squad under budget, from scratch - ideal for Wildcard/Free Hit planning. Drafts from the live
-        2026/27 pool, trained on 2025/26 results.
+        2026/27 pool. <SeasonDataNote mode="blended" />
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <TextField

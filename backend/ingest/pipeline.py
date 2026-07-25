@@ -132,16 +132,21 @@ def _bootstrap_maps(bootstrap: dict) -> dict:
 
 
 def _team_event_fixture(fixtures: list, team_id: int, event: int):
-    """First fixture a team plays in an event: (opponent_id, was_home, kickoff, team_h_score, team_a_score)."""
+    """First fixture a team plays in an event: (fixture_id, opponent_id, was_home, kickoff, team_h_score, team_a_score).
+    fixture_id is FPL's own real, season-unique fixture id - callers must use
+    it (not a placeholder) so per-match dedup/grouping elsewhere (team_model's
+    compute_team_goal_strengths, analysis._team_name_to_id_map) stays valid
+    once live rows are mixed with archived ones. Returns None for a team with
+    no fixture in this event (a blank gameweek)."""
     for fx in fixtures:
         if fx.get("event") != event:
             continue
         h, a = fx.get("team_h_score"), fx.get("team_a_score")
         if fx.get("team_h") == team_id:
-            return fx.get("team_a"), True, fx.get("kickoff_time"), h, a
+            return fx.get("id"), fx.get("team_a"), True, fx.get("kickoff_time"), h, a
         if fx.get("team_a") == team_id:
-            return fx.get("team_h"), False, fx.get("kickoff_time"), h, a
-    return None, None, None, None, None
+            return fx.get("id"), fx.get("team_h"), False, fx.get("kickoff_time"), h, a
+    return None, None, None, None, None, None
 
 
 def _parse_kickoff(value):
@@ -162,9 +167,14 @@ def ingest_event_live(session: Session, season: str, event: int, bootstrap: dict
         if meta is None:
             continue
         stats = entry.get("stats", {})
-        opponent, was_home, kickoff, h_score, a_score = _team_event_fixture(fixtures, meta["team_id"], event)
+        fixture_id, opponent, was_home, kickoff, h_score, a_score = _team_event_fixture(fixtures, meta["team_id"], event)
         row = {
-            "season": season, "event": event, "element": elem_id, "fixture": 0,
+            # fixture_id is None for a genuine blank gameweek (this team has no
+            # fixture in `event`) - 0 there matches the column's existing
+            # "no real fixture" sentinel, and is safe because a blank row never
+            # carries goals/opponent data that per-fixture dedup needs to
+            # distinguish from another blank in a different event.
+            "season": season, "event": event, "element": elem_id, "fixture": fixture_id or 0,
             "element_code": meta["code"], "name": meta["name"], "position": meta["position"],
             "team": meta["team"], "opponent_team": opponent, "was_home": was_home,
             "kickoff_time": _parse_kickoff(kickoff), "team_h_score": h_score, "team_a_score": a_score,

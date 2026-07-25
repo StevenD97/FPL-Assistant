@@ -28,8 +28,16 @@ error) - "compile the results and use them to improve it" is a
 follow-up step on top of this, not something this script does itself.
 
 Run with: venv\\Scripts\\python.exe backtest.py
+Override the season with: BACKTEST_SEASON=2026_27 venv\\Scripts\\python.exe backtest.py
+(once a full 2026/27 archive exists to backtest against - bootstrap/fixtures/
+gw_history filenames all derive from BACKTEST_SEASON by the same naming
+convention the rest of the app uses, and results are written to a
+season-specific CSV, so re-running this for a new season never silently
+overwrites the previous season's baseline - see the season-transition
+notes in the README for why this mattered enough to parameterize.
 """
 
+import os
 import sys
 from datetime import datetime
 
@@ -39,11 +47,11 @@ import team_model
 from analysis import load_bootstrap, load_gw_history
 from team_model import predict_player_points
 
-SEASON = "2025_26"
-BOOTSTRAP_FILE = "bootstrap_static_2025_26_final.json"
-FIXTURES_FILE = "fixtures_2025_26_final.json"
+SEASON = os.environ.get("BACKTEST_SEASON", "2025_26")
+BOOTSTRAP_FILE = f"bootstrap_static_{SEASON}_final.json"
+FIXTURES_FILE = f"fixtures_{SEASON}_final.json"
 MIN_GW = 2  # GW1 has zero prior history - team strengths/shares are all undefined, not a meaningful test
-MAX_GW = 38
+MAX_GW = int(os.environ.get("BACKTEST_MAX_GW", 38))
 HALF_LIFE_DAYS = 21
 
 
@@ -150,6 +158,9 @@ if __name__ == "__main__":
     per_gw_results, compiled_results = run_backtest()
     summarize(per_gw_results, compiled_results)
 
-    out_path = "data/backtest_results_2025_26.csv"
+    # Season-specific filename (not a fixed "2025_26" literal) so re-running
+    # this for a new season (BACKTEST_SEASON=2026_27) never clobbers the
+    # previous season's checked-in baseline.
+    out_path = f"data/backtest_results_{SEASON}.csv"
     compiled_results.to_csv(out_path, index=False)
     print(f"\nFull compiled predicted-vs-actual data written to {out_path}")

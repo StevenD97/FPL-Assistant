@@ -3,11 +3,17 @@ Phase C: squad-level category scoring for your actual FPL team.
 
 Run with: venv\\Scripts\\python.exe my_squad.py
 
-NOTE: uses the same demo constants as scoring.py and fixture_analysis.py
-(see those files) since the 2026/27 season hasn't started yet and GW38
-of last season is the most recent squad we can pull. Once the new season
-locks its first gameweek, swap DEMO_GW / FIXTURE_START_EVENT for the real
-current/next gameweek and this all keeps working unchanged.
+NOTE: compute_player_scores/compute_fixture_difficulty below are pinned to
+the archived 2025/26 season by default (unlike app/main.py's live
+endpoints - see analysis.get_gw_context, which is deliberately NOT used
+here) - the archived season is fully finished, so there's no "current
+gameweek" to derive from it dynamically; REFERENCE_DATE/NEXT_EVENT/
+FIXTURE_START_EVENT below are a fixed point partway through that archive,
+same as scoring.py. `data/my_picks_demo.json`/`data/my_entry.json` are
+static snapshots fetched separately by fetch_my_team.py against the LIVE
+API - once that's re-run against your real, current-season squad, this
+script would need a live-roster split (like app/main.py's endpoints have)
+to match player identities correctly, not just an updated reference date.
 """
 
 import json

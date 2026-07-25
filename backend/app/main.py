@@ -29,6 +29,7 @@ from analysis import (
     ensure_data_fetched,
     fetch_entry_info,
     fetch_entry_picks,
+    get_gw_context,
     load_bootstrap,
     load_fixtures,
     load_gw_history,
@@ -96,8 +97,30 @@ def ready():
     return {"status": "ready", "database": "ok"}
 
 
+@app.get("/api/season-status")
+def season_status():
+    """
+    Single source of truth for the frontend's "is this still demo/archived
+    data" banners (previously ~15 separate hardcoded strings across
+    different pages, each guessing independently at the season boundary -
+    see the README's season-transition notes). Derived from
+    analysis.get_gw_context, the same function every prediction endpoint's
+    dynamic reference_date/next_event defaults use, so this can never
+    drift out of sync with what the rest of the API is actually doing.
+    """
+    ctx = get_gw_context()
+    return {
+        "is_preseason": ctx["is_preseason"],
+        "next_event": ctx["next_event"],
+        "archive_season_label": "2025/26",
+        "current_season_label": "2026/27",
+    }
+
+
 @app.get("/api/fixtures/difficulty")
-def fixture_difficulty(start_event: int = 10, window_size: int = 5):
+def fixture_difficulty(start_event: Optional[int] = None, window_size: int = 5):
+    if start_event is None:
+        start_event = get_gw_context()["next_event"]
     df = compute_fixture_difficulty(start_event, window_size)
     return df.sort_values("fixture_score", ascending=False).to_dict(orient="records")
 
@@ -146,8 +169,8 @@ def player_predicted_points(
 
 @app.get("/api/players/predicted-points-outlook")
 def player_predicted_points_outlook(
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
     limit: int = 50,
 ):
@@ -160,16 +183,32 @@ def player_predicted_points_outlook(
     a single gameweek does (r^2 0.30 at 1 GW vs 0.49 at 5 GW) - most of
     the single-gameweek "miss" is real football variance that averages
     out over a run of fixtures, not a modeling gap. See README.
+
+    Unlike /api/players/predicted-points (its archived-only sibling, kept
+    that way deliberately for comparing the two independent modeling
+    approaches - see that endpoint's docstring), this one drafts from the
+    live 2026/27 roster while still training on the archived 2025/26
+    season - same cross-season split as optimizer_best_squad/all_players/
+    etc. `next_event` is therefore a *live*-season gameweek number; a
+    caller can still pass an explicit reference_date to explore an earlier
+    training cutoff (e.g. to reproduce a past prediction), which is why
+    both stay Optional query params rather than hardcoded literals.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
-    df = predict_multi_gw_points(ref_date, next_events)
+    df = predict_multi_gw_points(
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )
+    # `id` is already a live-2026/27 element id (roster_bootstrap_file
+    # above), unlike its archived-only sibling - no archived->live remap
+    # needed, but live_id is still included so the frontend's PlayerLink
+    # doesn't need a separate code path from that sibling endpoint.
     df = df.sort_values("predicted_points", ascending=False).head(limit).copy()
-    # `id` above is an archived-2025/26 element id (predict_multi_gw_points'
-    # default bootstrap) - add live_id so the frontend can link to
-    # /players/{live_id} without mixing season id-spaces.
-    live_ids = map_archived_ids_to_live(df["id"].tolist(), load_bootstrap(ARCHIVED_BOOTSTRAP_FILE), load_bootstrap(LIVE_BOOTSTRAP_FILE))
-    df["live_id"] = nullable_int_column(df["id"].map(live_ids))
+    df["live_id"] = df["id"]
     return df.to_dict(orient="records")
 
 
@@ -186,15 +225,28 @@ ARCHIVED_FIXTURES_FILE = "fixtures_2025_26_final.json"
 # remapping by name) without mixing seasons' team-id spaces.
 LIVE_BOOTSTRAP_FILE = "bootstrap_static.json"
 LIVE_FIXTURES_FILE = "fixtures.json"
-# 2026/27 GW1 kicks off 2026-08-21 - the day before, so all of 2025/26's
-# archive is in scope and nothing "in the future" leaks in.
-SEASON_START_REFERENCE_DATE = "2026-08-20"
+
+
+def _resolve_gw_params(reference_date: Optional[str], next_event: Optional[int]):
+    """
+    Resolves an endpoint's reference_date/next_event query params against
+    the live gameweek context (see analysis.get_gw_context) when the caller
+    doesn't pass them explicitly - a per-request dynamic default instead of
+    a frozen calendar literal that goes stale every gameweek. A caller can
+    still override either one via querystring (e.g. to reproduce a specific
+    past prediction), which is why every endpoint below keeps these as
+    Optional[...] = None rather than baking the default in directly.
+    """
+    ctx = get_gw_context()
+    ref_date = datetime.strptime(reference_date, "%Y-%m-%d") if reference_date else ctx["reference_date"]
+    event = next_event if next_event is not None else ctx["next_event"]
+    return ref_date, event
 
 
 @app.get("/api/optimizer/best-squad")
 def optimizer_best_squad(
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
     budget: int = 1000,
 ):
@@ -214,7 +266,7 @@ def optimizer_best_squad(
     apply_live_signals=True since the live bootstrap is a genuinely
     current snapshot here (injury status, set-piece duties).
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
@@ -230,8 +282,8 @@ def optimizer_best_squad(
 
 @app.get("/api/squad-builder/players")
 def squad_builder_players(
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
 ):
     """
@@ -253,7 +305,7 @@ def squad_builder_players(
     Drafts from the live 2026/27 roster - see optimizer_best_squad's
     docstring above for the cross-season training/roster split.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_breakdown(
@@ -275,7 +327,7 @@ def squad_builder_players(
 
 
 @app.get("/api/squad-builder/fixtures")
-def squad_builder_fixtures(next_event: int = 1, gw_count: int = 5):
+def squad_builder_fixtures(next_event: Optional[int] = None, gw_count: int = 5):
     """
     Team-level fixture difficulty for the Squad Builder's diagnostics
     (tough-run / missing-strong-fixture-team checks) - pinned to the
@@ -284,14 +336,17 @@ def squad_builder_fixtures(next_event: int = 1, gw_count: int = 5):
     so this must never mix a live-season team mapping with an
     archived-season player pool, or vice versa.
     """
+    if next_event is None:
+        next_event = get_gw_context()["next_event"]
     return compute_fixture_difficulty(
         next_event, gw_count, bootstrap_file=LIVE_BOOTSTRAP_FILE, fixtures_file=LIVE_FIXTURES_FILE,
     ).to_dict(orient="records")
 
 
 def _not_found_detail(team_id, event):
+    where = f"GW{event}" if isinstance(event, int) else event
     return (
-        f"No picks found for team {team_id} at GW{event}. FPL appears to reset/purge "
+        f"No picks found for team {team_id} at {where}. FPL appears to reset/purge "
         "manager pick history at each season boundary, so a gameweek that isn't this "
         "manager's most recent one may no longer be fetchable via the live API - see README."
     )
@@ -340,13 +395,23 @@ def entry_summary(team_id: int):
 @app.get("/api/squad/{team_id}")
 def squad_analysis(
     team_id: int,
-    event: int = 38,
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
-    fixture_start_event: int = 10,
+    event: Optional[int] = None,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
+    fixture_start_event: Optional[int] = None,
     window_size: int = 5,
 ):
     """
+    event=None (the default) fetches this manager's own most recently
+    scored gameweek (FPL's current_event on their entry, resolved inside
+    build_squad_analysis) rather than a fixed gameweek number - a manager's
+    picks for any *other* gameweek may not be fetchable at all (FPL appears
+    to purge/reset pick history at each season boundary), and a hardcoded
+    default drifts wrong the moment a new season starts. reference_date/
+    next_event default to the live gameweek context (see
+    analysis.get_gw_context) for the same reason; fixture_start_event
+    follows next_event unless given separately.
+
     Note: fetch_entry_info/fetch_entry_picks (called deep inside
     build_squad_analysis) raise a raw requests.HTTPError on a 404 from
     FPL's API - very common right now given the season-boundary reset
@@ -362,34 +427,45 @@ def squad_analysis(
     here fixes both problems: a proper CORS-correct response, and an
     explanation the frontend can actually show.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
+    if fixture_start_event is None:
+        fixture_start_event = next_event
     try:
         return build_squad_analysis(team_id, event, ref_date, next_event, fixture_start_event, window_size)
     except requests.exceptions.HTTPError as e:
         status = e.response.status_code if e.response is not None else 502
         if status == 404:
-            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, event))
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, event or "their current gameweek"))
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.get("/api/squad/{team_id}/chips")
 def chip_strategy(team_id: int, scan_start_event: int = 24, scan_end_event: int = 37):
-    """See squad_analysis's docstring for why FPL API errors are caught and converted here."""
+    """
+    See squad_analysis's docstring for why FPL API errors are caught and
+    converted here. build_chip_strategy fetches this manager's picks for
+    their own current_event (falling back to scan_start_event - 1 only if
+    FPL hasn't scored them for anything yet), so the exact gameweek isn't
+    known here in advance - the error message below deliberately doesn't
+    guess at one.
+    """
     try:
         return build_chip_strategy(team_id, scan_start_event, scan_end_event)
     except requests.exceptions.HTTPError as e:
         status = e.response.status_code if e.response is not None else 502
         if status == 404:
-            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, scan_start_event - 1))
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, "their most recent gameweek"))
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
 @app.get("/api/squad/{team_id}/optimize-transfers")
 def squad_optimize_transfers(
     team_id: int,
-    event: int = 1,
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    event: Optional[int] = None,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
     free_transfers: int = 1,
     max_transfers: Optional[int] = None,
@@ -397,12 +473,14 @@ def squad_optimize_transfers(
     """
     Fetches this manager's real squad (picks + bank) for `event`, then
     finds the provably optimal set of transfers - see optimizer.py.
-    Note: FPL appears to reset/purge manager pick history at each
-    season boundary (confirmed directly - a real, previously-used team
-    id returned "No Entry matches" once 2026/27's calendar went live),
-    so `event` needs to be a 2026/27 gameweek this manager's picks
-    already exist for - i.e. after that gameweek's deadline has passed.
-    Before 2026/27 GW1 locks, no team_id has a fetchable squad yet.
+    event=None (the default) uses this manager's own current_event (FPL's
+    own record of the last gameweek they were scored for), same source of
+    truth squad_analysis uses - a fixed gameweek number goes stale the
+    moment a new season starts, and FPL appears to reset/purge manager
+    pick history at each season boundary, so any *other* gameweek may not
+    be fetchable at all. Before 2026/27 GW1 locks, no team_id has a
+    fetchable squad yet, so this 404s with a clear message rather than
+    guessing at a default.
 
     The buy/sell pool itself draws from the live 2026/27 roster, same as
     optimizer_best_squad/squad_builder_players above - see those
@@ -412,7 +490,18 @@ def squad_optimize_transfers(
     errors are caught and converted to HTTPException here rather than
     left to propagate as an unhandled exception.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
+    if event is None:
+        entry = fetch_entry_info(team_id)
+        event = entry.get("current_event")
+        if event is None:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    f"Manager {team_id} has no current_event yet - the season hasn't started "
+                    "(no gameweek has locked for them yet), so there's no squad to suggest transfers from."
+                ),
+            )
     try:
         picks_data = fetch_entry_picks(team_id, event)
     except requests.exceptions.HTTPError as e:
@@ -458,8 +547,8 @@ def _season_stats_by_live_id():
 def all_players(
     search: Optional[str] = None,
     position: Optional[str] = None,
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
     limit: int = 600,
 ):
@@ -471,7 +560,7 @@ def all_players(
     None for players with no top-flight record in the archive). Backs the
     All Players browser page.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
@@ -505,8 +594,8 @@ def all_players(
 @app.get("/api/players/{player_id}")
 def player_detail(
     player_id: int,
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
 ):
     """
@@ -517,7 +606,7 @@ def player_detail(
     breakdown by category (goals/assists/clean sheets/bonus/etc, not just
     the total) for the next gw_count gameweeks.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
 
     live = load_bootstrap(LIVE_BOOTSTRAP_FILE)
@@ -573,8 +662,8 @@ def player_alternatives(
     player_id: int,
     exclude: Optional[str] = None,
     limit: int = 5,
-    reference_date: str = SEASON_START_REFERENCE_DATE,
-    next_event: int = 1,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     gw_count: int = 5,
 ):
     """
@@ -584,7 +673,7 @@ def player_alternatives(
     isn't already owned). Backs the "suggest replacements" action on a
     player row in My Squad / Squad Builder.
     """
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
@@ -618,10 +707,13 @@ def fixtures_schedule(season: str = "live"):
     The full season's fixture list (all events, not just a difficulty
     window), with kickoff time and result if played - backs the Schedule
     & Results page. season="live" (default) uses the live 2026/27
-    calendar; season="2025-26" uses the archived files, for looking back
-    at last season's results.
+    calendar; season="archive" uses the archived 2025/26 files, for
+    looking back at last season's results. Deliberately "live"/"archive"
+    rather than a season number here - every other season-string literal
+    in this app is the archived season's own token (see ARCHIVED_SEASON),
+    which would need updating every year; this one param never does.
     """
-    if season == "2025-26":
+    if season == "archive":
         bootstrap_file, fixtures_file = ARCHIVED_BOOTSTRAP_FILE, ARCHIVED_FIXTURES_FILE
     else:
         bootstrap_file, fixtures_file = LIVE_BOOTSTRAP_FILE, LIVE_FIXTURES_FILE

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, StatTile } from "@/components/ui/Card";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { fetchJson } from "@/lib/api";
@@ -179,7 +180,7 @@ export default function SquadPage() {
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
           Enter your team ID - or connect your team once in the sidebar and it loads here automatically.
-          Squad analysis and suggested transfers (demo data: GW38, 2025/26).
+          Squad analysis: <SeasonDataNote mode="archived" /> Suggested transfers: <SeasonDataNote mode="blended" />
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
           <TextField

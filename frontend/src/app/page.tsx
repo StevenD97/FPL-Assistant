@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { NavIcon, type IconName } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
 
 type PageInfo = {
@@ -138,8 +139,7 @@ export default function LandingPage() {
       </div>
 
       <p className="text-sm text-text-muted">
-        Player-scoring pages currently use 2025/26 demo data until FPL resets stats for the live 2026/27 season;
-        fixture and roster data is already live.
+        <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
       </p>
 
       {/* Explore grid */}

@@ -14,6 +14,11 @@ Run with: venv\\Scripts\\python.exe fetch_gw_history.py
 
 import requests
 
+# Hyphenated ("2025-26"), unlike this app's own internal season token
+# ("2025_26", e.g. db/config.py's archive_season) - this is vaastav's
+# repo's own directory naming, not something we control, so it can't be
+# unified away. The .replace() below is the one conversion point back to
+# our own underscore convention for the output filename.
 SEASON = "2025-26"
 URL = f"https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data/{SEASON}/gws/merged_gw.csv"
 OUT_PATH = f"data/gw_history_{SEASON.replace('-', '_')}.csv"

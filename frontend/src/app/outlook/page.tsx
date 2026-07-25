@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { Select } from "@/components/ui/Select";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
@@ -23,21 +24,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
 
 async function fetchOutlook(
-  referenceDate: string,
-  nextEvent: number,
+  referenceDate: string | undefined,
+  nextEvent: number | undefined,
   gwCount: number,
   limit: number
 ): Promise<OutlookRow[]> {
-  const res = await fetch(
-    `${API_URL}/api/players/predicted-points-outlook?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&limit=${limit}`
-  );
+  const params = new URLSearchParams({ gw_count: String(gwCount), limit: String(limit) });
+  if (referenceDate) params.set("reference_date", referenceDate);
+  if (nextEvent) params.set("next_event", String(nextEvent));
+  const res = await fetch(`${API_URL}/api/players/predicted-points-outlook?${params}`);
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
   return res.json();
 }
 
 export default function OutlookPage() {
-  const [referenceDate, setReferenceDate] = useState("2025-11-30");
-  const [nextEvent, setNextEvent] = useState(10);
+  // Empty/undefined means "let the backend pick the live current gameweek"
+  // (see analysis.get_gw_context) - typing a value here explicitly
+  // overrides that, e.g. to reproduce an earlier prediction.
+  const [referenceDate, setReferenceDate] = useState("");
+  const [nextEvent, setNextEvent] = useState<number | "">("");
   const [gwCount, setGwCount] = useState(5);
   const [limit, setLimit] = useState(100);
   const [position, setPosition] = useState<(typeof POSITIONS)[number]>("All");
@@ -45,11 +50,11 @@ export default function OutlookPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function load(date: string, event: number, count: number, lim: number) {
+  async function load(date: string, event: number | "", count: number, lim: number) {
     setLoading(true);
     setError(null);
     try {
-      setData(await fetchOutlook(date, event, count, lim));
+      setData(await fetchOutlook(date || undefined, event || undefined, count, lim));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -57,7 +62,8 @@ export default function OutlookPage() {
     }
   }
 
-  // Load once on mount with the default window.
+  // Load once on mount with no explicit date/event, so the backend applies
+  // its own dynamic "live current gameweek" default.
   useEffect(() => {
     load(referenceDate, nextEvent, gwCount, limit);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,8 +86,9 @@ export default function OutlookPage() {
           Multi-gameweek outlook
         </h1>
         <p className="mb-6 max-w-2xl text-sm text-text-secondary">
-          Predicted points summed over your chosen run of gameweeks - tracks reality better than a single-week
-          guess (demo data: 2025/26, since 2026/27 hasn&apos;t started).
+          Predicted points summed over your chosen run of live 2026/27 gameweeks - tracks reality better than a
+          single-week guess. <SeasonDataNote mode="blended" /> Leave &quot;As of&quot;/&quot;Starting GW&quot; blank
+          to use the current gameweek automatically.
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
           <TextField
@@ -97,8 +104,9 @@ export default function OutlookPage() {
             min={1}
             max={38}
             value={nextEvent}
-            onChange={(e) => setNextEvent(Number(e.target.value))}
+            onChange={(e) => setNextEvent(e.target.value === "" ? "" : Number(e.target.value))}
             wrapperClassName="w-24"
+            placeholder="auto"
           />
           <TextField
             label="Window (GWs)"

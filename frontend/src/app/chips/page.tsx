@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { fetchJson } from "@/lib/api";
 
@@ -55,7 +56,7 @@ export default function ChipsPage() {
           Chip strategy
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
-          Enter your team ID to scan for chip timing (demo window: GW24-36, 2025/26).
+          Enter your team ID to scan for chip timing (scan window: GW24-36). <SeasonDataNote mode="archived" />
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-3">
           <TextField

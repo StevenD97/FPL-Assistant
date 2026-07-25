@@ -140,6 +140,57 @@ def load_gw_history(season="2025_26"):
     return df
 
 
+def get_gw_context(bootstrap=None):
+    """
+    Single source of truth for "what gameweek is it right now", derived
+    from the live bootstrap's events[] (is_current/is_next/finished flags -
+    see check_new_season.py for the original version of this pattern),
+    instead of the hardcoded reference-date/event pairs previously
+    duplicated across main.py/my_squad.py/chip_strategy.py/scoring.py.
+
+    Returns:
+      - next_event: the upcoming gameweek to predict for - events[].is_next
+        if one exists (mid-season, or pre-season with GW1 still ahead), else
+        the in-progress is_current gameweek (last GW of the season, no
+        "next" one), else the final gameweek id if the whole season has
+        finished (nothing left to predict, so pin to the last one rather
+        than error).
+      - reference_date: a UTC datetime guaranteed strictly before
+        next_event's deadline (a few minutes before it) - safe to hand to
+        every recency-weighted prediction function as "now", with no
+        lookahead into that gameweek's own results.
+      - is_preseason: True until FPL marks any gameweek `finished` this
+        season - i.e. before 2026/27 GW1 has actually been played. Callers
+        use this to decide whether archived-only training is still
+        appropriate or whether live gw_history has real signal to blend in.
+
+    Cheap: only reads the already-cached bootstrap (see load_bootstrap),
+    not called per-player - safe to call once per request.
+    """
+    if bootstrap is None:
+        bootstrap = load_bootstrap()
+    events = bootstrap["events"]
+    current = next((e for e in events if e["is_current"]), None)
+    upcoming = next((e for e in events if e["is_next"]), None)
+    any_finished = any(e["finished"] for e in events)
+
+    if upcoming is not None:
+        reference = upcoming
+        reference_date = datetime.strptime(reference["deadline_time"], "%Y-%m-%dT%H:%M:%SZ") - timedelta(minutes=5)
+    elif current is not None:
+        reference = current
+        reference_date = datetime.strptime(reference["deadline_time"], "%Y-%m-%dT%H:%M:%SZ")
+    else:
+        reference = max(events, key=lambda e: e["id"])
+        reference_date = datetime.strptime(reference["deadline_time"], "%Y-%m-%dT%H:%M:%SZ")
+
+    return {
+        "next_event": reference["id"],
+        "reference_date": reference_date,
+        "is_preseason": not any_finished,
+    }
+
+
 def _team_name_to_id_map(history):
     """
     Builds {team full name -> numeric team id} from the history's own
@@ -599,6 +650,18 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     attach the wrong team's fixture ticker to a player.
     """
     entry = fetch_entry_info(team_id)
+    if event is None:
+        # No caller-specified gameweek: use this manager's own most recently
+        # scored one (FPL's own current_event), same source of truth
+        # build_chip_strategy already uses for its basis_event - a manager's
+        # picks for any *other* gameweek may not be fetchable at all (FPL
+        # appears to purge/reset pick history at each season boundary).
+        event = entry.get("current_event")
+        if event is None:
+            raise ValueError(
+                f"Manager {team_id} has no current_event yet - the season may not have started "
+                "(no gameweek has locked for them yet)."
+            )
     picks_data = fetch_entry_picks(team_id, event)
 
     picks = pd.DataFrame(picks_data["picks"])
@@ -699,6 +762,23 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     basis_event = entry.get("current_event") or (scan_start_event - 1)
     picks_data = fetch_entry_picks(team_id, basis_event)
     picks = pd.DataFrame(picks_data["picks"])
+
+    # picks come from FPL's live API, so `element` is a live-season id; scores
+    # below are computed against bootstrap_file (archived by default), a
+    # *different* id-space - FPL reassigns element ids every season (see
+    # compute_player_scores' docstring). Without remapping, the .isin() match
+    # below silently drops or mismatches most of the squad. Matched by code
+    # (the stable cross-season id), same as team_model.py's roster remapping.
+    from team_model import resolve_live_to_training_id
+
+    live_bootstrap = load_bootstrap()
+    live_elements = live_bootstrap["elements"]
+    training_elements = bootstrap["elements"]
+    picks["element"] = picks["element"].apply(
+        lambda live_id: resolve_live_to_training_id(live_id, live_elements, training_elements)
+    )
+    picks = picks.dropna(subset=["element"])
+    picks["element"] = picks["element"].astype(int)
     squad_element_ids = picks["element"].tolist()
     bench_element_ids = picks.loc[picks["position"] > 11, "element"].tolist()
 
