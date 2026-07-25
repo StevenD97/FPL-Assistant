@@ -143,7 +143,9 @@ export default function LeaguesPage() {
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
           Standings and gameweek-by-gameweek score trends for your mini-leagues - or track any public league
-          (e.g. a country/community league) to see where your own score would rank in it, without joining.
+          (including FPL&apos;s automatic country league, like &quot;England&quot; or &quot;Chile&quot;) to see where your own
+          score would rank in it, without joining. Look up someone else&apos;s Team ID below to find their country
+          league&apos;s ID, then track it.
         </p>
 
         <form onSubmit={handleFindLeagues} className="mb-3 flex items-end gap-3">
@@ -228,7 +230,29 @@ export default function LeaguesPage() {
 
         {standings && (
           <div>
-            <h2 className="mb-3 font-semibold text-text-primary">{standings.league_name}</h2>
+            <div className="mb-3 flex items-center gap-3">
+              <h2 className="font-semibold text-text-primary">{standings.league_name}</h2>
+              {selectedLeague != null && (
+                trackedIds.includes(selectedLeague) ? (
+                  <span className="text-xs font-medium text-pl-purple">Tracked</span>
+                ) : (
+                  <button
+                    onClick={() => {
+                      const next = [...trackedIds, selectedLeague];
+                      setTrackedIds(next);
+                      storeTrackedLeagueIds(next);
+                    }}
+                    className="rounded-md border border-pl-purple px-2.5 py-1 text-xs font-semibold text-pl-purple hover:bg-pl-purple/5"
+                  >
+                    + Track this league
+                  </button>
+                )
+              )}
+            </div>
+            <p className="mb-3 -mt-2 text-xs text-text-muted">
+              Found via a team ID someone shared with you? Tap &quot;Track this league&quot; to save it here, then clear
+              the Team ID field (or connect your own team) to see where <em>your</em> score would rank in it.
+            </p>
 
             {standings.your_rank && (
               <div className="mb-4 rounded-lg border border-pl-purple/30 bg-pl-purple/5 px-4 py-3 text-sm">
