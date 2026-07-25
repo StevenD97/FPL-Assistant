@@ -88,10 +88,26 @@ def health():
 
 @app.get("/api/ready")
 def ready():
-    """Readiness: can we actually serve? Checks DB connectivity."""
-    from db.session import db_healthy
+    """
+    Readiness: can we actually serve? Checks DB connectivity.
 
-    ok = db_healthy()
+    db.session builds its Engine at import time, so a genuinely broken
+    DATABASE_URL (unparseable, or naming a driver that isn't installed -
+    confirmed directly: this happened here when DATABASE_URL was first set
+    without the +psycopg driver suffix) raises on that import itself,
+    before db_healthy()'s own try/except gets a chance to run. Left
+    unhandled, that becomes a raw 500 with no CORS headers, for the same
+    reason squad_analysis's HTTPError used to (see its docstring) -
+    Starlette's ServerErrorMiddleware sits outside CORSMiddleware. Catching
+    broadly here keeps this endpoint's promise: it always returns a clean,
+    CORS-correct response, never an opaque crash.
+    """
+    try:
+        from db.session import db_healthy
+
+        ok = db_healthy()
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"database unavailable: {e}")
     if not ok:
         raise HTTPException(status_code=503, detail="database unavailable")
     return {"status": "ready", "database": "ok"}
