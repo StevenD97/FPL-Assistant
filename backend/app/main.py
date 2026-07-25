@@ -758,6 +758,12 @@ def fixtures_schedule(season: str = "live"):
 
 
 LEAGUE_STANDINGS_ENTRY_CAP = 20
+# How many standings pages (roughly LEAGUE_RANK_SEARCH_PAGE_CAP * 50
+# entries) to walk when estimating where a manager would rank in a public
+# league - see _estimate_rank_in_league. Bounds worst-case latency for a
+# league too large to search exhaustively (e.g. a widely-shared country
+# league) at a handful of seconds, rather than one request per member.
+LEAGUE_RANK_SEARCH_PAGE_CAP = 20
 
 
 @app.get("/api/leagues/{team_id}")
@@ -774,14 +780,65 @@ def manager_leagues(team_id: int):
     ]
 
 
+def _estimate_rank_in_league(league_id, target_points, page_cap=LEAGUE_RANK_SEARCH_PAGE_CAP):
+    """
+    Where target_points would rank within a public classic league's
+    standings (sorted by total points descending) - the "compare your
+    score against any public league, including ones you've never joined"
+    feature (e.g. a country-specific community league). Walks standings
+    pages (~50 entries each) linearly rather than downloading the whole
+    league, which could be huge for a widely-shared public league -
+    O(page_cap) requests worst case, stopping as soon as target_points
+    would insert into the current page.
+
+    Returns (found, rank_or_none, entries_searched):
+      - found=True: rank_or_none is target_points' exact 1-indexed rank.
+      - found=False: target_points is lower than every entry searched -
+        rank_or_none is None; entries_searched lets the caller say
+        "beyond the top N" honestly instead of guessing.
+    """
+    entries_seen = 0
+    for page in range(1, page_cap + 1):
+        response = requests.get(
+            f"{FPL_API_BASE}/leagues-classic/{league_id}/standings/",
+            params={"page_standings": page}, timeout=30,
+        )
+        response.raise_for_status()
+        results = response.json()["standings"]["results"]
+        if not results:
+            # Ran off the end of a league smaller than page_cap * page size.
+            return True, entries_seen + 1, entries_seen
+        for row in results:
+            entries_seen += 1
+            if target_points >= row["total"]:
+                return True, entries_seen, entries_seen
+        if not response.json()["standings"]["has_next"]:
+            return True, entries_seen + 1, entries_seen
+    return False, None, entries_seen
+
+
 @app.get("/api/leagues/{league_id}/standings")
-def league_standings(league_id: int, max_entries: int = LEAGUE_STANDINGS_ENTRY_CAP):
+def league_standings(league_id: int, max_entries: int = LEAGUE_STANDINGS_ENTRY_CAP, team_id: Optional[int] = None):
     """
     Standings for a classic league, plus each shown manager's gameweek-by-
     gameweek total-points trend for the current season (for the Leagues
     page's line chart). Capped at max_entries managers (ranked by current
     standing) since each one needs its own live API call for history -
     unbounded would mean hundreds of requests for a large public league.
+
+    Works for *any* public classic league id, not just ones team_id has
+    actually joined - FPL's standings endpoint is public. This is what
+    lets the frontend's "track any public league" feature (e.g. a
+    country-specific community league you're not a member of) work: a
+    manager can see where their real score would place them in a league
+    they've never joined, without needing to actually join it.
+
+    team_id, if given, adds "your_rank": this manager's own current-season
+    total points (from FPL's entry endpoint - the same number a classic
+    league ranks by) inserted into *this* league's full standings via
+    _estimate_rank_in_league, separate from the max_entries-capped table
+    above (which is just for display). None if team_id is omitted, or if
+    the manager lookup fails (a bad id shouldn't break the whole page).
 
     Honest limitation: FPL only keeps gameweek-by-gameweek scores for the
     *current* season - once 2026/27 has actual gameweeks played, this
@@ -808,6 +865,23 @@ def league_standings(league_id: int, max_entries: int = LEAGUE_STANDINGS_ENTRY_C
             "series": [{"event": gw["event"], "total_points": gw["total_points"]} for gw in current],
         })
 
+    your_rank = None
+    if team_id is not None:
+        try:
+            manager = fetch_entry_info(team_id)
+            target_points = manager.get("summary_overall_points")
+            if target_points is not None:
+                found, rank, searched = _estimate_rank_in_league(league_id, target_points)
+                your_rank = {
+                    "team_id": team_id,
+                    "total_points": target_points,
+                    "rank": rank,
+                    "searched_at_least": searched,
+                    "found_exact": found,
+                }
+        except requests.exceptions.HTTPError:
+            your_rank = None  # bad/unfetchable team_id - omit rather than fail the whole standings request
+
     return {
         "league_name": data["league"]["name"],
         "standings": [
@@ -818,4 +892,5 @@ def league_standings(league_id: int, max_entries: int = LEAGUE_STANDINGS_ENTRY_C
             for r in results
         ],
         "trend": trend_entries,
+        "your_rank": your_rank,
     }

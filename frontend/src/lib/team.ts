@@ -52,6 +52,41 @@ export function clearStoredTeamId(): void {
   }
 }
 
+// Tracked public leagues (Leagues page's "compare against any public
+// league" feature - see backend's /api/leagues/{id}/standings, which
+// works for any public classic league id, not just ones you've joined).
+const LEAGUES_STORAGE_KEY = "fpl.trackedLeagueIds";
+
+export function parseLeagueId(input: string): number | null {
+  const s = (input || "").trim();
+  // Accept a full FPL league URL (.../leagues/314/standings/c) or a bare numeric id.
+  const urlMatch = s.match(/leagues\/(\d+)/i);
+  const raw = urlMatch ? urlMatch[1] : s;
+  if (!/^\d+$/.test(raw)) return null;
+  const id = parseInt(raw, 10);
+  return id > 0 ? id : null;
+}
+
+export function loadTrackedLeagueIds(): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const v = window.localStorage.getItem(LEAGUES_STORAGE_KEY);
+    if (!v) return [];
+    const parsed = JSON.parse(v);
+    return Array.isArray(parsed) ? parsed.filter((n) => Number.isInteger(n)) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function storeTrackedLeagueIds(ids: number[]): void {
+  try {
+    window.localStorage.setItem(LEAGUES_STORAGE_KEY, JSON.stringify(ids));
+  } catch {
+    // Ignore (private mode / storage disabled) - the app still works per-session.
+  }
+}
+
 export function formatRank(n: number | null): string {
   return n == null ? "—" : n.toLocaleString("en-GB");
 }
