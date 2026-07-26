@@ -17,14 +17,6 @@ type PageInfo = {
 
 const PAGES: PageInfo[] = [
   {
-    title: "My Squad",
-    href: "/squad",
-    icon: "squad",
-    what: "Enter your FPL team ID to see your current squad scored, plus automatically-suggested transfers.",
-    model: "A recommendation_score blending expected returns, recency-weighted form, underlying quality (xG/ICT), fixture difficulty, and set-piece duty - transfer suggestions come from the same optimizer as the Optimizer page.",
-    use: "Check your squad's weak points and see the provably optimal transfer(s) given your bank and free transfers.",
-  },
-  {
     title: "Optimizer",
     href: "/optimizer",
     icon: "optimizer",
@@ -137,6 +129,32 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Featured: My Squad */}
+      <Link href="/squad" className="group block">
+        <div className="bg-fpl-pitch relative overflow-hidden rounded-lg p-6 text-white transition-transform duration-fast ease-standard group-hover:scale-[1.01] lg:p-8">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent" />
+          <div className="relative flex flex-col gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
+                <NavIcon name="squad" className="h-5 w-5" />
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
+                Start here
+              </span>
+            </div>
+            <h2 className="text-xl font-bold tracking-tight lg:text-2xl">My Squad</h2>
+            <p className="max-w-2xl text-sm leading-relaxed text-white/90 lg:text-base">
+              Your real squad, on a real pitch - with official club badges, kits, and player photos. See your
+              team scored gameweek by gameweek, get automatically-suggested transfers, and click any player for
+              their full breakdown.
+            </p>
+            <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] group-hover:brightness-95">
+              Go to My Squad →
+            </span>
+          </div>
+        </div>
+      </Link>
 
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
