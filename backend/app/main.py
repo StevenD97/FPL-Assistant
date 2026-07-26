@@ -233,8 +233,28 @@ def player_predicted_points_outlook(
     # doesn't need a separate code path from that sibling endpoint.
     df = df.sort_values("predicted_points", ascending=False).head(limit).copy()
     df["live_id"] = df["id"]
-    team_badges = team_badge_by_short_name(load_bootstrap(LIVE_BOOTSTRAP_FILE))
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    team_badges = team_badge_by_short_name(bootstrap)
     df["team_badge"] = df["team_short"].map(team_badges)
+
+    # Structured, badge-ready form of fixture_ticker (a plain "HUL(A) | IPS(H)"
+    # string) - for UIs that want a badge per fixture instead of parsing it.
+    team_short_lookup = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_id_by_player_id = {e["id"]: e["team"] for e in bootstrap["elements"]}
+    fixtures_by_team_event = build_fixtures_by_team_event(load_fixtures(LIVE_FIXTURES_FILE))
+
+    def structured_fixtures(player_id):
+        team_id = team_id_by_player_id.get(player_id)
+        if team_id is None:
+            return []
+        result = []
+        for event in next_events:
+            for fx in fixtures_by_team_event[team_id].get(event, []):
+                opponent = team_short_lookup[fx["opponent"]]
+                result.append({"opponent": opponent, "is_home": fx["is_home"], "opponent_badge": team_badges[opponent]})
+        return result
+
+    df["fixtures"] = df["id"].apply(structured_fixtures)
     return df.to_dict(orient="records")
 
 

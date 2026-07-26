@@ -749,8 +749,18 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         ["web_name", "team_short", "pos", "recommendation_score", "ep_next", "captain_flag"]
     ].to_dict(orient="records")
 
+    # team_badge/fixtures (structured, badge-ready form of `ticker`) come from
+    # fixture_scores directly rather than through `squad`'s own merged copy -
+    # `fixtures` is a list-of-dicts column, which pandas' drop_duplicates()
+    # can't hash, so it's attached after dedup instead of selected alongside
+    # the other (hashable) columns below.
+    fixture_details_by_team_short = fixture_scores.set_index("team")[["team_badge", "fixtures"]].to_dict(orient="index")
     fixture_outlook = squad[["team_short", "fixture_score", "avg_difficulty", "ticker"]] \
         .drop_duplicates().sort_values("fixture_score", ascending=False).to_dict(orient="records")
+    for row in fixture_outlook:
+        details = fixture_details_by_team_short.get(row["team_short"], {})
+        row["team_badge"] = details.get("team_badge")
+        row["fixtures"] = details.get("fixtures", [])
 
     squad_cols = [
         "id", "code", "team", "position", "web_name", "team_short", "pos", "role", "captain_flag",

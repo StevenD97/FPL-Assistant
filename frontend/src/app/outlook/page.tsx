@@ -9,6 +9,8 @@ import { Select } from "@/components/ui/Select";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 
+type OutlookFixture = { opponent: string; is_home: boolean; opponent_badge: string };
+
 type OutlookRow = {
   id: number;
   live_id: number | null;
@@ -19,6 +21,7 @@ type OutlookRow = {
   predicted_points: number;
   fixture_count: number;
   fixture_ticker: string;
+  fixtures: OutlookFixture[];
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -172,7 +175,28 @@ export default function OutlookPage() {
                     </td>
                     <td className="px-3 py-2.5 font-mono font-medium">{row.predicted_points.toFixed(2)}</td>
                     <td className="px-3 py-2.5 font-mono">{row.fixture_count}</td>
-                    <td className="px-3 py-2.5 text-text-secondary">{row.fixture_ticker}</td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex flex-wrap gap-1">
+                        {row.fixtures.map((fx, fi) => (
+                          <span
+                            key={fi}
+                            className="inline-flex items-center gap-1 rounded-sm bg-surface-sunken px-1.5 py-0.5 font-mono text-[11px] text-text-secondary"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={fx.opponent_badge}
+                              alt=""
+                              className="h-3.5 w-3.5 object-contain"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).style.display = "none";
+                              }}
+                            />
+                            {fx.opponent}
+                            {fx.is_home ? "(H)" : "(A)"}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

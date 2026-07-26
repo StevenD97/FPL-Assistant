@@ -9,6 +9,7 @@ import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
+import { FdrChip } from "@/components/ui/FdrChip";
 import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { fetchJson } from "@/lib/api";
@@ -49,11 +50,15 @@ type CaptaincyOption = {
   captain_flag: string;
 };
 
+type FixtureOutlookFixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
+
 type FixtureOutlookRow = {
   team_short: string;
+  team_badge: string;
   fixture_score: number;
   avg_difficulty: number | null;
   ticker: string;
+  fixtures: FixtureOutlookFixture[];
 };
 
 type SquadResponse = {
@@ -652,11 +657,23 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
             <h3 className="mb-2 font-semibold text-text-primary">
               Fixture outlook
             </h3>
-            <ul className="space-y-1 text-sm text-text-secondary">
+            <ul className="space-y-1.5 text-sm text-text-secondary">
               {data.fixture_outlook.map((f, i) => (
-                <li key={i}>
-                  {f.team_short}: score <span className="font-mono">{f.fixture_score}</span> (avg FDR{" "}
-                  <span className="font-mono">{f.avg_difficulty}</span>) - {f.ticker}
+                <li key={i} className="flex flex-wrap items-center gap-1.5">
+                  <TeamBadge teamShort={f.team_short} name={f.team_short} badgeUrl={f.team_badge} />
+                  <span>
+                    score <span className="font-mono">{f.fixture_score}</span> (avg FDR{" "}
+                    <span className="font-mono">{f.avg_difficulty}</span>)
+                  </span>
+                  {f.fixtures.map((fx, fi) => (
+                    <FdrChip
+                      key={fi}
+                      opponent={fx.opponent}
+                      isHome={fx.is_home}
+                      difficulty={fx.difficulty}
+                      badgeUrl={fx.opponent_badge}
+                    />
+                  ))}
                 </li>
               ))}
             </ul>
