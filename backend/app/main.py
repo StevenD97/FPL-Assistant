@@ -23,6 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from analysis import (
     FPL_API_BASE,
     build_chip_strategy,
+    build_fixtures_by_team_event,
     build_squad_analysis,
     compute_fixture_difficulty,
     compute_player_scores,
@@ -549,6 +550,147 @@ def squad_optimize_transfers(
     )
     pool = build_player_pool(predicted, bootstrap)
     return optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)
+
+
+# appearance_points/fixture (0-2 scale, see _fixture_points in team_model.py)
+# below this in a given gameweek flags as a rotation-risk week in the
+# planner - mirrors squad-builder's own ROTATION_RISK_THRESHOLD constant
+# (frontend/src/app/squad-builder/page.tsx) so the two pages agree on what
+# "risky" means, even though they can't literally share a constant across
+# the language boundary.
+PLANNER_ROTATION_RISK_THRESHOLD = 1.3
+PLANNER_TOUGH_FIXTURE_FDR = 4  # FPL's own 1(easiest)-5(hardest) fixture difficulty rating
+PLANNER_DIP_RATIO = 0.6  # flag a gameweek at <60% of this player's own average across the window
+
+
+@app.get("/api/squad/{team_id}/planner")
+def squad_planner(
+    team_id: int,
+    event: Optional[int] = None,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
+    gw_count: int = 6,
+):
+    """
+    Multi-gameweek transfer-planning view for the manager's real squad:
+    per-player, per-gameweek predicted points, plus plain-language flags
+    for weeks where a player looks less desirable than usual - a tough
+    fixture (FDR), a blank gameweek, rising rotation risk (low
+    appearance_points), or simply a dip relative to that player's own
+    average across the window. Driven entirely by the existing prediction
+    model (team strength, fixture difficulty, appearance probability) -
+    no separate LLM call, so this is free and instant, and it's the same
+    model every other page's numbers already come from.
+
+    event/reference_date/next_event resolve the same way as
+    squad_optimize_transfers - see its docstring.
+    """
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
+    if event is None:
+        entry = fetch_entry_info(team_id)
+        event = entry.get("current_event")
+        if event is None:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    f"Manager {team_id} has no current_event yet - the season hasn't started "
+                    "(no gameweek has locked for them yet), so there's no squad to plan around."
+                ),
+            )
+    try:
+        picks_data = fetch_entry_picks(team_id, event)
+    except requests.exceptions.HTTPError as e:
+        status = e.response.status_code if e.response is not None else 502
+        if status == 404:
+            raise HTTPException(status_code=404, detail=_not_found_detail(team_id, event))
+        raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
+    squad_element_ids = {pick["element"] for pick in picks_data["picks"]}
+
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    fixtures = load_fixtures(LIVE_FIXTURES_FILE)
+    fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
+    team_short_by_id = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    positions_by_type = {p["id"]: p["singular_name_short"] for p in bootstrap["element_types"]}
+    elements_by_id = {p["id"]: p for p in bootstrap["elements"]}
+
+    next_events = list(range(next_event, next_event + gw_count))
+
+    # One call per gameweek rather than a single summed multi-gw call - the
+    # planner needs the week-by-week shape, not the season total. Cheap:
+    # _build_prediction_context (the expensive part - team strengths,
+    # involvement shares, etc.) is cached and shared across all of these
+    # since they share every other parameter; only the per-event prediction
+    # loop reruns each time.
+    per_gw = {}
+    for gw in next_events:
+        df = predict_multi_gw_breakdown(
+            ref_date, [gw],
+            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+            bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+            apply_live_signals=True,
+            roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+        )
+        per_gw[gw] = df.set_index("id")
+
+    players = []
+    for pid in squad_element_ids:
+        el = elements_by_id.get(pid)
+        if el is None:
+            continue
+        team_id_num = el["team"]
+
+        trajectory = []
+        for gw in next_events:
+            df = per_gw[gw]
+            if pid in df.index:
+                predicted_points = round(float(df.loc[pid, "predicted_points"]), 2)
+                appearance_points = round(float(df.loc[pid, "appearance_points"]), 2)
+                fixture_count = int(df.loc[pid, "fixture_count"])
+            else:
+                predicted_points, appearance_points, fixture_count = 0.0, 0.0, 0
+            opponents = [
+                {"team": team_short_by_id[fx["opponent"]], "is_home": fx["is_home"], "difficulty": fx["difficulty"]}
+                for fx in fixtures_by_team_event[team_id_num].get(gw, [])
+            ]
+            trajectory.append({
+                "event": gw,
+                "predicted_points": predicted_points,
+                "appearance_points": appearance_points,
+                "fixture_count": fixture_count,
+                "opponents": opponents,
+                "flags": [],  # filled in below, once this player's own average is known
+            })
+
+        avg_points = sum(gw_row["predicted_points"] for gw_row in trajectory) / len(trajectory) if trajectory else 0.0
+        for gw_row in trajectory:
+            flags = []
+            if gw_row["fixture_count"] == 0:
+                flags.append("Blank gameweek - no fixture")
+            else:
+                tough = [o for o in gw_row["opponents"] if o["difficulty"] >= PLANNER_TOUGH_FIXTURE_FDR]
+                if tough:
+                    worst = max(tough, key=lambda o: o["difficulty"])
+                    flags.append(f"Tough fixture vs {worst['team']} (FDR {worst['difficulty']})")
+                if gw_row["appearance_points"] < PLANNER_ROTATION_RISK_THRESHOLD:
+                    flags.append("Rotation risk - not a guaranteed starter")
+                if avg_points > 0 and gw_row["predicted_points"] < avg_points * PLANNER_DIP_RATIO:
+                    flags.append("Well below this player's own average across this window")
+            gw_row["flags"] = flags
+
+        players.append({
+            "id": pid,
+            "web_name": el["web_name"],
+            "team_short": team_short_by_id[team_id_num],
+            "position": positions_by_type.get(el["element_type"]),
+            "team_badge": team_badge_url(team_code_by_id[team_id_num]),
+            "player_photo": player_photo_url(el["code"]),
+            "average_predicted_points": round(avg_points, 2),
+            "trajectory": trajectory,
+        })
+
+    players.sort(key=lambda p: p["average_predicted_points"], reverse=True)
+    return {"event": event, "next_events": next_events, "players": players}
 
 
 # Archived-season (2025/26) totals shown on the All Players / player-detail

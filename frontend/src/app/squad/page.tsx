@@ -95,6 +95,30 @@ type Alternative = {
   value: number;
 };
 
+type PlannerOpponent = { team: string; is_home: boolean; difficulty: number };
+
+type PlannerGw = {
+  event: number;
+  predicted_points: number;
+  appearance_points: number;
+  fixture_count: number;
+  opponents: PlannerOpponent[];
+  flags: string[];
+};
+
+type PlannerPlayer = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  position: string;
+  team_badge: string;
+  player_photo: string;
+  average_predicted_points: number;
+  trajectory: PlannerGw[];
+};
+
+type PlannerResponse = { event: number; next_events: number[]; players: PlannerPlayer[] };
+
 function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   return {
     id: p.id,
@@ -124,6 +148,10 @@ export default function SquadPage() {
   const [suggestFor, setSuggestFor] = useState<{ liveId: number; name: string } | null>(null);
   const [alternatives, setAlternatives] = useState<Alternative[] | null>(null);
   const [alternativesLoading, setAlternativesLoading] = useState(false);
+
+  const [planner, setPlanner] = useState<PlannerResponse | null>(null);
+  const [plannerLoading, setPlannerLoading] = useState(false);
+  const [plannerError, setPlannerError] = useState<string | null>(null);
 
   const { teamId: connectedId } = useTeam();
 
@@ -161,6 +189,20 @@ export default function SquadPage() {
     }
   }
 
+  async function loadPlanner(id: string) {
+    setPlannerLoading(true);
+    setPlannerError(null);
+    setPlanner(null);
+    try {
+      setPlanner(await fetchJson(`${API_URL}/api/squad/${id}/planner`));
+    } catch (err) {
+      // Same "bonus, not a blocker" treatment as suggested transfers below.
+      setPlannerError(err instanceof Error ? err.message : "Couldn't build the planner");
+    } finally {
+      setPlannerLoading(false);
+    }
+  }
+
   async function loadSquad(id: string) {
     if (!id) return;
     setLoading(true);
@@ -169,6 +211,7 @@ export default function SquadPage() {
     try {
       setData(await fetchJson(`${API_URL}/api/squad/${id}`));
       loadOptimizer(id); // fires automatically alongside the squad view, not gated on a separate action
+      loadPlanner(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -351,6 +394,80 @@ export default function SquadPage() {
                     </Alert>
                   )}
                 </>
+              )}
+            </Card>
+
+            <Card padded={false} className="overflow-hidden">
+              <div className="border-b border-border p-4">
+                <h3 className="font-semibold text-text-primary">Transfer planner</h3>
+                <p className="mt-1 text-xs text-text-muted">
+                  Predicted points per gameweek for your current squad, with weeks flagged where a player looks
+                  less desirable - a tough fixture, a blank gameweek, rotation risk, or a dip against their own
+                  average. Hover a flagged cell for why.
+                </p>
+              </div>
+              {plannerLoading && <p className="p-4 text-sm text-text-muted">Building planner...</p>}
+              {plannerError && (
+                <div className="p-4">
+                  <Alert kind="warning">Couldn&apos;t build the planner ({plannerError}).</Alert>
+                </div>
+              )}
+              {planner && (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-surface-sunken">
+                      <tr>
+                        <th className="sticky left-0 bg-surface-sunken px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                          Player
+                        </th>
+                        {planner.next_events.map((gw) => (
+                          <th
+                            key={gw}
+                            className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wide text-text-muted"
+                          >
+                            GW{gw}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {planner.players.map((p) => (
+                        <tr key={p.id} className="border-t border-border">
+                          <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-2 font-medium">
+                            <PlayerLink id={p.id} className="flex items-center gap-2">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={p.player_photo}
+                                alt=""
+                                className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top"
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+                                }}
+                              />
+                              <span>
+                                {p.web_name} <span className="text-text-muted">({p.team_short})</span>
+                              </span>
+                            </PlayerLink>
+                          </td>
+                          {p.trajectory.map((gw) => {
+                            const hasBlank = gw.fixture_count === 0;
+                            const hasFlag = gw.flags.length > 0;
+                            const bg = hasBlank ? "bg-danger-bg" : hasFlag ? "bg-warning-bg" : "";
+                            return (
+                              <td
+                                key={gw.event}
+                                className={`px-3 py-2 text-center font-mono ${bg}`}
+                                title={gw.flags.length > 0 ? gw.flags.join(" · ") : undefined}
+                              >
+                                {gw.predicted_points.toFixed(1)}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </Card>
 
