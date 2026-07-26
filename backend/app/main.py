@@ -22,11 +22,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from analysis import (
     FPL_API_BASE,
+    MIN_NET_TRANSFERS_TO_FLAG,
     build_chip_strategy,
     build_fixtures_by_team_event,
     build_squad_analysis,
     compute_fixture_difficulty,
     compute_player_scores,
+    compute_price_change_signals,
     ensure_data_fetched,
     fetch_entry_info,
     fetch_entry_picks,
@@ -34,6 +36,7 @@ from analysis import (
     load_bootstrap,
     load_fixtures,
     load_gw_history,
+    load_recent_bootstrap_snapshots,
     map_archived_ids_to_live,
     nullable_int_column,
     player_photo_url,
@@ -144,6 +147,51 @@ def fixture_difficulty(start_event: Optional[int] = None, window_size: int = 5):
         start_event = get_gw_context()["next_event"]
     df = compute_fixture_difficulty(start_event, window_size)
     return df.sort_values("fixture_score", ascending=False).to_dict(orient="records")
+
+
+@app.get("/api/players/price-watch")
+def price_watch(limit: int = 20, history_hours: int = 48):
+    """
+    Players with the biggest net-transfer activity today, split into
+    likely risers/fallers - see compute_price_change_signals' docstring
+    for exactly what this is (and isn't - it's a heuristic proxy built on
+    the same raw signal public price-change trackers use, not a claim to
+    know FPL's actual undocumented algorithm).
+
+    Ranked by *absolute* net transfers today, not momentum_pct (also
+    returned on each row, for context) - momentum_pct divides by a
+    player's own estimated owner count, which blows up into huge,
+    meaningless percentages for barely-owned players moving a handful of
+    transfers; raw activity is a much more stable "worth watching" signal,
+    and closer to what public trackers actually lead with.
+
+    history_hours controls how far back load_recent_bootstrap_snapshots
+    looks for a transfer *rate* (see that function and
+    _transfer_rate_per_hour) - only available when the DB has that much
+    ingest history accumulated; has_history_trend tells the frontend
+    whether to expect transfer_rate_per_hour to be populated at all.
+    """
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    history_snapshots = load_recent_bootstrap_snapshots(LIVE_BOOTSTRAP_FILE, hours=history_hours)
+    df = compute_price_change_signals(bootstrap, history_snapshots=history_snapshots)
+
+    team_short_lookup = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    df["team_short"] = df["team"].map(team_short_lookup)
+    df["team_badge"] = df["team"].map(team_code_by_id).apply(team_badge_url)
+    df = df.drop(columns=["team", "code"])
+
+    qualifying = df[df["net_transfers_event"].abs() >= MIN_NET_TRANSFERS_TO_FLAG]
+    risers = qualifying[qualifying["direction"] == "rising"].sort_values("net_transfers_event", ascending=False)
+    fallers = qualifying[qualifying["direction"] == "falling"].sort_values("net_transfers_event", ascending=True)
+
+    return {
+        "has_history_trend": len(history_snapshots) >= 2,
+        "history_snapshot_count": len(history_snapshots),
+        "min_net_transfers_to_flag": MIN_NET_TRANSFERS_TO_FLAG,
+        "risers": risers.head(limit).to_dict(orient="records"),
+        "fallers": fallers.head(limit).to_dict(orient="records"),
+    }
 
 
 @app.get("/api/players/scores")

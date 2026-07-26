@@ -497,6 +497,47 @@ conventions rather than dropped in as-is. No dark mode.
     of requests for a large public league.
 - No chatbot yet (deferred - would need an Anthropic API key and a small
   recurring cost).
+- **Price Watch** (`/price-watch`, `/api/players/price-watch`) ranks
+  players by today's net transfers in/out (FPL's own bootstrap-static
+  data: `transfers_in_event`/`transfers_out_event`, which count net
+  transfers since the *last* price change and reset to 0 when one
+  happens) as a heuristic for who's likely to move £0.1m at the next
+  price update (~2:30am UK). Explicitly NOT a claim to have
+  reverse-engineered FPL's real algorithm - that's proprietary and has
+  never been published; this uses the same raw signal community trackers
+  (LiveFPL, Fantasy Football Scout) are built on, without guessing at
+  FPL's actual (unknown, reportedly ownership/price-band-dependent)
+  threshold. Ranks by *absolute* net transfers, not transfers-as-%-of-
+  ownership (`momentum_pct`, still returned per player for context) -
+  the percentage blows up into huge, meaningless numbers for barely-owned
+  players (a 0.1%-owned player moving 2,500 net transfers showed up as
+  "500%" in testing), so it's supplementary, not the ranking key.
+  `MIN_NET_TRANSFERS_TO_FLAG` (500) filters out noise from tiny swings on
+  fringe players before anything is shown at all.
+
+  Also surfaces a transfer *rate* (`transfer_rate_per_hour`) when enough
+  history exists: the ingest workflow snapshots bootstrap-static every 6
+  hours and keeps every fetch as its own `raw_snapshots` row rather than
+  overwriting the latest (`db.read.recent_bootstrap_snapshots`), so the
+  time series needed to see whether momentum is building or just a
+  one-off blip was already being collected - nothing was reading it for
+  this until now. Correctly detects and omits (rather than
+  misreporting) any player whose count *decreased* somewhere in the
+  window, which means a price change reset the counter partway through,
+  not that transfers reversed.
+
+  FPL's own `price_change_percent` field (bootstrap-static) is passed
+  through as `official_progress_percent` - premierleague.com announced a
+  "Price Change Predictor" for 2026/27 that sounds like exactly this
+  figure, updated every 15 minutes on FPL's own site, but every
+  element's value is still 0 as of writing (no 2026/27 transfer activity
+  yet), so its sign convention/scale couldn't be verified against real
+  data and isn't used by the ranking logic - surfaced for reference only.
+  No on-disk fallback for the snapshot history (unlike bootstrap/fixtures
+  elsewhere in this app) - there's only ever one bootstrap JSON file per
+  season on disk, not a time series of them, so DB-unreachable and
+  DB-has-no-history-yet both just mean "no trend data yet"
+  (`has_history_trend: false`) rather than an error.
 - **Backend cold starts on Render's free tier.** The deployed backend
   (`fpl-assistant-backend`, see `render.yaml`) runs on Render's free
   plan, which spins the service down after ~15 minutes of no traffic -

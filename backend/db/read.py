@@ -8,6 +8,8 @@ Reconstruct the app's expected data shapes from the DB.
 analysis.py's loaders call these first and fall back to the on-disk files if
 the DB is empty or unreachable (controlled by settings.allow_file_fallback).
 """
+from datetime import datetime, timedelta, timezone
+
 import pandas as pd
 from sqlalchemy import select, text
 
@@ -65,3 +67,36 @@ def gw_history_from_db(season: str):
         return None
     # DB stores the gameweek as `event`; the CSV called it `GW`.
     return df.rename(columns={"event": "GW"})
+
+
+def recent_bootstrap_snapshots(filename: str, hours: int = 48):
+    """
+    (fetched_at, data) tuples for every bootstrap snapshot fetched in the
+    last `hours` hours, oldest first - the ingest workflow snapshots
+    bootstrap-static every 6 hours (.github/workflows/ingest-data.yml) and
+    keeps every fetch as its own raw_snapshots row rather than overwriting
+    the latest, so this is genuinely a time series, not just "the last N
+    reads of one row". Used by analysis.compute_price_change_signals to see
+    whether a player's net-transfer momentum is building or cooling, not
+    just its current snapshot value - see that function's docstring.
+
+    Unlike bootstrap_from_db/fixtures_from_db (which fall back to a single
+    on-disk JSON file when the DB is empty/unreachable - see this module's
+    docstring), there is no on-disk equivalent of a *time series* of past
+    snapshots, so this has no file fallback: returns [] whenever the DB is
+    unreachable or has fewer than `hours` worth of history yet (e.g. right
+    after ingestion first starts running), which callers treat as "no trend
+    data yet" rather than an error - the honest answer, not a guess.
+    """
+    season = _season_for(filename, _BOOTSTRAP_FILE_TO_SEASON)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    try:
+        with SessionLocal() as session:
+            rows = session.execute(
+                select(RawSnapshot.fetched_at, RawSnapshot.data)
+                .where(RawSnapshot.season == season, RawSnapshot.kind == "bootstrap", RawSnapshot.fetched_at >= cutoff)
+                .order_by(RawSnapshot.fetched_at.asc())
+            ).all()
+        return [(row.fetched_at, row.data) for row in rows]
+    except Exception:
+        return []
