@@ -563,6 +563,98 @@ PLANNER_TOUGH_FIXTURE_FDR = 4  # FPL's own 1(easiest)-5(hardest) fixture difficu
 PLANNER_DIP_RATIO = 0.6  # flag a gameweek at <60% of this player's own average across the window
 
 
+def _build_trajectory_context(ref_date, next_events):
+    """
+    Shared setup for per-player, per-gameweek trajectories - used by both
+    squad_planner (the whole squad) and player_trajectory (a single
+    drag-in candidate, so the frontend can preview a swap against the
+    exact same numbers). One predict_multi_gw_breakdown call per gameweek
+    rather than a single summed call, since callers need the week-by-week
+    shape, not a season total - cheap, since _build_prediction_context
+    (the expensive part) is cached and shared across all of these calls.
+    """
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    fixtures = load_fixtures(LIVE_FIXTURES_FILE)
+    per_gw = {}
+    for gw in next_events:
+        df = predict_multi_gw_breakdown(
+            ref_date, [gw],
+            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+            bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+            apply_live_signals=True,
+            roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+        )
+        per_gw[gw] = df.set_index("id")
+    return {
+        "next_events": next_events,
+        "per_gw": per_gw,
+        "fixtures_by_team_event": build_fixtures_by_team_event(fixtures),
+        "team_short_by_id": {t["id"]: t["short_name"] for t in bootstrap["teams"]},
+        "team_code_by_id": {t["id"]: t["code"] for t in bootstrap["teams"]},
+        "positions_by_type": {p["id"]: p["singular_name_short"] for p in bootstrap["element_types"]},
+        "elements_by_id": {p["id"]: p for p in bootstrap["elements"]},
+    }
+
+
+def _player_trajectory(pid, ctx):
+    """One player's {id, web_name, team_short, position, team_badge, player_photo,
+    average_predicted_points, trajectory} - see _build_trajectory_context. None if
+    pid isn't in the live roster."""
+    el = ctx["elements_by_id"].get(pid)
+    if el is None:
+        return None
+    team_id_num = el["team"]
+
+    trajectory = []
+    for gw in ctx["next_events"]:
+        df = ctx["per_gw"][gw]
+        if pid in df.index:
+            predicted_points = round(float(df.loc[pid, "predicted_points"]), 2)
+            appearance_points = round(float(df.loc[pid, "appearance_points"]), 2)
+            fixture_count = int(df.loc[pid, "fixture_count"])
+        else:
+            predicted_points, appearance_points, fixture_count = 0.0, 0.0, 0
+        opponents = [
+            {"team": ctx["team_short_by_id"][fx["opponent"]], "is_home": fx["is_home"], "difficulty": fx["difficulty"]}
+            for fx in ctx["fixtures_by_team_event"][team_id_num].get(gw, [])
+        ]
+        trajectory.append({
+            "event": gw,
+            "predicted_points": predicted_points,
+            "appearance_points": appearance_points,
+            "fixture_count": fixture_count,
+            "opponents": opponents,
+            "flags": [],  # filled in below, once this player's own average is known
+        })
+
+    avg_points = sum(gw_row["predicted_points"] for gw_row in trajectory) / len(trajectory) if trajectory else 0.0
+    for gw_row in trajectory:
+        flags = []
+        if gw_row["fixture_count"] == 0:
+            flags.append("Blank gameweek - no fixture")
+        else:
+            tough = [o for o in gw_row["opponents"] if o["difficulty"] >= PLANNER_TOUGH_FIXTURE_FDR]
+            if tough:
+                worst = max(tough, key=lambda o: o["difficulty"])
+                flags.append(f"Tough fixture vs {worst['team']} (FDR {worst['difficulty']})")
+            if gw_row["appearance_points"] < PLANNER_ROTATION_RISK_THRESHOLD:
+                flags.append("Rotation risk - not a guaranteed starter")
+            if avg_points > 0 and gw_row["predicted_points"] < avg_points * PLANNER_DIP_RATIO:
+                flags.append("Well below this player's own average across this window")
+        gw_row["flags"] = flags
+
+    return {
+        "id": pid,
+        "web_name": el["web_name"],
+        "team_short": ctx["team_short_by_id"][team_id_num],
+        "position": ctx["positions_by_type"].get(el["element_type"]),
+        "team_badge": team_badge_url(ctx["team_code_by_id"][team_id_num]),
+        "player_photo": player_photo_url(el["code"]),
+        "average_predicted_points": round(avg_points, 2),
+        "trajectory": trajectory,
+    }
+
+
 @app.get("/api/squad/{team_id}/planner")
 def squad_planner(
     team_id: int,
@@ -583,7 +675,9 @@ def squad_planner(
     model every other page's numbers already come from.
 
     event/reference_date/next_event resolve the same way as
-    squad_optimize_transfers - see its docstring.
+    squad_optimize_transfers - see its docstring. See player_trajectory
+    for the single-player version this endpoint shares its logic with -
+    it's what backs the planner's drag-and-drop "preview a swap" feature.
     """
     ref_date, next_event = _resolve_gw_params(reference_date, next_event)
     if event is None:
@@ -606,91 +700,35 @@ def squad_planner(
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
     squad_element_ids = {pick["element"] for pick in picks_data["picks"]}
 
-    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    fixtures = load_fixtures(LIVE_FIXTURES_FILE)
-    fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
-    team_short_by_id = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
-    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
-    positions_by_type = {p["id"]: p["singular_name_short"] for p in bootstrap["element_types"]}
-    elements_by_id = {p["id"]: p for p in bootstrap["elements"]}
-
     next_events = list(range(next_event, next_event + gw_count))
+    ctx = _build_trajectory_context(ref_date, next_events)
 
-    # One call per gameweek rather than a single summed multi-gw call - the
-    # planner needs the week-by-week shape, not the season total. Cheap:
-    # _build_prediction_context (the expensive part - team strengths,
-    # involvement shares, etc.) is cached and shared across all of these
-    # since they share every other parameter; only the per-event prediction
-    # loop reruns each time.
-    per_gw = {}
-    for gw in next_events:
-        df = predict_multi_gw_breakdown(
-            ref_date, [gw],
-            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
-            bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
-            apply_live_signals=True,
-            roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
-        )
-        per_gw[gw] = df.set_index("id")
-
-    players = []
-    for pid in squad_element_ids:
-        el = elements_by_id.get(pid)
-        if el is None:
-            continue
-        team_id_num = el["team"]
-
-        trajectory = []
-        for gw in next_events:
-            df = per_gw[gw]
-            if pid in df.index:
-                predicted_points = round(float(df.loc[pid, "predicted_points"]), 2)
-                appearance_points = round(float(df.loc[pid, "appearance_points"]), 2)
-                fixture_count = int(df.loc[pid, "fixture_count"])
-            else:
-                predicted_points, appearance_points, fixture_count = 0.0, 0.0, 0
-            opponents = [
-                {"team": team_short_by_id[fx["opponent"]], "is_home": fx["is_home"], "difficulty": fx["difficulty"]}
-                for fx in fixtures_by_team_event[team_id_num].get(gw, [])
-            ]
-            trajectory.append({
-                "event": gw,
-                "predicted_points": predicted_points,
-                "appearance_points": appearance_points,
-                "fixture_count": fixture_count,
-                "opponents": opponents,
-                "flags": [],  # filled in below, once this player's own average is known
-            })
-
-        avg_points = sum(gw_row["predicted_points"] for gw_row in trajectory) / len(trajectory) if trajectory else 0.0
-        for gw_row in trajectory:
-            flags = []
-            if gw_row["fixture_count"] == 0:
-                flags.append("Blank gameweek - no fixture")
-            else:
-                tough = [o for o in gw_row["opponents"] if o["difficulty"] >= PLANNER_TOUGH_FIXTURE_FDR]
-                if tough:
-                    worst = max(tough, key=lambda o: o["difficulty"])
-                    flags.append(f"Tough fixture vs {worst['team']} (FDR {worst['difficulty']})")
-                if gw_row["appearance_points"] < PLANNER_ROTATION_RISK_THRESHOLD:
-                    flags.append("Rotation risk - not a guaranteed starter")
-                if avg_points > 0 and gw_row["predicted_points"] < avg_points * PLANNER_DIP_RATIO:
-                    flags.append("Well below this player's own average across this window")
-            gw_row["flags"] = flags
-
-        players.append({
-            "id": pid,
-            "web_name": el["web_name"],
-            "team_short": team_short_by_id[team_id_num],
-            "position": positions_by_type.get(el["element_type"]),
-            "team_badge": team_badge_url(team_code_by_id[team_id_num]),
-            "player_photo": player_photo_url(el["code"]),
-            "average_predicted_points": round(avg_points, 2),
-            "trajectory": trajectory,
-        })
-
+    players = [row for pid in squad_element_ids if (row := _player_trajectory(pid, ctx)) is not None]
     players.sort(key=lambda p: p["average_predicted_points"], reverse=True)
     return {"event": event, "next_events": next_events, "players": players}
+
+
+@app.get("/api/players/{player_id}/trajectory")
+def player_trajectory(
+    player_id: int,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
+    gw_count: int = 6,
+):
+    """
+    Single-player version of squad_planner's per-gameweek trajectory - not
+    tied to any manager's squad. Backs the planner's drag-and-drop "preview
+    a swap": drop a not-yet-owned candidate onto a squad row, and this is
+    what supplies its trajectory so the preview uses the exact same
+    numbers/flags a real squad member would.
+    """
+    ref_date, next_event = _resolve_gw_params(reference_date, next_event)
+    next_events = list(range(next_event, next_event + gw_count))
+    ctx = _build_trajectory_context(ref_date, next_events)
+    row = _player_trajectory(player_id, ctx)
+    if row is None:
+        raise HTTPException(status_code=404, detail=f"No player with id {player_id} in the live 2026/27 roster")
+    return row
 
 
 # Archived-season (2025/26) totals shown on the All Players / player-detail

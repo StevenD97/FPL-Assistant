@@ -153,6 +153,14 @@ export default function SquadPage() {
   const [plannerLoading, setPlannerLoading] = useState(false);
   const [plannerError, setPlannerError] = useState<string | null>(null);
 
+  // Drag-and-drop "preview a swap": drop a candidate (dragged from the
+  // Replacements chips below) onto a planner row to see their trajectory
+  // in that slot instead, without making a real transfer. Keyed by the
+  // *original* squad player's id (the row/slot being previewed).
+  const [swapPreviews, setSwapPreviews] = useState<Record<number, PlannerPlayer>>({});
+  const [swapLoading, setSwapLoading] = useState<Record<number, boolean>>({});
+  const [dragOverRow, setDragOverRow] = useState<number | null>(null);
+
   const { teamId: connectedId } = useTeam();
 
   async function loadAlternatives(liveId: number, name: string) {
@@ -201,6 +209,34 @@ export default function SquadPage() {
     } finally {
       setPlannerLoading(false);
     }
+  }
+
+  async function handleSwapDrop(originalPlayerId: number, e: React.DragEvent) {
+    e.preventDefault();
+    setDragOverRow(null);
+    const candidateId = Number(e.dataTransfer.getData("text/plain"));
+    if (!candidateId || !planner) return;
+    setSwapLoading((prev) => ({ ...prev, [originalPlayerId]: true }));
+    try {
+      const gwCount = planner.next_events.length;
+      const nextEvent = planner.next_events[0];
+      const row = await fetchJson<PlannerPlayer>(
+        `${API_URL}/api/players/${candidateId}/trajectory?gw_count=${gwCount}&next_event=${nextEvent}`
+      );
+      setSwapPreviews((prev) => ({ ...prev, [originalPlayerId]: row }));
+    } catch {
+      // Dropping an invalid/unfetchable candidate just does nothing - not worth a page-level error.
+    } finally {
+      setSwapLoading((prev) => ({ ...prev, [originalPlayerId]: false }));
+    }
+  }
+
+  function undoSwap(originalPlayerId: number) {
+    setSwapPreviews((prev) => {
+      const next = { ...prev };
+      delete next[originalPlayerId];
+      return next;
+    });
   }
 
   async function loadSquad(id: string) {
@@ -403,7 +439,8 @@ export default function SquadPage() {
                 <p className="mt-1 text-xs text-text-muted">
                   Predicted points per gameweek for your current squad, with weeks flagged where a player looks
                   less desirable - a tough fixture, a blank gameweek, rotation risk, or a dip against their own
-                  average. Hover a flagged cell for why.
+                  average. Hover a flagged cell for why. Drag a replacement chip (below, after tapping
+                  &quot;Suggest&quot; on a player) onto a row to preview swapping them in.
                 </p>
               </div>
               {plannerLoading && <p className="p-4 text-sm text-text-muted">Building planner...</p>}
@@ -431,40 +468,70 @@ export default function SquadPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {planner.players.map((p) => (
-                        <tr key={p.id} className="border-t border-border">
-                          <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-2 font-medium">
-                            <PlayerLink id={p.id} className="flex items-center gap-2">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={p.player_photo}
-                                alt=""
-                                className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top"
-                                onError={(e) => {
-                                  (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-                                }}
-                              />
-                              <span>
-                                {p.web_name} <span className="text-text-muted">({p.team_short})</span>
-                              </span>
-                            </PlayerLink>
-                          </td>
-                          {p.trajectory.map((gw) => {
-                            const hasBlank = gw.fixture_count === 0;
-                            const hasFlag = gw.flags.length > 0;
-                            const bg = hasBlank ? "bg-danger-bg" : hasFlag ? "bg-warning-bg" : "";
-                            return (
-                              <td
-                                key={gw.event}
-                                className={`px-3 py-2 text-center font-mono ${bg}`}
-                                title={gw.flags.length > 0 ? gw.flags.join(" · ") : undefined}
-                              >
-                                {gw.predicted_points.toFixed(1)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
+                      {planner.players.map((original) => {
+                        const preview = swapPreviews[original.id];
+                        const display = preview ?? original;
+                        const isPreviewing = preview != null;
+                        return (
+                          <tr
+                            key={original.id}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setDragOverRow(original.id);
+                            }}
+                            onDragLeave={() => setDragOverRow((cur) => (cur === original.id ? null : cur))}
+                            onDrop={(e) => handleSwapDrop(original.id, e)}
+                            className={`border-t border-border transition-colors duration-fast ease-standard ${
+                              isPreviewing ? "bg-pl-purple/5" : ""
+                            } ${dragOverRow === original.id ? "outline outline-2 -outline-offset-2 outline-pl-purple" : ""}`}
+                          >
+                            <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-2 font-medium">
+                              <div className="flex items-center gap-2">
+                                <PlayerLink id={display.id} className="flex items-center gap-2">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={display.player_photo}
+                                    alt=""
+                                    className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top"
+                                    onError={(e) => {
+                                      (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+                                    }}
+                                  />
+                                  <span>
+                                    {display.web_name} <span className="text-text-muted">({display.team_short})</span>
+                                  </span>
+                                </PlayerLink>
+                                {swapLoading[original.id] && (
+                                  <span className="text-xs text-text-muted">loading...</span>
+                                )}
+                                {isPreviewing && (
+                                  <button
+                                    onClick={() => undoSwap(original.id)}
+                                    className="rounded-sm border border-pl-purple/40 px-1.5 py-0.5 text-[10px] font-semibold text-pl-purple hover:bg-pl-purple/10"
+                                    title={`Stop previewing - show ${original.web_name} again`}
+                                  >
+                                    ↩ was {original.web_name}
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                            {display.trajectory.map((gw) => {
+                              const hasBlank = gw.fixture_count === 0;
+                              const hasFlag = gw.flags.length > 0;
+                              const bg = hasBlank ? "bg-danger-bg" : hasFlag ? "bg-warning-bg" : "";
+                              return (
+                                <td
+                                  key={gw.event}
+                                  className={`px-3 py-2 text-center font-mono ${bg}`}
+                                  title={gw.flags.length > 0 ? gw.flags.join(" · ") : undefined}
+                                >
+                                  {gw.predicted_points.toFixed(1)}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -538,7 +605,12 @@ export default function SquadPage() {
                   <div className="flex flex-wrap gap-2">
                     {alternatives.map((a) => (
                       <PlayerLink key={a.id} id={a.id}>
-                        <span className="inline-block rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50">
+                        <span
+                          draggable
+                          onDragStart={(e) => e.dataTransfer.setData("text/plain", String(a.id))}
+                          className="inline-block cursor-grab rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50 active:cursor-grabbing"
+                          title="Drag onto a Transfer planner row to preview swapping them in"
+                        >
                           {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
                         </span>
                       </PlayerLink>
