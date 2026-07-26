@@ -9,6 +9,7 @@ import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
+import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { fetchJson } from "@/lib/api";
 
@@ -34,6 +35,9 @@ type SquadPlayer = {
   ict_index: number;
   defensive_contribution_per_90: number;
   set_piece_duty_score: number;
+  team_badge: string;
+  team_kit: string;
+  player_photo: string;
 };
 
 type CaptaincyOption = {
@@ -90,6 +94,21 @@ type Alternative = {
   predicted_points: number;
   value: number;
 };
+
+function toPitchPlayer(p: SquadPlayer): PitchPlayer {
+  return {
+    id: p.id,
+    name: p.web_name,
+    position: p.pos as PitchPlayer["position"],
+    teamShort: p.team_short,
+    photo: p.player_photo,
+    teamKit: p.team_kit,
+    isCaptain: p.captain_flag === "(C)",
+    isViceCaptain: p.captain_flag === "(VC)",
+    subtitle: p.next_opponent,
+    href: p.live_id != null ? `/players/${p.live_id}` : undefined,
+  };
+}
 
 export default function SquadPage() {
   const [teamId, setTeamId] = useState("");
@@ -218,6 +237,33 @@ export default function SquadPage() {
                 <span className="font-mono">{data.squad_value}</span>m squad
                 value - £<span className="font-mono">{data.bank}</span>m in bank
               </p>
+            </div>
+
+            <div>
+              <PitchFormation
+                players={data.squad.filter((p) => p.role === "Starting XI").map(toPitchPlayer)}
+              />
+              <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
+                <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
+                  Bench
+                </span>
+                {data.squad
+                  .filter((p) => p.role !== "Starting XI")
+                  .map((p) => (
+                    <PlayerLink key={p.id} id={p.live_id} className="flex flex-col items-center gap-1 text-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.player_photo}
+                        alt={p.web_name}
+                        className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+                        }}
+                      />
+                      <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+                    </PlayerLink>
+                  ))}
+              </div>
             </div>
 
             <Card>

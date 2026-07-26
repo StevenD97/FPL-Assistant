@@ -32,6 +32,9 @@ type PoolPlayer = {
   fixture_count: number;
   fixture_ticker: string;
   cost: number;
+  team_badge: string;
+  team_kit: string;
+  player_photo: string;
 };
 
 type FixtureRow = {
@@ -308,7 +311,16 @@ export default function SquadBuilderPage() {
   );
 
   const pitchPlayers = useMemo(
-    () => squad.map((p) => ({ id: p.id, name: p.web_name, position: p.position, teamShort: p.team_short })),
+    () =>
+      squad.map((p) => ({
+        id: p.id,
+        name: p.web_name,
+        position: p.position,
+        teamShort: p.team_short,
+        photo: p.player_photo,
+        teamKit: p.team_kit,
+        href: `/players/${p.id}`,
+      })),
     [squad]
   );
 

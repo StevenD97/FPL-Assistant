@@ -60,7 +60,7 @@ def build_player_pool(predicted_df, bootstrap):
     constraint, not raw predicted_points alone.
     """
     extra = pd.DataFrame(bootstrap["elements"])[[
-        "id", "now_cost", "team", "penalties_order", "direct_freekicks_order",
+        "id", "code", "now_cost", "team", "penalties_order", "direct_freekicks_order",
         "corners_and_indirect_freekicks_order", "selected_by_percent", "status", "news",
     ]].copy()
     for col in ["penalties_order", "direct_freekicks_order", "corners_and_indirect_freekicks_order"]:

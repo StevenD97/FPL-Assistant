@@ -35,6 +35,9 @@ from analysis import (
     load_gw_history,
     map_archived_ids_to_live,
     nullable_int_column,
+    player_photo_url,
+    team_badge_url,
+    team_kit_url,
     top_differentials,
 )
 from optimizer import build_player_pool, optimize_best_squad, optimize_transfers
@@ -332,10 +335,17 @@ def squad_builder_players(
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    pool = pool.copy()
+    pool["team_code"] = pool["team"].map(team_code_by_id)
+    pool["team_badge"] = pool["team_code"].apply(team_badge_url)
+    pool["team_kit"] = pool["team_code"].apply(team_kit_url)
+    pool["player_photo"] = pool["code"].apply(player_photo_url)
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
         "selected_by_percent", "status", "news", "penalties_order", "direct_freekicks_order",
         "corners_and_indirect_freekicks_order", "appearance_points", "fixture_count", "fixture_ticker",
+        "team_badge", "team_kit", "player_photo",
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"})
     df["cost"] = (df["cost_raw"] / 10).round(1)
@@ -654,19 +664,23 @@ def player_detail(
     )
     prediction = breakdown[breakdown["id"] == player_id].to_dict(orient="records")
 
+    team = teams_by_id[live_player["team"]]
     return {
         "id": player_id,
         "web_name": live_player["web_name"],
         "first_name": live_player["first_name"],
         "second_name": live_player["second_name"],
-        "team_short": teams_by_id[live_player["team"]]["short_name"],
-        "team_name": teams_by_id[live_player["team"]]["name"],
+        "team_short": team["short_name"],
+        "team_name": team["name"],
         "position": positions_by_id[live_player["element_type"]],
         "cost": round(live_player["now_cost"] / 10, 1),
         "selected_by_percent": float(live_player["selected_by_percent"]),
         "status": live_player["status"],
         "news": live_player["news"],
         "penalties_order": live_player.get("penalties_order") or 0,
+        "team_badge": team_badge_url(team["code"]),
+        "team_kit": team_kit_url(team["code"]),
+        "player_photo": player_photo_url(live_player["code"]),
         "season_stats": season_stats,
         "gw_history": gw_history,
         "prediction": prediction[0] if prediction else None,

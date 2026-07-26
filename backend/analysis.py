@@ -19,6 +19,28 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 FPL_API_BASE = "https://fantasy.premierleague.com/api"
 
+# Official Premier League CDN - the exact URLs the FPL site itself uses,
+# built from `team.code`/`element.code` (stable across seasons, unlike
+# `id` - see map_player_stats_to_roster's docstring in team_model.py).
+# No API key, no scraping - these are public static assets.
+PL_RESOURCES_BASE = "https://resources.premierleague.com/premierleague"
+FPL_STATIC_BASE = "https://fantasy.premierleague.com/dist/img"
+
+
+def team_badge_url(team_code, size=70):
+    """size: one of Premier League's served sizes - 25/40/50/70/100/110/250 are known to exist."""
+    return f"{PL_RESOURCES_BASE}/badges/{size}/t{team_code}.png"
+
+
+def team_kit_url(team_code):
+    """The standard (home) kit icon - away/third/GK kits exist too but aren't wired up here."""
+    return f"{FPL_STATIC_BASE}/shirts/standard/shirt_{team_code}-66.png"
+
+
+def player_photo_url(player_code, size="250x250"):
+    """size: one of "110x140" (FPL's own default headshot crop) or "250x250" (larger, used here)."""
+    return f"{PL_RESOURCES_BASE}/photos/players/{size}/p{player_code}.png"
+
 
 def fetch_entry_info(team_id):
     """Live lookup of a manager's basic info (name, points, current_event, etc).
@@ -378,7 +400,7 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     congestion_by_team = compute_congestion(fixtures, teams["id"].tolist(), reference_date, congestion_window_days)
 
     df = players[[
-        "id", "web_name", "team", "element_type", "status",
+        "id", "code", "web_name", "team", "element_type", "status",
         "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts",
         "now_cost", "selected_by_percent",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
@@ -705,7 +727,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         .drop_duplicates().sort_values("fixture_score", ascending=False).to_dict(orient="records")
 
     squad_cols = [
-        "id", "position", "web_name", "team_short", "pos", "role", "captain_flag",
+        "id", "code", "team", "position", "web_name", "team_short", "pos", "role", "captain_flag",
         "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
         "form", "recency_weighted_form", "ep_next", "expected_minutes",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
@@ -717,6 +739,18 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     # without mixing season id-spaces (see map_archived_ids_to_live).
     live_ids = map_archived_ids_to_live(squad_rows["id"].tolist(), load_bootstrap(bootstrap_file), load_bootstrap())
     squad_rows["live_id"] = nullable_int_column(squad_rows["id"].map(live_ids))
+
+    # Official PL CDN images (see team_badge_url/team_kit_url/player_photo_url).
+    # `team` above is bootstrap_file's own numeric team id-space (archived by
+    # default), but `code` is stable for both teams and players regardless of
+    # season - safe to build these from whichever bootstrap `team`/`code`
+    # here actually came from.
+    team_code_by_id = {t["id"]: t["code"] for t in load_bootstrap(bootstrap_file)["teams"]}
+    squad_rows["team_code"] = squad_rows["team"].map(team_code_by_id)
+    squad_rows["team_badge"] = squad_rows["team_code"].apply(team_badge_url)
+    squad_rows["team_kit"] = squad_rows["team_code"].apply(team_kit_url)
+    squad_rows["player_photo"] = squad_rows["code"].apply(player_photo_url)
+    squad_rows = squad_rows.drop(columns=["team", "code", "team_code"])
 
     return {
         "entry_name": entry["name"],

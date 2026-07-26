@@ -61,6 +61,9 @@ type PlayerDetail = {
   status: string;
   news: string;
   penalties_order: number;
+  team_badge: string;
+  team_kit: string;
+  player_photo: string;
   season_stats: SeasonStats | null;
   gw_history: GwRow[];
   prediction: Prediction | null;
@@ -247,18 +250,31 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
   return (
     <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <h1 className="font-sans text-lg font-bold tracking-tight text-pl-purple">
-            {p.first_name} {p.second_name}
-          </h1>
-          <PositionBadge position={p.position} />
-          <StatusBadge status={p.status} news={p.news} />
-        </div>
-        <div className="mb-8 flex flex-wrap items-center gap-4 text-sm text-text-secondary">
-          <TeamBadge teamShort={p.team_short} name={p.team_name} />
-          <span className="font-mono">£{p.cost.toFixed(1)}m</span>
-          <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
-          {p.penalties_order === 1 && <span>Primary penalty taker</span>}
+        <div className="mb-6 flex flex-wrap items-center gap-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={p.player_photo}
+            alt={p.web_name}
+            className="h-16 w-16 rounded-full border-2 border-border-strong bg-surface-sunken object-cover object-top sm:h-20 sm:w-20"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+            }}
+          />
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="font-sans text-lg font-bold tracking-tight text-pl-purple">
+                {p.first_name} {p.second_name}
+              </h1>
+              <PositionBadge position={p.position} />
+              <StatusBadge status={p.status} news={p.news} />
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+              <TeamBadge teamShort={p.team_short} name={p.team_name} badgeUrl={p.team_badge} />
+              <span className="font-mono">£{p.cost.toFixed(1)}m</span>
+              <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
+              {p.penalties_order === 1 && <span>Primary penalty taker</span>}
+            </div>
+          </div>
         </div>
 
         <section className="mb-8">
