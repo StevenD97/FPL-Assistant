@@ -1,0 +1,42 @@
+import Link from "next/link";
+import { Card } from "@/components/ui/Card";
+import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
+import { getAllPosts, formatBlogDate } from "@/lib/blog";
+
+export const metadata = { title: "Blog - FPL Assistant" };
+
+export default function BlogIndexPage() {
+  const posts = getAllPosts();
+
+  return (
+    <PageContainer width="narrow">
+      <PageHeader
+        title="Blog"
+        subtitle="Pre-season notes, transfer watch, and gameweek analysis - written to help you plan your squad."
+      />
+
+      {posts.length === 0 ? (
+        <p className="text-sm text-text-muted">No posts yet - check back soon.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {posts.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
+              <Card className="transition-colors group-hover:border-pl-purple/40">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted">
+                  <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
+                  {post.tags.map((tag) => (
+                    <span key={tag} className="rounded-full bg-surface-sunken px-2 py-0.5 font-medium">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <h2 className="mt-1.5 text-md font-semibold text-pl-purple group-hover:underline">{post.title}</h2>
+                <p className="mt-1 text-sm text-text-secondary">{post.excerpt}</p>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
+    </PageContainer>
+  );
+}

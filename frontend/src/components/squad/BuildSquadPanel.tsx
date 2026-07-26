@@ -10,6 +10,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { PitchFormation } from "@/components/pitch/PitchFormation";
+import { TeamNameGenerator } from "@/components/squad/TeamNameGenerator";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -502,6 +503,10 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
           </>
         )}
       </p>
+
+      <div className="mb-6">
+        <TeamNameGenerator />
+      </div>
 
       {loading && <p className="text-text-muted">Loading player data...</p>}
       {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}

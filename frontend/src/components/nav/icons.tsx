@@ -13,6 +13,7 @@ type IconName =
   | "schedule"
   | "chips"
   | "leagues"
+  | "blog"
   | "menu";
 
 const PATHS: Record<IconName, React.ReactNode> = {
@@ -50,6 +51,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
   leagues: (
     <>
       <path d="M7 4h10v4a5 5 0 0 1-10 0zM7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3M9 20h6M12 13v7" />
+    </>
+  ),
+  blog: (
+    <>
+      <path d="M6 3.5h9l3 3V19a1.5 1.5 0 0 1-1.5 1.5h-10.5A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5Z" />
+      <path d="M8 9h8M8 12.5h8M8 16h5" />
     </>
   ),
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,

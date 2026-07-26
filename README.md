@@ -538,6 +538,21 @@ conventions rather than dropped in as-is. No dark mode.
   season on disk, not a time series of them, so DB-unreachable and
   DB-has-no-history-yet both just mean "no trend data yet"
   (`has_history_trend: false`) rather than an error.
+- **Blog** (`/blog`, `/blog/[slug]`) is a Markdown-file-backed content
+  section, not a DB table or CMS - posts are plain `.md` files with
+  frontmatter (`title`/`date`/`excerpt`/`tags`) under
+  `frontend/content/blog/`, read and parsed (`gray-matter` + `marked`) at
+  request time by `frontend/src/lib/blog.ts`. Deliberately the simplest
+  thing that works for how posts actually get written: a post is authored
+  on request, saved as a new file, and committed - no admin UI, auth, or
+  migration needed for that workflow. The homepage surfaces the newest
+  post in a "Latest from the blog" teaser card.
+- **Team name generator** (My Squad -> Build from scratch) suggests FPL
+  team names from a typed favourite club or player
+  (`frontend/src/lib/teamNames.ts`). Entirely client-side and template-
+  based, not an LLM call: generic templates (`"{X} 'Til I Die"`, etc.)
+  apply to whatever's typed, and a curated pun list per club layers in
+  extra suggestions when the input matches one of the league's 20 teams.
 - **Backend cold starts on Render's free tier.** The deployed backend
   (`fpl-assistant-backend`, see `render.yaml`) runs on Render's free
   plan, which spins the service down after ~15 minutes of no traffic -

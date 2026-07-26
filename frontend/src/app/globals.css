@@ -223,3 +223,30 @@ body {
 /* --- Scrollbar --- */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 8px; }
+
+/* --- Blog post body ---
+   Markdown-rendered HTML has no classes of its own, so tag selectors here
+   carry the typography instead of a typography plugin dependency. */
+.blog-prose { color: var(--slate-700); font-size: 0.9375rem; line-height: 1.7; }
+.blog-prose > * + * { margin-top: 1em; }
+.blog-prose h2 { margin-top: 1.75em; font-size: 1.2rem; font-weight: 700; color: var(--pl-purple); }
+.blog-prose h3 { margin-top: 1.5em; font-size: 1.05rem; font-weight: 600; color: var(--pl-purple); }
+.blog-prose a { color: var(--pl-purple); text-decoration: underline; text-underline-offset: 2px; }
+.blog-prose strong { font-weight: 600; color: var(--slate-900); }
+.blog-prose ul, .blog-prose ol { padding-left: 1.4em; }
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+.blog-prose li + li { margin-top: 0.35em; }
+.blog-prose blockquote {
+  border-left: 3px solid var(--pl-green);
+  padding: 0.25em 0 0.25em 1em;
+  color: var(--slate-600);
+  font-style: italic;
+}
+.blog-prose code {
+  background: var(--slate-100);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.85em;
+}
+.blog-prose hr { border: none; border-top: 1px solid var(--slate-200); margin: 1.75em 0; }
