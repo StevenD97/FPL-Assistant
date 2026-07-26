@@ -9,12 +9,24 @@ import { marked } from "marked";
 // table here, just files read at request time.
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 
+// Cover art is built from the same official CDN images used everywhere else
+// in the app (team badges, player photos - see analysis.py's
+// team_badge_url/player_photo_url) rather than stock photography, which
+// this app has no license for. "gradient" (no external image) is the
+// default/fallback for posts with no single team or player to headline.
+export type CoverPlayer = { code: number; name: string };
+export type BlogCover =
+  | { type: "player"; players: CoverPlayer[]; background?: "hero" | "pitch" }
+  | { type: "badges"; teamCodes: number[]; background?: "hero" | "pitch" }
+  | { type: "gradient"; background?: "hero" | "pitch" };
+
 export type BlogPostMeta = {
   slug: string;
   title: string;
   date: string; // ISO date, e.g. "2026-07-26"
   excerpt: string;
   tags: string[];
+  cover: BlogCover;
 };
 
 export type BlogPost = BlogPostMeta & { html: string };
@@ -27,6 +39,17 @@ function slugs(): string[] {
     .map((f) => f.replace(/\.md$/, ""));
 }
 
+function readCover(data: Record<string, unknown>): BlogCover {
+  const raw = data.cover as Partial<BlogCover> | undefined;
+  if (raw?.type === "player" && Array.isArray((raw as { players?: unknown }).players)) {
+    return raw as BlogCover;
+  }
+  if (raw?.type === "badges" && Array.isArray((raw as { teamCodes?: unknown }).teamCodes)) {
+    return raw as BlogCover;
+  }
+  return { type: "gradient", background: (raw as { background?: "hero" | "pitch" })?.background };
+}
+
 function readMeta(slug: string): BlogPostMeta {
   const raw = fs.readFileSync(path.join(BLOG_DIR, `${slug}.md`), "utf8");
   const { data } = matter(raw);
@@ -36,6 +59,7 @@ function readMeta(slug: string): BlogPostMeta {
     date: String(data.date ?? ""),
     excerpt: String(data.excerpt ?? ""),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+    cover: readCover(data),
   };
 }
 
@@ -56,6 +80,7 @@ export function getPost(slug: string): BlogPost | null {
     date: String(data.date ?? ""),
     excerpt: String(data.excerpt ?? ""),
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+    cover: readCover(data),
     html: marked.parse(content, { async: false }) as string,
   };
 }

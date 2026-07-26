@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { BlogCover } from "@/components/blog/BlogCover";
 import { getAllPosts, getPost, formatBlogDate } from "@/lib/blog";
 
 export function generateStaticParams() {
@@ -24,6 +25,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         &larr; Back to blog
       </Link>
       <article>
+        <div className="mb-4">
+          <BlogCover cover={post.cover} size="hero" />
+        </div>
         <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-text-muted">
           <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
           {post.tags.map((tag) => (

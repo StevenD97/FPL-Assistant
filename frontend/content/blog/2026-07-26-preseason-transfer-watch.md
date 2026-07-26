@@ -3,6 +3,12 @@ title: "Pre-season transfer watch: what's actually changed before Gameweek 1"
 date: "2026-07-26"
 excerpt: "A British transfer record, three promoted clubs, and a record-priced Haaland - here's what the summer's biggest moves mean for your opening squad."
 tags: ["Pre-season", "Transfers"]
+cover:
+  type: player
+  players:
+    - { code: 223094, name: "Erling Haaland" }
+    - { code: 141746, name: "Bruno Fernandes" }
+  background: hero
 ---
 
 Gameweek 1 is four weeks out (deadline: Friday 21 August, 11:30 BST), and this summer's transfer window has already reshaped enough squads that last season's form guide only gets you so far. Here's what's actually moved, and what it means for the squad you're building.

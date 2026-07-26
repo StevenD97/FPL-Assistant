@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
+import { BlogCover } from "@/components/blog/BlogCover";
 import { getAllPosts, formatBlogDate } from "@/lib/blog";
 
 export const metadata = { title: "Blog - FPL Assistant" };
@@ -21,17 +22,20 @@ export default function BlogIndexPage() {
         <div className="flex flex-col gap-3">
           {posts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
-              <Card className="transition-colors group-hover:border-pl-purple/40">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted">
-                  <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
-                  {post.tags.map((tag) => (
-                    <span key={tag} className="rounded-full bg-surface-sunken px-2 py-0.5 font-medium">
-                      {tag}
-                    </span>
-                  ))}
+              <Card padded={false} className="overflow-hidden transition-colors group-hover:border-pl-purple/40">
+                <BlogCover cover={post.cover} />
+                <div className="p-5">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted">
+                    <time dateTime={post.date}>{formatBlogDate(post.date)}</time>
+                    {post.tags.map((tag) => (
+                      <span key={tag} className="rounded-full bg-surface-sunken px-2 py-0.5 font-medium">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h2 className="mt-1.5 text-md font-semibold text-pl-purple group-hover:underline">{post.title}</h2>
+                  <p className="mt-1 text-sm text-text-secondary">{post.excerpt}</p>
                 </div>
-                <h2 className="mt-1.5 text-md font-semibold text-pl-purple group-hover:underline">{post.title}</h2>
-                <p className="mt-1 text-sm text-text-secondary">{post.excerpt}</p>
               </Card>
             </Link>
           ))}

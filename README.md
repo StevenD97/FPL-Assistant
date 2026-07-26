@@ -546,7 +546,21 @@ conventions rather than dropped in as-is. No dark mode.
   thing that works for how posts actually get written: a post is authored
   on request, saved as a new file, and committed - no admin UI, auth, or
   migration needed for that workflow. The homepage surfaces the newest
-  post in a "Latest from the blog" teaser card.
+  post in a "Latest from the blog" teaser card. As of writing there are
+  6 posts, seeded with genuine research (WebSearch, cross-checked across
+  multiple sources) plus figures pulled directly from this app's own
+  live model/fixture data where relevant (e.g. the fixture-swings and
+  budget-enablers posts), not fabricated numbers.
+
+  Cover art (`frontend/src/components/blog/BlogCover.tsx`) is built from
+  the same official CDN images used everywhere else in the app - team
+  badges and player photos (`resources.premierleague.com`, the same
+  source as `analysis.py`'s `team_badge_url`/`player_photo_url`) - not
+  stock photography, which this app has no rights to. A post's
+  frontmatter declares a `cover: { type: player | badges | gradient,
+  ... }`; `gradient` (a plain on-brand banner, no external image) is the
+  default for posts with no single team/player to headline, and doubles
+  as the fallback if a CDN image 404s.
 - **Team name generator** (My Squad -> Build from scratch) suggests FPL
   team names from a typed favourite club or player
   (`frontend/src/lib/teamNames.ts`). Entirely client-side and template-
