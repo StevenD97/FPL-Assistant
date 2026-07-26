@@ -37,8 +37,19 @@ def team_kit_url(team_code):
     return f"{FPL_STATIC_BASE}/shirts/standard/shirt_{team_code}-66.png"
 
 
-def player_photo_url(player_code, size="250x250"):
-    """size: one of "110x140" (FPL's own default headshot crop) or "250x250" (larger, used here)."""
+def player_photo_url(player_code, size="110x140"):
+    """
+    size: "110x140" (FPL's own default headshot crop) or "250x250" (larger).
+    Default is "110x140" - verified directly against the live CDN across the
+    full 2026/27 roster: every player with a 250x250 image also has a
+    110x140 one, but not vice versa (19 players, e.g. Virgil van Dijk,
+    250x250s a 403 while 110x140 200s - an older/legacy photo only cropped
+    at the smaller size). 110x140 is strictly equal-or-better coverage, and
+    the app never renders these above ~80px, so there's no visible quality
+    cost. The ~1/3 of players with no photo at either size (younger/lesser-
+    known players PL hasn't shot yet) degrade gracefully via each caller's
+    onError handler - nothing fixes those short of PL adding the photo.
+    """
     return f"{PL_RESOURCES_BASE}/photos/players/{size}/p{player_code}.png"
 
 
