@@ -134,7 +134,7 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   };
 }
 
-export function LoadTeamPanel() {
+export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [data, setData] = useState<SquadResponse | null>(null);
@@ -352,11 +352,16 @@ export function LoadTeamPanel() {
               Computed automatically from your squad and bank above - the
               provably optimal set of transfers under FPL&apos;s real rules
               (budget, formation, max 3 per club), weighing predicted points
-              against the -4 hit per transfer beyond your free ones. See{" "}
-              <a href="/optimizer" className="text-pl-purple underline">
-                Optimizer
-              </a>{" "}
-              for the from-scratch solver.
+              against the -4 hit per transfer beyond your free ones.{" "}
+              {onSwitchToOptimize && (
+                <>
+                  See the{" "}
+                  <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
+                    Optimizer
+                  </button>{" "}
+                  tab for a from-scratch solve, or full control over the prediction window.
+                </>
+              )}
             </p>
 
             {optimizerLoading && (

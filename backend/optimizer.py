@@ -124,7 +124,7 @@ def _extract_result(players_df, squad_vars, xi_vars, captain_vars):
 
     squad = players_df.loc[squad_idx, [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points",
-        "value", "selected_by_percent", "status",
+        "value", "selected_by_percent", "status", "code", "team",
     ]].copy()
     squad["role"] = squad.index.map(lambda i: "Starting XI" if i in xi_idx else "Bench")
     squad["captain"] = squad.index == captain_idx
@@ -228,9 +228,10 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
 
     transferred_out = [i for i in current_idx if pulp.value(squad_vars[i]) < 0.5]
     transferred_in = [i for i in players_df.index if i not in current_idx and pulp.value(squad_vars[i]) > 0.5]
-    cols = ["id", "web_name", "team_short", "position", "predicted_points", "value", "selected_by_percent"]
+    cols = ["id", "web_name", "team_short", "position", "predicted_points", "value", "selected_by_percent", "code", "team"]
     result["transferred_out"] = players_df.loc[transferred_out, cols].to_dict(orient="records")
     result["transferred_in"] = players_df.loc[transferred_in, cols].to_dict(orient="records")
+    result["bank"] = round(bank / 10, 1)
 
     return result
 

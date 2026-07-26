@@ -263,6 +263,22 @@ def _resolve_gw_params(reference_date: Optional[str], next_event: Optional[int])
     return ref_date, event
 
 
+def _attach_player_media(rows, team_code_by_id):
+    """
+    Adds team_badge/team_kit/player_photo to each row dict (in place) using
+    its 'team' (numeric team id) and 'code' (player element code) fields,
+    then drops those two raw fields - see optimizer.py's _extract_result,
+    which includes them in its output for exactly this purpose.
+    """
+    for row in rows:
+        team_id_num = row.pop("team")
+        code = row.pop("code")
+        row["team_badge"] = team_badge_url(team_code_by_id[team_id_num])
+        row["team_kit"] = team_kit_url(team_code_by_id[team_id_num])
+        row["player_photo"] = player_photo_url(code)
+    return rows
+
+
 @app.get("/api/optimizer/best-squad")
 def optimizer_best_squad(
     reference_date: Optional[str] = None,
@@ -297,7 +313,10 @@ def optimizer_best_squad(
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
-    return optimize_best_squad(pool, budget=budget)
+    result = optimize_best_squad(pool, budget=budget)
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    _attach_player_media(result["squad"], team_code_by_id)
+    return result
 
 
 @app.get("/api/squad-builder/players")
@@ -549,7 +568,12 @@ def squad_optimize_transfers(
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
-    return optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)
+    result = optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    _attach_player_media(result["squad"], team_code_by_id)
+    _attach_player_media(result["transferred_out"], team_code_by_id)
+    _attach_player_media(result["transferred_in"], team_code_by_id)
+    return result
 
 
 # appearance_points/fixture (0-2 scale, see _fixture_points in team_model.py)

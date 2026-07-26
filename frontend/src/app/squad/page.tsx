@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import { useTeam } from "@/components/team/TeamProvider";
 import { LoadTeamPanel } from "@/components/squad/LoadTeamPanel";
 import { BuildSquadPanel } from "@/components/squad/BuildSquadPanel";
+import { OptimizePanel } from "@/components/squad/OptimizePanel";
 
-type Mode = "load" | "build";
+type Mode = "load" | "build" | "optimize";
+
+const TABS: { mode: Mode; label: string }[] = [
+  { mode: "load", label: "Load my team" },
+  { mode: "build", label: "Build from scratch" },
+  { mode: "optimize", label: "Optimizer" },
+];
 
 export default function SquadPage() {
   const { teamId: connectedId } = useTeam();
@@ -33,33 +40,29 @@ export default function SquadPage() {
           My squad
         </h1>
         <p className="mb-4 text-sm text-text-secondary">
-          Load your real squad by team ID, or build one from scratch - handy before the season locks your first
-          squad in.
+          Load your real squad by team ID, build one from scratch, or let the solver find the provably optimal
+          squad or transfers - all in one place, useful before the season locks your first squad in too.
         </p>
 
-        <div className="mb-6 inline-flex rounded-lg border border-border bg-white p-1 shadow-sm">
-          <button
-            type="button"
-            onClick={() => chooseMode("load")}
-            className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-              mode === "load" ? "bg-pl-purple text-white" : "text-text-secondary hover:bg-surface-sunken"
-            }`}
-          >
-            Load my team
-          </button>
-          <button
-            type="button"
-            onClick={() => chooseMode("build")}
-            className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
-              mode === "build" ? "bg-pl-purple text-white" : "text-text-secondary hover:bg-surface-sunken"
-            }`}
-          >
-            Build from scratch
-          </button>
+        <div className="mb-6 inline-flex flex-wrap rounded-lg border border-border bg-white p-1 shadow-sm">
+          {TABS.map((tab) => (
+            <button
+              key={tab.mode}
+              type="button"
+              onClick={() => chooseMode(tab.mode)}
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+                mode === tab.mode ? "bg-pl-purple text-white" : "text-text-secondary hover:bg-surface-sunken"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {mode === "load" ? <LoadTeamPanel /> : <BuildSquadPanel />}
+      {mode === "load" && <LoadTeamPanel onSwitchToOptimize={() => chooseMode("optimize")} />}
+      {mode === "build" && <BuildSquadPanel onSwitchToOptimize={() => chooseMode("optimize")} />}
+      {mode === "optimize" && <OptimizePanel />}
     </main>
   );
 }

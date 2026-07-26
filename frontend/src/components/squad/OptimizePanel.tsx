@@ -10,6 +10,7 @@ import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { Alert } from "@/components/ui/Alert";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
 import { fetchJson } from "@/lib/api";
 
 type SquadRow = {
@@ -24,6 +25,9 @@ type SquadRow = {
   role: "Starting XI" | "Bench";
   captain: boolean;
   cost: number;
+  team_badge: string;
+  team_kit: string;
+  player_photo: string;
 };
 
 type BestSquadResult = {
@@ -40,12 +44,16 @@ type TransferPlayer = {
   predicted_points: number;
   value: number;
   selected_by_percent: number;
+  team_badge: string;
+  team_kit: string;
+  player_photo: string;
 };
 
 type TransferResult = BestSquadResult & {
   transfers_made: number;
   free_transfers: number;
   points_hit: number;
+  bank: number;
   transferred_out: TransferPlayer[];
   transferred_in: TransferPlayer[];
 };
@@ -58,6 +66,48 @@ function sortSquad(squad: SquadRow[]): SquadRow[] {
     if (a.role !== b.role) return a.role === "Starting XI" ? -1 : 1;
     return POSITION_ORDER.indexOf(a.position) - POSITION_ORDER.indexOf(b.position);
   });
+}
+
+function toPitchPlayer(p: SquadRow): PitchPlayer {
+  return {
+    id: p.id,
+    name: p.web_name,
+    position: p.position as PitchPlayer["position"],
+    teamShort: p.team_short,
+    photo: p.player_photo,
+    teamKit: p.team_kit,
+    isCaptain: p.captain,
+    href: `/players/${p.id}`,
+  };
+}
+
+function IdealXI({ squad }: { squad: SquadRow[] }) {
+  const xi = squad.filter((p) => p.role === "Starting XI");
+  const bench = squad.filter((p) => p.role !== "Starting XI");
+  return (
+    <div>
+      <PitchFormation players={xi.map(toPitchPlayer)} />
+      <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
+        <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
+          Bench
+        </span>
+        {bench.map((p) => (
+          <PlayerLink key={p.id} id={p.id} className="flex flex-col items-center gap-1 text-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={p.player_photo}
+              alt={p.web_name}
+              className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+              }}
+            />
+            <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+          </PlayerLink>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function SquadTable({ squad }: { squad: SquadRow[] }) {
@@ -132,8 +182,8 @@ function BestSquadPanel() {
   return (
     <div>
       <p className="mb-6 max-w-2xl text-sm text-text-secondary">
-        Best 15-man squad under budget, from scratch - ideal for Wildcard/Free Hit planning. Drafts from the live
-        2026/27 pool. <SeasonDataNote mode="blended" />
+        Best 15-man squad under budget, from scratch, provably optimal (not just ranked) - ideal for
+        Wildcard/Free Hit planning. Drafts from the live 2026/27 pool. <SeasonDataNote mode="blended" />
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <TextField
@@ -181,15 +231,16 @@ function BestSquadPanel() {
       )}
 
       {result && (
-        <>
-          <p className="mb-4 text-sm text-text-secondary">
+        <div className="space-y-6">
+          <p className="text-sm text-text-secondary">
             Total cost <span className="font-mono font-medium text-text-primary">£{result.total_cost.toFixed(1)}m</span>
             {" · "}
             Predicted starting XI points{" "}
             <span className="font-mono font-medium text-text-primary">{result.predicted_points.toFixed(2)}</span>
           </p>
+          <IdealXI squad={result.squad} />
           <SquadTable squad={result.squad} />
-        </>
+        </div>
       )}
     </div>
   );
@@ -228,7 +279,10 @@ function TransfersPanel() {
     <div>
       <p className="mb-6 max-w-2xl text-sm text-text-secondary">
         Your real squad and bank, optimally transferred - weighing points gained against the -4 hit per transfer
-        beyond your free ones. Zero transfers is a valid answer.
+        beyond your free ones, and never spending more than what your squad&apos;s sale value plus bank actually
+        covers. Zero transfers is a valid answer. For a quicker, zero-input version of this, see the automatic
+        &quot;Suggested transfers&quot; under Load my team - this panel adds full control over the prediction
+        window and gameweek.
       </p>
       <Alert kind="warning">
         No team ID has a fetchable squad until 2026/27 GW1 locks (2026-08-21) - FPL resets pick history each
@@ -296,8 +350,8 @@ function TransfersPanel() {
       )}
 
       {result && (
-        <>
-          <p className="mb-4 text-sm text-text-secondary">
+        <div className="space-y-6">
+          <p className="text-sm text-text-secondary">
             <span className="font-mono font-medium text-text-primary">{result.transfers_made}</span> transfer{result.transfers_made === 1 ? "" : "s"}
             {" · "}
             {result.points_hit > 0 ? (
@@ -308,10 +362,19 @@ function TransfersPanel() {
             {" · "}
             Predicted XI points (after hit){" "}
             <span className="font-mono font-medium text-text-primary">{result.predicted_points.toFixed(2)}</span>
+            {" · "}
+            Squad cost <span className="font-mono font-medium text-text-primary">£{result.total_cost.toFixed(1)}m</span>
+            {" · "}
+            Bank left <span className="font-mono font-medium text-text-primary">£{result.bank.toFixed(1)}m</span>
+            {" of "}
+            <span className="font-mono font-medium text-text-primary">
+              £{(result.total_cost + result.bank).toFixed(1)}m
+            </span>{" "}
+            available
           </p>
 
           {result.transferred_out.length > 0 ? (
-            <div className="mb-6 grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="mb-2 text-sm font-medium text-text-secondary">Transfer out</p>
                 <ul className="text-sm">
@@ -340,56 +403,53 @@ function TransfersPanel() {
               </div>
             </div>
           ) : (
-            <p className="mb-6 text-sm text-text-secondary">
+            <p className="text-sm text-text-secondary">
               No changes recommended - your squad is already optimal for this window.
             </p>
           )}
 
+          <IdealXI squad={result.squad} />
           <SquadTable squad={result.squad} />
-        </>
+        </div>
       )}
     </div>
   );
 }
 
-export default function OptimizerPage() {
-  const [mode, setMode] = useState<"best-squad" | "transfers">("best-squad");
+export function OptimizePanel() {
+  const [subMode, setSubMode] = useState<"best-squad" | "transfers">("best-squad");
 
   return (
-    <main className="px-4 py-5 lg:px-6 lg:py-6">
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
-          Squad optimizer
-        </h1>
-        <p className="mb-6 text-sm text-text-secondary">
-          The provably optimal squad or transfers, solved under FPL&apos;s real rules.
-        </p>
+    <div className="mx-auto max-w-5xl">
+      <p className="mb-6 text-sm text-text-secondary">
+        The provably optimal squad or transfers, solved exactly (via integer linear programming) under FPL&apos;s
+        real rules - budget, formation, max 3 per club - rather than just ranked.
+      </p>
 
-        <div className="mb-6 flex gap-2 border-b border-border">
-          <button
-            onClick={() => setMode("best-squad")}
-            className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
-              mode === "best-squad"
-                ? "border-b-2 border-pl-purple text-pl-purple"
-                : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
-            }`}
-          >
-            Build Best Squad
-          </button>
-          <button
-            onClick={() => setMode("transfers")}
-            className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
-              mode === "transfers"
-                ? "border-b-2 border-pl-purple text-pl-purple"
-                : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
-            }`}
-          >
-            My Transfers
-          </button>
-        </div>
-
-        {mode === "best-squad" ? <BestSquadPanel /> : <TransfersPanel />}
+      <div className="mb-6 flex gap-2 border-b border-border">
+        <button
+          onClick={() => setSubMode("best-squad")}
+          className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
+            subMode === "best-squad"
+              ? "border-b-2 border-pl-purple text-pl-purple"
+              : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
+          }`}
+        >
+          Build Best Squad
+        </button>
+        <button
+          onClick={() => setSubMode("transfers")}
+          className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
+            subMode === "transfers"
+              ? "border-b-2 border-pl-purple text-pl-purple"
+              : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
+          }`}
+        >
+          My Transfers
+        </button>
       </div>
-    </main>
+
+      {subMode === "best-squad" ? <BestSquadPanel /> : <TransfersPanel />}
+    </div>
   );
 }

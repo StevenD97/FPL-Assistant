@@ -14,7 +14,6 @@ type NavItem = { href: string; label: string; icon: IconName };
 const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/squad", label: "My Squad", icon: "squad" },
-  { href: "/optimizer", label: "Optimizer", icon: "optimizer" },
   { href: "/players", label: "Players", icon: "players" },
   { href: "/outlook", label: "Outlook", icon: "outlook" },
   { href: "/differentials", label: "Differentials", icon: "differentials" },
@@ -26,7 +25,7 @@ const NAV: NavItem[] = [
 
 // The four destinations that get their own mobile bottom-tab; the rest live
 // behind the "More" tab, which opens the full drawer.
-const PRIMARY = new Set(["/", "/squad", "/players", "/optimizer"]);
+const PRIMARY = new Set(["/", "/squad", "/players"]);
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";

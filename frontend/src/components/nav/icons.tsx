@@ -5,7 +5,6 @@ import type { SVGProps } from "react";
 type IconName =
   | "home"
   | "squad"
-  | "optimizer"
   | "players"
   | "outlook"
   | "differentials"
@@ -23,12 +22,6 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <rect x="14" y="3" width="7" height="7" rx="1.5" />
       <rect x="3" y="14" width="7" height="7" rx="1.5" />
       <rect x="14" y="14" width="7" height="7" rx="1.5" />
-    </>
-  ),
-  optimizer: (
-    <>
-      <path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" />
-      <circle cx="12" cy="12" r="3.2" />
     </>
   ),
   players: <path d="M4 6h16M4 12h16M4 18h16" />,

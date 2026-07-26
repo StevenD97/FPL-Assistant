@@ -257,7 +257,7 @@ function computeDiagnostics(
   return { issues, recommendations };
 }
 
-export function BuildSquadPanel() {
+export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
   const [players, setPlayers] = useState<PoolPlayer[] | null>(null);
   const [fixtures, setFixtures] = useState<FixtureRow[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -390,11 +390,16 @@ export function BuildSquadPanel() {
   return (
     <div className="mx-auto max-w-6xl">
       <p className="mb-6 text-sm text-text-secondary">
-        Draft within budget, get live diagnostics, and swap or click into any player. For an automated build, see{" "}
-        <a href="/optimizer" className="text-pl-purple underline">
-          Optimizer
-        </a>
-        .
+        Draft within budget, get live diagnostics, and swap or click into any player.{" "}
+        {onSwitchToOptimize && (
+          <>
+            For an automated, provably-optimal build instead, see the{" "}
+            <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
+              Optimizer
+            </button>{" "}
+            tab.
+          </>
+        )}
       </p>
 
       {loading && <p className="text-text-muted">Loading player data...</p>}

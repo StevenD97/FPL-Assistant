@@ -17,14 +17,6 @@ type PageInfo = {
 
 const PAGES: PageInfo[] = [
   {
-    title: "Optimizer",
-    href: "/optimizer",
-    icon: "optimizer",
-    what: "The provably optimal squad (from scratch) or transfers (from your real squad), solved exactly rather than ranked.",
-    model: "Integer linear programming over predicted points, respecting FPL's real rules (budget, formation, max 3 per club) and weighing transfer hits against points gained.",
-    use: "When you want the mathematically best answer rather than a manually-built one - compare its output against your own hand-built squad in My Squad.",
-  },
-  {
     title: "Players",
     href: "/players",
     icon: "players",
@@ -139,7 +131,8 @@ export default function LandingPage() {
             <p className="max-w-2xl text-sm leading-relaxed text-white/90 lg:text-base">
               Your real squad, on a real pitch - with official club badges, kits, and player photos. See your
               team scored gameweek by gameweek, get automatically-suggested transfers, and click any player for
-              their full breakdown. No team yet? Build one from scratch right here instead.
+              their full breakdown. No team yet? Build one from scratch, or let the solver find the provably
+              optimal squad or transfers - all right here.
             </p>
             <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] group-hover:brightness-95">
               Go to My Squad →
