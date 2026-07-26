@@ -40,8 +40,8 @@ export default function SquadPage() {
           My squad
         </h1>
         <p className="mb-4 text-sm text-text-secondary">
-          Load your real squad by team ID, build one from scratch, or let the solver find the provably optimal
-          squad or transfers - all in one place, useful before the season locks your first squad in too.
+          Load your real squad by team ID, build one from scratch, or let the solver find the optimal squad or
+          transfers.
         </p>
 
         <div className="mb-6 inline-flex flex-wrap rounded-lg border border-border bg-white p-1 shadow-sm">

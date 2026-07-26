@@ -1,7 +1,6 @@
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { FdrChip } from "@/components/ui/FdrChip";
 import { Card } from "@/components/ui/Card";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 
 type Fixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
@@ -36,15 +35,7 @@ export default async function Home() {
 
   return (
     <PageContainer width="narrow">
-      <PageHeader
-        title="Fixture difficulty"
-        subtitle={
-          <>
-            Next 5 gameweeks, 2026/27, easiest run first - this page is fully live (no prediction model, just the
-            fixture calendar). Player pages: <SeasonDataNote mode="blended" />
-          </>
-        }
-      />
+      <PageHeader title="Fixture difficulty" subtitle="Every team's next 5 gameweeks, ranked easiest to hardest." />
       <Card padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">

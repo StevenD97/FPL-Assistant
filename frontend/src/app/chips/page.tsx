@@ -56,7 +56,8 @@ export default function ChipsPage() {
           Chip strategy
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
-          Enter your team ID to scan for chip timing (scan window: GW24-36). <SeasonDataNote mode="archived" />
+          Enter your team ID for suggested timing on Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
+          <SeasonDataNote mode="archived" />
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-3">
           <TextField

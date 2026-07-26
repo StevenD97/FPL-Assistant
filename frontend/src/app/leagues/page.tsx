@@ -142,10 +142,8 @@ export default function LeaguesPage() {
           Leagues
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
-          Standings and gameweek-by-gameweek score trends for your mini-leagues - or track any public league
-          (including FPL&apos;s automatic country league, like &quot;England&quot; or &quot;Chile&quot;) to see where your own
-          score would rank in it, without joining. Look up someone else&apos;s Team ID below to find their country
-          league&apos;s ID, then track it.
+          Standings and score trends for your mini-leagues - or track any public league, including a country
+          league, to see where your score would rank without joining.
         </p>
 
         <form onSubmit={handleFindLeagues} className="mb-3 flex items-end gap-3">
@@ -183,8 +181,7 @@ export default function LeaguesPage() {
         <div className="mb-6 rounded-lg border border-border bg-surface-sunken p-4">
           <h2 className="mb-1 text-sm font-semibold text-text-primary">Track a public league</h2>
           <p className="mb-3 text-xs text-text-secondary">
-            Paste any public FPL league&apos;s ID or URL - a country/community league you&apos;ve found but haven&apos;t
-            joined works too. Saved on this device.
+            Paste any public FPL league&apos;s ID or URL, joined or not. Saved on this device.
           </p>
           <form onSubmit={handleTrackLeague} className="flex items-end gap-3">
             <TextField
@@ -250,8 +247,8 @@ export default function LeaguesPage() {
               )}
             </div>
             <p className="mb-3 -mt-2 text-xs text-text-muted">
-              Found via a team ID someone shared with you? Tap &quot;Track this league&quot; to save it here, then clear
-              the Team ID field (or connect your own team) to see where <em>your</em> score would rank in it.
+              Tap &quot;Track this league&quot; to save it here, then clear the Team ID field (or connect your own
+              team) to see where <em>your</em> score would rank in it.
             </p>
 
             {standings.your_rank && (
