@@ -477,6 +477,7 @@ export default function SquadBuilderPage() {
                   <table className="w-full text-left text-sm">
                     <thead className="sticky top-0 bg-surface-sunken">
                       <tr>
+                        <th className="px-3 py-2.5"></th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
@@ -484,7 +485,6 @@ export default function SquadBuilderPage() {
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
-                        <th className="px-3 py-2.5"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -492,6 +492,17 @@ export default function SquadBuilderPage() {
                         const { ok, reason } = canAdd(p);
                         return (
                           <tr key={p.id} className="border-t border-border">
+                            <td className="px-3 py-2.5">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => addPlayer(p.id)}
+                                disabled={!ok}
+                                title={reason}
+                              >
+                                Add
+                              </Button>
+                            </td>
                             <td className="px-3 py-2.5 font-medium">
                               <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
                               <StatusBadge status={p.status} news={p.news} />
@@ -506,17 +517,6 @@ export default function SquadBuilderPage() {
                             <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
                             <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
                             <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
-                            <td className="px-3 py-2.5">
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => addPlayer(p.id)}
-                                disabled={!ok}
-                                title={reason}
-                              >
-                                Add
-                              </Button>
-                            </td>
                           </tr>
                         );
                       })}
