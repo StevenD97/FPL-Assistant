@@ -4,11 +4,12 @@ import { Card } from "@/components/ui/Card";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 
-type Fixture = { opponent: string; is_home: boolean; difficulty: number };
+type Fixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
 
 type FixtureRow = {
   team_id: number;
   team: string;
+  team_badge: string;
   fixtures_in_window: number;
   avg_difficulty: number | null;
   fixtures: Fixture[];
@@ -58,14 +59,20 @@ export default async function Home() {
               {sorted.map((row) => (
                 <tr key={row.team_id} className="border-t border-border transition-colors hover:bg-surface-sunken">
                   <td className="px-3.5 py-2.5 font-medium">
-                    <TeamBadge teamShort={row.team} name={row.team} />
+                    <TeamBadge teamShort={row.team} name={row.team} badgeUrl={row.team_badge} />
                   </td>
                   <td className="px-3.5 py-2.5 font-mono">{row.avg_difficulty ?? "-"}</td>
                   <td className="px-3.5 py-2.5">
                     <div className="flex flex-wrap gap-1">
                       {row.fixtures.length > 0 ? (
                         row.fixtures.map((fx, i) => (
-                          <FdrChip key={i} opponent={fx.opponent} isHome={fx.is_home} difficulty={fx.difficulty} />
+                          <FdrChip
+                            key={i}
+                            opponent={fx.opponent}
+                            isHome={fx.is_home}
+                            difficulty={fx.difficulty}
+                            badgeUrl={fx.opponent_badge}
+                          />
                         ))
                       ) : (
                         <span className="text-text-muted">-</span>

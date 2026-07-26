@@ -14,6 +14,7 @@ type OutlookRow = {
   live_id: number | null;
   web_name: string;
   team_short: string;
+  team_badge: string;
   position: string;
   predicted_points: number;
   fixture_count: number;
@@ -164,7 +165,7 @@ export default function OutlookPage() {
                       <PlayerLink id={row.live_id}>{row.web_name}</PlayerLink>
                     </td>
                     <td className="px-3 py-2.5">
-                      <TeamBadge teamShort={row.team_short} name={row.team_short} />
+                      <TeamBadge teamShort={row.team_short} name={row.team_short} badgeUrl={row.team_badge} />
                     </td>
                     <td className="px-3 py-2.5">
                       <PositionBadge position={row.position} />

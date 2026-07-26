@@ -136,7 +136,7 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
                 <StatusBadge status={p.status} />
               </td>
               <td className="px-3 py-2.5">
-                <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
               </td>
               <td className="px-3 py-2.5">
                 <PositionBadge position={p.position} />

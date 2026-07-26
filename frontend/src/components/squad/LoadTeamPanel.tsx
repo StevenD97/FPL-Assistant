@@ -567,7 +567,7 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
                       <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
                     </td>
                     <td className="px-3 py-2.5">
-                      <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                      <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                     </td>
                     <td className="px-3 py-2.5">
                       <PositionBadge position={p.pos} />

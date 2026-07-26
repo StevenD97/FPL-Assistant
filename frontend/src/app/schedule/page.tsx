@@ -12,6 +12,8 @@ type Fixture = {
   finished: boolean;
   team_h: string;
   team_a: string;
+  team_h_badge: string;
+  team_a_badge: string;
   team_h_score: number | null;
   team_a_score: number | null;
 };
@@ -95,7 +97,7 @@ export default function SchedulePage() {
                   className={`flex items-center justify-between px-4 py-2.5 text-sm ${i > 0 ? "border-t border-border" : ""}`}
                 >
                   <div className="flex flex-1 justify-end">
-                    <TeamBadge teamShort={fx.team_h} name={fx.team_h} />
+                    <TeamBadge teamShort={fx.team_h} name={fx.team_h} badgeUrl={fx.team_h_badge} />
                   </div>
                   <div className="mx-4 w-24 shrink-0 text-center font-mono font-medium text-text-primary">
                     {fx.finished
@@ -103,7 +105,7 @@ export default function SchedulePage() {
                       : new Date(fx.kickoff_time).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </div>
                   <div className="flex flex-1">
-                    <TeamBadge teamShort={fx.team_a} name={fx.team_a} />
+                    <TeamBadge teamShort={fx.team_a} name={fx.team_a} badgeUrl={fx.team_a_badge} />
                   </div>
                 </div>
               ))}

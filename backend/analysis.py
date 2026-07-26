@@ -37,6 +37,18 @@ def team_kit_url(team_code):
     return f"{FPL_STATIC_BASE}/shirts/standard/shirt_{team_code}-66.png"
 
 
+def team_badge_by_short_name(bootstrap, size=70):
+    """
+    {team_short_name: badge_url} - for endpoints that only have a team's
+    3-letter short name in scope by the time badges get attached (e.g.
+    after a groupby/merge already collapsed down to team_short, with the
+    numeric bootstrap team id no longer around), rather than team_badge_url's
+    usual numeric team_code. short_name is unique within one bootstrap
+    snapshot, same as id - safe to key on.
+    """
+    return {t["short_name"]: team_badge_url(t["code"], size) for t in bootstrap["teams"]}
+
+
 def player_photo_url(player_code, size="110x140"):
     """
     size: "110x140" (FPL's own default headshot crop) or "250x250" (larger).
@@ -608,6 +620,7 @@ def compute_fixture_difficulty(start_event, window_size=5,
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
     fixtures_by_team_event = build_fixtures_by_team_event(fixtures)
 
     all_events = sorted({e["id"] for e in bootstrap["events"]})
@@ -630,10 +643,12 @@ def compute_fixture_difficulty(start_event, window_size=5,
                 ticker.append(f"{teams[fx['opponent']]}({venue},FDR{fx['difficulty']})")
                 fixture_list.append({
                     "opponent": teams[fx["opponent"]], "is_home": fx["is_home"], "difficulty": fx["difficulty"],
+                    "opponent_badge": team_badge_url(team_code_by_id[fx["opponent"]]),
                 })
         rows.append({
             "team_id": team_id,
             "team": short_name,
+            "team_badge": team_badge_url(team_code_by_id[team_id]),
             "fixtures_in_window": fixture_count,
             "fixture_score": total_score,
             "avg_difficulty": round((6 - total_score / fixture_count), 2) if fixture_count else None,

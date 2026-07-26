@@ -37,6 +37,7 @@ from analysis import (
     map_archived_ids_to_live,
     nullable_int_column,
     player_photo_url,
+    team_badge_by_short_name,
     team_badge_url,
     team_kit_url,
     top_differentials,
@@ -158,7 +159,10 @@ def player_scores(
         df = top_differentials(df, max_ownership=max_ownership, top_n=limit)
     else:
         df = df.sort_values("recommendation_score", ascending=False).head(limit)
-    df = df[PLAYER_SCORE_COLUMNS].copy()
+    team_code_by_id = {t["id"]: t["code"] for t in load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)["teams"]}
+    df = df.copy()
+    df["team_badge"] = df["team"].map(team_code_by_id).apply(team_badge_url)
+    df = df[PLAYER_SCORE_COLUMNS + ["team_badge"]].copy()
     # `id` above is an archived-2025/26 element id (compute_player_scores'
     # default bootstrap) - add live_id so the frontend can link to
     # /players/{live_id} without mixing season id-spaces. None if this
@@ -229,6 +233,8 @@ def player_predicted_points_outlook(
     # doesn't need a separate code path from that sibling endpoint.
     df = df.sort_values("predicted_points", ascending=False).head(limit).copy()
     df["live_id"] = df["id"]
+    team_badges = team_badge_by_short_name(load_bootstrap(LIVE_BOOTSTRAP_FILE))
+    df["team_badge"] = df["team_short"].map(team_badges)
     return df.to_dict(orient="records")
 
 
@@ -801,6 +807,9 @@ def all_players(
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    pool = pool.copy()
+    pool["team_badge"] = pool["team"].map(team_code_by_id).apply(team_badge_url)
 
     if position:
         pool = pool[pool["position"] == position]
@@ -811,7 +820,7 @@ def all_players(
     season_stats = _season_stats_by_live_id()
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
-        "selected_by_percent", "status", "news",
+        "selected_by_percent", "status", "news", "team_badge",
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
@@ -955,6 +964,7 @@ def fixtures_schedule(season: str = "live"):
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_badges = team_badge_by_short_name(bootstrap)
 
     rows = []
     for fx in fixtures:
@@ -966,6 +976,8 @@ def fixtures_schedule(season: str = "live"):
             "finished": fx["finished"],
             "team_h": teams[fx["team_h"]],
             "team_a": teams[fx["team_a"]],
+            "team_h_badge": team_badges[teams[fx["team_h"]]],
+            "team_a_badge": team_badges[teams[fx["team_a"]]],
             "team_h_score": fx["team_h_score"],
             "team_a_score": fx["team_a_score"],
             "team_h_difficulty": fx["team_h_difficulty"],
