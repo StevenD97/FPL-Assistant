@@ -72,7 +72,8 @@ def _top_n_precision(merged, n=20):
 
 
 def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
-                  shrinkage_games=team_model.SHRINKAGE_GAMES, gameweeks=None):
+                  shrinkage_games=team_model.SHRINKAGE_GAMES, smoothing_alpha=team_model.SHARE_SMOOTHING_ALPHA,
+                  gameweeks=None):
     """gameweeks overrides min_gw/max_gw with an explicit list - tune.py uses this to sample every Nth week."""
     bootstrap = load_bootstrap(BOOTSTRAP_FILE)
     event_deadlines = {
@@ -91,6 +92,7 @@ def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
         predicted = predict_player_points(
             event_deadlines[gw], gw, half_life_days=half_life_days, season=SEASON,
             bootstrap_file=BOOTSTRAP_FILE, fixtures_file=FIXTURES_FILE, shrinkage_games=shrinkage_games,
+            smoothing_alpha=smoothing_alpha,
         )
         actual = _actual_points_by_gw(history, gw).rename("actual_points")
 

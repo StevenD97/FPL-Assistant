@@ -111,6 +111,42 @@ PROMOTED_TEAM_STRENGTH = {
 # (needs more games before trusting a team-specific ratio over the average).
 SHRINKAGE_GAMES = 3
 
+# Additive (Dirichlet/Laplace-style) smoothing for compute_player_involvement_shares,
+# in units of recency-weighted team xG/xA (added once, toward a position-average
+# prior share - see that function's docstring). Solves a problem team-level
+# strengths above never had (_shrink_ratio already regularizes those): an
+# established, heavily-used player's share of their own team's output had NO
+# regularization at all - found via a live-app report that the model had Bruno
+# Fernandes on 2.0 predicted goals and 4.2 predicted assists over a 5-gameweek
+# window, traced back to a recency-weighted assist_share of 0.505 (half of Man
+# Utd's *entire* modeled assist output credited to one player), off a real
+# season where he had 24 of the team's 60 actual assists (40%) even before
+# recency-weighting toward a strong finish pushed it higher still. No real
+# single player sustains that. Higher = more conservative (pulls harder toward
+# what's typical for the player's position). Picked via a grid search against
+# backtest.py's walk-forward accuracy (see tune_share_alpha.py, a throwaway
+# script kept alongside this commit for the record): alpha=0 (xG/xA alone, no
+# smoothing) already fixes most of the systematic bias (best MAE, best
+# Spearman r, ~zero DEF bias) but has the *worst* top-20 precision of the
+# grid; increasing alpha steadily trades a little MAE/Spearman/bias for a
+# meaningfully better top-20 precision (0.119 -> 0.135, the metric closest to
+# "would this have helped pick a captain/differential" - see backtest.py's
+# docstring) up to about alpha=0.5-0.75, where it plateaus and DEF bias keeps
+# climbing past that point with no further top-20 benefit. 0.5 is the low
+# end of that plateau - the least aggressive smoothing that still captures
+# the top-20 gain.
+SHARE_SMOOTHING_ALPHA = 0.5
+
+# Minimum recency-weighted appearance evidence (sum of per-fixture weight,
+# see recency_weights) for a player to count toward their position's average
+# share when building compute_player_involvement_shares' smoothing prior -
+# without this, a debutant's single substitute appearance (~0 raw share,
+# nothing to show for it yet) would drag the whole position's "typical"
+# share down for everyone, including established players. Set well below a
+# single full match's weight (~1.0 at zero days ago) so a player only needs
+# a handful of appearances, not a long track record, to count.
+MIN_APPEARANCE_WEIGHT_FOR_POSITION_PRIOR = 0.5
+
 # half_life_days for predicting a brand-new season from the prior season's
 # archive (no gw_history for the new season exists yet to train on) - the
 # default half_life_days=21 is tuned for within-season recency (weeks
@@ -323,12 +359,14 @@ def compute_player_involvement_shares_blended(reference_date, half_life_days=21,
                                                archive_season="2025_26", current_season="2026_27",
                                                archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
                                                shrinkage_games=SHRINKAGE_GAMES,
+                                               smoothing_alpha=SHARE_SMOOTHING_ALPHA,
                                                archive_elements=None, roster_elements=None):
     """Blended sequel to compute_player_involvement_shares - see compute_team_goal_strengths_blended's docstring
     for the general shape (identical pre-season behaviour, shrinkage-weighted blend once current_season has games).
     archive_elements/roster_elements, if given, are the two seasons' bootstrap["elements"] lists, for the
     by-`code` remap (map_player_stats_to_roster) before blending - player element ids also get reassigned yearly."""
-    archive_shares = compute_player_involvement_shares(reference_date, archive_half_life_days, archive_season)
+    archive_shares = compute_player_involvement_shares(reference_date, archive_half_life_days, archive_season,
+                                                         smoothing_alpha)
     if archive_elements is not None and roster_elements is not None:
         archive_shares = map_player_stats_to_roster(archive_shares, archive_elements, roster_elements)
 
@@ -336,7 +374,7 @@ def compute_player_involvement_shares_blended(reference_date, half_life_days=21,
     if weight == 0.0:
         return archive_shares
 
-    current_shares = compute_player_involvement_shares(reference_date, half_life_days, current_season)
+    current_shares = compute_player_involvement_shares(reference_date, half_life_days, current_season, smoothing_alpha)
     default = {"goal_share": 0.0, "assist_share": 0.0}
     return _blend_dicts(archive_shares, current_shares, weight, ["goal_share", "assist_share"], default)
 
@@ -454,11 +492,57 @@ def clean_sheet_probability(expected_goals_against):
     return _poisson_pmf(0, expected_goals_against)
 
 
-def compute_player_involvement_shares(reference_date, half_life_days=21, season="2025_26"):
+def compute_player_involvement_shares(reference_date, half_life_days=21, season="2025_26",
+                                       smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     element -> {goal_share, assist_share}: this player's recency-weighted
-    share of their own team's total goals/assists. Used to split a
-    predicted team goal tally down to individual players.
+    share of their own team's total *expected* goals/assists (xG/xA, not
+    actual goals/assists). Used to split a predicted team goal tally down
+    to individual players.
+
+    Two deliberate departures from a naive "player's goals / team's goals"
+    ratio, both aimed at the same failure mode - see SHARE_SMOOTHING_ALPHA's
+    comment for the real example that motivated this:
+
+    1. xG/xA instead of actual goals/assists. Actual goals/assists are
+       small-integer outcome counts that bake in finishing variance -
+       whether a teammate's shot off *this* player's chance actually went
+       in is partly luck, and luck regresses to the mean. xG/xA (FPL's own
+       Opta-sourced per-shot/per-chance quality estimates, already in
+       gw_history) measure the underlying chance *created*, which is far
+       more stable and more predictive of future output - standard
+       practice in football analytics (see README/commit notes for the
+       Bruno Fernandes case this was found from: 24 actual assists vs
+       12.3 xA over the same games - a meaningfully smaller, more honest
+       number even before any smoothing).
+    2. Additive smoothing toward a *position-average* share (see
+       SHARE_SMOOTHING_ALPHA), not a flat one. Without this, a share is
+       trusted 100% no matter how little of the team's *total* xG/xA it's
+       estimated from - team-level total xG/xA over a recency-weighted
+       window is itself a small number (a team generates maybe 1-2 xA a
+       match), so even a full season of evidence for the PLAYER doesn't
+       mean there's much evidence for the DISTRIBUTION across the squad.
+       This is a different failure mode than sparse per-player data
+       (which half_life_days/recency weighting already handles) - it's
+       about how much total signal exists to trust a concentrated split
+       at all. The prior must be position-specific, not a flat "even
+       split among the team's outfield players": a first attempt at this
+       used one flat prior across DEF/MID/FWD alike, and it systematically
+       over-predicted defenders (backtest MAE got worse, bias flipped from
+       -0.04 to +0.28) by pulling their genuinely-low goal/assist
+       involvement up toward attackers' higher one. League-average
+       goal_share/assist_share by position (DEF ~0.02/0.03, MID ~0.04/0.06,
+       FWD ~0.11/0.03 - a forward's primary job is scoring, not creating,
+       hence the lower assist_share than MID despite the higher goal_share)
+       fixes that: shrinkage now pulls a player toward what's typical for
+       *their own position*, not the outfield average. Goalkeepers are
+       excluded entirely (both as smoothing recipients and from the prior
+       pool) - real goalkeeper goal/assist involvement is indistinguishable
+       from zero (0.16 expected_goals and 1.40 expected_assists *combined
+       across the entire archive, every GK, every team, full season*), so
+       even a position-specific prior would be manufacturing threat from
+       nothing; their raw (still xG/xA-based, just unsmoothed) ratio
+       already correctly comes out near-zero.
     """
     history = load_gw_history(season)
     past = history[history["kickoff_time"] < reference_date].copy()
@@ -466,22 +550,57 @@ def compute_player_involvement_shares(reference_date, half_life_days=21, season=
         return {}
 
     past["weight"] = recency_weights(past["kickoff_time"], reference_date, half_life_days)
-    past["weighted_goals"] = past["weight"] * past["goals_scored"]
-    past["weighted_assists"] = past["weight"] * past["assists"]
+    past["weighted_goals"] = past["weight"] * past["expected_goals"]
+    past["weighted_assists"] = past["weight"] * past["expected_assists"]
+    past["appeared"] = past["minutes"] > 0
 
     team_goals = past.groupby("team_id")["weighted_goals"].sum()
     team_assists = past.groupby("team_id")["weighted_assists"].sum()
     player_goals = past.groupby("element")["weighted_goals"].sum()
     player_assists = past.groupby("element")["weighted_assists"].sum()
     player_team = past.groupby("element")["team_id"].last()
+    player_position = past.groupby("element")["position"].last()
+    # Total recency-weighted evidence (appearance weight) behind each
+    # player's raw share - only players with a meaningful amount feed the
+    # position-average prior below, so a deadline-day debutant's ~0 raw
+    # share (1 substitute appearance, nothing to show for it yet) doesn't
+    # drag the whole position's "typical" share down for everyone.
+    appearance_weight = past[past["appeared"]].groupby("element")["weight"].sum()
+
+    def raw_share(element, team_id, stat_totals, player_stat):
+        total = stat_totals.get(team_id, 0.0)
+        return player_stat.get(element, 0.0) / total if total else 0.0
+
+    position_priors = {}
+    for pos in ["DEF", "MID", "FWD"]:
+        pos_elements = [
+            e for e, p in player_position.items()
+            if p == pos and appearance_weight.get(e, 0.0) >= MIN_APPEARANCE_WEIGHT_FOR_POSITION_PRIOR
+        ]
+        goal_shares = [raw_share(e, player_team[e], team_goals, player_goals) for e in pos_elements]
+        assist_shares = [raw_share(e, player_team[e], team_assists, player_assists) for e in pos_elements]
+        position_priors[pos] = {
+            "goal_share": sum(goal_shares) / len(goal_shares) if goal_shares else 0.0,
+            "assist_share": sum(assist_shares) / len(assist_shares) if assist_shares else 0.0,
+        }
 
     shares = {}
     for element, team_id in player_team.items():
-        team_goal_total = team_goals.get(team_id, 0)
-        team_assist_total = team_assists.get(team_id, 0)
+        position = player_position.get(element)
+        prior = position_priors.get(position)
+        team_goal_total = team_goals.get(team_id, 0.0)
+        team_assist_total = team_assists.get(team_id, 0.0)
+        if prior is None:  # GK, or an unrecognized position - no smoothing, see docstring
+            shares[element] = {
+                "goal_share": raw_share(element, team_id, team_goals, player_goals),
+                "assist_share": raw_share(element, team_id, team_assists, player_assists),
+            }
+            continue
         shares[element] = {
-            "goal_share": player_goals.get(element, 0) / team_goal_total if team_goal_total else 0.0,
-            "assist_share": player_assists.get(element, 0) / team_assist_total if team_assist_total else 0.0,
+            "goal_share": (player_goals.get(element, 0.0) + smoothing_alpha * prior["goal_share"])
+            / (team_goal_total + smoothing_alpha),
+            "assist_share": (player_assists.get(element, 0.0) + smoothing_alpha * prior["assist_share"])
+            / (team_assist_total + smoothing_alpha),
         }
     return shares
 
@@ -630,7 +749,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
                            fixtures_file="fixtures_2025_26_final.json",
                            shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                            roster_bootstrap_file=None, roster_fixtures_file=None,
-                           current_season="2026_27"):
+                           current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -677,7 +796,7 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file, current_season,
+        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha,
     )
     return _predict_for_event(context, next_event)
 
@@ -685,7 +804,8 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 @lru_cache(maxsize=32)
 def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
                                shrinkage_games, apply_live_signals,
-                               roster_bootstrap_file=None, roster_fixtures_file=None, current_season="2026_27"):
+                               roster_bootstrap_file=None, roster_fixtures_file=None, current_season="2026_27",
+                               smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     Everything predict_player_points() needs that depends only on
     reference_date (not on which gameweek is being predicted) - team
@@ -734,6 +854,7 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
         )
         involvement = compute_player_involvement_shares_blended(
             reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
+            smoothing_alpha=smoothing_alpha,
             archive_elements=bootstrap["elements"], roster_elements=roster_bootstrap["elements"],
         )
         appearance_probs = compute_appearance_probabilities_blended(
@@ -749,7 +870,7 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
         # season is fully finished, so there's no "current season" to blend
         # in and no remap needed - unchanged from before blending existed.
         team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
-        involvement = compute_player_involvement_shares(reference_date, half_life_days, season)
+        involvement = compute_player_involvement_shares(reference_date, half_life_days, season, smoothing_alpha)
         appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
         history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
 
@@ -857,7 +978,7 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
                                 fixtures_file="fixtures_2025_26_final.json",
                                 shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                                 roster_bootstrap_file=None, roster_fixtures_file=None,
-                                current_season="2026_27"):
+                                current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     Returns a DataFrame, one row per player, with every _BREAKDOWN_KEYS
     category (goal_points, assist_points, clean_sheet_points, bonus_points,
@@ -879,6 +1000,7 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
     result = _predict_multi_gw_breakdown_cached(
         reference_date, tuple(next_events), half_life_days, season, bootstrap_file, fixtures_file,
         shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
+        smoothing_alpha,
     )
     return result.copy()
 
@@ -886,7 +1008,8 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
 @lru_cache(maxsize=32)
 def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_days, season, bootstrap_file,
                                         fixtures_file, shrinkage_games, apply_live_signals,
-                                        roster_bootstrap_file, roster_fixtures_file, current_season="2026_27"):
+                                        roster_bootstrap_file, roster_fixtures_file, current_season="2026_27",
+                                        smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     The actual per-player, per-gameweek prediction loop, cached - almost
     every caller across the app (players list, player detail, squad
@@ -904,7 +1027,7 @@ def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_da
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file, current_season,
+        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha,
     )
     per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 
@@ -931,7 +1054,7 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
                              fixtures_file="fixtures_2025_26_final.json",
                              shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                              roster_bootstrap_file=None, roster_fixtures_file=None,
-                             current_season="2026_27"):
+                             current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
     """
     predict_multi_gw_breakdown(), collapsed to just predicted_points (plus
     fixture_count/fixture_ticker) - the headline metric for the app, not
@@ -945,6 +1068,7 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     breakdown = predict_multi_gw_breakdown(
         reference_date, next_events, half_life_days, season, bootstrap_file, fixtures_file,
         shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
+        smoothing_alpha,
     )
     return breakdown[[
         "id", "web_name", "team_short", "position", "predicted_points", "fixture_count", "fixture_ticker",

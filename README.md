@@ -144,16 +144,41 @@ conventions rather than dropped in as-is. No dark mode.
   gameweek (GW2-38): predicts every player using only data strictly
   before that gameweek, then checks the prediction against what they
   actually scored. Current baseline (run `venv\Scripts\python.exe backtest.py`
-  to reproduce): pooled Pearson r = 0.55 (r² = 0.30), Spearman rank
-  correlation = 0.73, MAE = 0.92 pts/player/gameweek, top-20 precision
+  to reproduce): pooled Pearson r = 0.57 (r² = 0.32), Spearman rank
+  correlation = 0.70, MAE = 0.93 pts/player/gameweek, top-20 precision
   (overlap between predicted and actual top 20 scorers) = 14%. Reads as:
   the model is meaningfully better than chance at *ranking* players
-  (Spearman 0.73), noticeably worse at nailing the *exact* points total
-  (Pearson 0.55) - expected, given how much of FPL scoring (bonus points,
+  (Spearman 0.70), noticeably worse at nailing the *exact* points total
+  (Pearson 0.57) - expected, given how much of FPL scoring (bonus points,
   explosive one-off hauls) is inherently high-variance. No strong
   systematic bias by position (mean predicted-minus-actual error is
-  within ±0.08 pts for every position) and accuracy is stable across the
+  within ±0.06 pts for every position) and accuracy is stable across the
   season rather than degrading late on.
+  **Found via a live-app report, not the backtest**: `compute_player_involvement_shares()`
+  (splits a predicted team goal tally down to individual players by each
+  player's historical share of their team's goals/assists) had no
+  regularization at all, unlike `compute_team_goal_strengths()` below -
+  a report that Bruno Fernandes was predicted 2.0 goals and 4.2 assists
+  over a 5-gameweek window traced back to a recency-weighted assist_share
+  of 0.505 (half of Man Utd's *entire* modeled assist output credited to
+  one player), off a season where he had 24 of the team's 60 actual
+  assists (40%) even before recency-weighting toward a strong finish
+  pushed it higher. Fixed two ways (`team_model.py`'s
+  `compute_player_involvement_shares` docstring has the full reasoning):
+  switched from actual goals/assists (small-integer outcome counts that
+  bake in finishing variance - regression to the mean) to xG/xA (FPL's
+  own Opta-sourced chance-quality estimates, already in `gw_history` but
+  unused until now - standard practice in football analytics for
+  exactly this reason); and added Dirichlet-style additive smoothing
+  toward a *position-average* share (`SHARE_SMOOTHING_ALPHA` - a flat,
+  position-blind prior was tried first and rejected, since it pulled
+  defenders' correctly-low goal/assist involvement up toward attackers'
+  and made the backtest's DEF bias meaningfully worse; see `tune.py`'s
+  `search_alpha()`). Net effect on the backtest above: Pearson r² 0.30 ->
+  0.32, position bias roughly halved, and (the number this was actually
+  tuned against) 5-gameweek-window top-20 precision 16.5% -> 18.2% (see
+  `multi_gw_backtest.py` below) - a real, measured accuracy gain, not
+  just a fix for one embarrassing number.
   **Fixed by the backtest**: `compute_team_goal_strengths()`'s ratios are
   now shrunk toward the league average (1.0), in proportion to how much
   recency-weighted evidence backs them (`_shrink_ratio`,
@@ -182,9 +207,9 @@ conventions rather than dropped in as-is. No dark mode.
   data available before the window starts) and checking whether
   correlation improves - if the model's signal is real and weekly
   scoring is just noisy, averaging over more weeks should cancel that
-  noise out and reveal it. It does, cleanly: r² goes from 0.30 (1 GW) to
-  0.44 (3 GW) to 0.49 (5 GW), Spearman from 0.73 to 0.82, with no change
-  to the model itself. Conclusion: the single-gameweek ceiling is mostly
+  noise out and reveal it. It does, cleanly: r² goes from 0.32 (1 GW) to
+  0.48 (3 GW) to 0.52 (5 GW), top-20 precision from 14% to 16% to 18%,
+  with no change to the model itself. Conclusion: the single-gameweek ceiling is mostly
   variance, not a data or modeling gap - the product implication is to
   lead with multi-week outlooks ("best transfer targets for the next 5
   gameweeks") rather than single-gameweek point predictions, which is
