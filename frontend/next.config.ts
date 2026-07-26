@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      // Squad Builder was merged into My Squad as a "Build from scratch" mode.
+      { source: "/squad-builder", destination: "/squad", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

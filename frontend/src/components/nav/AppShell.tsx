@@ -15,7 +15,6 @@ const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/squad", label: "My Squad", icon: "squad" },
   { href: "/optimizer", label: "Optimizer", icon: "optimizer" },
-  { href: "/squad-builder", label: "Squad Builder", icon: "squad-builder" },
   { href: "/players", label: "Players", icon: "players" },
   { href: "/outlook", label: "Outlook", icon: "outlook" },
   { href: "/differentials", label: "Differentials", icon: "differentials" },

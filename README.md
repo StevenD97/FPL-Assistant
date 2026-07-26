@@ -27,16 +27,17 @@ conventions rather than dropped in as-is. No dark mode.
 - Shared components live in `frontend/src/components/`: `ui/` (Button, Card,
   StatTile, PositionBadge, StatusBadge, CaptainBadge, TextField, Select,
   Alert), `pitch/` (TeamBadge, PitchFormation - the club-colored formation
-  view used by Squad Builder), and `nav/NavBar` (the purple wordmark + green
+  view used by My Squad), and `nav/NavBar` (the purple wordmark + green
   active-tab underline). `frontend/src/lib/teamColors.ts` maps the API's
   3-letter team codes to the CSS color-token slugs, covering both the live
   2026/27 roster and the archived 2025/26 season's teams (see the live/
   archived split above) since different pages use different seasons' codes.
-- Every page (`page.tsx`, `outlook/`, `squad/`, `optimizer/`, `squad-builder/`,
+- Every page (`page.tsx`, `outlook/`, `squad/`, `optimizer/`,
   `differentials/`, `chips/`) was restyled onto these tokens/components -
   structure, state, and data-fetching logic unchanged, styling only. Squad
-  Builder additionally gained the pitch-formation view: the drafted squad
-  renders as a green pitch with GKP/DEF/MID/FWD rows, each player a white
+  Builder (since merged into `/squad` - see below) additionally gained the
+  pitch-formation view: the drafted squad renders as a green pitch with
+  GKP/DEF/MID/FWD rows, each player a white
   puck ringed in their club's color, alongside the existing player-browser
   table and diagnostics (which still work exactly as before, including
   Remove-by-row - the pitch is a visual addition, not a replacement for the
@@ -254,9 +255,12 @@ conventions rather than dropped in as-is. No dark mode.
   as an HTTPException with a message that actually explains what
   happened, and the frontend (`frontend/src/lib/api.ts`'s `fetchJson`)
   surfaces that message instead of a generic "Request failed (404)".
-- **Squad Builder** (`/squad-builder`) is a manual drafting tool, distinct
-  from both `optimizer.py` (automated, from-scratch or transfer-based)
-  and My Squad (views a real existing squad): pick your own 15 within
+- **Squad Builder** (originally its own `/squad-builder` route, since
+  merged into `/squad` as a "Build from scratch" mode alongside "Load my
+  team" - one page, a toggle between the two, so the same screen works
+  before the season locks your first real squad in) is a manual drafting
+  tool, distinct from both `optimizer.py` (automated, from-scratch or
+  transfer-based) and loading a real existing squad: pick your own 15 within
   budget and get live diagnostic feedback as you go, each paired with
   concrete affordable players (filtered to positions you still need,
   where any remain) to fix it, one click to add. Ten checks, each
@@ -409,7 +413,7 @@ conventions rather than dropped in as-is. No dark mode.
   a per-gameweek points chart, and the model's predicted-points
   breakdown by category for the next few gameweeks) - and every player
   name across the whole app (Outlook, Differentials, My Squad, Squad
-  Builder, Optimizer) now links there too. My Squad and Squad Builder
+  Builder, Optimizer) now links there too. Both modes of `/squad`
   can also surface 3-5 same-position alternatives for any player on
   demand (`/api/players/{id}/alternatives`) - a quick "who else could I
   play here" without leaving the page. `/schedule` shows the full

@@ -22,15 +22,7 @@ const PAGES: PageInfo[] = [
     icon: "optimizer",
     what: "The provably optimal squad (from scratch) or transfers (from your real squad), solved exactly rather than ranked.",
     model: "Integer linear programming over predicted points, respecting FPL's real rules (budget, formation, max 3 per club) and weighing transfer hits against points gained.",
-    use: "When you want the mathematically best answer rather than a manually-built one - compare its output against your own Squad Builder draft.",
-  },
-  {
-    title: "Squad Builder",
-    href: "/squad-builder",
-    icon: "squad-builder",
-    what: "Manually draft a 15-man squad within budget on a visual pitch, with live feedback as you go.",
-    model: "Predicted points from the Outlook model, plus rule-based diagnostics (club concentration, missing good fixture runs, no penalty taker, etc).",
-    use: "For planning a Wildcard or a new squad by hand, with the app flagging risks and suggesting fixes as you build.",
+    use: "When you want the mathematically best answer rather than a manually-built one - compare its output against your own hand-built squad in My Squad.",
   },
   {
     title: "Players",
@@ -116,7 +108,7 @@ export default function LandingPage() {
               Connect your team
             </Link>
             <Link
-              href="/squad-builder"
+              href="/squad"
               className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
               Build a squad
@@ -147,7 +139,7 @@ export default function LandingPage() {
             <p className="max-w-2xl text-sm leading-relaxed text-white/90 lg:text-base">
               Your real squad, on a real pitch - with official club badges, kits, and player photos. See your
               team scored gameweek by gameweek, get automatically-suggested transfers, and click any player for
-              their full breakdown.
+              their full breakdown. No team yet? Build one from scratch right here instead.
             </p>
             <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] group-hover:brightness-95">
               Go to My Squad →

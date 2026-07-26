@@ -6,7 +6,6 @@ type IconName =
   | "home"
   | "squad"
   | "optimizer"
-  | "squad-builder"
   | "players"
   | "outlook"
   | "differentials"
@@ -30,11 +29,6 @@ const PATHS: Record<IconName, React.ReactNode> = {
     <>
       <path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" />
       <circle cx="12" cy="12" r="3.2" />
-    </>
-  ),
-  "squad-builder": (
-    <>
-      <path d="M4 20h16M6 16l9.5-9.5a2 2 0 0 0-2.8-2.8L3 13v3h3" />
     </>
   ),
   players: <path d="M4 6h16M4 12h16M4 18h16" />,

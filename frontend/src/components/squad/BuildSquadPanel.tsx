@@ -257,7 +257,7 @@ function computeDiagnostics(
   return { issues, recommendations };
 }
 
-export default function SquadBuilderPage() {
+export function BuildSquadPanel() {
   const [players, setPlayers] = useState<PoolPlayer[] | null>(null);
   const [fixtures, setFixtures] = useState<FixtureRow[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -388,280 +388,275 @@ export default function SquadBuilderPage() {
   }, [players, positionFilter, search]);
 
   return (
-    <main className="px-4 py-5 lg:px-6 lg:py-6">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
-          Squad builder
-        </h1>
-        <p className="mb-6 text-sm text-text-secondary">
-          Draft within budget, get live diagnostics, and swap or click into any player. For an automated build, see{" "}
-          <a href="/optimizer" className="text-pl-purple underline">
-            Optimizer
-          </a>
-          .
-        </p>
+    <div className="mx-auto max-w-6xl">
+      <p className="mb-6 text-sm text-text-secondary">
+        Draft within budget, get live diagnostics, and swap or click into any player. For an automated build, see{" "}
+        <a href="/optimizer" className="text-pl-purple underline">
+          Optimizer
+        </a>
+        .
+      </p>
 
-        {loading && <p className="text-text-muted">Loading player data...</p>}
-        {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
+      {loading && <p className="text-text-muted">Loading player data...</p>}
+      {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 
-        {players && fixtures && (
-          <>
-            <div className="mb-6 flex flex-wrap items-end gap-6">
-              <TextField
-                label="Budget (£m)"
-                type="number"
-                min={80}
-                max={120}
-                step={0.5}
-                value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
-                wrapperClassName="w-28"
-              />
-              <div className="text-sm text-text-secondary">
-                <span className="font-mono font-medium text-text-primary">
-                  {squadIdList.length}/15
-                </span>{" "}
-                players &middot; spent{" "}
-                <span className="font-mono font-medium text-text-primary">
-                  £{totalCost.toFixed(1)}m
-                </span>{" "}
-                &middot; remaining{" "}
-                <span className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}>
-                  £{budgetRemaining.toFixed(1)}m
+      {players && fixtures && (
+        <>
+          <div className="mb-6 flex flex-wrap items-end gap-6">
+            <TextField
+              label="Budget (£m)"
+              type="number"
+              min={80}
+              max={120}
+              step={0.5}
+              value={budget}
+              onChange={(e) => setBudget(Number(e.target.value))}
+              wrapperClassName="w-28"
+            />
+            <div className="text-sm text-text-secondary">
+              <span className="font-mono font-medium text-text-primary">
+                {squadIdList.length}/15
+              </span>{" "}
+              players &middot; spent{" "}
+              <span className="font-mono font-medium text-text-primary">
+                £{totalCost.toFixed(1)}m
+              </span>{" "}
+              &middot; remaining{" "}
+              <span className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}>
+                £{budgetRemaining.toFixed(1)}m
+              </span>
+            </div>
+            <div className="flex gap-3 text-sm text-text-secondary">
+              {POSITION_ORDER.map((pos) => (
+                <span key={pos} className="font-mono">
+                  {pos} {squad.filter((p) => p.position === pos).length}/{POSITION_LIMITS[pos]}
                 </span>
-              </div>
-              <div className="flex gap-3 text-sm text-text-secondary">
-                {POSITION_ORDER.map((pos) => (
-                  <span key={pos} className="font-mono">
-                    {pos} {squad.filter((p) => p.position === pos).length}/{POSITION_LIMITS[pos]}
-                  </span>
-                ))}
-              </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Pitch view */}
+            <div>
+              <h2 className="mb-3 font-semibold text-text-primary">
+                Your squad
+              </h2>
+              {squadIdList.length === 0 ? (
+                <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-border bg-surface-sunken text-sm text-text-muted">
+                  No players yet - add some from the list on the right.
+                </div>
+              ) : (
+                <PitchFormation players={pitchPlayers} />
+              )}
             </div>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Pitch view */}
-              <div>
-                <h2 className="mb-3 font-semibold text-text-primary">
-                  Your squad
-                </h2>
-                {squadIdList.length === 0 ? (
-                  <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-border bg-surface-sunken text-sm text-text-muted">
-                    No players yet - add some from the list on the right.
-                  </div>
-                ) : (
-                  <PitchFormation players={pitchPlayers} />
-                )}
+            {/* Player browser */}
+            <div>
+              <h2 className="mb-3 font-semibold text-text-primary">
+                Players
+              </h2>
+              <div className="mb-3 flex flex-wrap gap-2">
+                <TextField
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search name or team..."
+                  wrapperClassName="flex-1"
+                />
+                <Select
+                  value={positionFilter}
+                  onChange={(e) => setPositionFilter(e.target.value as Position | "All")}
+                  options={["All", ...POSITION_ORDER]}
+                  wrapperClassName="w-28"
+                />
               </div>
+              <div className="max-h-[32rem] overflow-y-auto rounded-lg border border-border shadow-sm">
+                <table className="w-full text-left text-sm">
+                  <thead className="sticky top-0 bg-surface-sunken">
+                    <tr>
+                      <th className="px-3 py-2.5"></th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPlayers.map((p) => {
+                      const { ok, reason } = canAdd(p);
+                      return (
+                        <tr key={p.id} className="border-t border-border">
+                          <td className="px-3 py-2.5">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => addPlayer(p.id)}
+                              disabled={!ok}
+                              title={reason}
+                            >
+                              Add
+                            </Button>
+                          </td>
+                          <td className="px-3 py-2.5 font-medium">
+                            <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                            <StatusBadge status={p.status} news={p.news} />
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <PositionBadge position={p.position} />
+                          </td>
+                          <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                          <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
+                          <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                          <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
-              {/* Player browser */}
-              <div>
-                <h2 className="mb-3 font-semibold text-text-primary">
-                  Players
-                </h2>
-                <div className="mb-3 flex flex-wrap gap-2">
-                  <TextField
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search name or team..."
-                    wrapperClassName="flex-1"
-                  />
-                  <Select
-                    value={positionFilter}
-                    onChange={(e) => setPositionFilter(e.target.value as Position | "All")}
-                    options={["All", ...POSITION_ORDER]}
-                    wrapperClassName="w-28"
-                  />
-                </div>
-                <div className="max-h-[32rem] overflow-y-auto rounded-lg border border-border shadow-sm">
+          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Squad list, with remove */}
+            <div>
+              <h2 className="mb-3 font-semibold text-text-primary">
+                Squad list
+              </h2>
+              <div className="overflow-hidden rounded-lg border border-border shadow-sm">
+                {squadIdList.length === 0 ? (
+                  <p className="p-4 text-sm text-text-muted">
+                    No players yet - add some from the list above.
+                  </p>
+                ) : (
                   <table className="w-full text-left text-sm">
-                    <thead className="sticky top-0 bg-surface-sunken">
+                    <thead className="bg-surface-sunken">
                       <tr>
-                        <th className="px-3 py-2.5"></th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
+                        <th className="px-3 py-2.5"></th>
+                        <th className="px-3 py-2.5"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredPlayers.map((p) => {
-                        const { ok, reason } = canAdd(p);
-                        return (
-                          <tr key={p.id} className="border-t border-border">
-                            <td className="px-3 py-2.5">
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => addPlayer(p.id)}
-                                disabled={!ok}
-                                title={reason}
-                              >
-                                Add
-                              </Button>
-                            </td>
-                            <td className="px-3 py-2.5 font-medium">
-                              <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
-                              <StatusBadge status={p.status} news={p.news} />
-                            </td>
-                            <td className="px-3 py-2.5">
-                              <TeamBadge teamShort={p.team_short} name={p.team_short} />
-                            </td>
-                            <td className="px-3 py-2.5">
-                              <PositionBadge position={p.position} />
-                            </td>
-                            <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                            <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                            <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                            <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
-                          </tr>
-                        );
-                      })}
+                      {POSITION_ORDER.flatMap((pos) =>
+                        squad
+                          .filter((p) => p.position === pos)
+                          .flatMap((p) => {
+                            const row = (
+                              <tr key={p.id} className="border-t border-border">
+                                <td className="px-3 py-2.5 font-medium">
+                                  <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                                  <StatusBadge status={p.status} news={p.news} />
+                                </td>
+                                <td className="px-3 py-2.5">
+                                  <TeamBadge teamShort={p.team_short} name={p.team_short} />
+                                </td>
+                                <td className="px-3 py-2.5">
+                                  <PositionBadge position={p.position} />
+                                </td>
+                                <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                                <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
+                                <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                                <td className="px-3 py-2.5">
+                                  <button onClick={() => loadSwapOptions(p)} className="text-xs text-pl-purple hover:underline">
+                                    {swapTargetId === p.id ? "Hide" : "Swap"}
+                                  </button>
+                                </td>
+                                <td className="px-3 py-2.5">
+                                  <Button size="sm" variant="ghost" onClick={() => removePlayer(p.id)}>
+                                    Remove
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                            if (swapTargetId !== p.id) return [row];
+                            return [
+                              row,
+                              <tr key={`${p.id}-swap`} className="border-t border-border bg-surface-sunken">
+                                <td colSpan={8} className="px-3 py-3">
+                                  {swapLoading ? (
+                                    <p className="text-xs text-text-muted">Loading...</p>
+                                  ) : swapOptions && swapOptions.length > 0 ? (
+                                    <div className="flex flex-wrap gap-2">
+                                      {swapOptions.map((a) => (
+                                        <button
+                                          key={a.id}
+                                          onClick={() => swapPlayer(p.id, a.id)}
+                                          className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                                        >
+                                          {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
+                                        </button>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <p className="text-xs text-text-muted">No affordable alternatives found.</p>
+                                  )}
+                                </td>
+                              </tr>,
+                            ];
+                          })
+                      )}
                     </tbody>
                   </table>
-                </div>
+                )}
               </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* Squad list, with remove */}
-              <div>
-                <h2 className="mb-3 font-semibold text-text-primary">
-                  Squad list
-                </h2>
-                <div className="overflow-hidden rounded-lg border border-border shadow-sm">
-                  {squadIdList.length === 0 ? (
-                    <p className="p-4 text-sm text-text-muted">
-                      No players yet - add some from the list above.
-                    </p>
-                  ) : (
-                    <table className="w-full text-left text-sm">
-                      <thead className="bg-surface-sunken">
-                        <tr>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
-                          <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-                          <th className="px-3 py-2.5"></th>
-                          <th className="px-3 py-2.5"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {POSITION_ORDER.flatMap((pos) =>
-                          squad
-                            .filter((p) => p.position === pos)
-                            .flatMap((p) => {
-                              const row = (
-                                <tr key={p.id} className="border-t border-border">
-                                  <td className="px-3 py-2.5 font-medium">
-                                    <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
-                                    <StatusBadge status={p.status} news={p.news} />
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <TeamBadge teamShort={p.team_short} name={p.team_short} />
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <PositionBadge position={p.position} />
-                                  </td>
-                                  <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                                  <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                                  <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                                  <td className="px-3 py-2.5">
-                                    <button onClick={() => loadSwapOptions(p)} className="text-xs text-pl-purple hover:underline">
-                                      {swapTargetId === p.id ? "Hide" : "Swap"}
-                                    </button>
-                                  </td>
-                                  <td className="px-3 py-2.5">
-                                    <Button size="sm" variant="ghost" onClick={() => removePlayer(p.id)}>
-                                      Remove
-                                    </Button>
-                                  </td>
-                                </tr>
-                              );
-                              if (swapTargetId !== p.id) return [row];
-                              return [
-                                row,
-                                <tr key={`${p.id}-swap`} className="border-t border-border bg-surface-sunken">
-                                  <td colSpan={8} className="px-3 py-3">
-                                    {swapLoading ? (
-                                      <p className="text-xs text-text-muted">Loading...</p>
-                                    ) : swapOptions && swapOptions.length > 0 ? (
-                                      <div className="flex flex-wrap gap-2">
-                                        {swapOptions.map((a) => (
-                                          <button
-                                            key={a.id}
-                                            onClick={() => swapPlayer(p.id, a.id)}
-                                            className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
-                                          >
-                                            {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
-                                          </button>
-                                        ))}
-                                      </div>
-                                    ) : (
-                                      <p className="text-xs text-text-muted">No affordable alternatives found.</p>
-                                    )}
-                                  </td>
-                                </tr>,
-                              ];
-                            })
-                        )}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              </div>
+            {/* Feedback */}
+            <div>
+              <h2 className="mb-3 font-semibold text-text-primary">
+                Feedback
+              </h2>
+              {squadIdList.length === 0 ? (
+                <p className="text-sm text-text-muted">
+                  Feedback appears here as you draft your squad.
+                </p>
+              ) : issues.length === 0 ? (
+                <Alert kind="success">No issues found so far - looking balanced.</Alert>
+              ) : (
+                <ul className="mb-4 space-y-2">
+                  {issues.map((issue, i) => (
+                    <li key={i}>
+                      <Alert kind={issue.severity === "warning" ? "warning" : "info"}>{issue.message}</Alert>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-              {/* Feedback */}
-              <div>
-                <h2 className="mb-3 font-semibold text-text-primary">
-                  Feedback
-                </h2>
-                {squadIdList.length === 0 ? (
-                  <p className="text-sm text-text-muted">
-                    Feedback appears here as you draft your squad.
-                  </p>
-                ) : issues.length === 0 ? (
-                  <Alert kind="success">No issues found so far - looking balanced.</Alert>
-                ) : (
-                  <ul className="mb-4 space-y-2">
-                    {issues.map((issue, i) => (
-                      <li key={i}>
-                        <Alert kind={issue.severity === "warning" ? "warning" : "info"}>{issue.message}</Alert>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {recommendations.length > 0 && (
-                  <div className="space-y-4">
-                    {recommendations.map((rec, i) => (
-                      <div key={i}>
-                        <p className="mb-1 text-xs text-text-muted">{rec.issueMessage}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {rec.suggestions.map((p) => (
-                            <button
-                              key={p.id}
-                              onClick={() => addPlayer(p.id)}
-                              className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
-                            >
-                              + {p.web_name} ({p.team_short}, £{p.cost.toFixed(1)}m, {p.predicted_points.toFixed(1)} pts)
-                            </button>
-                          ))}
-                        </div>
+              {recommendations.length > 0 && (
+                <div className="space-y-4">
+                  {recommendations.map((rec, i) => (
+                    <div key={i}>
+                      <p className="mb-1 text-xs text-text-muted">{rec.issueMessage}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {rec.suggestions.map((p) => (
+                          <button
+                            key={p.id}
+                            onClick={() => addPlayer(p.id)}
+                            className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                          >
+                            + {p.web_name} ({p.team_short}, £{p.cost.toFixed(1)}m, {p.predicted_points.toFixed(1)} pts)
+                          </button>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </>
-        )}
-      </div>
-    </main>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
