@@ -220,6 +220,86 @@ body {
     linear-gradient(180deg, var(--pitch-green-1), var(--pitch-green-2));
 }
 
+/* --- Elevated xFPL "cockpit" surfaces (dark, glassy - flagship pages) --- */
+.bg-fpl-cockpit {
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(0, 255, 135, 0.14), transparent 60%),
+    radial-gradient(800px 520px at 96% 2%, rgba(4, 245, 255, 0.11), transparent 55%),
+    radial-gradient(1200px 800px at 50% 120%, rgba(233, 0, 82, 0.09), transparent 60%),
+    linear-gradient(160deg, #2c0030 0%, var(--pl-purple) 45%, var(--pl-purple-dark) 100%);
+  background-attachment: fixed;
+}
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.glow-green { box-shadow: 0 0 24px rgba(0, 255, 135, 0.45); }
+.glow-cyan { box-shadow: 0 0 24px rgba(4, 245, 255, 0.4); }
+/* Subtle dot grain; put on a `relative` element. */
+.fpl-grain::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+.card-lift { transition: transform var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) var(--ease-standard); }
+.card-lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+/* --- More motion primitives --- */
+@keyframes fplShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+.fpl-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.12) 37%, rgba(255, 255, 255, 0.06) 63%);
+  background-size: 800px 100%;
+  animation: fplShimmer 1.4s infinite linear;
+  border-radius: 8px;
+}
+@keyframes fplPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.animate-fpl-pop { animation: fplPop 0.4s var(--ease-standard); }
+@keyframes fplRing { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 135, 0.5); } 100% { box-shadow: 0 0 0 16px rgba(0, 255, 135, 0); } }
+.animate-fpl-ring { animation: fplRing 0.7s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fpl-fade, .animate-fpl-pulse, .animate-fpl-pop, .animate-fpl-ring, .fpl-skeleton {
+    animation: none !important;
+  }
+}
+
+/* --- Responsive tables ---
+   Add `table-cards` to a <table>: below md it collapses each row into a
+   stacked list item (label:value pairs from each cell's data-label), instead
+   of overflowing horizontally. Mark the lead cell `cell-primary` (it becomes
+   the row's heading, no label). Keeps all table markup + sort logic intact. */
+@media (max-width: 767px) {
+  table.table-cards thead { display: none; }
+  table.table-cards,
+  table.table-cards tbody,
+  table.table-cards tr,
+  table.table-cards td { display: block; width: 100%; }
+  table.table-cards tr { padding: 10px 0; border-top: 1px solid var(--border-default); }
+  table.table-cards tbody tr:first-child { border-top: 0; }
+  table.table-cards td {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 4px 14px; text-align: right; border: 0;
+  }
+  table.table-cards td::before {
+    content: attr(data-label);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--fg-muted); text-align: left; flex: none;
+  }
+  table.table-cards td.cell-primary {
+    justify-content: flex-start; padding-top: 2px; padding-bottom: 6px;
+    font-size: 15px; font-weight: 600;
+  }
+  table.table-cards td.cell-primary::before { content: none; }
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 8px; }

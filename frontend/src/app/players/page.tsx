@@ -119,7 +119,7 @@ export default function PlayersPage() {
       {players && (
         <Card padded={false} className="overflow-hidden">
           <div className="max-h-[70vh] overflow-auto">
-            <table className="w-full text-left text-sm">
+            <table className="table-cards w-full text-left text-sm">
               <thead className="sticky top-0 z-[1] bg-surface-sunken">
                 <tr>
                   <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Player</th>
@@ -138,21 +138,21 @@ export default function PlayersPage() {
               <tbody>
                 {rows.map((p) => (
                   <tr key={p.id} className="border-t border-border transition-colors hover:bg-surface-sunken">
-                    <td className="px-3.5 py-2.5 font-medium">
+                    <td className="cell-primary px-3.5 py-2.5 font-medium">
                       <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
                       <StatusBadge status={p.status} news={p.news} />
                     </td>
-                    <td className="px-3.5 py-2.5">
+                    <td data-label="Team" className="px-3.5 py-2.5">
                       <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                     </td>
-                    <td className="px-3.5 py-2.5">
+                    <td data-label="Pos" className="px-3.5 py-2.5">
                       <PositionBadge position={p.position} />
                     </td>
-                    <td className="px-3.5 py-2.5 font-mono font-semibold text-pl-purple">{p.predicted_points.toFixed(1)}</td>
-                    <td className="px-3.5 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                    <td className="px-3.5 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                    <td className="px-3.5 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
-                    <td className="px-3.5 py-2.5 font-mono">{p.season_stats?.total_points ?? "-"}</td>
+                    <td data-label="Predicted pts" className="px-3.5 py-2.5 font-mono font-semibold text-pl-purple">{p.predicted_points.toFixed(1)}</td>
+                    <td data-label="Cost" className="px-3.5 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
+                    <td data-label="Value" className="px-3.5 py-2.5 font-mono">{p.value.toFixed(2)}</td>
+                    <td data-label="Own%" className="px-3.5 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                    <td data-label="25/26 pts" className="px-3.5 py-2.5 font-mono">{p.season_stats?.total_points ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>
