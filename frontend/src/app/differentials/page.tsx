@@ -121,7 +121,7 @@ export default function DifferentialsPage() {
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Owned %</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next opp</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ep_next</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">EP next</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Form</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Exp. mins</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">xGI</th>

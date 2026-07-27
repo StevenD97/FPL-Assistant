@@ -103,14 +103,8 @@ export default function PriceWatchPage() {
     <PageContainer>
       <PageHeader
         title="Price watch"
-        subtitle={
-          <>
-            Players with the biggest net transfer activity today - a heuristic for who&apos;s at risk of a
-            £0.1m price change at tonight&apos;s update (~2:30am UK), not a guaranteed prediction. FPL has never
-            published its actual price-change algorithm; this ranks by net transfers in vs out today (FPL&apos;s
-            own public data), the same raw signal community trackers like LiveFPL use.
-          </>
-        }
+        subtitle="Players with the biggest net transfer activity today - a signal for who's at risk of a £0.1m
+          price change at tonight's update (~2:30am UK), not a guaranteed prediction."
       />
 
       {loading && <p className="text-text-muted">Loading...</p>}
@@ -120,16 +114,14 @@ export default function PriceWatchPage() {
         <>
           {data.risers.length === 0 && data.fallers.length === 0 && (
             <Alert kind="info">
-              No player has crossed {data.min_net_transfers_to_flag.toLocaleString()} net transfers today yet -
-              normal before a season&apos;s deadlines start driving transfer activity. Check back closer to a
-              gameweek deadline.
+              No player has crossed {data.min_net_transfers_to_flag.toLocaleString()} net transfers yet today.
+              Check back closer to a gameweek deadline.
             </Alert>
           )}
 
           {!data.has_history_trend && (data.risers.length > 0 || data.fallers.length > 0) && (
             <Alert kind="info">
-              Showing today&apos;s snapshot only - not enough ingest history yet to show a transfer rate (how
-              fast activity is building). That fills in automatically as more data accumulates.
+              Showing today&apos;s snapshot only - transfer rate will appear once more data has been collected.
             </Alert>
           )}
 

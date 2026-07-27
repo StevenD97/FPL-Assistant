@@ -5,6 +5,7 @@ import { NavIcon, type IconName } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
+import { getAllPosts } from "@/lib/blog";
 
 type PageInfo = {
   title: string;
@@ -72,9 +73,19 @@ const PAGES: PageInfo[] = [
     model: "Live league standings and history from the FPL API - no prediction involved.",
     use: "Track your rank and form against the rest of a mini-league across the season.",
   },
+  {
+    title: "Blog",
+    href: "/blog",
+    icon: "blog",
+    what: "Pre-season notes, transfer watch, and gameweek analysis.",
+    model: "Written using the app's own data plus independent research - not model output.",
+    use: "Stay on top of squad-relevant news between your own transfer decisions.",
+  },
 ];
 
 export default function LandingPage() {
+  const latestPost = getAllPosts()[0];
+
   return (
     <PageContainer>
       {/* Hero */}
@@ -144,6 +155,26 @@ export default function LandingPage() {
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
       </p>
+
+      {/* Latest blog post */}
+      {latestPost && (
+        <Link href={`/blog/${latestPost.slug}`} className="group block">
+          <Card className="transition-colors group-hover:border-pl-purple/40">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-pl-purple/8 text-pl-purple">
+                <NavIcon name="blog" className="h-[18px] w-[18px]" />
+              </span>
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
+                  Latest from the blog
+                </span>
+                <h2 className="text-md font-semibold text-pl-purple group-hover:underline">{latestPost.title}</h2>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-text-secondary">{latestPost.excerpt}</p>
+          </Card>
+        </Link>
+      )}
 
       {/* Explore grid */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">

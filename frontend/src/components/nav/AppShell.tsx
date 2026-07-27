@@ -22,6 +22,7 @@ const NAV: NavItem[] = [
   { href: "/schedule", label: "Schedule", icon: "schedule" },
   { href: "/chips", label: "Chips", icon: "chips" },
   { href: "/leagues", label: "Leagues", icon: "leagues" },
+  { href: "/blog", label: "Blog", icon: "blog" },
 ];
 
 // The four destinations that get their own mobile bottom-tab; the rest live

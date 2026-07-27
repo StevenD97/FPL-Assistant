@@ -278,8 +278,8 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
   return (
     <div className="mx-auto max-w-4xl">
       <p className="mb-6 text-sm text-text-secondary">
-        Enter your team ID - or connect your team once in the sidebar and it loads here automatically.
-        Squad analysis: <SeasonDataNote mode="archived" /> Suggested transfers: <SeasonDataNote mode="blended" />
+        Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
+        <SeasonDataNote mode="archived" />
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
         <TextField
@@ -354,10 +354,8 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
               Suggested transfers
             </h3>
             <p className="mb-3 text-xs text-text-muted">
-              Computed automatically from your squad and bank above - the
-              provably optimal set of transfers under FPL&apos;s real rules
-              (budget, formation, max 3 per club), weighing predicted points
-              against the -4 hit per transfer beyond your free ones.{" "}
+              The optimal transfers for your squad and bank, weighing predicted points against the -4 hit per
+              transfer beyond your free ones.{" "}
               {onSwitchToOptimize && (
                 <>
                   See the{" "}
@@ -446,10 +444,9 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
             <div className="border-b border-border p-4">
               <h3 className="font-semibold text-text-primary">Transfer planner</h3>
               <p className="mt-1 text-xs text-text-muted">
-                Predicted points per gameweek for your current squad, with weeks flagged where a player looks
-                less desirable - a tough fixture, a blank gameweek, rotation risk, or a dip against their own
-                average. Hover a flagged cell for why. Drag a replacement chip (below, after tapping
-                &quot;Suggest&quot; on a player) onto a row to preview swapping them in.
+                Predicted points per gameweek for your squad, with risky weeks flagged - tough fixtures, blanks,
+                or rotation risk. Hover a flagged cell for why, or drag a replacement chip onto a row to preview
+                a swap.
               </p>
             </div>
             {plannerLoading && <p className="p-4 text-sm text-text-muted">Building planner...</p>}
@@ -557,7 +554,7 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Role</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next opp</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ep_next</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">EP next</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">xGI</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ICT</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Def/90</th>
@@ -646,7 +643,7 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
               {data.captaincy_options.map((c, i) => (
                 <li key={i}>
                   {c.web_name} ({c.team_short}, {c.pos}) - score{" "}
-                  <span className="font-mono">{c.recommendation_score.toFixed(3)}</span>, ep_next{" "}
+                  <span className="font-mono">{c.recommendation_score.toFixed(3)}</span>, EP next{" "}
                   <span className="font-mono">{c.ep_next}</span>
                 </li>
               ))}

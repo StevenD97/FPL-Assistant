@@ -90,9 +90,8 @@ export default function OutlookPage() {
           Multi-gameweek outlook
         </h1>
         <p className="mb-6 max-w-2xl text-sm text-text-secondary">
-          Predicted points summed over your chosen run of live 2026/27 gameweeks - tracks reality better than a
-          single-week guess. <SeasonDataNote mode="blended" /> Leave &quot;As of&quot;/&quot;Starting GW&quot; blank
-          to use the current gameweek automatically.
+          Predicted points summed over a chosen run of gameweeks, ranked across every player.{" "}
+          <SeasonDataNote mode="blended" />
         </p>
         <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
           <TextField
@@ -156,8 +155,8 @@ export default function OutlookPage() {
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Predicted pts</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">GWs</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Fixtures</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Ticker</th>
                 </tr>
               </thead>
               <tbody>

@@ -182,8 +182,8 @@ function BestSquadPanel() {
   return (
     <div>
       <p className="mb-6 max-w-2xl text-sm text-text-secondary">
-        Best 15-man squad under budget, from scratch, provably optimal (not just ranked) - ideal for
-        Wildcard/Free Hit planning. Drafts from the live 2026/27 pool. <SeasonDataNote mode="blended" />
+        The optimal 15-man squad under budget, built from scratch - ideal for Wildcard or Free Hit planning.{" "}
+        <SeasonDataNote mode="blended" />
       </p>
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <TextField
@@ -279,10 +279,9 @@ function TransfersPanel() {
     <div>
       <p className="mb-6 max-w-2xl text-sm text-text-secondary">
         Your real squad and bank, optimally transferred - weighing points gained against the -4 hit per transfer
-        beyond your free ones, and never spending more than what your squad&apos;s sale value plus bank actually
-        covers. Zero transfers is a valid answer. For a quicker, zero-input version of this, see the automatic
-        &quot;Suggested transfers&quot; under Load my team - this panel adds full control over the prediction
-        window and gameweek.
+        beyond your free ones. For a quicker version with no input needed, see the automatic &quot;Suggested
+        transfers&quot; under Load my team; this panel adds full control over the prediction window and
+        gameweek.
       </p>
       <Alert kind="warning">
         No team ID has a fetchable squad until 2026/27 GW1 locks (2026-08-21) - FPL resets pick history each
@@ -422,8 +421,8 @@ export function OptimizePanel() {
   return (
     <div className="mx-auto max-w-5xl">
       <p className="mb-6 text-sm text-text-secondary">
-        The provably optimal squad or transfers, solved exactly (via integer linear programming) under FPL&apos;s
-        real rules - budget, formation, max 3 per club - rather than just ranked.
+        The optimal squad or transfers under FPL&apos;s real rules - budget, formation, max 3 per club - solved
+        exactly, not just ranked.
       </p>
 
       <div className="mb-6 flex gap-2 border-b border-border">
