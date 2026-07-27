@@ -482,9 +482,24 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     if (!players) return [];
     let pool = players;
     if (positionFilter !== "All") pool = pool.filter((p) => p.position === positionFilter);
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      pool = pool.filter((p) => p.web_name.toLowerCase().includes(q) || p.team_short.toLowerCase().includes(q));
+    const q = search.trim().toLowerCase();
+    if (q) {
+      // Fuzzy across name / team / position / price. Space-separated tokens
+      // must all match, so "liv mid", "haaland", or "£12" all work; a bare
+      // number or £-prefixed token is treated as a max price.
+      const tokens = q.split(/\s+/);
+      pool = pool.filter((p) =>
+        tokens.every((tok) => {
+          const priceCap =
+            tok.startsWith("£") || /^\d+(\.\d+)?$/.test(tok) ? parseFloat(tok.replace("£", "")) : NaN;
+          if (!Number.isNaN(priceCap)) return p.cost <= priceCap + 0.05;
+          return (
+            p.web_name.toLowerCase().includes(tok) ||
+            p.team_short.toLowerCase().includes(tok) ||
+            p.position.toLowerCase().includes(tok)
+          );
+        }),
+      );
     }
     return pool.slice(0, MAX_BROWSER_ROWS);
   }, [players, positionFilter, search]);
@@ -591,7 +606,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                 <TextField
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search name or team..."
+                  placeholder="Search name, team, position, price…  try “liv mid” or “£12”"
                   wrapperClassName="flex-1"
                 />
                 <Select
