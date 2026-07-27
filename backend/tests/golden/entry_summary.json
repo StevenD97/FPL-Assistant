@@ -1,0 +1,13 @@
+{
+  "body": {
+    "bank": 0.6,
+    "gameweek": 10,
+    "id": 123,
+    "overall_points": 512,
+    "overall_rank": 100000,
+    "player_name": "Test Manager",
+    "team_name": "Test FC",
+    "team_value": 100.4
+  },
+  "status": 200
+}

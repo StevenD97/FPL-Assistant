@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fpl-assistant"
+version = "0.1.0"
+description = "FPL Assistant backend — FastAPI service + FPL data/modelling library"
+requires-python = ">=3.12"
+# Runtime deps stay pinned in requirements.txt (the source of truth used by
+# Render's buildCommand and the CI ingest job); read them from there so there
+# is exactly one list to maintain.
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+# The importable package is `fpl` (built up over the refactor). Runtime imports
+# also resolve via the working directory (backend/, which is Render's rootDir
+# and CI's working-directory), so `pip install -e .` is optional for deploy.
+[tool.setuptools.packages.find]
+include = ["fpl*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Run from backend/; put the backend root on sys.path so `import fpl...` (and,
+# during the migration, the legacy top-level modules) resolve without install.
+pythonpath = ["."]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]

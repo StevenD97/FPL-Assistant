@@ -14,10 +14,10 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Point Alembic at our models + DB URL, sourced from db.config settings so the
+# Point Alembic at our models + DB URL, sourced from fpl.config settings so the
 # same DATABASE_URL env var drives both the app and migrations.
-from db.config import get_settings
-from db.models import Base
+from fpl.config import get_settings
+from fpl.data.db.models import Base
 
 config.set_main_option("sqlalchemy.url", get_settings().database_url)
 target_metadata = Base.metadata

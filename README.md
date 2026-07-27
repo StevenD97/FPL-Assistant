@@ -84,12 +84,13 @@ conventions rather than dropped in as-is. No dark mode.
   what need updating - not a quick swap, since team_model.py's learned
   attack/defence ratios and involvement shares are trained on whichever
   archive `season` points at.
-- `backend/data/bootstrap_static_2025_26_final.json` and
-  `fixtures_2025_26_final.json` are backed-up snapshots of last season's
+- `data/bootstrap_static_2025_26_final.json` and
+  `fixtures_2025_26_final.json` (in the repo-root `data/` folder, a sibling of
+  `backend/` and `frontend/` — see `data/README.md`) are backed-up snapshots of last season's
   final data (useful for a future "draft helper" feature, since new-season
   stats reset to zero pre-season and these numbers become irreplaceable
   once FPL resets its API for the new season).
-- `backend/data/gw_history_2025_26.csv` is 2025/26's gameweek-by-gameweek
+- `data/gw_history_2025_26.csv` is 2025/26's gameweek-by-gameweek
   player data (one row per player per GW - points, minutes, xG/xA, ICT,
   bps, etc.), pulled via `fetch_gw_history.py` from the
   [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League)
@@ -674,19 +675,19 @@ cd backend && venv/bin/alembic upgrade head
 
 # 3. Backfill: archive (2025/26) snapshots + gw-history CSV, and the live
 #    2026/27 roster - so the DB starts with everything the files held
-venv/bin/python -m ingest backfill
+venv/bin/python -m fpl.data.ingest backfill
 
 # Thereafter, refresh from FPL (snapshot bootstrap+fixtures, ingest any
 # newly-finished gameweeks). Idempotent - safe to run repeatedly:
-venv/bin/python -m ingest run
-venv/bin/python -m ingest status   # row counts + recent ingest runs
+venv/bin/python -m fpl.data.ingest run
+venv/bin/python -m fpl.data.ingest status   # row counts + recent ingest runs
 ```
 
-`.github/workflows/ingest-data.yml` runs `ingest run` on a schedule against the
-production DB (needs a `DATABASE_URL` repo secret) - that's the "update after
-each game is played" trigger. `backend/db/` holds the models/session/config,
-`backend/ingest/` the pipeline + backfill, and `backend/alembic/` the
-migrations. `raw_snapshots` stores bootstrap/fixtures verbatim (so
+`.github/workflows/ingest-data.yml` runs `fpl.data.ingest run` on a schedule
+against the production DB (needs a `DATABASE_URL` repo secret) - that's the
+"update after each game is played" trigger. `backend/fpl/data/db/` holds the
+models/session, `backend/fpl/data/ingest/` the pipeline + backfill,
+`backend/fpl/config.py` the settings, and `backend/alembic/` the migrations. `raw_snapshots` stores bootstrap/fixtures verbatim (so
 `load_bootstrap`/`load_fixtures` reconstruct byte-identical structures);
 `player_gw_stats` is the normalized, append-only per-gameweek history. The
 walk-forward backtest run against the DB reproduces the file-based baseline
@@ -696,7 +697,7 @@ confirming the repoint is faithful.
 Run the API:
 
 ```bash
-venv\Scripts\python.exe -m uvicorn app.main:app --reload
+venv/bin/python -m uvicorn fpl.api.main:app --reload
 ```
 
 API docs available at http://127.0.0.1:8000/docs

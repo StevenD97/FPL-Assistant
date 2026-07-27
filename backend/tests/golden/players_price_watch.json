@@ -1,0 +1,10 @@
+{
+  "body": {
+    "fallers": [],
+    "has_history_trend": false,
+    "history_snapshot_count": 0,
+    "min_net_transfers_to_flag": 500,
+    "risers": []
+  },
+  "status": 200
+}

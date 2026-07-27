@@ -64,4 +64,4 @@ jobs:
         if: steps.check_db.outputs.has_db == 'true'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python -m ingest run
+        run: python -m fpl.data.ingest run

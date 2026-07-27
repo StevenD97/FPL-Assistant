@@ -1,0 +1,102 @@
+{
+  "body": {
+    "average_predicted_points": 3.71,
+    "id": 1,
+    "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+    "position": "GKP",
+    "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+    "team_short": "ARS",
+    "trajectory": [
+      {
+        "appearance_points": 2.0,
+        "event": 10,
+        "fixture_count": 1,
+        "flags": [],
+        "opponents": [
+          {
+            "difficulty": 2,
+            "is_home": false,
+            "team": "BUR"
+          }
+        ],
+        "predicted_points": 4.2
+      },
+      {
+        "appearance_points": 2.0,
+        "event": 11,
+        "fixture_count": 1,
+        "flags": [],
+        "opponents": [
+          {
+            "difficulty": 3,
+            "is_home": false,
+            "team": "SUN"
+          }
+        ],
+        "predicted_points": 3.23
+      },
+      {
+        "appearance_points": 2.0,
+        "event": 12,
+        "fixture_count": 1,
+        "flags": [],
+        "opponents": [
+          {
+            "difficulty": 3,
+            "is_home": true,
+            "team": "TOT"
+          }
+        ],
+        "predicted_points": 3.61
+      },
+      {
+        "appearance_points": 2.0,
+        "event": 13,
+        "fixture_count": 1,
+        "flags": [
+          "Tough fixture vs CHE (FDR 4)"
+        ],
+        "opponents": [
+          {
+            "difficulty": 4,
+            "is_home": false,
+            "team": "CHE"
+          }
+        ],
+        "predicted_points": 3.5
+      },
+      {
+        "appearance_points": 2.0,
+        "event": 14,
+        "fixture_count": 1,
+        "flags": [],
+        "opponents": [
+          {
+            "difficulty": 3,
+            "is_home": true,
+            "team": "BRE"
+          }
+        ],
+        "predicted_points": 4.44
+      },
+      {
+        "appearance_points": 2.0,
+        "event": 15,
+        "fixture_count": 1,
+        "flags": [
+          "Tough fixture vs AVL (FDR 4)"
+        ],
+        "opponents": [
+          {
+            "difficulty": 4,
+            "is_home": false,
+            "team": "AVL"
+          }
+        ],
+        "predicted_points": 3.31
+      }
+    ],
+    "web_name": "Raya"
+  },
+  "status": 200
+}

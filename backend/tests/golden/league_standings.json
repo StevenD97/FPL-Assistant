@@ -1,0 +1,59 @@
+{
+  "body": {
+    "league_name": "My Mini League",
+    "standings": [
+      {
+        "entry_id": 111,
+        "entry_name": "AFC",
+        "event_total": 62,
+        "last_rank": 2,
+        "player_name": "Alice A",
+        "rank": 1,
+        "total": 640
+      },
+      {
+        "entry_id": 222,
+        "entry_name": "BFC",
+        "event_total": 47,
+        "last_rank": 1,
+        "player_name": "Bob B",
+        "rank": 2,
+        "total": 618
+      }
+    ],
+    "trend": [
+      {
+        "entry_id": 111,
+        "entry_name": "AFC",
+        "player_name": "Alice A",
+        "series": [
+          {
+            "event": 1,
+            "total_points": 55
+          },
+          {
+            "event": 2,
+            "total_points": 118
+          }
+        ]
+      },
+      {
+        "entry_id": 222,
+        "entry_name": "BFC",
+        "player_name": "Bob B",
+        "series": [
+          {
+            "event": 1,
+            "total_points": 55
+          },
+          {
+            "event": 2,
+            "total_points": 118
+          }
+        ]
+      }
+    ],
+    "your_rank": null
+  },
+  "status": 200
+}
