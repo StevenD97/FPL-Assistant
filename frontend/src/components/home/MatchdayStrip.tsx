@@ -32,7 +32,7 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Fi
         <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-purple/60">
           Gameweek {event} · matchday
         </span>
-        <Link href="/schedule" className="text-xs font-semibold text-pl-purple hover:underline">
+        <Link href="/matches" className="text-xs font-semibold text-pl-purple hover:underline">
           Full schedule →
         </Link>
       </div>

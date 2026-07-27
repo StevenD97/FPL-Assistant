@@ -14,20 +14,39 @@ import { useTeam } from "@/components/team/TeamProvider";
 import { formatRank, initials } from "@/lib/team";
 
 type NavItem = { href: string; label: string; icon: IconName; short?: string };
+type NavSection = { label?: string; items: NavItem[] };
 
-const NAV: NavItem[] = [
-  { href: "/", label: "Home", icon: "home" },
-  { href: "/squad", label: "My Squad", icon: "squad", short: "Squad" },
-  { href: "/players", label: "Players", icon: "players" },
-  { href: "/outlook", label: "Outlook", icon: "outlook" },
-  { href: "/differentials", label: "Differentials", icon: "differentials" },
-  { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
-  { href: "/fixtures", label: "Fixtures", icon: "fixtures" },
-  { href: "/schedule", label: "Schedule", icon: "schedule" },
-  { href: "/chips", label: "Chips", icon: "chips" },
-  { href: "/leagues", label: "Leagues", icon: "leagues" },
-  { href: "/blog", label: "Blog", icon: "blog" },
+// Grouped by depth/purpose so the sidebar reads as organised rather than a
+// flat list of peers. Fixtures + Schedule are merged into one Matches page.
+const NAV_SECTIONS: NavSection[] = [
+  { items: [{ href: "/", label: "Home", icon: "home" }] },
+  {
+    label: "Your game",
+    items: [
+      { href: "/squad", label: "My Squad", icon: "squad", short: "Squad" },
+      { href: "/leagues", label: "Leagues", icon: "leagues" },
+    ],
+  },
+  {
+    label: "Research",
+    items: [
+      { href: "/players", label: "Players", icon: "players" },
+      { href: "/outlook", label: "Outlook", icon: "outlook" },
+      { href: "/differentials", label: "Differentials", icon: "differentials" },
+      { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
+      { href: "/chips", label: "Chips", icon: "chips" },
+    ],
+  },
+  {
+    label: "Matchday & more",
+    items: [
+      { href: "/matches", label: "Matches", icon: "fixtures" },
+      { href: "/blog", label: "Blog", icon: "blog" },
+    ],
+  },
 ];
+
+const NAV: NavItem[] = NAV_SECTIONS.flatMap((s) => s.items);
 
 // Destinations with their own mobile bottom-tab; the rest live behind the
 // "More" tab, which opens a bottom sheet. The tab bar is the single mobile nav
@@ -43,9 +62,9 @@ function LogoMark({ size = 30 }: { size?: number }) {
   return (
     <span
       className="bg-fpl-logo flex shrink-0 items-center justify-center rounded-[9px] font-bold text-pl-purple"
-      style={{ width: size, height: size, fontSize: size * 0.4 }}
+      style={{ width: size, height: size, fontSize: size * 0.5 }}
     >
-      FA
+      x
     </span>
   );
 }
@@ -117,7 +136,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="bg-fpl-sidebar sticky top-0 hidden h-screen w-[236px] shrink-0 flex-col gap-6 border-r border-white/10 px-3.5 py-5 lg:flex">
         <Link href="/" className="flex items-center gap-2.5 px-2">
           <LogoMark />
-          <span className="text-base font-bold text-white">FPL Assistant</span>
+          <span className="text-base font-bold text-white">xFPL</span>
         </Link>
 
         <button
@@ -131,32 +150,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </button>
 
         <LayoutGroup id="desktop-nav">
-          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
-            {NAV.map((item) => {
-              const active = isActive(pathname, item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`relative flex items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 text-sm transition-colors ${
-                    active
-                      ? "font-semibold text-pl-purple"
-                      : "font-medium text-[#d9c4de] hover:bg-white/5 hover:text-white"
-                  }`}
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="desktop-nav-active"
-                      className="absolute inset-0 rounded-[9px] bg-pl-green"
-                      transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                    />
-                  )}
-                  <NavIcon name={item.icon} className="relative z-[1] h-[18px] w-[18px]" />
-                  <span className="relative z-[1]">{item.label}</span>
-                </Link>
-              );
-            })}
+          <nav className="flex flex-1 flex-col gap-3 overflow-y-auto">
+            {NAV_SECTIONS.map((section, si) => (
+              <div key={si} className="flex flex-col gap-0.5">
+                {section.label && (
+                  <span className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#9a86a4]">
+                    {section.label}
+                  </span>
+                )}
+                {section.items.map((item) => {
+                  const active = isActive(pathname, item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={`relative flex items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 text-sm transition-colors ${
+                        active
+                          ? "font-semibold text-pl-purple"
+                          : "font-medium text-[#d9c4de] hover:bg-white/5 hover:text-white"
+                      }`}
+                    >
+                      {active && (
+                        <motion.span
+                          layoutId="desktop-nav-active"
+                          className="absolute inset-0 rounded-[9px] bg-pl-green"
+                          transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                        />
+                      )}
+                      <NavIcon name={item.icon} className="relative z-[1] h-[18px] w-[18px]" />
+                      <span className="relative z-[1]">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
         </LayoutGroup>
 
@@ -178,9 +206,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <LogoMark size={30} />
             <span className="flex flex-col leading-tight">
               <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-pl-green">
-                {current?.label ?? "FPL Assistant"}
+                {current?.label ?? "xFPL"}
               </span>
-              <span className="text-sm font-semibold text-white">FPL Assistant</span>
+              <span className="text-sm font-semibold text-white">xFPL</span>
             </span>
           </Link>
           <span className="flex items-center gap-1.5 rounded-full border border-pl-green/40 bg-pl-green/15 px-2.5 py-1.5">

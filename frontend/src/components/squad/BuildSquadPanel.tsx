@@ -510,11 +510,11 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
         Draft within budget, get live diagnostics, and swap or click into any player.{" "}
         {onSwitchToOptimize && (
           <>
-            For an automated, provably-optimal build instead, see the{" "}
+            Or let the solver do it -{" "}
             <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
-              Optimizer
+              Auto-optimize
             </button>{" "}
-            tab.
+            builds a provably-optimal squad for your budget.
           </>
         )}
       </p>

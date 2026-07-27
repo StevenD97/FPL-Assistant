@@ -4,7 +4,7 @@ import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 import { BlogCover } from "@/components/blog/BlogCover";
 import { getAllPosts, formatBlogDate } from "@/lib/blog";
 
-export const metadata = { title: "Blog - FPL Assistant" };
+export const metadata = { title: "Blog - xFPL" };
 
 export default function BlogIndexPage() {
   const posts = getAllPosts();
