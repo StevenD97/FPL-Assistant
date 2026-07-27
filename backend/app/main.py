@@ -203,6 +203,20 @@ def player_scores(
 ):
     ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
     df = compute_player_scores(ref_date, next_event)
+    # recommendation_score stays pinned to the archived season (see
+    # compute_player_scores' docstring), but ownership is a live, currently-
+    # changing number - showing last season's final selected_by_percent here
+    # would be stale and, worse, wrong for what "differential" means right
+    # now. Overlay live selected_by_percent (matched by the stable `code`
+    # field, same as map_archived_ids_to_live) before filtering/ranking, so
+    # both the max_ownership cutoff and the displayed % reflect this
+    # season's actual picks-so-far. Falls back to the archived value for a
+    # player with no live match (retired, or left the Premier League) -
+    # better than blanking to an incorrect 0%.
+    live_ownership_by_code = {
+        p["code"]: float(p["selected_by_percent"]) for p in load_bootstrap(LIVE_BOOTSTRAP_FILE)["elements"]
+    }
+    df["selected_by_percent"] = df["code"].map(live_ownership_by_code).fillna(df["selected_by_percent"])
     if max_ownership is not None:
         df = top_differentials(df, max_ownership=max_ownership, top_n=limit)
     else:

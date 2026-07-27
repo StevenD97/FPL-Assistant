@@ -538,6 +538,17 @@ conventions rather than dropped in as-is. No dark mode.
   season on disk, not a time series of them, so DB-unreachable and
   DB-has-no-history-yet both just mean "no trend data yet"
   (`has_history_trend: false`) rather than an error.
+- **Differentials' ownership is live, not archived.** `compute_player_scores`
+  (recommendation_score) is deliberately pinned to the archived 2025/26
+  season (see its docstring), which by default carries that season's
+  final `selected_by_percent` too - fine for the score itself, wrong for
+  "who's actually a differential right now." `/api/players/scores`
+  overlays live `selected_by_percent` (matched by the stable `code`
+  field) before filtering/ranking, so both the `max_ownership` cutoff
+  and the displayed % reflect this season's actual picks-so-far, not
+  GW38 of last season. Confirmed via each bootstrap file's own
+  `total_players`: ~525k on the live file (climbing pre-season, GW1 not
+  yet played) vs ~13.1m on the archived one (2025/26's final count).
 - **Blog** (`/blog`, `/blog/[slug]`) is a Markdown-file-backed content
   section, not a DB table or CMS - posts are plain `.md` files with
   frontmatter (`title`/`date`/`excerpt`/`tags`) under
