@@ -44,13 +44,13 @@ export default function SquadPage() {
           transfers.
         </p>
 
-        <div className="mb-6 inline-flex flex-wrap rounded-lg border border-border bg-white p-1 shadow-sm">
+        <div className="mb-6 flex overflow-x-auto rounded-lg border border-border bg-white p-1 shadow-sm">
           {TABS.map((tab) => (
             <button
               key={tab.mode}
               type="button"
               onClick={() => chooseMode(tab.mode)}
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`flex-1 whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
                 mode === tab.mode ? "bg-pl-purple text-white" : "text-text-secondary hover:bg-surface-sunken"
               }`}
             >

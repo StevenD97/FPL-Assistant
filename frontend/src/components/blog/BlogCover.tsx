@@ -10,7 +10,9 @@ function playerPhotoUrl(code: number): string {
 }
 
 function teamBadgeUrl(code: number): string {
-  return `${PL_RESOURCES_BASE}/badges/250/t${code}.png`;
+  // 70px is a size the PL CDN actually serves (250 404s); matches the badges
+  // used across the rest of the app.
+  return `${PL_RESOURCES_BASE}/badges/70/t${code}.png`;
 }
 
 function hideOnError(e: React.SyntheticEvent<HTMLImageElement>) {
