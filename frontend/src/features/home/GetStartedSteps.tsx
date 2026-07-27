@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Card } from "@/components/ui/Card";
-import { NavIcon, type IconName } from "@/components/nav/icons";
-import { useTeam } from "@/components/team/TeamProvider";
+import { Card } from "@/shared/ui/Card";
+import { NavIcon, type IconName } from "@/shared/layout/icons";
+import { useTeam } from "@/shared/team/TeamProvider";
 
 // The landing page's guided path: connect/build -> get recommendations ->
 // track the gameweek. Step 1 reads real connection state from TeamProvider

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NEXT_DEADLINE_ISO, formatCountdown } from "@/lib/deadline";
+import { NEXT_DEADLINE_ISO, formatCountdown } from "@/shared/lib/deadline";
 
 export function Countdown({ target = NEXT_DEADLINE_ISO, className = "" }: { target?: string; className?: string }) {
   // Render a stable placeholder on the server; fill in the live value after

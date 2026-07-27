@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { API_URL } from "@/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { API_URL } from "@/shared/lib/api";
 
 
 type Fixture = {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
-import { Pill } from "@/components/ui/Pill";
-import { ScheduleView } from "@/components/matches/ScheduleView";
-import { DifficultyView } from "@/components/matches/DifficultyView";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
+import { Pill } from "@/shared/ui/Pill";
+import { ScheduleView } from "@/features/matches/ScheduleView";
+import { DifficultyView } from "@/features/matches/DifficultyView";
 
 type View = "schedule" | "difficulty";
 

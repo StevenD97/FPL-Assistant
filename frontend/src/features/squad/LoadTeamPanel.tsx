@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { useTeam } from "@/components/team/TeamProvider";
-import { Alert } from "@/components/ui/Alert";
-import { Button } from "@/components/ui/Button";
-import { Card, StatTile } from "@/components/ui/Card";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { TextField } from "@/components/ui/TextField";
-import { FdrChip } from "@/components/ui/FdrChip";
-import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { API_URL, fetchJson } from "@/lib/api";
+import { useTeam } from "@/shared/team/TeamProvider";
+import { Alert } from "@/shared/ui/Alert";
+import { Button } from "@/shared/ui/Button";
+import { Card, StatTile } from "@/shared/ui/Card";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { TextField } from "@/shared/ui/TextField";
+import { FdrChip } from "@/shared/ui/FdrChip";
+import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { API_URL, fetchJson } from "@/shared/lib/api";
 
 
 type SquadPlayer = {

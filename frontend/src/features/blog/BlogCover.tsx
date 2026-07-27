@@ -1,7 +1,7 @@
 "use client";
 
-import { NavIcon } from "@/components/nav/icons";
-import type { BlogCover as BlogCoverData } from "@/lib/blog";
+import { NavIcon } from "@/shared/layout/icons";
+import type { BlogCover as BlogCoverData } from "@/shared/lib/blog";
 
 const PL_RESOURCES_BASE = "https://resources.premierleague.com/premierleague";
 

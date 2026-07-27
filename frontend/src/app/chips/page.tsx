@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { TextField } from "@/components/ui/TextField";
-import { API_URL, fetchJson } from "@/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { TextField } from "@/shared/ui/TextField";
+import { API_URL, fetchJson } from "@/shared/lib/api";
 
 
 type ChipRow = {

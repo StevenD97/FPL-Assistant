@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { API_URL, fetchJson } from "@/lib/api";
-import { Button } from "@/components/ui/Button";
-import { TextField } from "@/components/ui/TextField";
+import { API_URL, fetchJson } from "@/shared/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { TextField } from "@/shared/ui/TextField";
 import {
   type TeamEntry,
   clearStoredTeamId,
@@ -12,7 +12,7 @@ import {
   parseTeamId,
   storeTeamId,
   storeTrackedTeamIds,
-} from "@/lib/team";
+} from "@/shared/lib/team";
 
 type Status = "idle" | "loading" | "ready" | "error";
 

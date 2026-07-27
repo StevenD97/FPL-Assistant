@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { initials } from "@/lib/team";
+import { initials } from "@/shared/lib/team";
 
 // Official PL photo CDN doesn't have a shot for every player (see
 // player_photo_url's docstring in analysis.py - roughly a third of

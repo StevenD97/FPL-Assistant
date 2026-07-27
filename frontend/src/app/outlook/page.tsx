@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { Button } from "@/components/ui/Button";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { Select } from "@/components/ui/Select";
-import { TextField } from "@/components/ui/TextField";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { API_URL } from "@/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { Select } from "@/shared/ui/Select";
+import { TextField } from "@/shared/ui/TextField";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { API_URL } from "@/shared/lib/api";
 
 type OutlookFixture = { opponent: string; is_home: boolean; opponent_badge: string };
 

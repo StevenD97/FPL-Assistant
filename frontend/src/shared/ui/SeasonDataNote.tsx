@@ -1,6 +1,6 @@
 "use client";
 
-import { useSeasonStatus } from "@/lib/useSeasonStatus";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 
 type Mode =
   // predict_multi_gw_points/breakdown-backed pages (Outlook, Optimizer,

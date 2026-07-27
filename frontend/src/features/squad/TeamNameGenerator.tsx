@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { TextField } from "@/components/ui/TextField";
-import { generateTeamNames } from "@/lib/teamNames";
+import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
+import { TextField } from "@/shared/ui/TextField";
+import { generateTeamNames } from "@/shared/lib/teamNames";
 
 export function TeamNameGenerator() {
   const [input, setInput] = useState("");

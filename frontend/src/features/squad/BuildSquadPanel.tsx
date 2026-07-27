@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Alert } from "@/components/ui/Alert";
-import { Button } from "@/components/ui/Button";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { Select } from "@/components/ui/Select";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { TextField } from "@/components/ui/TextField";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { PitchFormation } from "@/components/pitch/PitchFormation";
-import { TeamNameGenerator } from "@/components/squad/TeamNameGenerator";
-import { API_URL } from "@/lib/api";
+import { Alert } from "@/shared/ui/Alert";
+import { Button } from "@/shared/ui/Button";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { Select } from "@/shared/ui/Select";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { TextField } from "@/shared/ui/TextField";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { PitchFormation } from "@/shared/pitch/PitchFormation";
+import { TeamNameGenerator } from "@/features/squad/TeamNameGenerator";
+import { API_URL } from "@/shared/lib/api";
 
 
 type Position = "GKP" | "DEF" | "MID" | "FWD";

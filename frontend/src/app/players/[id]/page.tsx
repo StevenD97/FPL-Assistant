@@ -1,17 +1,17 @@
 "use client";
 
 import { use, useEffect, useMemo, useState } from "react";
-import { CompareArrow } from "@/components/ui/CompareArrow";
-import { PlayerCard } from "@/components/player/PlayerCard";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { StatTile } from "@/components/ui/Card";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { TextField } from "@/components/ui/TextField";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { LineChart } from "@/components/charts/LineChart";
-import { seriesColor } from "@/lib/palette";
-import { linearTrend } from "@/lib/trend";
-import { API_URL } from "@/lib/api";
+import { CompareArrow } from "@/shared/ui/CompareArrow";
+import { PlayerCard } from "@/features/players/PlayerCard";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { StatTile } from "@/shared/ui/Card";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { TextField } from "@/shared/ui/TextField";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { LineChart } from "@/shared/charts/LineChart";
+import { seriesColor } from "@/shared/lib/palette";
+import { linearTrend } from "@/shared/lib/trend";
+import { API_URL } from "@/shared/lib/api";
 
 const MAX_COMPARE = 4;
 

@@ -1,4 +1,4 @@
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 
 const POS_COLOR: Record<string, string> = {
   GKP: "#ffdd3c",

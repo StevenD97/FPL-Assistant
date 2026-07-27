@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { teamColorVar } from "@/lib/teamColors";
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
+import { teamColorVar } from "@/shared/lib/teamColors";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 
 type Position = "GKP" | "DEF" | "MID" | "FWD";
 

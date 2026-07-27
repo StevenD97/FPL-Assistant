@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { FdrChip } from "@/components/ui/FdrChip";
-import { Card } from "@/components/ui/Card";
-import { API_URL } from "@/lib/api";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { FdrChip } from "@/shared/ui/FdrChip";
+import { Card } from "@/shared/ui/Card";
+import { API_URL } from "@/shared/lib/api";
 
 
 type Fixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };

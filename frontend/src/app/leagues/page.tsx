@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { useTeam } from "@/components/team/TeamProvider";
-import { Button } from "@/components/ui/Button";
-import { TextField } from "@/components/ui/TextField";
-import { LineChart } from "@/components/charts/LineChart";
-import { seriesColor } from "@/lib/palette";
+import { useTeam } from "@/shared/team/TeamProvider";
+import { Button } from "@/shared/ui/Button";
+import { TextField } from "@/shared/ui/TextField";
+import { LineChart } from "@/shared/charts/LineChart";
+import { seriesColor } from "@/shared/lib/palette";
 import {
   formatRank,
   loadTrackedLeagueIds,
   parseLeagueId,
   parseTeamId,
   storeTrackedLeagueIds,
-} from "@/lib/team";
-import { API_URL } from "@/lib/api";
+} from "@/shared/lib/team";
+import { API_URL } from "@/shared/lib/api";
 
 
 type League = { id: number; name: string; entry_rank: number };

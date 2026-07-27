@@ -8,10 +8,10 @@ import { NavIcon, type IconName } from "./icons";
 import { PageTransition } from "./PageTransition";
 import { CommandPalette, OPEN_PALETTE_EVENT } from "./CommandPalette";
 import { Footer } from "./Footer";
-import { Countdown } from "@/components/ui/Countdown";
-import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
-import { useTeam } from "@/components/team/TeamProvider";
-import { formatRank, initials } from "@/lib/team";
+import { Countdown } from "@/shared/ui/Countdown";
+import { NEXT_DEADLINE_LABEL } from "@/shared/lib/deadline";
+import { useTeam } from "@/shared/team/TeamProvider";
+import { formatRank, initials } from "@/shared/lib/team";
 
 type NavItem = { href: string; label: string; icon: IconName; short?: string };
 type NavSection = { label?: string; items: NavItem[] };

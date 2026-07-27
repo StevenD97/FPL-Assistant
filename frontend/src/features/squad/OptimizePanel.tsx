@@ -1,18 +1,18 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Button } from "@/components/ui/Button";
-import { CaptainBadge } from "@/components/ui/CaptainBadge";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { TextField } from "@/components/ui/TextField";
-import { Alert } from "@/components/ui/Alert";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
-import { API_URL, fetchJson } from "@/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { CaptainBadge } from "@/shared/ui/CaptainBadge";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { TextField } from "@/shared/ui/TextField";
+import { Alert } from "@/shared/ui/Alert";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
+import { API_URL, fetchJson } from "@/shared/lib/api";
 
 type SquadRow = {
   id: number;

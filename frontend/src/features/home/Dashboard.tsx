@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card } from "@/components/ui/Card";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { useTeam } from "@/components/team/TeamProvider";
-import { formatRank } from "@/lib/team";
-import { API_URL, fetchJson } from "@/lib/api";
+import { Card } from "@/shared/ui/Card";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { useTeam } from "@/shared/team/TeamProvider";
+import { formatRank } from "@/shared/lib/team";
+import { API_URL, fetchJson } from "@/shared/lib/api";
 
 type SquadPlayer = {
   web_name: string;

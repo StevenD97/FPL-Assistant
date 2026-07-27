@@ -1,4 +1,4 @@
-import { teamColorVar } from "@/lib/teamColors";
+import { teamColorVar } from "@/shared/lib/teamColors";
 
 // badgeUrl (official PL CDN, see backend's team_badge_url) renders the real
 // crest; omit it to fall back to the original colored-dot indicator, which

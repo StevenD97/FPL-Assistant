@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { StatusBadge } from "@/shared/ui/StatusBadge";
 
 const POS_ACCENT: Record<string, string> = {
   GKP: "bg-pos-gkp",
