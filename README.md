@@ -538,16 +538,37 @@ conventions rather than dropped in as-is. No dark mode.
   season on disk, not a time series of them, so DB-unreachable and
   DB-has-no-history-yet both just mean "no trend data yet"
   (`has_history_trend: false`) rather than an error.
-- **Landing page "Get started" steps**
-  (`frontend/src/components/home/GetStartedSteps.tsx`) replaced a
-  "Featured: My Squad" box that just duplicated the hero's own CTA. Not
-  purely decorative: step 1 reads real connection state from
-  `TeamProvider` (`useTeam()`, the same context the sidebar uses) and its
-  CTA calls `promptConnect()` directly rather than only linking to
-  `/squad` - opens the real connect dialog in place, and once connected
-  shows the manager's name instead of the generic prompt. Deliberately
-  built this way (state-aware, not static marketing copy) since it's
-  meant to be the seed a future first-time-use tutorial builds on.
+- **Landing page: onboarding for a new visitor, dashboard for a returning
+  one.** (`frontend/src/components/home/`) The page's job changed from
+  cataloguing every route (an 8-card "Model:/Use it for:" grid, dropped
+  down to a compact icon-chip strip - each page already explains itself
+  once you're on it) to actually walking a visitor through setup.
+  `HomeBody` switches on `useTeam()`'s connection state between:
+  - `GetStartedSteps` - a 3-step flow (connect/build -> get
+    recommendations -> track your gameweek). Not purely decorative: step
+    1 reads real connection state and its CTA calls `promptConnect()`
+    directly - opens the real connect dialog in place, and once
+    connected shows the manager's name instead of a generic prompt.
+    Deliberately built state-aware rather than as static marketing copy,
+    since it's meant to be the seed a future first-time-use tutorial
+    builds on.
+  - `Dashboard` - once connected, replaces the steps with the manager's
+    own numbers: last gameweek's score (`/api/squad/{id}`, already-built
+    endpoint) and overall rank, squad "weak points" (derived client-side
+    from the same response - injured/doubtful/suspended players via a
+    `status`/`news` pair newly exposed on `build_squad_analysis`'s squad
+    rows, which weren't returned to any endpoint before this; high
+    rotation-risk starters; teams with a tough upcoming run), squad
+    value/bank/captain, and price watch for specifically the manager's
+    *own* players - via a new `player_ids` filter on
+    `/api/players/price-watch` that skips both `MIN_NET_TRANSFERS_TO_FLAG`
+    and the top-N `limit`, since a manager wants every one of their own
+    players' signal, not just the league-wide "big enough to matter" cut.
+    Pre-season, `/api/squad/{id}` 404s for every manager (FPL has no pick
+    history until a gameweek locks) - `Dashboard` treats that as an
+    honest waiting state ("unlocks once your first gameweek locks"), not
+    an error, and upgrades to the real dashboard automatically once the
+    season starts, no season-boundary logic needed on the frontend.
 - **Player photo fallback** (`frontend/src/components/ui/PlayerPhoto.tsx`).
   Roughly a third of players have no shot on the official PL photo CDN at
   either served size (see `player_photo_url`'s docstring) - previously

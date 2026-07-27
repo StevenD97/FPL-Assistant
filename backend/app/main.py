@@ -150,7 +150,7 @@ def fixture_difficulty(start_event: Optional[int] = None, window_size: int = 5):
 
 
 @app.get("/api/players/price-watch")
-def price_watch(limit: int = 20, history_hours: int = 48):
+def price_watch(limit: int = 20, history_hours: int = 48, player_ids: Optional[str] = None):
     """
     Players with the biggest net-transfer activity today, split into
     likely risers/fallers - see compute_price_change_signals' docstring
@@ -170,6 +170,13 @@ def price_watch(limit: int = 20, history_hours: int = 48):
     _transfer_rate_per_hour) - only available when the DB has that much
     ingest history accumulated; has_history_trend tells the frontend
     whether to expect transfer_rate_per_hour to be populated at all.
+
+    player_ids (optional, comma-separated live element ids): switches to
+    "just tell me about these specific players" mode, e.g. the landing
+    page dashboard's price watch for a connected manager's own squad.
+    Skips both MIN_NET_TRANSFERS_TO_FLAG and `limit` - a manager wants to
+    see every one of their own players' signal regardless of whether it's
+    "big" enough to matter league-wide, not a top-N cut of it.
     """
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     history_snapshots = load_recent_bootstrap_snapshots(LIVE_BOOTSTRAP_FILE, hours=history_hours)
@@ -180,6 +187,17 @@ def price_watch(limit: int = 20, history_hours: int = 48):
     df["team_short"] = df["team"].map(team_short_lookup)
     df["team_badge"] = df["team"].map(team_code_by_id).apply(team_badge_url)
     df = df.drop(columns=["team", "code"])
+
+    if player_ids is not None:
+        ids = {int(x) for x in player_ids.split(",") if x.strip()}
+        owned = df[df["id"].isin(ids)].copy()
+        owned = owned.reindex(owned["net_transfers_event"].abs().sort_values(ascending=False).index)
+        return {
+            "has_history_trend": len(history_snapshots) >= 2,
+            "history_snapshot_count": len(history_snapshots),
+            "min_net_transfers_to_flag": MIN_NET_TRANSFERS_TO_FLAG,
+            "owned": owned.to_dict(orient="records"),
+        }
 
     qualifying = df[df["net_transfers_event"].abs() >= MIN_NET_TRANSFERS_TO_FLAG]
     risers = qualifying[qualifying["direction"] == "rising"].sort_values("net_transfers_event", ascending=False)
