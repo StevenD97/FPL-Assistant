@@ -4,83 +4,23 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { NavIcon, type IconName } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
+import { HomeBody } from "@/components/home/HomeBody";
 import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
 import { getAllPosts } from "@/lib/blog";
 
-type PageInfo = {
-  title: string;
-  href: string;
-  icon: IconName;
-  what: string;
-  model: string;
-  use: string;
-};
+type PageInfo = { title: string; href: string; icon: IconName };
 
+// Landing page's job is walking a visitor through setup, not cataloguing
+// every page - each of these already explains itself once you're on it.
 const PAGES: PageInfo[] = [
-  {
-    title: "Players",
-    href: "/players",
-    icon: "players",
-    what: "Every player in the game - searchable, sortable by predicted points, cost, value, or ownership.",
-    model: "Predicted points from the same team-strength model as Outlook. Click any player for full detail.",
-    use: "The starting point for building a squad from scratch - filter by position and sort by value or predicted points.",
-  },
-  {
-    title: "Outlook",
-    href: "/outlook",
-    icon: "outlook",
-    what: "Predicted points summed over a run of gameweeks, ranked across all players.",
-    model: "A Dixon-Coles-style model: each team's recency-weighted attack/defence strength predicts expected goals for a fixture, split across players by their historical share of goals/assists, plus separately modeled bonus, cards, saves, and defensive contribution.",
-    use: "For transfer targets over a run of fixtures - a multi-week window tracks reality noticeably better than any one gameweek.",
-  },
-  {
-    title: "Differentials",
-    href: "/differentials",
-    icon: "differentials",
-    what: "High-scoring players with low ownership.",
-    model: "The same recommendation_score as My Squad, filtered to a chosen ownership ceiling.",
-    use: "Hunting for rank-gaining picks when you need to close a gap in a mini-league.",
-  },
-  {
-    title: "Fixtures",
-    href: "/fixtures",
-    icon: "fixtures",
-    what: "Every team's next 5 gameweeks, ranked easiest to hardest, with a color-coded difficulty chip per fixture.",
-    model: "FPL's own fixture-difficulty ratings (FDR) - no prediction model, just the live fixture calendar.",
-    use: "Check before a Wildcard or when picking which teams to target for transfers/captaincy.",
-  },
-  {
-    title: "Schedule",
-    href: "/schedule",
-    icon: "schedule",
-    what: "The full season's fixture list, one gameweek at a time, with results once played.",
-    model: "Live fixture data only.",
-    use: "Browse what's on in a given gameweek, or look back at a result.",
-  },
-  {
-    title: "Chips",
-    href: "/chips",
-    icon: "chips",
-    what: "Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.",
-    model: "Scans a gameweek window scoring your squad/bench each week, and separately detects league-wide blank/double gameweeks from the fixture calendar.",
-    use: "Check a few gameweeks out from a decision point to see if a cluster of good fixtures or a blank/double gameweek is coming up.",
-  },
-  {
-    title: "Leagues",
-    href: "/leagues",
-    icon: "leagues",
-    what: "Your classic mini-leagues, their standings, and a gameweek-by-gameweek score trend line per manager.",
-    model: "Live league standings and history from the FPL API - no prediction involved.",
-    use: "Track your rank and form against the rest of a mini-league across the season.",
-  },
-  {
-    title: "Blog",
-    href: "/blog",
-    icon: "blog",
-    what: "Pre-season notes, transfer watch, and gameweek analysis.",
-    model: "Written using the app's own data plus independent research - not model output.",
-    use: "Stay on top of squad-relevant news between your own transfer decisions.",
-  },
+  { title: "Players", href: "/players", icon: "players" },
+  { title: "Outlook", href: "/outlook", icon: "outlook" },
+  { title: "Differentials", href: "/differentials", icon: "differentials" },
+  { title: "Price Watch", href: "/price-watch", icon: "price-watch" },
+  { title: "Fixtures", href: "/fixtures", icon: "fixtures" },
+  { title: "Schedule", href: "/schedule", icon: "schedule" },
+  { title: "Chips", href: "/chips", icon: "chips" },
+  { title: "Leagues", href: "/leagues", icon: "leagues" },
 ];
 
 export default function LandingPage() {
@@ -125,32 +65,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Featured: My Squad */}
-      <Link href="/squad" className="group block">
-        <div className="bg-fpl-pitch relative overflow-hidden rounded-lg p-6 text-white transition-transform duration-fast ease-standard group-hover:scale-[1.01] lg:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent" />
-          <div className="relative flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
-                <NavIcon name="squad" className="h-5 w-5" />
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
-                Start here
-              </span>
-            </div>
-            <h2 className="text-xl font-bold tracking-tight lg:text-2xl">My Squad</h2>
-            <p className="max-w-2xl text-sm leading-relaxed text-white/90 lg:text-base">
-              Your real squad, on a real pitch - with official club badges, kits, and player photos. See your
-              team scored gameweek by gameweek, get automatically-suggested transfers, and click any player for
-              their full breakdown. No team yet? Build one from scratch, or let the solver find the provably
-              optimal squad or transfers - all right here.
-            </p>
-            <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] group-hover:brightness-95">
-              Go to My Squad →
-            </span>
-          </div>
-        </div>
-      </Link>
+      {/* Get started / dashboard, depending on connection state */}
+      <HomeBody />
 
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
@@ -176,29 +92,21 @@ export default function LandingPage() {
         </Link>
       )}
 
-      {/* Explore grid */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {PAGES.map((page) => (
-          <Card key={page.href} padded={false} className="group flex flex-col p-4 transition-colors hover:border-pl-purple/40">
-            <Link href={page.href} className="flex flex-col gap-2">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-pl-purple/8 text-pl-purple transition-colors group-hover:bg-pl-green group-hover:text-pl-purple">
-                  <NavIcon name={page.icon} className="h-[18px] w-[18px]" />
-                </span>
-                <span className="text-md font-semibold text-pl-purple group-hover:underline">{page.title}</span>
-              </div>
-              <p className="text-sm text-text-primary">{page.what}</p>
-              <p className="text-xs text-text-secondary">
-                <span className="font-semibold text-text-muted">Model: </span>
-                {page.model}
-              </p>
-              <p className="text-xs text-text-secondary">
-                <span className="font-semibold text-text-muted">Use it for: </span>
-                {page.use}
-              </p>
+      {/* Explore everything else */}
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-pl-purple/60">Everything else</span>
+        <div className="flex flex-wrap gap-2">
+          {PAGES.map((page) => (
+            <Link
+              key={page.href}
+              href={page.href}
+              className="flex items-center gap-1.5 rounded-full border border-border bg-white px-3.5 py-2 text-xs font-semibold text-text-primary transition-colors hover:border-pl-purple hover:bg-pl-purple/5"
+            >
+              <NavIcon name={page.icon} className="h-4 w-4 text-pl-purple" />
+              {page.title}
             </Link>
-          </Card>
-        ))}
+          ))}
+        </div>
       </div>
 
       <p className="pt-2 text-center text-xs text-text-muted">GW1 · {NEXT_DEADLINE_LABEL.replace("GW1 · ", "")}</p>

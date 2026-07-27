@@ -449,7 +449,7 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     congestion_by_team = compute_congestion(fixtures, teams["id"].tolist(), reference_date, congestion_window_days)
 
     df = players[[
-        "id", "code", "web_name", "team", "element_type", "status",
+        "id", "code", "web_name", "team", "element_type", "status", "news",
         "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts",
         "now_cost", "selected_by_percent",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
@@ -906,7 +906,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
         "form", "recency_weighted_form", "ep_next", "expected_minutes",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
-        "set_piece_duty_score",
+        "set_piece_duty_score", "status", "news",
     ]
     squad_rows = squad[squad_cols].copy()
     # `id` above is this bootstrap_file's element id (archived-2025/26 by
