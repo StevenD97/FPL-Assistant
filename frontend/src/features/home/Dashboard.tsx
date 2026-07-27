@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/shared/ui/Card";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { formatRank } from "@/shared/lib/team";
@@ -133,9 +134,22 @@ export function Dashboard() {
 
   if (loading) {
     return (
-      <Card>
-        <p className="text-sm text-text-muted">Loading your dashboard...</p>
-      </Card>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1.5">
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-6 w-48" />
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}>
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="mt-2 h-7 w-24" />
+              <Skeleton className="mt-2 h-3 w-32" />
+              <Skeleton className="mt-3 h-3 w-24" />
+            </Card>
+          ))}
+        </div>
+      </div>
     );
   }
 

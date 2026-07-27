@@ -7,6 +7,7 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { Select } from "@/shared/ui/Select";
 import { TextField } from "@/shared/ui/TextField";
+import { TableSkeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { API_URL } from "@/shared/lib/api";
 
@@ -144,6 +145,8 @@ export default function OutlookPage() {
         {error && (
           <p className="mb-4 text-sm font-medium text-danger">{error}</p>
         )}
+
+        {loading && !data && <TableSkeleton columns={7} rows={12} />}
 
         {filtered && (
           <div className="overflow-x-auto rounded-lg border border-border shadow-sm">

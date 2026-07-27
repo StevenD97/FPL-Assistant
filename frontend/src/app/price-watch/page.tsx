@@ -6,6 +6,7 @@ import { Card } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { API_URL } from "@/shared/lib/api";
 
 
@@ -77,6 +78,38 @@ function MoverRow({ mover, sign }: { mover: PriceMover; sign: "+" | "-" }) {
   );
 }
 
+// Two columns (risers / fallers) of mover rows - mirrors the loaded layout.
+function PriceWatchSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {["Likely risers", "Likely fallers"].map((title) => (
+        <Card key={title} padded={false} className="overflow-hidden">
+          <div className="border-b border-border px-3.5 py-3">
+            <h2 className="text-md font-semibold text-text-primary">{title}</h2>
+          </div>
+          <ul>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <li
+                key={i}
+                className="flex items-center justify-between gap-3 border-t border-border px-3.5 py-2.5 first:border-t-0"
+              >
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                  <div className="flex flex-col gap-1.5">
+                    <Skeleton className="h-3.5 w-24" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+                <Skeleton className="h-4 w-10" />
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 export default function PriceWatchPage() {
   const [data, setData] = useState<PriceWatchResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,7 +140,7 @@ export default function PriceWatchPage() {
           price change at tonight's update (~2:30am UK), not a guaranteed prediction."
       />
 
-      {loading && <p className="text-text-muted">Loading...</p>}
+      {loading && <PriceWatchSkeleton />}
       {error && <p className="text-sm font-medium text-danger">{error}</p>}
 
       {data && (

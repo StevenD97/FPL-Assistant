@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { Skeleton } from "@/shared/ui/Skeleton";
 
 const POS_ACCENT: Record<string, string> = {
   GKP: "bg-pos-gkp",
@@ -14,6 +16,7 @@ export type PlayerListItem = {
   web_name: string;
   team_short: string;
   team_badge: string;
+  player_photo: string;
   position: string;
   cost: number;
   predicted_points: number;
@@ -67,7 +70,16 @@ export function PlayerListCard({ p }: { p: PlayerListItem }) {
         <StatusBadge status={p.status} news={p.news} />
       </div>
 
-      <div className="mt-2 truncate text-md font-semibold text-pl-purple group-hover:underline">{p.web_name}</div>
+      <div className="mt-2 flex items-center gap-2.5">
+        <PlayerPhoto
+          src={p.player_photo}
+          name={p.web_name}
+          className="h-11 w-11 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-xs"
+        />
+        <span className="min-w-0 truncate text-md font-semibold text-pl-purple group-hover:underline">
+          {p.web_name}
+        </span>
+      </div>
 
       <div className="mt-2 flex items-end justify-between gap-2">
         <div className="leading-none">
@@ -89,5 +101,36 @@ export function PlayerListCard({ p }: { p: PlayerListItem }) {
         <Stat k="xGI" v={xgi} />
       </div>
     </Link>
+  );
+}
+
+// Loading placeholder matching PlayerListCard's shape - the same accent bar,
+// badge row, photo + name, headline number, and 4-stat strip, so the grid
+// doesn't reflow when real cards swap in.
+export function PlayerListCardSkeleton() {
+  return (
+    <div className="relative overflow-hidden rounded-lg border border-border bg-white p-3.5 shadow-sm">
+      <span className="absolute inset-x-0 top-0 h-1 bg-slate-200" />
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-4 w-9 rounded" />
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-2.5">
+        <Skeleton className="h-11 w-11 shrink-0 rounded-full" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+      <div className="mt-2 flex items-end justify-between gap-2">
+        <Skeleton className="h-7 w-16" />
+        <Skeleton className="h-7 w-14" />
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-2 border-t border-border pt-2.5">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-8 w-full" />
+        ))}
+      </div>
+    </div>
   );
 }

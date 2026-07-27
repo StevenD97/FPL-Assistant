@@ -7,6 +7,7 @@ import { Button } from "@/shared/ui/Button";
 import { Card, StatTile } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
@@ -137,6 +138,32 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
     subtitle: p.next_opponent,
     href: p.live_id != null ? `/players/${p.live_id}` : undefined,
   };
+}
+
+// Stand-in for the loaded squad view: summary lines, the pitch, a bench
+// strip, and the two panels (suggested transfers + planner table) below it.
+function SquadViewSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-56" />
+        <Skeleton className="h-4 w-72" />
+      </div>
+      <div>
+        <Skeleton className="h-[360px] w-full rounded-lg" />
+        <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <Skeleton className="h-3 w-12" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <Skeleton className="h-40 w-full rounded-lg" />
+      <Skeleton className="h-64 w-full rounded-lg" />
+    </div>
+  );
 }
 
 export function LoadTeamPanel({
@@ -324,6 +351,8 @@ export function LoadTeamPanel({
           <span className="font-semibold text-text-primary">Build from scratch</span> above instead.
         </p>
       )}
+
+      {loading && !data && <SquadViewSkeleton />}
 
       {data && (
         <div className="space-y-8">

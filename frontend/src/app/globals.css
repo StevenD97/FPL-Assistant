@@ -255,10 +255,16 @@ body {
 /* --- More motion primitives --- */
 @keyframes fplShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
 .fpl-skeleton {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.12) 37%, rgba(255, 255, 255, 0.06) 63%);
+  background-color: var(--slate-100);
+  background-image: linear-gradient(90deg, transparent 25%, rgba(255, 255, 255, 0.85) 50%, transparent 75%);
   background-size: 800px 100%;
+  background-repeat: no-repeat;
   animation: fplShimmer 1.4s infinite linear;
   border-radius: 8px;
+}
+/* Reduced-motion (or a static context) still needs a visible base tone. */
+@media (prefers-reduced-motion: reduce) {
+  .fpl-skeleton { background-image: none; }
 }
 @keyframes fplPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
 .animate-fpl-pop { animation: fplPop 0.4s var(--ease-standard); }

@@ -163,6 +163,7 @@ def all_players(search, position, ref_date, next_event, gw_count=5, limit=600):
     team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
     pool = pool.copy()
     pool["team_badge"] = pool["team"].map(team_code_by_id).apply(team_badge_url)
+    pool["player_photo"] = pool["code"].apply(player_photo_url)
 
     if position:
         pool = pool[pool["position"] == position]
@@ -173,7 +174,7 @@ def all_players(search, position, ref_date, next_event, gw_count=5, limit=600):
     season_stats = season_stats_by_live_id()
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
-        "selected_by_percent", "status", "news", "team_badge",
+        "selected_by_percent", "status", "news", "team_badge", "player_photo",
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)

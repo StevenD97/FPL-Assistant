@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { API_URL } from "@/shared/lib/api";
 
 
@@ -59,7 +60,31 @@ export function ScheduleView() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      {loading && <p className="text-text-muted">Loading fixtures...</p>}
+      {loading && (
+        <>
+          <div className="mb-4 flex items-center gap-3">
+            <Skeleton className="h-8 w-16 rounded-md" />
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-8 w-16 rounded-md" />
+          </div>
+          <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div
+                key={i}
+                className={`flex items-center justify-between px-4 py-2.5 ${i > 0 ? "border-t border-border" : ""}`}
+              >
+                <div className="flex flex-1 justify-end">
+                  <Skeleton className="h-5 w-20" />
+                </div>
+                <Skeleton className="mx-4 h-5 w-16 shrink-0" />
+                <div className="flex flex-1">
+                  <Skeleton className="h-5 w-20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
       {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 
       {fixtures && (

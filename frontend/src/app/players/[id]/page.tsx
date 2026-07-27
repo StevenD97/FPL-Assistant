@@ -9,6 +9,7 @@ import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { LineChart } from "@/shared/charts/LineChart";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { seriesColor } from "@/shared/lib/palette";
 import { linearTrend } from "@/shared/lib/trend";
 import { API_URL } from "@/shared/lib/api";
@@ -148,6 +149,48 @@ function CompareTable({ title, rows, players }: { title: string; rows: CompareRo
   );
 }
 
+// Mirrors the detail header: the FIFA-style card on the left, the name/meta
+// block and the prediction stat-tile grid on the right, then the chart panel -
+// so the page's shape is stable before the data lands.
+function PlayerDetailSkeleton() {
+  return (
+    <main className="px-4 py-5 lg:px-6 lg:py-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start">
+          <Skeleton className="h-[352px] w-full max-w-[248px] shrink-0 rounded-2xl" />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-3">
+              <Skeleton className="h-6 w-52" />
+              <Skeleton className="h-5 w-12 rounded" />
+              <Skeleton className="h-5 w-16 rounded" />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              <Skeleton className="h-5 w-28" />
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+            <div className="mt-5">
+              <Skeleton className="mb-2 h-4 w-64" />
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full rounded-md" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <Skeleton className="mb-3 h-5 w-40" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full rounded-md" />
+          ))}
+        </div>
+        <Skeleton className="mt-8 h-56 w-full rounded-lg" />
+      </div>
+    </main>
+  );
+}
+
 export default function PlayerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [data, setData] = useState<PlayerDetail | null>(null);
@@ -222,7 +265,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
     setCompareList((prev) => prev.filter((p) => p.id !== playerId));
   }
 
-  if (loading) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-4xl text-text-muted">Loading...</p></main>;
+  if (loading) return <PlayerDetailSkeleton />;
   if (error || !data) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-4xl text-sm font-medium text-danger">{error ?? "Player not found"}</p></main>;
 
   const p = data;

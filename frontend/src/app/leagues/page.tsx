@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Button } from "@/shared/ui/Button";
 import { TextField } from "@/shared/ui/TextField";
+import { TableSkeleton } from "@/shared/ui/Skeleton";
 import { LineChart } from "@/shared/charts/LineChart";
 import { seriesColor } from "@/shared/lib/palette";
 import {
@@ -223,7 +224,7 @@ export default function LeaguesPage() {
           )}
         </div>
 
-        {standingsLoading && <p className="text-text-muted">Loading standings...</p>}
+        {standingsLoading && <TableSkeleton columns={4} rows={10} />}
 
         {standings && (
           <div>

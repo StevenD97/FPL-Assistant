@@ -8,6 +8,7 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { Select } from "@/shared/ui/Select";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
+import { Skeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
 import { TeamNameGenerator } from "@/features/squad/TeamNameGenerator";
@@ -342,6 +343,39 @@ function pickSquadCompletion(
   return { newIds, skippedPositions };
 }
 
+// Matches the builder body: the budget/counter control row, then the
+// two-column pitch + player-browser grid.
+function BuildSquadSkeleton() {
+  return (
+    <>
+      <div className="mb-6 flex flex-wrap items-end gap-6">
+        <Skeleton className="h-9 w-28 rounded-md" />
+        <Skeleton className="h-5 w-52" />
+        <Skeleton className="h-5 w-40" />
+        <Skeleton className="h-8 w-32 rounded-md" />
+      </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div>
+          <Skeleton className="mb-3 h-5 w-28" />
+          <Skeleton className="h-[420px] w-full rounded-lg" />
+        </div>
+        <div>
+          <Skeleton className="mb-3 h-5 w-20" />
+          <div className="mb-3 flex gap-2">
+            <Skeleton className="h-9 flex-1 rounded-md" />
+            <Skeleton className="h-9 w-28 rounded-md" />
+          </div>
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full rounded-md" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
   const [players, setPlayers] = useState<PoolPlayer[] | null>(null);
   const [fixtures, setFixtures] = useState<FixtureRow[] | null>(null);
@@ -523,7 +557,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
         <TeamNameGenerator />
       </div>
 
-      {loading && <p className="text-text-muted">Loading player data...</p>}
+      {loading && <BuildSquadSkeleton />}
       {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 
       {players && fixtures && (

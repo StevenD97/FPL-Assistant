@@ -4,6 +4,7 @@
       "cost": 14.7,
       "id": 430,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223094.png",
       "position": "FWD",
       "predicted_points": 42.362,
       "season_stats": {
@@ -34,6 +35,7 @@
       "cost": 10.4,
       "id": 449,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p141746.png",
       "position": "MID",
       "predicted_points": 31.848,
       "season_stats": {
@@ -64,6 +66,7 @@
       "cost": 5.9,
       "id": 256,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p247348.png",
       "position": "DEF",
       "predicted_points": 26.564,
       "season_stats": {
@@ -94,6 +97,7 @@
       "cost": 7.2,
       "id": 21,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
       "position": "MID",
       "predicted_points": 26.25,
       "season_stats": {
@@ -124,6 +128,7 @@
       "cost": 7.2,
       "id": 136,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
       "position": "FWD",
       "predicted_points": 26.212,
       "season_stats": {
@@ -154,6 +159,7 @@
       "cost": 7.6,
       "id": 283,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p231747.png",
       "position": "FWD",
       "predicted_points": 26.037,
       "season_stats": {
@@ -184,6 +190,7 @@
       "cost": 5.7,
       "id": 517,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
       "position": "MID",
       "predicted_points": 25.815,
       "season_stats": {
@@ -214,6 +221,7 @@
       "cost": 4.4,
       "id": 261,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p427623.png",
       "position": "DEF",
       "predicted_points": 25.663,
       "season_stats": {
@@ -244,6 +252,7 @@
       "cost": 5.2,
       "id": 257,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437499.png",
       "position": "DEF",
       "predicted_points": 25.443,
       "season_stats": {
@@ -274,6 +283,7 @@
       "cost": 7.3,
       "id": 5,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
       "position": "DEF",
       "predicted_points": 24.809,
       "season_stats": {
@@ -304,6 +314,7 @@
       "cost": 6.0,
       "id": 8,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
       "position": "DEF",
       "predicted_points": 24.391,
       "season_stats": {
@@ -334,6 +345,7 @@
       "cost": 6.5,
       "id": 237,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p448047.png",
       "position": "MID",
       "predicted_points": 23.616,
       "season_stats": {
@@ -364,6 +376,7 @@
       "cost": 5.0,
       "id": 258,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244723.png",
       "position": "DEF",
       "predicted_points": 23.451,
       "season_stats": {
@@ -394,6 +407,7 @@
       "cost": 8.3,
       "id": 119,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p446008.png",
       "position": "MID",
       "predicted_points": 23.415,
       "season_stats": {
@@ -424,6 +438,7 @@
       "cost": 8.0,
       "id": 82,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
       "position": "MID",
       "predicted_points": 23.324,
       "season_stats": {
@@ -454,6 +469,7 @@
       "cost": 14.0,
       "id": 381,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p118748.png",
       "position": "MID",
       "predicted_points": 23.306,
       "season_stats": {
@@ -484,6 +500,7 @@
       "cost": 4.6,
       "id": 694,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p200834.png",
       "position": "DEF",
       "predicted_points": 23.218,
       "season_stats": {
@@ -514,6 +531,7 @@
       "cost": 5.5,
       "id": 160,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p592031.png",
       "position": "MID",
       "predicted_points": 23.208,
       "season_stats": {
@@ -544,6 +562,7 @@
       "cost": 10.0,
       "id": 16,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
       "position": "MID",
       "predicted_points": 22.93,
       "season_stats": {
@@ -574,6 +593,7 @@
       "cost": 4.8,
       "id": 670,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p498016.png",
       "position": "GKP",
       "predicted_points": 22.756,
       "season_stats": {
@@ -604,6 +624,7 @@
       "cost": 6.3,
       "id": 299,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p440993.png",
       "position": "MID",
       "predicted_points": 22.57,
       "season_stats": {
@@ -634,6 +655,7 @@
       "cost": 7.6,
       "id": 515,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p222531.png",
       "position": "MID",
       "predicted_points": 22.474,
       "season_stats": {
@@ -664,6 +686,7 @@
       "cost": 4.5,
       "id": 295,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p106611.png",
       "position": "DEF",
       "predicted_points": 22.259,
       "season_stats": {
@@ -694,6 +717,7 @@
       "cost": 5.1,
       "id": 260,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p209036.png",
       "position": "DEF",
       "predicted_points": 22.144,
       "season_stats": {
@@ -724,6 +748,7 @@
       "cost": 6.3,
       "id": 178,
       "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p50175.png",
       "position": "FWD",
       "predicted_points": 22.074,
       "season_stats": {
