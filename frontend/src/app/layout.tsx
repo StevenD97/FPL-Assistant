@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FPL Assistant",
+  title: "xFPL",
   description: "Transfer, captaincy, and chip recommendations for Fantasy Premier League",
 };
 

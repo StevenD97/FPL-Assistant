@@ -52,6 +52,31 @@ export function clearStoredTeamId(): void {
   }
 }
 
+// Other teams the user is tracking in the My Squad workspace (their rivals,
+// friends, etc.) - distinct from their own connected team. Stored as a list
+// of public team IDs on this device.
+const TRACKED_TEAMS_KEY = "fpl.trackedTeamIds";
+
+export function loadTrackedTeamIds(): number[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const v = window.localStorage.getItem(TRACKED_TEAMS_KEY);
+    if (!v) return [];
+    const parsed = JSON.parse(v);
+    return Array.isArray(parsed) ? parsed.filter((n) => Number.isInteger(n)) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function storeTrackedTeamIds(ids: number[]): void {
+  try {
+    window.localStorage.setItem(TRACKED_TEAMS_KEY, JSON.stringify(ids));
+  } catch {
+    // Ignore.
+  }
+}
+
 // Tracked public leagues (Leagues page's "compare against any public
 // league" feature - see backend's /api/leagues/{id}/standings, which
 // works for any public classic league id, not just ones you've joined).

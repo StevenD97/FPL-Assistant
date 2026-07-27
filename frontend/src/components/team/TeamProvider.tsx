@@ -8,8 +8,10 @@ import {
   type TeamEntry,
   clearStoredTeamId,
   loadStoredTeamId,
+  loadTrackedTeamIds,
   parseTeamId,
   storeTeamId,
+  storeTrackedTeamIds,
 } from "@/lib/team";
 
 type Status = "idle" | "loading" | "ready" | "error";
@@ -22,6 +24,9 @@ type TeamContextValue = {
   connect: (input: string) => Promise<boolean>;
   disconnect: () => void;
   promptConnect: () => void;
+  trackedTeamIds: number[];
+  trackTeam: (input: string) => boolean;
+  untrackTeam: (id: number) => void;
 };
 
 const TeamContext = createContext<TeamContextValue | null>(null);
@@ -38,6 +43,37 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [trackedTeamIds, setTrackedTeamIds] = useState<number[]>([]);
+
+  // Restore tracked teams on load.
+  useEffect(() => {
+    setTrackedTeamIds(loadTrackedTeamIds());
+  }, []);
+
+  const trackTeam = useCallback(
+    (input: string): boolean => {
+      const id = parseTeamId(input);
+      if (id == null) return false;
+      let added = false;
+      setTrackedTeamIds((prev) => {
+        if (prev.includes(id)) return prev;
+        const next = [...prev, id];
+        storeTrackedTeamIds(next);
+        added = true;
+        return next;
+      });
+      return added || trackedTeamIds.includes(id);
+    },
+    [trackedTeamIds],
+  );
+
+  const untrackTeam = useCallback((id: number) => {
+    setTrackedTeamIds((prev) => {
+      const next = prev.filter((n) => n !== id);
+      storeTrackedTeamIds(next);
+      return next;
+    });
+  }, []);
 
   const fetchEntry = useCallback(async (id: number): Promise<boolean> => {
     setStatus("loading");
@@ -94,7 +130,20 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <TeamContext.Provider value={{ teamId, entry, status, error, connect, disconnect, promptConnect }}>
+    <TeamContext.Provider
+      value={{
+        teamId,
+        entry,
+        status,
+        error,
+        connect,
+        disconnect,
+        promptConnect,
+        trackedTeamIds,
+        trackTeam,
+        untrackTeam,
+      }}
+    >
       {children}
       <ConnectTeamDialog
         open={dialogOpen}

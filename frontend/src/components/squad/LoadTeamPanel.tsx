@@ -140,7 +140,17 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   };
 }
 
-export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
+export function LoadTeamPanel({
+  onSwitchToOptimize,
+  initialTeamId,
+  embedded = false,
+}: {
+  onSwitchToOptimize?: () => void;
+  /** When set (workspace mode), load this exact team instead of the connected one. */
+  initialTeamId?: number;
+  /** Workspace mode: the switcher labels the team, so hide the intro + team-ID input. */
+  embedded?: boolean;
+}) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [data, setData] = useState<SquadResponse | null>(null);
@@ -266,29 +276,35 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
     loadSquad(teamId);
   }
 
-  // If a team is connected via the sidebar, prefill the field and load it
-  // automatically - no need to re-type the ID on this page.
+  // Which team this panel should show: an explicit workspace selection wins,
+  // otherwise fall back to the team connected via the sidebar. Prefill the
+  // field and load it automatically - no need to re-type the ID.
+  const activeId = initialTeamId ?? connectedId ?? null;
   useEffect(() => {
-    if (connectedId != null) {
-      setTeamId(String(connectedId));
-      loadSquad(String(connectedId));
+    if (activeId != null) {
+      setTeamId(String(activeId));
+      loadSquad(String(activeId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectedId]);
+  }, [activeId]);
 
   return (
     <div>
-      <p className="mb-6 text-sm text-text-secondary">
-        Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
-        <SeasonDataNote mode="archived" />
-      </p>
+      {!embedded && (
+        <p className="mb-6 text-sm text-text-secondary">
+          Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
+          <SeasonDataNote mode="archived" />
+        </p>
+      )}
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
-        <TextField
-          label="Team ID"
-          value={teamId}
-          onChange={(e) => setTeamId(e.target.value)}
-          placeholder="e.g. 1178869"
-        />
+        {!embedded && (
+          <TextField
+            label="Team ID"
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            placeholder="e.g. 1178869"
+          />
+        )}
         <TextField
           label="Free transfers"
           type="number"
@@ -299,7 +315,7 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
           wrapperClassName="w-28"
         />
         <Button type="submit" disabled={loading || !teamId}>
-          {loading ? "Loading..." : "Load squad"}
+          {loading ? "Loading..." : embedded ? "Reload" : "Load squad"}
         </Button>
       </form>
 
