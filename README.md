@@ -538,6 +538,16 @@ conventions rather than dropped in as-is. No dark mode.
   season on disk, not a time series of them, so DB-unreachable and
   DB-has-no-history-yet both just mean "no trend data yet"
   (`has_history_trend: false`) rather than an error.
+- **Landing page "Get started" steps**
+  (`frontend/src/components/home/GetStartedSteps.tsx`) replaced a
+  "Featured: My Squad" box that just duplicated the hero's own CTA. Not
+  purely decorative: step 1 reads real connection state from
+  `TeamProvider` (`useTeam()`, the same context the sidebar uses) and its
+  CTA calls `promptConnect()` directly rather than only linking to
+  `/squad` - opens the real connect dialog in place, and once connected
+  shows the manager's name instead of the generic prompt. Deliberately
+  built this way (state-aware, not static marketing copy) since it's
+  meant to be the seed a future first-time-use tutorial builds on.
 - **Player photo fallback** (`frontend/src/components/ui/PlayerPhoto.tsx`).
   Roughly a third of players have no shot on the official PL photo CDN at
   either served size (see `player_photo_url`'s docstring) - previously

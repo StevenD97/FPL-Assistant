@@ -4,6 +4,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { NavIcon, type IconName } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
+import { GetStartedSteps } from "@/components/home/GetStartedSteps";
 import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
 import { getAllPosts } from "@/lib/blog";
 
@@ -125,32 +126,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Featured: My Squad */}
-      <Link href="/squad" className="group block">
-        <div className="bg-fpl-pitch relative overflow-hidden rounded-lg p-6 text-white transition-transform duration-fast ease-standard group-hover:scale-[1.01] lg:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent" />
-          <div className="relative flex flex-col gap-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
-                <NavIcon name="squad" className="h-5 w-5" />
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
-                Start here
-              </span>
-            </div>
-            <h2 className="text-xl font-bold tracking-tight lg:text-2xl">My Squad</h2>
-            <p className="max-w-2xl text-sm leading-relaxed text-white/90 lg:text-base">
-              Your real squad, on a real pitch - with official club badges, kits, and player photos. See your
-              team scored gameweek by gameweek, get automatically-suggested transfers, and click any player for
-              their full breakdown. No team yet? Build one from scratch, or let the solver find the provably
-              optimal squad or transfers - all right here.
-            </p>
-            <span className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] group-hover:brightness-95">
-              Go to My Squad →
-            </span>
-          </div>
-        </div>
-      </Link>
+      {/* Get started */}
+      <GetStartedSteps />
 
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
