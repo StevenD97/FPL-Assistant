@@ -1,14 +1,43 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { NavIcon } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { HomeBody } from "@/components/home/HomeBody";
+import { MatchdayStrip, type Fixture } from "@/components/home/MatchdayStrip";
+import { BlogCover } from "@/components/blog/BlogCover";
 import { getAllPosts } from "@/lib/blog";
 
-export default function LandingPage() {
-  const latestPost = getAllPosts()[0];
+// Fetches live matchday fixtures at request time; force-dynamic keeps Next
+// from calling the backend at build time (which would fail the deploy if the
+// backend is briefly unreachable - see the Fixtures page for the same guard).
+export const dynamic = "force-dynamic";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+async function getMatchday(): Promise<{ event: number; fixtures: Fixture[] } | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/fixtures/schedule`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const all: Fixture[] = await res.json();
+    if (!all.length) return null;
+    // Feature the next gameweek still to be played (fall back to the last).
+    const nextEvent = all.find((f) => !f.finished)?.event ?? all[all.length - 1].event;
+    return { event: nextEvent, fixtures: all.filter((f) => f.event === nextEvent).slice(0, 10) };
+  } catch {
+    return null;
+  }
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+export default async function LandingPage() {
+  const posts = getAllPosts().slice(0, 3);
+  const matchday = await getMatchday();
 
   return (
     <PageContainer>
@@ -49,33 +78,45 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* Matchday */}
+      {matchday && <MatchdayStrip event={matchday.event} fixtures={matchday.fixtures} />}
+
+      {/* Latest from the blog */}
+      {posts.length > 0 && (
+        <section>
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">From the blog</span>
+            <Link href="/blog" className="text-xs font-semibold text-pl-purple hover:underline">
+              All posts →
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {posts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group card-lift block overflow-hidden rounded-lg border border-border bg-white shadow-sm"
+              >
+                <BlogCover cover={post.cover} size="card" />
+                <div className="p-3.5">
+                  <div className="text-[11px] text-text-muted">{formatDate(post.date)}</div>
+                  <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-pl-purple group-hover:underline">
+                    {post.title}
+                  </h3>
+                  <p className="mt-1.5 line-clamp-3 text-xs text-text-secondary">{post.excerpt}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Get started / dashboard, depending on connection state */}
       <HomeBody />
 
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
       </p>
-
-      {/* Latest blog post */}
-      {latestPost && (
-        <Link href={`/blog/${latestPost.slug}`} className="group block">
-          <Card className="transition-colors group-hover:border-pl-purple/40">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-pl-purple/8 text-pl-purple">
-                <NavIcon name="blog" className="h-[18px] w-[18px]" />
-              </span>
-              <div>
-                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
-                  Latest from the blog
-                </span>
-                <h2 className="text-md font-semibold text-pl-purple group-hover:underline">{latestPost.title}</h2>
-              </div>
-            </div>
-            <p className="mt-2 text-sm text-text-secondary">{latestPost.excerpt}</p>
-          </Card>
-        </Link>
-      )}
-
     </PageContainer>
   );
 }
