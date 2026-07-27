@@ -50,7 +50,7 @@ export default function ChipsPage() {
 
   return (
     <main className="px-4 py-5 lg:px-6 lg:py-6">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-6xl">
         <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
           Chip strategy
         </h1>

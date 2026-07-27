@@ -2,6 +2,38 @@
   "body": [
     {
       "cost": 14.7,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        }
+      ],
       "id": 430,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223094.png",
@@ -33,6 +65,38 @@
     },
     {
       "cost": 10.4,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "WHU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
+        }
+      ],
       "id": 449,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p141746.png",
@@ -64,6 +128,38 @@
     },
     {
       "cost": 5.9,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        }
+      ],
       "id": 256,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p247348.png",
@@ -95,6 +191,38 @@
     },
     {
       "cost": 7.2,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
       "id": 21,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
@@ -126,6 +254,38 @@
     },
     {
       "cost": 7.2,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 1,
+          "is_home": true,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 5,
+          "is_home": false,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        }
+      ],
       "id": 136,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
@@ -157,6 +317,38 @@
     },
     {
       "cost": 7.6,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        }
+      ],
       "id": 283,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p231747.png",
@@ -188,6 +380,38 @@
     },
     {
       "cost": 5.7,
+      "fixtures": [
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        }
+      ],
       "id": 517,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
@@ -219,6 +443,38 @@
     },
     {
       "cost": 4.4,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        }
+      ],
       "id": 261,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p427623.png",
@@ -250,6 +506,38 @@
     },
     {
       "cost": 5.2,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        }
+      ],
       "id": 257,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437499.png",
@@ -281,6 +569,38 @@
     },
     {
       "cost": 7.3,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
       "id": 5,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
@@ -312,6 +632,38 @@
     },
     {
       "cost": 6.0,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
       "id": 8,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
@@ -343,6 +695,38 @@
     },
     {
       "cost": 6.5,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 1,
+          "is_home": true,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        }
+      ],
       "id": 237,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p448047.png",
@@ -374,6 +758,38 @@
     },
     {
       "cost": 5.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        }
+      ],
       "id": 258,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244723.png",
@@ -405,6 +821,38 @@
     },
     {
       "cost": 8.3,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "WHU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
+        }
+      ],
       "id": 119,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p446008.png",
@@ -436,6 +884,38 @@
     },
     {
       "cost": 8.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        }
+      ],
       "id": 82,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
@@ -467,6 +947,38 @@
     },
     {
       "cost": 14.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        },
+        {
+          "difficulty": 5,
+          "is_home": false,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "WHU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        }
+      ],
       "id": 381,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p118748.png",
@@ -498,6 +1010,38 @@
     },
     {
       "cost": 4.6,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        }
+      ],
       "id": 694,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p200834.png",
@@ -529,6 +1073,38 @@
     },
     {
       "cost": 5.5,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        }
+      ],
       "id": 160,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p592031.png",
@@ -560,6 +1136,38 @@
     },
     {
       "cost": 10.0,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "BUR",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
       "id": 16,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
@@ -591,6 +1199,38 @@
     },
     {
       "cost": 4.8,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        }
+      ],
       "id": 670,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p498016.png",
@@ -622,6 +1262,38 @@
     },
     {
       "cost": 6.3,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        }
+      ],
       "id": 299,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p440993.png",
@@ -653,6 +1325,38 @@
     },
     {
       "cost": 7.6,
+      "fixtures": [
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "WOL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+        }
+      ],
       "id": 515,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p222531.png",
@@ -684,6 +1388,38 @@
     },
     {
       "cost": 4.5,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        }
+      ],
       "id": 295,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p106611.png",
@@ -715,6 +1451,38 @@
     },
     {
       "cost": 5.1,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        }
+      ],
       "id": 260,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p209036.png",
@@ -746,6 +1514,38 @@
     },
     {
       "cost": 6.3,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        }
+      ],
       "id": 178,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p50175.png",

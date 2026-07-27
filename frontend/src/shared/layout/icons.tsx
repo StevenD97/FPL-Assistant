@@ -26,7 +26,14 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <rect x="14" y="14" width="7" height="7" rx="1.5" />
     </>
   ),
-  players: <path d="M4 6h16M4 12h16M4 18h16" />,
+  players: (
+    <>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+      <path d="M15.5 5.2a3 3 0 0 1 0 5.6" />
+      <path d="M17 13.3a5.5 5.5 0 0 1 3.5 5.2" />
+    </>
+  ),
   outlook: <path d="M4 19V5M4 19h16M7 15l3.5-4 3 2.5L20 7" />,
   differentials: <path d="M12 2 4 12l8 10 8-10z" />,
   "price-watch": <path d="M7 17V7m0 0-3 3m3-3 3 3M17 7v10m0 0-3-3m3 3 3-3" />,

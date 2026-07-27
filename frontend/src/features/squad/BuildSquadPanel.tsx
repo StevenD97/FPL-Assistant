@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
+import { StatTile } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { Select } from "@/shared/ui/Select";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
@@ -12,6 +14,7 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
 import { TeamNameGenerator } from "@/features/squad/TeamNameGenerator";
+import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
 import { API_URL } from "@/shared/lib/api";
 
 
@@ -69,6 +72,11 @@ type SwapCandidate = {
 
 const POSITION_ORDER: Position[] = ["GKP", "DEF", "MID", "FWD"];
 const POSITION_LIMITS: Record<Position, number> = { GKP: 2, DEF: 5, MID: 5, FWD: 3 };
+// A 15-man squad = a starting XI on the pitch + a 4-man bench. The XI is seeded
+// as a 4-4-2 (the neutral default); the bench takes the one-per-position
+// overflow (1 GK + 1 DEF + 1 MID + 1 FWD), so pitch + bench sum back to
+// POSITION_LIMITS (2/5/5/3). Players fill their position's pitch bucket first.
+const PITCH_BUCKET: Record<Position, number> = { GKP: 1, DEF: 4, MID: 4, FWD: 2 };
 const MAX_PER_CLUB = 3;
 const TOUGH_FIXTURE_THRESHOLD = 3.2; // rough FDR (1-5 scale) worth flagging
 const STRONG_FIXTURE_TEAMS_TO_CHECK = 4;
@@ -386,6 +394,26 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
   const [budget, setBudget] = useState(100);
   const [search, setSearch] = useState("");
   const [positionFilter, setPositionFilter] = useState<Position | "All">("All");
+  const [statsId, setStatsId] = useState<number | null>(null);
+
+  // Auto-save the draft to this device. Restore once on mount (in an effect, not
+  // a lazy initializer, so server and first client render match); only start
+  // persisting after that so the empty initial state can't clobber a saved draft.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    // Restore in an effect (not a lazy initializer) so the server/first-client
+    // render stays empty and matches - reading localStorage during render would
+    // hydration-mismatch.
+    const draft = loadSquadDraft();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSquadIdList(draft.ids);
+    setBudget(draft.budget);
+    setHydrated(true);
+  }, []);
+  useEffect(() => {
+    if (!hydrated) return;
+    storeSquadDraft({ ids: squadIdList, budget });
+  }, [hydrated, squadIdList, budget]);
 
   useEffect(() => {
     async function load() {
@@ -429,19 +457,35 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     [squad, squadIds, fixtures, players, budgetRemaining]
   );
 
-  const pitchPlayers = useMemo(
-    () =>
-      squad.map((p) => ({
-        id: p.id,
-        name: p.web_name,
-        position: p.position,
-        teamShort: p.team_short,
-        photo: p.player_photo,
-        teamKit: p.team_kit,
-        href: `/players/${p.id}`,
-      })),
-    [squad]
-  );
+  // Split the squad into a starting XI (pitch) and a 4-man bench by add order:
+  // the first PITCH_BUCKET[pos] of each position start, the overflow benches.
+  // Empty counts drive the placeholder-slot templates in both zones.
+  const { pitchPlayers, pitchEmptyByPosition, benchByPosition } = useMemo(() => {
+    const byPos: Record<Position, PoolPlayer[]> = { GKP: [], DEF: [], MID: [], FWD: [] };
+    for (const p of squad) byPos[p.position].push(p);
+
+    const toPitchPlayer = (p: PoolPlayer) => ({
+      id: p.id,
+      name: p.web_name,
+      position: p.position,
+      teamShort: p.team_short,
+      photo: p.player_photo,
+      teamKit: p.team_kit,
+      subtitle: `${p.predicted_points.toFixed(1)} xPts`,
+    });
+
+    const pitch = POSITION_ORDER.flatMap((pos) => byPos[pos].slice(0, PITCH_BUCKET[pos]).map(toPitchPlayer));
+    const bench = {} as Record<Position, PoolPlayer[]>;
+    const pitchEmpty = {} as Record<Position, number>;
+    for (const pos of POSITION_ORDER) {
+      const onPitch = Math.min(byPos[pos].length, PITCH_BUCKET[pos]);
+      bench[pos] = byPos[pos].slice(PITCH_BUCKET[pos]);
+      pitchEmpty[pos] = PITCH_BUCKET[pos] - onPitch;
+    }
+    return { pitchPlayers: pitch, pitchEmptyByPosition: pitchEmpty, benchByPosition: bench };
+  }, [squad]);
+
+  const statsPlayer = statsId != null ? playersById.get(statsId) ?? null : null;
 
   function canAdd(player: PoolPlayer): { ok: boolean; reason?: string } {
     if (squadIds.has(player.id)) return { ok: false, reason: "Already in squad" };
@@ -508,6 +552,12 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
 
   function swapPlayer(oldId: number, newId: number) {
     setSquadIdList((prev) => prev.map((id) => (id === oldId ? newId : id)));
+    setSwapTargetId(null);
+    setSwapOptions(null);
+  }
+
+  function closeStats() {
+    setStatsId(null);
     setSwapTargetId(null);
     setSwapOptions(null);
   }
@@ -617,18 +667,82 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
           )}
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Pitch view */}
+            {/* Pitch view - the primary squad surface: a full 15-slot template
+                filled from the browser. Tap a slot to filter, a player for
+                stats, × to remove. */}
             <div>
-              <h2 className="mb-3 font-semibold text-text-primary">
-                Your squad
-              </h2>
-              {squadIdList.length === 0 ? (
-                <div className="flex min-h-[420px] items-center justify-center rounded-lg border border-border bg-surface-sunken text-sm text-text-muted">
-                  No players yet - add some from the list on the right.
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <h2 className="font-semibold text-text-primary">Your squad</h2>
+                <span className="font-mono text-xs text-text-muted">{squadIdList.length}/15</span>
+              </div>
+              <PitchFormation
+                players={pitchPlayers}
+                emptyByPosition={pitchEmptyByPosition}
+                onPlayerClick={(id) => setStatsId(id)}
+                onRemove={removePlayer}
+                onSlotClick={(pos) => {
+                  setPositionFilter(pos);
+                  setSearch("");
+                }}
+              />
+
+              {/* Bench: 1 GK + 3 outfield (the per-position overflow past the XI). */}
+              <div className="mt-3 rounded-lg border border-border bg-surface-sunken px-4 py-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Bench</span>
+                  <span className="text-[10px] text-text-muted">GK + 3 outfield</span>
                 </div>
-              ) : (
-                <PitchFormation players={pitchPlayers} />
-              )}
+                <div className="flex flex-wrap items-start justify-center gap-4">
+                  {POSITION_ORDER.map((pos) => {
+                    const p = benchByPosition[pos][0];
+                    if (p) {
+                      return (
+                        <div key={pos} className="relative flex h-[76px] flex-col items-center gap-1">
+                          <button
+                            onClick={() => removePlayer(p.id)}
+                            aria-label={`Remove ${p.web_name}`}
+                            className="absolute -right-1 -top-1 z-[2] flex h-5 w-5 items-center justify-center rounded-full bg-danger text-xs text-white shadow ring-2 ring-white transition-transform hover:scale-110"
+                          >
+                            ×
+                          </button>
+                          <button
+                            onClick={() => setStatsId(p.id)}
+                            aria-label={`View ${p.web_name}'s stats`}
+                            className="transition-transform duration-fast ease-standard hover:scale-105"
+                          >
+                            <PlayerPhoto
+                              src={p.player_photo}
+                              name={p.web_name}
+                              className="h-11 w-11 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
+                            />
+                          </button>
+                          <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <button
+                        key={pos}
+                        onClick={() => {
+                          setPositionFilter(pos);
+                          setSearch("");
+                        }}
+                        aria-label={`Add a bench ${pos}`}
+                        className="group flex h-[76px] flex-col items-center gap-1"
+                      >
+                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-border-strong text-[10px] font-bold text-text-muted transition-colors group-hover:border-pl-purple group-hover:text-pl-purple">
+                          {pos}
+                        </span>
+                        <span className="text-[11px] font-medium text-text-muted">Add {pos}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <p className="mt-2 text-center text-xs text-text-muted">
+                Tap an empty slot to filter the list · tap a player for stats · × to remove
+              </p>
             </div>
 
             {/* Player browser */}
@@ -654,7 +768,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                 <table className="w-full text-left text-sm">
                   <thead className="sticky top-0 bg-surface-sunken">
                     <tr>
-                      <th className="px-3 py-2.5"></th>
+                      <th className="w-8 px-3 py-2.5"></th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
@@ -666,22 +780,40 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                   </thead>
                   <tbody>
                     {filteredPlayers.map((p) => {
+                      const inSquad = squadIds.has(p.id);
                       const { ok, reason } = canAdd(p);
+                      const clickable = inSquad || ok;
                       return (
-                        <tr key={p.id} className="border-t border-border">
+                        <tr
+                          key={p.id}
+                          onClick={() => {
+                            if (inSquad) removePlayer(p.id);
+                            else if (ok) addPlayer(p.id);
+                          }}
+                          aria-disabled={!clickable}
+                          title={!clickable ? reason : inSquad ? "Click to remove" : "Click to add"}
+                          className={`border-t border-border transition-colors duration-fast ease-standard ${
+                            inSquad
+                              ? "cursor-pointer bg-pl-green/10 hover:bg-pl-green/15"
+                              : clickable
+                              ? "cursor-pointer hover:bg-surface-sunken"
+                              : "cursor-not-allowed opacity-45"
+                          }`}
+                        >
                           <td className="px-3 py-2.5">
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => addPlayer(p.id)}
-                              disabled={!ok}
-                              title={reason}
+                            <span
+                              className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${
+                                inSquad
+                                  ? "bg-pl-green text-pl-purple"
+                                  : "border border-border-strong text-text-muted"
+                              }`}
+                              aria-hidden="true"
                             >
-                              Add
-                            </Button>
+                              {inSquad ? "✓" : "+"}
+                            </span>
                           </td>
-                          <td className="px-3 py-2.5 font-medium">
-                            <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                          <td className="px-3 py-2.5 font-medium text-text-primary">
+                            {p.web_name}
                             <StatusBadge status={p.status} news={p.news} />
                           </td>
                           <td className="px-3 py-2.5">
@@ -703,96 +835,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Squad list, with remove */}
-            <div>
-              <h2 className="mb-3 font-semibold text-text-primary">
-                Squad list
-              </h2>
-              <div className="overflow-hidden rounded-lg border border-border shadow-sm">
-                {squadIdList.length === 0 ? (
-                  <p className="p-4 text-sm text-text-muted">
-                    No players yet - add some from the list above.
-                  </p>
-                ) : (
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-surface-sunken">
-                      <tr>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-                        <th className="px-3 py-2.5"></th>
-                        <th className="px-3 py-2.5"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {POSITION_ORDER.flatMap((pos) =>
-                        squad
-                          .filter((p) => p.position === pos)
-                          .flatMap((p) => {
-                            const row = (
-                              <tr key={p.id} className="border-t border-border">
-                                <td className="px-3 py-2.5 font-medium">
-                                  <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
-                                  <StatusBadge status={p.status} news={p.news} />
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <PositionBadge position={p.position} />
-                                </td>
-                                <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                                <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                                <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                                <td className="px-3 py-2.5">
-                                  <button onClick={() => loadSwapOptions(p)} className="text-xs text-pl-purple hover:underline">
-                                    {swapTargetId === p.id ? "Hide" : "Swap"}
-                                  </button>
-                                </td>
-                                <td className="px-3 py-2.5">
-                                  <Button size="sm" variant="ghost" onClick={() => removePlayer(p.id)}>
-                                    Remove
-                                  </Button>
-                                </td>
-                              </tr>
-                            );
-                            if (swapTargetId !== p.id) return [row];
-                            return [
-                              row,
-                              <tr key={`${p.id}-swap`} className="border-t border-border bg-surface-sunken">
-                                <td colSpan={8} className="px-3 py-3">
-                                  {swapLoading ? (
-                                    <p className="text-xs text-text-muted">Loading...</p>
-                                  ) : swapOptions && swapOptions.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
-                                      {swapOptions.map((a) => (
-                                        <button
-                                          key={a.id}
-                                          onClick={() => swapPlayer(p.id, a.id)}
-                                          className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
-                                        >
-                                          {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
-                                        </button>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <p className="text-xs text-text-muted">No affordable alternatives found.</p>
-                                  )}
-                                </td>
-                              </tr>,
-                            ];
-                          })
-                      )}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </div>
-
+          <div className="mt-8">
             {/* Feedback */}
             <div>
               <h2 className="mb-3 font-semibold text-text-primary">
@@ -837,6 +880,112 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
             </div>
           </div>
         </>
+      )}
+
+      {/* Player stats - opened by tapping a player on the pitch. Hosts the
+          quick actions that used to live in the removed squad-list table:
+          full profile, swap, remove. */}
+      {statsPlayer && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${statsPlayer.web_name} stats`}
+        >
+          <div className="absolute inset-0 bg-black/50" onClick={closeStats} aria-hidden="true" />
+          <div className="relative z-[1] w-full max-w-md rounded-t-2xl bg-white p-5 shadow-lg sm:rounded-2xl">
+            <div className="flex items-start gap-3">
+              <PlayerPhoto
+                src={statsPlayer.player_photo}
+                name={statsPlayer.web_name}
+                className="h-14 w-14 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-sm"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="truncate text-md font-bold text-pl-purple">{statsPlayer.web_name}</h3>
+                  <PositionBadge position={statsPlayer.position} />
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-secondary">
+                  <TeamBadge teamShort={statsPlayer.team_short} name={statsPlayer.team_short} badgeUrl={statsPlayer.team_badge} />
+                  <span className="font-mono">£{statsPlayer.cost.toFixed(1)}m</span>
+                  <span className="font-mono">{statsPlayer.selected_by_percent.toFixed(1)}% owned</span>
+                  <StatusBadge status={statsPlayer.status} news={statsPlayer.news} />
+                </div>
+              </div>
+              <button
+                onClick={closeStats}
+                aria-label="Close"
+                className="-mr-1 -mt-1 flex h-7 w-7 items-center justify-center rounded-full text-lg text-text-muted hover:bg-surface-sunken hover:text-text-primary"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <StatTile label="xPts · 5GW" value={statsPlayer.predicted_points.toFixed(1)} />
+              <StatTile label="Value" value={statsPlayer.value.toFixed(2)} />
+              <StatTile label="Own %" value={`${statsPlayer.selected_by_percent.toFixed(1)}%`} />
+            </div>
+            {statsPlayer.fixture_ticker && (
+              <p className="mt-3 text-xs text-text-muted">
+                Next {statsPlayer.fixture_count}:{" "}
+                <span className="font-mono text-text-secondary">{statsPlayer.fixture_ticker}</span>
+              </p>
+            )}
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <PlayerLink
+                id={statsPlayer.id}
+                className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-slate-50"
+              >
+                View full profile →
+              </PlayerLink>
+              <Button size="sm" variant="secondary" onClick={() => loadSwapOptions(statsPlayer)}>
+                {swapTargetId === statsPlayer.id ? "Hide replacements" : "Find replacements"}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  removePlayer(statsPlayer.id);
+                  closeStats();
+                }}
+              >
+                Remove
+              </Button>
+            </div>
+
+            {swapTargetId === statsPlayer.id && (
+              <div className="mt-3 border-t border-border pt-3">
+                {swapLoading ? (
+                  <p className="text-xs text-text-muted">Loading…</p>
+                ) : swapOptions && swapOptions.length > 0 ? (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                      Swap in
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {swapOptions.map((a) => (
+                        <button
+                          key={a.id}
+                          onClick={() => {
+                            swapPlayer(statsPlayer.id, a.id);
+                            closeStats();
+                          }}
+                          className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                        >
+                          {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-text-muted">No affordable alternatives found.</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

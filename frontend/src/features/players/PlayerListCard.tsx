@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { FdrChip } from "@/shared/ui/FdrChip";
 import { Skeleton } from "@/shared/ui/Skeleton";
 
 const POS_ACCENT: Record<string, string> = {
@@ -30,6 +31,7 @@ export type PlayerListItem = {
     assists: number;
     expected_goal_involvements: string | number;
   } | null;
+  fixtures: { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string }[];
 };
 
 function Stat({ k, v }: { k: string; v: string | number }) {
@@ -100,6 +102,21 @@ export function PlayerListCard({ p }: { p: PlayerListItem }) {
         <Stat k="AST" v={s?.assists ?? "—"} />
         <Stat k="xGI" v={xgi} />
       </div>
+
+      {p.fixtures.length > 0 && (
+        <div className="mt-2.5 flex flex-wrap items-center gap-1 border-t border-border pt-2.5">
+          <span className="mr-0.5 text-[9px] font-semibold uppercase tracking-wide text-text-muted">Next</span>
+          {p.fixtures.slice(0, 5).map((fx, i) => (
+            <FdrChip
+              key={i}
+              opponent={fx.opponent}
+              isHome={fx.is_home}
+              difficulty={fx.difficulty}
+              badgeUrl={fx.opponent_badge}
+            />
+          ))}
+        </div>
+      )}
     </Link>
   );
 }
@@ -129,6 +146,11 @@ export function PlayerListCardSkeleton() {
       <div className="mt-3 grid grid-cols-4 gap-2 border-t border-border pt-2.5">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-8 w-full" />
+        ))}
+      </div>
+      <div className="mt-2.5 flex flex-wrap gap-1 border-t border-border pt-2.5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-5 w-12 rounded-sm" />
         ))}
       </div>
     </div>

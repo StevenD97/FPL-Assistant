@@ -61,7 +61,7 @@ const SECTIONS: Section[] = [
 
 export default function PrivacyPage() {
   return (
-    <PageContainer width="narrow">
+    <PageContainer>
       <PageHeader title="Privacy Policy" subtitle="Last updated 27 July 2026" />
       <div className="flex flex-col gap-5 text-sm leading-relaxed text-text-secondary">
         {SECTIONS.map((s) => (

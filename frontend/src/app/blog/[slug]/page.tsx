@@ -20,7 +20,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   if (!post) notFound();
 
   return (
-    <PageContainer width="narrow">
+    <PageContainer>
       <Link href="/blog" className="text-xs font-medium text-pl-purple hover:underline">
         &larr; Back to blog
       </Link>

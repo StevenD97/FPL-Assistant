@@ -70,7 +70,7 @@ const SECTIONS: Section[] = [
 
 export default function TermsPage() {
   return (
-    <PageContainer width="narrow">
+    <PageContainer>
       <PageHeader title="Terms & Conditions" subtitle="Last updated 27 July 2026" />
       <div className="flex flex-col gap-5 text-sm leading-relaxed text-text-secondary">
         {SECTIONS.map((s) => (

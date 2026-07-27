@@ -179,8 +179,35 @@ def all_players(search, position, ref_date, next_event, gw_count=5, limit=600):
     df = pool[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
     records = df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
+
+    # Per-player next-N fixtures (with FDR difficulty + opponent badge) so the
+    # unified players list can show a fixture ticker - the "outlook" context
+    # that used to live on its own page. Same shape as predicted_points_outlook's
+    # structured_fixtures, plus `difficulty` for the frontend's FdrChip colours.
+    team_badges = team_badge_by_short_name(bootstrap)
+    team_short_lookup = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    team_id_by_player_id = {e["id"]: e["team"] for e in bootstrap["elements"]}
+    fixtures_by_team_event = build_fixtures_by_team_event(load_fixtures(LIVE_FIXTURES_FILE))
+
+    def structured_fixtures(player_id):
+        team_id = team_id_by_player_id.get(player_id)
+        if team_id is None:
+            return []
+        result = []
+        for event in next_events:
+            for fx in fixtures_by_team_event[team_id].get(event, []):
+                opponent = team_short_lookup[fx["opponent"]]
+                result.append({
+                    "opponent": opponent,
+                    "is_home": fx["is_home"],
+                    "difficulty": fx["difficulty"],
+                    "opponent_badge": team_badges[opponent],
+                })
+        return result
+
     for row in records:
         row["season_stats"] = season_stats.get(row["id"])
+        row["fixtures"] = structured_fixtures(row["id"])
     return records
 
 

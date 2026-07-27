@@ -6,15 +6,14 @@ import type { ReactNode } from "react";
 export function PageContainer({
   children,
   className = "",
-  width = "wide",
 }: {
   children: ReactNode;
   className?: string;
-  width?: "wide" | "narrow";
 }) {
-  const max = width === "narrow" ? "max-w-4xl" : "max-w-6xl";
+  // Every page shares one width (max-w-6xl) so the layout doesn't jump as you
+  // move between pages.
   return (
-    <div className={`mx-auto flex w-full flex-col gap-4 px-4 py-5 lg:px-6 lg:py-6 ${max} ${className}`}>
+    <div className={`mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-5 lg:px-6 lg:py-6 ${className}`}>
       {children}
     </div>
   );

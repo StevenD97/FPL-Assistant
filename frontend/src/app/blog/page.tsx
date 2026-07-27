@@ -10,7 +10,7 @@ export default function BlogIndexPage() {
   const posts = getAllPosts();
 
   return (
-    <PageContainer width="narrow">
+    <PageContainer>
       <PageHeader
         title="Blog"
         subtitle="Pre-season notes, transfer watch, and gameweek analysis - written to help you plan your squad."

@@ -191,6 +191,17 @@ function PlayerDetailSkeleton() {
   );
 }
 
+// Big headline tile for the hero - larger than the StatTile used lower down,
+// so the key predictions read as the focal point around the card.
+function HeroStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-white px-3 py-4 text-center shadow-sm">
+      <span className="font-mono text-2xl font-bold text-pl-purple">{value}</span>
+      <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">{label}</span>
+    </div>
+  );
+}
+
 export default function PlayerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [data, setData] = useState<PlayerDetail | null>(null);
@@ -266,7 +277,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
   }
 
   if (loading) return <PlayerDetailSkeleton />;
-  if (error || !data) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-4xl text-sm font-medium text-danger">{error ?? "Player not found"}</p></main>;
+  if (error || !data) return <main className="px-4 py-5 lg:px-6 lg:py-6"><p className="mx-auto max-w-6xl text-sm font-medium text-danger">{error ?? "Player not found"}</p></main>;
 
   const p = data;
   const comparing = compareList.length > 0;
@@ -294,56 +305,71 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
   return (
     <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start">
-          <PlayerCard
-            name={p.web_name}
-            position={p.position}
-            teamShort={p.team_short}
-            teamBadge={p.team_badge}
-            photo={p.player_photo}
-            rating={p.prediction ? p.prediction.predicted_points.toFixed(1) : "—"}
-            windowLabel={p.prediction ? `${p.prediction.fixture_count} GW` : undefined}
-            stats={[
-              { k: "PTS", v: p.season_stats ? String(p.season_stats.total_points) : "—" },
-              { k: "GLS", v: p.season_stats ? String(p.season_stats.goals_scored) : "—" },
-              { k: "AST", v: p.season_stats ? String(p.season_stats.assists) : "—" },
-              { k: "xGI", v: p.season_stats ? Number(p.season_stats.expected_goal_involvements).toFixed(1) : "—" },
-              { k: "ICT", v: p.season_stats ? Number(p.season_stats.ict_index).toFixed(0) : "—" },
-              { k: "MIN", v: p.season_stats ? String(p.season_stats.minutes) : "—" },
-            ]}
-          />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <h1 className="font-sans text-xl font-bold tracking-tight text-pl-purple">
+        {/* Grandiose hero: the card centered, key predictions fanned around it,
+            identity + meta beneath. Everything else lives below the fold. */}
+        <section className="mb-10">
+          <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+            {p.prediction && (
+              <div className="order-2 grid w-full max-w-xs grid-cols-2 gap-3 lg:order-1 lg:w-52">
+                <HeroStat label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} />
+                <HeroStat label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} />
+              </div>
+            )}
+
+            <div className="order-1 lg:order-2">
+              <PlayerCard
+                size="hero"
+                name={p.web_name}
+                position={p.position}
+                teamShort={p.team_short}
+                teamBadge={p.team_badge}
+                photo={p.player_photo}
+                rating={p.prediction ? p.prediction.predicted_points.toFixed(1) : "—"}
+                windowLabel={p.prediction ? `${p.prediction.fixture_count} GW` : undefined}
+                stats={[
+                  { k: "PTS", v: p.season_stats ? String(p.season_stats.total_points) : "—" },
+                  { k: "GLS", v: p.season_stats ? String(p.season_stats.goals_scored) : "—" },
+                  { k: "AST", v: p.season_stats ? String(p.season_stats.assists) : "—" },
+                  { k: "xGI", v: p.season_stats ? Number(p.season_stats.expected_goal_involvements).toFixed(1) : "—" },
+                  { k: "ICT", v: p.season_stats ? Number(p.season_stats.ict_index).toFixed(0) : "—" },
+                  { k: "MIN", v: p.season_stats ? String(p.season_stats.minutes) : "—" },
+                ]}
+              />
+            </div>
+
+            {p.prediction && (
+              <div className="order-3 grid w-full max-w-xs grid-cols-2 gap-3 lg:w-52">
+                <HeroStat label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} />
+                <HeroStat label="Clean sheet prob" value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`} />
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 flex flex-col items-center gap-2 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <h1 className="font-sans text-2xl font-bold tracking-tight text-pl-purple">
                 {p.first_name} {p.second_name}
               </h1>
               <PositionBadge position={p.position} />
               <StatusBadge status={p.status} news={p.news} />
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-text-secondary">
               <TeamBadge teamShort={p.team_short} name={p.team_name} badgeUrl={p.team_badge} />
               <span className="font-mono">£{p.cost.toFixed(1)}m</span>
               <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
               {p.penalties_order === 1 && <span>Primary penalty taker</span>}
             </div>
-            {p.news && (
-              <p className="mt-3 rounded-md bg-warning-bg px-3 py-2 text-sm text-warning">{p.news}</p>
+            {p.prediction && (
+              <p className="text-sm text-text-muted">
+                Next {p.prediction.fixture_count} gameweeks ·{" "}
+                <span className="font-mono text-text-secondary">{p.prediction.fixture_ticker}</span>
+              </p>
             )}
-            {p.prediction && !comparing && (
-              <div className="mt-5">
-                <p className="mb-2 text-sm text-text-secondary">
-                  Next {p.prediction.fixture_count} gameweeks · {p.prediction.fixture_ticker}
-                </p>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <StatTile label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} />
-                  <StatTile label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} />
-                  <StatTile label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} />
-                  <StatTile label="Clean sheet prob" value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`} />
-                </div>
-              </div>
+            {p.news && (
+              <p className="mt-1 max-w-lg rounded-md bg-warning-bg px-3 py-2 text-sm text-warning">{p.news}</p>
             )}
           </div>
-        </div>
+        </section>
 
         <section className="mb-8">
           <h2 className="mb-3 font-semibold text-text-primary">Compare</h2>

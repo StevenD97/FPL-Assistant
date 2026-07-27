@@ -31,8 +31,6 @@ const NAV_SECTIONS: NavSection[] = [
     label: "Research",
     items: [
       { href: "/players", label: "Players", icon: "players" },
-      { href: "/outlook", label: "Outlook", icon: "outlook" },
-      { href: "/differentials", label: "Differentials", icon: "differentials" },
       { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
       { href: "/chips", label: "Chips", icon: "chips" },
     ],

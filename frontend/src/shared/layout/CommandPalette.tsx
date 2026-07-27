@@ -11,9 +11,7 @@ type Cmd = { label: string; href: string; icon: IconName; keywords?: string };
 const COMMANDS: Cmd[] = [
   { label: "Home", href: "/", icon: "home" },
   { label: "My Squad", href: "/squad", icon: "squad", keywords: "build optimize transfers team draft" },
-  { label: "Players", href: "/players", icon: "players", keywords: "search browse database" },
-  { label: "Outlook", href: "/outlook", icon: "outlook", keywords: "predicted points multi gameweek" },
-  { label: "Differentials", href: "/differentials", icon: "differentials", keywords: "low ownership" },
+  { label: "Players", href: "/players", icon: "players", keywords: "search browse database outlook predicted points differentials low ownership" },
   { label: "Price Watch", href: "/price-watch", icon: "price-watch", keywords: "rises falls transfers momentum" },
   { label: "Matches", href: "/matches", icon: "fixtures", keywords: "fixtures schedule results difficulty fdr calendar" },
   { label: "Chips", href: "/chips", icon: "chips", keywords: "wildcard bench boost triple captain free hit" },

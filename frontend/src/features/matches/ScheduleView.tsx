@@ -59,7 +59,7 @@ export function ScheduleView() {
   const maxEvent = events[events.length - 1] ?? 38;
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div>
       {loading && (
         <>
           <div className="mb-4 flex items-center gap-3">
@@ -67,20 +67,9 @@ export function ScheduleView() {
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-8 w-16 rounded-md" />
           </div>
-          <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className={`flex items-center justify-between px-4 py-2.5 ${i > 0 ? "border-t border-border" : ""}`}
-              >
-                <div className="flex flex-1 justify-end">
-                  <Skeleton className="h-5 w-20" />
-                </div>
-                <Skeleton className="mx-4 h-5 w-16 shrink-0" />
-                <div className="flex flex-1">
-                  <Skeleton className="h-5 w-20" />
-                </div>
-              </div>
+              <Skeleton key={i} className="h-[62px] w-full rounded-lg" />
             ))}
           </div>
         </>
@@ -99,23 +88,44 @@ export function ScheduleView() {
             </Button>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-            {rows.map((fx, i) => (
-              <div key={i} className={`flex items-center justify-between px-4 py-2.5 text-sm ${i > 0 ? "border-t border-border" : ""}`}>
-                <div className="flex flex-1 justify-end">
-                  <TeamBadge teamShort={fx.team_h} name={fx.team_h} badgeUrl={fx.team_h_badge} />
-                </div>
-                <div className="mx-4 w-24 shrink-0 text-center font-mono font-medium text-text-primary">
-                  {fx.finished
-                    ? `${fx.team_h_score} - ${fx.team_a_score}`
-                    : new Date(fx.kickoff_time).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                </div>
-                <div className="flex flex-1">
-                  <TeamBadge teamShort={fx.team_a} name={fx.team_a} badgeUrl={fx.team_a_badge} />
-                </div>
-              </div>
-            ))}
-          </div>
+          {rows.length === 0 ? (
+            <p className="text-sm text-text-muted">No fixtures scheduled for this gameweek.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {rows.map((fx, i) => {
+                const kickoff = new Date(fx.kickoff_time);
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-3 text-sm shadow-sm"
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-2">
+                      <TeamBadge teamShort={fx.team_h} name={fx.team_h} badgeUrl={fx.team_h_badge} />
+                    </div>
+                    <div className="shrink-0 px-2 text-center leading-tight">
+                      {fx.finished ? (
+                        <span className="font-mono text-base font-bold text-text-primary">
+                          {fx.team_h_score}-{fx.team_a_score}
+                        </span>
+                      ) : (
+                        <>
+                          <div className="font-mono text-xs font-medium text-text-primary">
+                            {kickoff.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                          </div>
+                          <div className="font-mono text-[11px] text-text-muted">
+                            {kickoff.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+                      <TeamBadge teamShort={fx.team_a} name={fx.team_a} badgeUrl={fx.team_a_badge} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
     </div>
