@@ -277,7 +277,7 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
   }, [connectedId]);
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div>
       <p className="mb-6 text-sm text-text-secondary">
         Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
         <SeasonDataNote mode="archived" />

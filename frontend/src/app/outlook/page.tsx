@@ -147,7 +147,7 @@ export default function OutlookPage() {
 
         {filtered && (
           <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
-            <table className="w-full text-left text-sm">
+            <table className="table-cards w-full text-left text-sm">
               <thead className="bg-surface-sunken">
                 <tr>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">#</th>
@@ -162,19 +162,19 @@ export default function OutlookPage() {
               <tbody>
                 {filtered.map((row, i) => (
                   <tr key={row.id} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-mono text-text-muted">{i + 1}</td>
-                    <td className="px-3 py-2.5 font-medium">
+                    <td data-label="Rank" className="px-3 py-2.5 font-mono text-text-muted">{i + 1}</td>
+                    <td className="cell-primary px-3 py-2.5 font-medium">
                       <PlayerLink id={row.live_id}>{row.web_name}</PlayerLink>
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td data-label="Team" className="px-3 py-2.5">
                       <TeamBadge teamShort={row.team_short} name={row.team_short} badgeUrl={row.team_badge} />
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td data-label="Pos" className="px-3 py-2.5">
                       <PositionBadge position={row.position} />
                     </td>
-                    <td className="px-3 py-2.5 font-mono font-medium">{row.predicted_points.toFixed(2)}</td>
-                    <td className="px-3 py-2.5 font-mono">{row.fixture_count}</td>
-                    <td className="px-3 py-2.5">
+                    <td data-label="Predicted pts" className="px-3 py-2.5 font-mono font-medium">{row.predicted_points.toFixed(2)}</td>
+                    <td data-label="GWs" className="px-3 py-2.5 font-mono">{row.fixture_count}</td>
+                    <td data-label="Fixtures" className="px-3 py-2.5">
                       <div className="flex flex-wrap gap-1">
                         {row.fixtures.map((fx, fi) => (
                           <span

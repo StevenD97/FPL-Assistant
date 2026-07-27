@@ -282,7 +282,7 @@ export default function LeaguesPage() {
             ) : (
               <>
                 <div className="mb-6 overflow-x-auto rounded-lg border border-border shadow-sm">
-                  <table className="w-full text-left text-sm">
+                  <table className="table-cards w-full text-left text-sm">
                     <thead className="bg-surface-sunken">
                       <tr>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Rank</th>
@@ -295,11 +295,11 @@ export default function LeaguesPage() {
                     <tbody>
                       {standings.standings.map((row) => (
                         <tr key={row.entry_id} className="border-t border-border">
-                          <td className="px-3 py-2.5 font-mono">{row.rank}</td>
-                          <td className="px-3 py-2.5 font-medium">{row.player_name}</td>
-                          <td className="px-3 py-2.5 text-text-secondary">{row.entry_name}</td>
-                          <td className="px-3 py-2.5 font-mono">{row.event_total}</td>
-                          <td className="px-3 py-2.5 font-mono font-medium">{row.total}</td>
+                          <td data-label="Rank" className="px-3 py-2.5 font-mono">{row.rank}</td>
+                          <td className="cell-primary px-3 py-2.5 font-medium">{row.player_name}</td>
+                          <td data-label="Team" className="px-3 py-2.5 text-text-secondary">{row.entry_name}</td>
+                          <td data-label="GW pts" className="px-3 py-2.5 font-mono">{row.event_total}</td>
+                          <td data-label="Total" className="px-3 py-2.5 font-mono font-medium">{row.total}</td>
                         </tr>
                       ))}
                     </tbody>

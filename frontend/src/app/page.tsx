@@ -1,27 +1,11 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { NavIcon, type IconName } from "@/components/nav/icons";
+import { NavIcon } from "@/components/nav/icons";
 import { Countdown } from "@/components/ui/Countdown";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { HomeBody } from "@/components/home/HomeBody";
-import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
 import { getAllPosts } from "@/lib/blog";
-
-type PageInfo = { title: string; href: string; icon: IconName };
-
-// Landing page's job is walking a visitor through setup, not cataloguing
-// every page - each of these already explains itself once you're on it.
-const PAGES: PageInfo[] = [
-  { title: "Players", href: "/players", icon: "players" },
-  { title: "Outlook", href: "/outlook", icon: "outlook" },
-  { title: "Differentials", href: "/differentials", icon: "differentials" },
-  { title: "Price Watch", href: "/price-watch", icon: "price-watch" },
-  { title: "Fixtures", href: "/fixtures", icon: "fixtures" },
-  { title: "Schedule", href: "/schedule", icon: "schedule" },
-  { title: "Chips", href: "/chips", icon: "chips" },
-  { title: "Leagues", href: "/leagues", icon: "leagues" },
-];
 
 export default function LandingPage() {
   const latestPost = getAllPosts()[0];
@@ -92,24 +76,6 @@ export default function LandingPage() {
         </Link>
       )}
 
-      {/* Explore everything else */}
-      <div className="flex flex-col gap-2">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-pl-purple/60">Everything else</span>
-        <div className="flex flex-wrap gap-2">
-          {PAGES.map((page) => (
-            <Link
-              key={page.href}
-              href={page.href}
-              className="flex items-center gap-1.5 rounded-full border border-border bg-white px-3.5 py-2 text-xs font-semibold text-text-primary transition-colors hover:border-pl-purple hover:bg-pl-purple/5"
-            >
-              <NavIcon name={page.icon} className="h-4 w-4 text-pl-purple" />
-              {page.title}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <p className="pt-2 text-center text-xs text-text-muted">GW1 · {NEXT_DEADLINE_LABEL.replace("GW1 · ", "")}</p>
     </PageContainer>
   );
 }

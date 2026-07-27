@@ -2,7 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/components/ui/CompareArrow";
-import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
+import { PlayerCard } from "@/components/player/PlayerCard";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { StatTile } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -250,27 +250,55 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
 
   return (
     <main className="px-4 py-5 lg:px-6 lg:py-6">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex flex-wrap items-center gap-4">
-          <PlayerPhoto
-            src={p.player_photo}
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start">
+          <PlayerCard
             name={p.web_name}
-            className="h-16 w-16 rounded-full border-2 border-border-strong bg-surface-sunken object-cover object-top text-sm sm:h-20 sm:w-20 sm:text-base"
+            position={p.position}
+            teamShort={p.team_short}
+            teamBadge={p.team_badge}
+            photo={p.player_photo}
+            rating={p.prediction ? p.prediction.predicted_points.toFixed(1) : "—"}
+            windowLabel={p.prediction ? `${p.prediction.fixture_count} GW` : undefined}
+            stats={[
+              { k: "PTS", v: p.season_stats ? String(p.season_stats.total_points) : "—" },
+              { k: "GLS", v: p.season_stats ? String(p.season_stats.goals_scored) : "—" },
+              { k: "AST", v: p.season_stats ? String(p.season_stats.assists) : "—" },
+              { k: "xGI", v: p.season_stats ? Number(p.season_stats.expected_goal_involvements).toFixed(1) : "—" },
+              { k: "ICT", v: p.season_stats ? Number(p.season_stats.ict_index).toFixed(0) : "—" },
+              { k: "MIN", v: p.season_stats ? String(p.season_stats.minutes) : "—" },
+            ]}
           />
-          <div>
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="font-sans text-lg font-bold tracking-tight text-pl-purple">
+              <h1 className="font-sans text-xl font-bold tracking-tight text-pl-purple">
                 {p.first_name} {p.second_name}
               </h1>
               <PositionBadge position={p.position} />
               <StatusBadge status={p.status} news={p.news} />
             </div>
-            <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-text-secondary">
               <TeamBadge teamShort={p.team_short} name={p.team_name} badgeUrl={p.team_badge} />
               <span className="font-mono">£{p.cost.toFixed(1)}m</span>
               <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
               {p.penalties_order === 1 && <span>Primary penalty taker</span>}
             </div>
+            {p.news && (
+              <p className="mt-3 rounded-md bg-warning-bg px-3 py-2 text-sm text-warning">{p.news}</p>
+            )}
+            {p.prediction && !comparing && (
+              <div className="mt-5">
+                <p className="mb-2 text-sm text-text-secondary">
+                  Next {p.prediction.fixture_count} gameweeks · {p.prediction.fixture_ticker}
+                </p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <StatTile label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} />
+                  <StatTile label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} />
+                  <StatTile label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} />
+                  <StatTile label="Clean sheet prob" value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -322,21 +350,6 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
           </>
         ) : (
           <>
-            {p.prediction && (
-              <section className="mb-8">
-                <h2 className="mb-3 font-semibold text-text-primary">
-                  Next {p.prediction.fixture_count} gameweeks
-                </h2>
-                <p className="mb-3 text-sm text-text-secondary">{p.prediction.fixture_ticker}</p>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <StatTile label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} />
-                  <StatTile label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} />
-                  <StatTile label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} />
-                  <StatTile label="Clean sheet prob" value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`} />
-                </div>
-              </section>
-            )}
-
             <section className="mb-8">
               <h2 className="mb-3 font-semibold text-text-primary">2025/26 season</h2>
               {p.season_stats ? (
