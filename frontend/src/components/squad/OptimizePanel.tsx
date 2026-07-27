@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { CaptainBadge } from "@/components/ui/CaptainBadge";
 import { PlayerLink } from "@/components/ui/PlayerLink";
+import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
@@ -93,14 +94,10 @@ function IdealXI({ squad }: { squad: SquadRow[] }) {
         </span>
         {bench.map((p) => (
           <PlayerLink key={p.id} id={p.id} className="flex flex-col items-center gap-1 text-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <PlayerPhoto
               src={p.player_photo}
-              alt={p.web_name}
-              className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-              }}
+              name={p.web_name}
+              className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
             />
             <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
           </PlayerLink>

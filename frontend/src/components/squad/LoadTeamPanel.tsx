@@ -6,6 +6,7 @@ import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card, StatTile } from "@/components/ui/Card";
 import { PlayerLink } from "@/components/ui/PlayerLink";
+import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
@@ -334,14 +335,10 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
                 .filter((p) => p.role !== "Starting XI")
                 .map((p) => (
                   <PlayerLink key={p.id} id={p.live_id} className="flex flex-col items-center gap-1 text-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <PlayerPhoto
                       src={p.player_photo}
-                      alt={p.web_name}
-                      className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-                      }}
+                      name={p.web_name}
+                      className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
                     />
                     <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
                   </PlayerLink>
@@ -494,14 +491,10 @@ export function LoadTeamPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () 
                           <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-2 font-medium">
                             <div className="flex items-center gap-2">
                               <PlayerLink id={display.id} className="flex items-center gap-2">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
+                                <PlayerPhoto
                                   src={display.player_photo}
-                                  alt=""
-                                  className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top"
-                                  onError={(e) => {
-                                    (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-                                  }}
+                                  name={display.web_name}
+                                  className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-[8px]"
                                 />
                                 <span>
                                   {display.web_name} <span className="text-text-muted">({display.team_short})</span>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { teamColorVar } from "@/lib/teamColors";
+import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 
 type Position = "GKP" | "DEF" | "MID" | "FWD";
 
@@ -48,26 +49,12 @@ export function PitchFormation({ players }: { players: PitchPlayer[] }) {
 function PitchPlayerCard({ player: p }: { player: PitchPlayer }) {
   const badge = (
     <div className="relative">
-      {p.photo ? (
-        // Official PL photo CDN - plain <img>, not next/image (external, unoptimized host).
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={p.photo}
-          alt={p.name}
-          className="h-12 w-12 rounded-full border-[3px] bg-white object-cover object-top shadow-md sm:h-16 sm:w-16"
-          style={{ borderColor: teamColorVar(p.teamShort) }}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-          }}
-        />
-      ) : (
-        <div
-          className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] bg-white font-mono text-[11px] font-semibold text-pl-purple shadow-md sm:h-16 sm:w-16"
-          style={{ borderColor: teamColorVar(p.teamShort) }}
-        >
-          {p.position}
-        </div>
-      )}
+      <PlayerPhoto
+        src={p.photo}
+        name={p.name}
+        className="h-12 w-12 rounded-full border-[3px] bg-white object-cover object-top text-[11px] shadow-md sm:h-16 sm:w-16 sm:text-sm"
+        style={{ borderColor: teamColorVar(p.teamShort) }}
+      />
       {p.teamKit && (
         // eslint-disable-next-line @next/next/no-img-element
         <img

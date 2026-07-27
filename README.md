@@ -538,6 +538,15 @@ conventions rather than dropped in as-is. No dark mode.
   season on disk, not a time series of them, so DB-unreachable and
   DB-has-no-history-yet both just mean "no trend data yet"
   (`has_history_trend: false`) rather than an error.
+- **Player photo fallback** (`frontend/src/components/ui/PlayerPhoto.tsx`).
+  Roughly a third of players have no shot on the official PL photo CDN at
+  either served size (see `player_photo_url`'s docstring) - previously
+  every `<img>` just hid itself on a 404, leaving an empty gap in the
+  pitch view rather than showing anything. `PlayerPhoto` tracks its own
+  load-failure state and falls back to an initials avatar (the same
+  treatment the sidebar already used for a connected manager with no
+  team crest), used everywhere a player photo renders: the pitch view,
+  bench avatars, the transfer planner table, and the player detail page.
 - **Differentials' ownership is live, not archived.** `compute_player_scores`
   (recommendation_score) is deliberately pinned to the archived 2025/26
   season (see its docstring), which by default carries that season's

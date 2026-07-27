@@ -2,6 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/components/ui/CompareArrow";
+import { PlayerPhoto } from "@/components/ui/PlayerPhoto";
 import { PositionBadge } from "@/components/ui/PositionBadge";
 import { StatTile } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -251,14 +252,10 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
     <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6 flex flex-wrap items-center gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <PlayerPhoto
             src={p.player_photo}
-            alt={p.web_name}
-            className="h-16 w-16 rounded-full border-2 border-border-strong bg-surface-sunken object-cover object-top sm:h-20 sm:w-20"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-            }}
+            name={p.web_name}
+            className="h-16 w-16 rounded-full border-2 border-border-strong bg-surface-sunken object-cover object-top text-sm sm:h-20 sm:w-20 sm:text-base"
           />
           <div>
             <div className="flex flex-wrap items-center gap-3">
