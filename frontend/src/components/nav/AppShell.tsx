@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { NavIcon, type IconName } from "./icons";
 import { PageTransition } from "./PageTransition";
+import { CommandPalette, OPEN_PALETTE_EVENT } from "./CommandPalette";
 import { Countdown } from "@/components/ui/Countdown";
 import { NEXT_DEADLINE_LABEL } from "@/lib/deadline";
 import { useTeam } from "@/components/team/TeamProvider";
@@ -118,26 +119,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span className="text-base font-bold text-white">FPL Assistant</span>
         </Link>
 
-        <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
-          {NAV.map((item) => {
-            const active = isActive(pathname, item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 text-sm transition-colors ${
-                  active
-                    ? "bg-pl-green font-semibold text-pl-purple"
-                    : "font-medium text-[#d9c4de] hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                <NavIcon name={item.icon} className="h-[18px] w-[18px]" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
+          className="flex items-center gap-2 rounded-[9px] border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-[#9a86a4] transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <span aria-hidden="true">⌕</span>
+          <span>Search</span>
+          <kbd className="ml-auto rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+        </button>
+
+        <LayoutGroup id="desktop-nav">
+          <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
+            {NAV.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative flex items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 text-sm transition-colors ${
+                    active
+                      ? "font-semibold text-pl-purple"
+                      : "font-medium text-[#d9c4de] hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="desktop-nav-active"
+                      className="absolute inset-0 rounded-[9px] bg-pl-green"
+                      transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                    />
+                  )}
+                  <NavIcon name={item.icon} className="relative z-[1] h-[18px] w-[18px]" />
+                  <span className="relative z-[1]">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </LayoutGroup>
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5 rounded-xl border border-pl-green/35 bg-pl-green/10 p-3">
@@ -256,6 +276,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CommandPalette />
     </div>
   );
 }

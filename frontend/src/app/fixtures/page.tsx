@@ -38,7 +38,7 @@ export default async function Home() {
       <PageHeader title="Fixture difficulty" subtitle="Every team's next 5 gameweeks, ranked easiest to hardest." />
       <Card padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="table-cards w-full text-left text-sm">
             <thead className="bg-surface-sunken">
               <tr>
                 <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Team</th>
@@ -49,11 +49,11 @@ export default async function Home() {
             <tbody>
               {sorted.map((row) => (
                 <tr key={row.team_id} className="border-t border-border transition-colors hover:bg-surface-sunken">
-                  <td className="px-3.5 py-2.5 font-medium">
+                  <td className="cell-primary px-3.5 py-2.5 font-medium">
                     <TeamBadge teamShort={row.team} name={row.team} badgeUrl={row.team_badge} />
                   </td>
-                  <td className="px-3.5 py-2.5 font-mono">{row.avg_difficulty ?? "-"}</td>
-                  <td className="px-3.5 py-2.5">
+                  <td data-label="Avg FDR" className="px-3.5 py-2.5 font-mono">{row.avg_difficulty ?? "-"}</td>
+                  <td data-label="Next 5" className="px-3.5 py-2.5">
                     <div className="flex flex-wrap gap-1">
                       {row.fixtures.length > 0 ? (
                         row.fixtures.map((fx, i) => (

@@ -112,7 +112,7 @@ export default function DifferentialsPage() {
 
         {data && (
           <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
-            <table className="w-full text-left text-sm">
+            <table className="table-cards w-full text-left text-sm">
               <thead className="bg-surface-sunken">
                 <tr>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
@@ -134,26 +134,26 @@ export default function DifferentialsPage() {
               <tbody>
                 {data.map((p, i) => (
                   <tr key={i} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-medium">
+                    <td className="cell-primary px-3 py-2.5 font-medium">
                       <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink>
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td data-label="Team" className="px-3 py-2.5">
                       <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td data-label="Pos" className="px-3 py-2.5">
                       <PositionBadge position={p.position} />
                     </td>
-                    <td className="px-3 py-2.5 font-mono">{p.selected_by_percent}%</td>
-                    <td className="px-3 py-2.5 font-mono font-medium">{p.recommendation_score.toFixed(3)}</td>
-                    <td className="px-3 py-2.5">{p.next_opponent}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ep_next}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.form}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.expected_minutes}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
-                    <td className="px-3 py-2.5 font-mono">
+                    <td data-label="Owned %" className="px-3 py-2.5 font-mono">{p.selected_by_percent}%</td>
+                    <td data-label="Score" className="px-3 py-2.5 font-mono font-medium">{p.recommendation_score.toFixed(3)}</td>
+                    <td data-label="Next opp" className="px-3 py-2.5">{p.next_opponent}</td>
+                    <td data-label="EP next" className="px-3 py-2.5 font-mono">{p.ep_next}</td>
+                    <td data-label="Form" className="px-3 py-2.5 font-mono">{p.form}</td>
+                    <td data-label="Exp. mins" className="px-3 py-2.5 font-mono">{p.expected_minutes}</td>
+                    <td data-label="xGI" className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
+                    <td data-label="ICT" className="px-3 py-2.5 font-mono">{p.ict_index}</td>
+                    <td data-label="Def/90" className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
+                    <td data-label="Set-piece duty" className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
+                    <td data-label="Pens" className="px-3 py-2.5 font-mono">
                       {p.penalties_order === 1
                         ? "1st"
                         : p.penalties_order === 2
