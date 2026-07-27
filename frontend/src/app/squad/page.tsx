@@ -2,15 +2,15 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
-import { useTeam } from "@/components/team/TeamProvider";
-import { LoadTeamPanel } from "@/components/squad/LoadTeamPanel";
-import { BuildSquadPanel } from "@/components/squad/BuildSquadPanel";
-import { OptimizePanel } from "@/components/squad/OptimizePanel";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
-import { Button } from "@/components/ui/Button";
-import { Pill } from "@/components/ui/Pill";
-import { TextField } from "@/components/ui/TextField";
-import { parseTeamId } from "@/lib/team";
+import { useTeam } from "@/shared/team/TeamProvider";
+import { LoadTeamPanel } from "@/features/squad/LoadTeamPanel";
+import { BuildSquadPanel } from "@/features/squad/BuildSquadPanel";
+import { OptimizePanel } from "@/features/squad/OptimizePanel";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
+import { Button } from "@/shared/ui/Button";
+import { Pill } from "@/shared/ui/Pill";
+import { TextField } from "@/shared/ui/TextField";
+import { parseTeamId } from "@/shared/lib/team";
 
 // How many *other* teams a free account can track. Beyond this we show a
 // premium seam rather than a hard error - upgrading later just raises the cap.

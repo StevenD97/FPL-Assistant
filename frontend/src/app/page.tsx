@@ -1,18 +1,18 @@
 import Link from "next/link";
-import { PageContainer } from "@/components/layout/PageContainer";
-import { Countdown } from "@/components/ui/Countdown";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { HomeBody } from "@/components/home/HomeBody";
-import { MatchdayStrip, type Fixture } from "@/components/home/MatchdayStrip";
-import { BlogCover } from "@/components/blog/BlogCover";
-import { getAllPosts } from "@/lib/blog";
+import { PageContainer } from "@/shared/layout/PageContainer";
+import { Countdown } from "@/shared/ui/Countdown";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { HomeBody } from "@/features/home/HomeBody";
+import { MatchdayStrip, type Fixture } from "@/features/home/MatchdayStrip";
+import { BlogCover } from "@/features/blog/BlogCover";
+import { getAllPosts } from "@/shared/lib/blog";
+import { API_URL } from "@/shared/lib/api";
 
 // Fetches live matchday fixtures at request time; force-dynamic keeps Next
 // from calling the backend at build time (which would fail the deploy if the
 // backend is briefly unreachable - see the Fixtures page for the same guard).
 export const dynamic = "force-dynamic";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getMatchday(): Promise<{ event: number; fixtures: Fixture[] } | null> {
   try {

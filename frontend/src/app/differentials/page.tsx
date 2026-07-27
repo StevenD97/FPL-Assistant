@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Button } from "@/components/ui/Button";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PositionBadge } from "@/components/ui/PositionBadge";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { TextField } from "@/components/ui/TextField";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { Button } from "@/shared/ui/Button";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { TextField } from "@/shared/ui/TextField";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { API_URL } from "@/shared/lib/api";
 
 type PlayerScore = {
   id: number;
@@ -32,7 +33,6 @@ type PlayerScore = {
   penalties_missed: number;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function fetchDifferentials(maxOwnership: number, limit: number): Promise<PlayerScore[]> {
   const res = await fetch(

@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/Card";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
-import { BlogCover } from "@/components/blog/BlogCover";
-import { getAllPosts, formatBlogDate } from "@/lib/blog";
+import { Card } from "@/shared/ui/Card";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
+import { BlogCover } from "@/features/blog/BlogCover";
+import { getAllPosts, formatBlogDate } from "@/shared/lib/blog";
 
 export const metadata = { title: "Blog - xFPL" };
 

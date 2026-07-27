@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageContainer } from "@/components/layout/PageContainer";
-import { BlogCover } from "@/components/blog/BlogCover";
-import { getAllPosts, getPost, formatBlogDate } from "@/lib/blog";
+import { PageContainer } from "@/shared/layout/PageContainer";
+import { BlogCover } from "@/features/blog/BlogCover";
+import { getAllPosts, getPost, formatBlogDate } from "@/shared/lib/blog";
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));

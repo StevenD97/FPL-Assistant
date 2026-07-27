@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
-import { TextField } from "@/components/ui/TextField";
-import { fetchJson } from "@/lib/api";
+import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
+import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { TextField } from "@/shared/ui/TextField";
+import { API_URL, fetchJson } from "@/shared/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type ChipRow = {
   event: number;

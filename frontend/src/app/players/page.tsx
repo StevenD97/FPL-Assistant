@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { TextField } from "@/components/ui/TextField";
-import { Pill } from "@/components/ui/Pill";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
-import { PlayerListCard, type PlayerListItem } from "@/components/player/PlayerListCard";
+import { TextField } from "@/shared/ui/TextField";
+import { Pill } from "@/shared/ui/Pill";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
+import { PlayerListCard, type PlayerListItem } from "@/features/players/PlayerListCard";
+import { API_URL } from "@/shared/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
 const MAX_VISIBLE = 60;
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions - xFPL",

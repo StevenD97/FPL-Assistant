@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Alert } from "@/components/ui/Alert";
-import { Card } from "@/components/ui/Card";
-import { PlayerLink } from "@/components/ui/PlayerLink";
-import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
-import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { Alert } from "@/shared/ui/Alert";
+import { Card } from "@/shared/ui/Card";
+import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { API_URL } from "@/shared/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type PriceMover = {
   id: number;
