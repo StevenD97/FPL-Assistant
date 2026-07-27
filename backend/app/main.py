@@ -66,11 +66,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="FPL Assistant API", lifespan=lifespan)
 
-# Allowed frontend origins, comma-separated. Defaults to local dev; set
-# ALLOWED_ORIGINS in the deployment environment to the real frontend URL(s).
-allowed_origins = os.environ.get(
-    "ALLOWED_ORIGINS", "http://localhost:3000,http://192.168.0.19:3000"
-).split(",")
+# Known frontend origins (local dev + production), always allowed. Any extra
+# origins in the ALLOWED_ORIGINS env var are MERGED in rather than replacing
+# these - so the production domain keeps working even if that var is unset or
+# points at an old URL (e.g. a previous Vercel deployment).
+DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://192.168.0.19:3000",
+    "https://xfpl.co.uk",
+    "https://www.xfpl.co.uk",
+]
+_env_origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+allowed_origins = sorted(set(DEFAULT_ALLOWED_ORIGINS) | set(_env_origins))
 
 app.add_middleware(
     CORSMiddleware,
