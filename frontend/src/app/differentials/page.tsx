@@ -7,6 +7,7 @@ import { PositionBadge } from "@/components/ui/PositionBadge";
 import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { API_URL } from "@/lib/api";
 
 type PlayerScore = {
   id: number;
@@ -32,7 +33,6 @@ type PlayerScore = {
   penalties_missed: number;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function fetchDifferentials(maxOwnership: number, limit: number): Promise<PlayerScore[]> {
   const res = await fetch(

@@ -12,7 +12,7 @@ import { TextField } from "@/components/ui/TextField";
 import { Alert } from "@/components/ui/Alert";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
-import { fetchJson } from "@/lib/api";
+import { API_URL, fetchJson } from "@/lib/api";
 
 type SquadRow = {
   id: number;
@@ -59,7 +59,6 @@ type TransferResult = BestSquadResult & {
   transferred_in: TransferPlayer[];
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const POSITION_ORDER = ["GKP", "DEF", "MID", "FWD"];
 
 function sortSquad(squad: SquadRow[]): SquadRow[] {

@@ -1,4 +1,4 @@
-import { fetchJson } from "./api";
+import { API_URL, fetchJson } from "./api";
 
 export type SeasonStatus = {
   is_preseason: boolean;
@@ -7,7 +7,6 @@ export type SeasonStatus = {
   current_season_label: string;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // Single source of truth for "is this still demo/archived data" - backed by
 // the same analysis.get_gw_context() every prediction endpoint's dynamic

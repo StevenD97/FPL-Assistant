@@ -6,8 +6,8 @@ import { Card } from "@/components/ui/Card";
 import { PlayerLink } from "@/components/ui/PlayerLink";
 import { PageContainer, PageHeader } from "@/components/layout/PageContainer";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type PriceMover = {
   id: number;

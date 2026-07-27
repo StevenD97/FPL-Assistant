@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { FdrChip } from "@/components/ui/FdrChip";
 import { Card } from "@/components/ui/Card";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type Fixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
 type FixtureRow = {

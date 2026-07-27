@@ -11,8 +11,8 @@ import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { LineChart } from "@/components/charts/LineChart";
 import { seriesColor } from "@/lib/palette";
 import { linearTrend } from "@/lib/trend";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const MAX_COMPARE = 4;
 
 type SeasonStats = {

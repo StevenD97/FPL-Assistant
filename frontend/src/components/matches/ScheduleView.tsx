@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type Fixture = {
   event: number;

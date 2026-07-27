@@ -13,9 +13,8 @@ import { TextField } from "@/components/ui/TextField";
 import { FdrChip } from "@/components/ui/FdrChip";
 import { PitchFormation, type PitchPlayer } from "@/components/pitch/PitchFormation";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
-import { fetchJson } from "@/lib/api";
+import { API_URL, fetchJson } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type SquadPlayer = {
   id: number;

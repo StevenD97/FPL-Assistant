@@ -11,8 +11,8 @@ import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
 import { PitchFormation } from "@/components/pitch/PitchFormation";
 import { TeamNameGenerator } from "@/components/squad/TeamNameGenerator";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type Position = "GKP" | "DEF" | "MID" | "FWD";
 

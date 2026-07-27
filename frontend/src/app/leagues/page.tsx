@@ -13,8 +13,8 @@ import {
   parseTeamId,
   storeTrackedLeagueIds,
 } from "@/lib/team";
+import { API_URL } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 type League = { id: number; name: string; entry_rank: number };
 

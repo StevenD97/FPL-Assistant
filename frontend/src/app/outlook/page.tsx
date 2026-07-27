@@ -8,6 +8,7 @@ import { SeasonDataNote } from "@/components/ui/SeasonDataNote";
 import { Select } from "@/components/ui/Select";
 import { TextField } from "@/components/ui/TextField";
 import { TeamBadge } from "@/components/pitch/TeamBadge";
+import { API_URL } from "@/lib/api";
 
 type OutlookFixture = { opponent: string; is_home: boolean; opponent_badge: string };
 
@@ -24,7 +25,6 @@ type OutlookRow = {
   fixtures: OutlookFixture[];
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
 
 async function fetchOutlook(
