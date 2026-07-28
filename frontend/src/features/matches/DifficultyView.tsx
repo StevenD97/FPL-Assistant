@@ -1,62 +1,10 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { Card } from "@/shared/ui/Card";
-import { Skeleton } from "@/shared/ui/Skeleton";
-import { apiGet } from "@/shared/lib/api";
 import type { FixtureDifficultyRow } from "@/shared/types/api";
 
-// One row per PL club (20), each with a team cell, an avg-FDR cell, and a
-// run of five fixture chips - the same three columns as the loaded table.
-function DifficultySkeleton() {
-  return (
-    <Card padded={false} className="overflow-hidden">
-      <div className="divide-y divide-border">
-        <div className="flex items-center gap-4 bg-surface-sunken px-3.5 py-3">
-          <Skeleton className="h-3 w-12" />
-          <Skeleton className="h-3 w-14" />
-          <Skeleton className="h-3 w-12" />
-        </div>
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-4 px-3.5 py-2.5">
-            <Skeleton className="h-5 w-24 shrink-0" />
-            <Skeleton className="h-5 w-8 shrink-0" />
-            <div className="flex flex-1 flex-wrap gap-1">
-              {Array.from({ length: 5 }).map((__, j) => (
-                <Skeleton key={j} className="h-6 w-12 rounded" />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-export function DifficultyView() {
-  const [rows, setRows] = useState<FixtureDifficultyRow[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        setRows(
-          await apiGet<FixtureDifficultyRow[]>(
-            "/api/fixtures/difficulty?start_event=1&window_size=5",
-          ),
-        );
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      }
-    }
-    load();
-  }, []);
-
-  if (error) return <p className="text-sm font-medium text-danger">{error}</p>;
-  if (!rows) return <DifficultySkeleton />;
-
+/** Presentational: rows are fetched on the server and passed in. */
+export function DifficultyView({ rows }: { rows: FixtureDifficultyRow[] }) {
   const sorted = [...rows].sort((a, b) => (a.avg_difficulty ?? 6) - (b.avg_difficulty ?? 6));
 
   return (

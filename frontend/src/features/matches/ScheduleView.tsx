@@ -1,68 +1,38 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { Skeleton } from "@/shared/ui/Skeleton";
-import { apiGet } from "@/shared/lib/api";
 import type { ScheduleFixture } from "@/shared/types/api";
 
-export function ScheduleView() {
-  const [fixtures, setFixtures] = useState<ScheduleFixture[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [event, setEvent] = useState(1);
+/**
+ * Presentational: the page fetches on the server and hands the fixtures down.
+ * The only state left is which gameweek is on screen.
+ */
+export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
+  // Open on the next gameweek still to be played. Derived from the same props
+  // the server rendered, so the first client render agrees with the HTML.
+  const [event, setEvent] = useState(
+    () => fixtures.find((fx) => !fx.finished)?.event ?? 1,
+  );
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await apiGet<ScheduleFixture[]>("/api/fixtures/schedule");
-        setFixtures(data);
-        const nextUpcoming = data.find((fx) => !fx.finished);
-        if (nextUpcoming) setEvent(nextUpcoming.event);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  const events = useMemo(
+    () => [...new Set(fixtures.map((fx) => fx.event))].sort((a, b) => a - b),
+    [fixtures],
+  );
 
-  const events = useMemo(() => {
-    if (!fixtures) return [];
-    return [...new Set(fixtures.map((fx) => fx.event))].sort((a, b) => a - b);
-  }, [fixtures]);
-
-  const rows = useMemo(() => {
-    if (!fixtures) return [];
-    return fixtures.filter((fx) => fx.event === event);
-  }, [fixtures, event]);
+  const rows = useMemo(
+    () => fixtures.filter((fx) => fx.event === event),
+    [fixtures, event],
+  );
 
   const minEvent = events[0] ?? 1;
   const maxEvent = events[events.length - 1] ?? 38;
 
   return (
     <div>
-      {loading && (
-        <>
-          <div className="mb-4 flex items-center gap-3">
-            <Skeleton className="h-8 w-16 rounded-md" />
-            <Skeleton className="h-4 w-28" />
-            <Skeleton className="h-8 w-16 rounded-md" />
-          </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <Skeleton key={i} className="h-[62px] w-full rounded-lg" />
-            ))}
-          </div>
-        </>
-      )}
-      {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 
-      {fixtures && (
+      {(
         <>
           <div className="mb-4 flex items-center gap-3">
             <Button size="sm" variant="secondary" onClick={() => setEvent((e) => Math.max(minEvent, e - 1))} disabled={event <= minEvent}>
