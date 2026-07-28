@@ -6,7 +6,7 @@ import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { API_URL } from "@/shared/lib/api";
 
-type TeamSummary = { id: number; name: string; short_name: string; team_badge: string };
+type TeamSummary = { id: number; name: string; short_name: string; team_badge: string; manager: string | null };
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<TeamSummary[] | null>(null);
@@ -54,7 +54,10 @@ export default function TeamsPage() {
                 (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
               }}
             />
-            <span className="text-sm font-semibold text-text-primary">{t.name}</span>
+            <div className="flex flex-col items-center gap-0.5">
+              <span className="text-sm font-semibold text-text-primary">{t.name}</span>
+              {t.manager && <span className="text-xs text-text-muted">{t.manager}</span>}
+            </div>
           </Link>
         ))}
       </div>

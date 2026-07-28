@@ -1,33 +1,33 @@
 ---
 title: "Budget enablers: who actually earns their price tag"
 date: "2026-07-22"
-excerpt: "Cheap doesn't mean good, and good doesn't always mean expensive. Here's who the model rates as genuinely worth their price at each position, not just affordable."
+excerpt: "Cheap doesn't mean good, and good doesn't always mean expensive. Here's who's actually worth the money at the bottom of the price list this year, not just affordable."
 tags: ["Pre-season", "Value"]
 cover:
   type: gradient
   background: pitch
 ---
 
-Every squad has a budget problem somewhere - three or four premium picks eat most of your £100m, and the rest of the XI has to be found from what's left without dragging the team down. The trap is picking "cheap" over "cheap and actually good." Pulling this site's own predicted-points model for available players at £5.5m or under turns up a few names worth knowing before you fill those slots on autopilot.
+Every squad has a budget problem somewhere - three or four premium picks eat most of your £100m, and the rest of the XI has to be found from what's left without dragging the team down. The trap is picking "cheap" over "cheap and actually good." Here's who's actually worth a squad slot at the bottom of the price list this year, position by position.
 
 ## Goalkeepers
 
-**Kelleher** (Brentford, £5.0m) tops the list on predicted points among sub-£5.5m keepers, with **Verbruggen** (Brighton, £4.5m) close behind and the cheapest of the bunch. Both project ahead of several keepers costing £1m more - goalkeeper is usually the easiest position to save money on without giving up much, and the numbers back that up again this year.
+**Antonín Kinský** (Spurs, £4.5m) is the name getting real attention this summer - a full £1.5m cheaper than David Raya, and Tottenham are widely expected to be a significantly tighter defensive unit under Roberto De Zerbi than they were last season. If that improvement shows up in clean sheets, Kinský at £4.5m is exactly the kind of goalkeeper save that funds a premium somewhere else.
 
 ## Defenders
 
-**Truffert** (Bournemouth, £5.5m) and **Thiaw** (Newcastle, £5.0m) lead the value defenders, both projecting well above what their price alone would suggest. Neither is a big ownership name yet, which is exactly the point - the model isn't pricing them off reputation, it's pricing them off attacking returns, clean sheet odds, and appearance probability.
+**Neco Williams** (Nottingham Forest, £5.0m) is being talked up as one of the best points-per-million plays in the game at his price - a locked-in starting role, and Forest are expected to be a better side under Oliver Glasner than the one that finished last season. Further down the price list, **Bobby Thomas** (Coventry, £4.0m) stands out among the promoted teams' rock-bottom-priced defenders, and **Nathan van Ewijk** (Coventry, £4.0m) adds something extra for the price - a nailed right-back who also takes direct free-kicks, having racked up eight-plus assists in the Championship last season.
 
 ## Midfielders
 
-The cheap midfield picture is thinner than defence or goalkeeper this year - **Ampadu** (Leeds, £5.5m) and **Groß** (Brighton, £5.5m) are the standouts under £5.5m, both projecting for useful returns without being the kind of explosive differential you'd captain. Treat this tier as "solid enabler," not "secret star" - the real differentials in midfield mostly sit a price bracket higher (more on that in our [captaincy piece](/blog/2026-07-21-captain-options-beyond-haaland)).
+Cheap midfield is thinner than defence or goalkeeper again this year, but **Diego Gómez** (Brighton, £5.0m) is the one name that keeps coming up - a rare case of a genuinely cheap midfielder who both starts regularly and actually produces, rather than being cheap because he's fighting for minutes.
 
 ## Forwards
 
-Forward is where budget picks get hardest to find, and this year is no exception - **Beto** and **Barry**, both Everton at £5.5m, are the two names the model rates highest under that price. Worth building expectations accordingly: a budget forward is there to start every week and take the occasional clean chance, not to be your third captaincy option.
+Forward is where budget picks get hardest to find, and this year's standout is **Danny Welbeck** (Brighton, £6.0m) - 13 goals from 12.44 expected goals last season, still a fine enough finisher, and Brighton create enough chances to keep him involved. He's also Brighton's first-choice penalty taker, which adds a genuine floor to a name that's easy to underrate at his price.
 
 ## The takeaway
 
-None of this is "buy these players blindly" - it's a starting shortlist worth cross-checking against status (news, injuries, suspensions - see the badge next to any name on [Players](/players)) and your own eye on pre-season minutes before the squad locks. But if you're staring at your budget slots wondering where the value actually is this season, this is where the model says to look first.
+None of this is "buy these players blindly" - it's a shortlist worth cross-checking against status (news, injuries, suspensions - see the badge next to any name on [Players](/players)) and how pre-season minutes actually shake out before the squad locks. But if you're staring at your budget slots wondering where the value is this season, this is where to look first.
 
-*Figures pulled directly from this site's live player pool ahead of Gameweek 1 - see [Players](/players) to sort and filter the full list yourself.*
+Sources: [SPORTbible - Five FPL hidden gems](https://www.sportbible.com/football/football-news/fpl-hidden-gems-season-launch-486194-20260723), [BeatFPL - FPL 26/27 player prices and best value picks](https://www.beatfpl.com/guides/fpl-26-27-player-prices), [ChaseYourSport - Top 5 bargain players in FPL 2026-27](https://www.chaseyoursport.com/fantasy-football/top-5-fpl-2026-27-bargain-players/12859).

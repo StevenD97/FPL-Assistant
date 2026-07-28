@@ -24,7 +24,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Link href="/blog" className="text-xs font-medium text-pl-purple hover:underline">
         &larr; Back to blog
       </Link>
-      <article>
+      <article className="mx-auto max-w-3xl">
         <div className="mb-4">
           <BlogCover cover={post.cover} size="hero" />
         </div>
@@ -36,8 +36,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </span>
           ))}
         </div>
-        <h1 className="mb-4 max-w-2xl text-2xl font-bold tracking-tight text-pl-purple">{post.title}</h1>
-        <div className="blog-prose max-w-2xl" dangerouslySetInnerHTML={{ __html: post.html }} />
+        <h1 className="mb-4 text-2xl font-bold tracking-tight text-pl-purple">{post.title}</h1>
+        <div className="blog-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
       </article>
     </PageContainer>
   );

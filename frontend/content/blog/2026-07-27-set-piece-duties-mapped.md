@@ -11,7 +11,7 @@ cover:
   background: pitch
 ---
 
-Penalty and free-kick duty is one of the clearest edges Fantasy managers can find before a ball's even been kicked - it's not a projection, it's a confirmed role. Pulling this site's live player data turns up a full picture across the league: every club has a first-choice penalty taker and free-kick taker locked in for 2026/27. Corners are a different story entirely.
+Penalty and free-kick duty is one of the clearest edges Fantasy managers can find before a ball's even been kicked - it's not a projection, it's a confirmed role. FPL's official data now shows a full picture across the league: every club has a first-choice penalty taker and free-kick taker locked in for 2026/27. Corners are a different story entirely.
 
 ## Penalties: all 20 clubs confirmed
 
@@ -33,6 +33,6 @@ Here's the genuinely interesting gap: not a single club has a confirmed corner-t
 
 ## How to actually use this
 
-None of this should be the only reason to buy a player - but it's real, confirmed information, not a projection, and it stacks on top of whatever the rest of the model already likes about someone. If you're deciding between two similarly-priced options at a position, first-choice set-piece duty is a legitimate tiebreaker. [Players](/players) shows penalty and free-kick order next to every name if you want to check anyone not covered here.
+None of this should be the only reason to buy a player - but it's real, confirmed information, not a projection, and it stacks on top of whatever else makes a name attractive at their price. If you're deciding between two similarly-priced options at a position, first-choice set-piece duty is a legitimate tiebreaker. [Players](/players) shows penalty and free-kick order next to every name if you want to check anyone not covered here.
 
-Sources: [FootballTransfers - Mohamed Salah transfer news](https://www.footballtransfers.com/en/transfer-news/uk-premier-league/2026/06/mohamed-salah-transfer-news-liverpool-saudi-pro-league-agreement-summer-2026), [Liverpool.com - Salah transfer agreement and contract details](https://www.liverpool.com/liverpool-fc-news/features/mohamed-salah-transfer-agreement-contract-34349640) (penalty, free-kick, and corner order pulled directly from this site's live player data).
+Sources: [FootballTransfers - Mohamed Salah transfer news](https://www.footballtransfers.com/en/transfer-news/uk-premier-league/2026/06/mohamed-salah-transfer-news-liverpool-saudi-pro-league-agreement-summer-2026), [Liverpool.com - Salah transfer agreement and contract details](https://www.liverpool.com/liverpool-fc-news/features/mohamed-salah-transfer-agreement-contract-34349640) (penalty, free-kick, and corner order per official FPL player data).

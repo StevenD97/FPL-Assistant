@@ -1,7 +1,7 @@
 ---
 title: "Captain options beyond Haaland"
 date: "2026-07-21"
-excerpt: "Haaland isn't even the top-projected pick in our own model right now - and the biggest differential armband of the lot is owned by barely one in eight managers."
+excerpt: "Haaland is the nailed-on pick for most squads, but his price and City's midfield uncertainty under Maresca leave room for an armband debate this year - here's who else is in it."
 tags: ["Pre-season", "Captaincy"]
 cover:
   type: player
@@ -11,20 +11,22 @@ cover:
   background: hero
 ---
 
-Haaland is the popular pick, and at 67.5% ownership he's close to a default armband for most squads. But running this site's own predicted-points model over the opening gameweeks turns up a more interesting picture than "just captain Haaland" - starting with the fact that he isn't actually the top-projected player right now.
+Haaland is the obvious armband, and at close to 70% ownership he's already close to a default pick for most squads heading into Gameweek 1. He's been the top scorer after the first six gameweeks in every one of his four seasons at City, and there's no reason to expect a slow starter this time either. But at a record £15.5m, and with a new manager still bedding in his side, he's not the only name worth thinking about before deadline day.
 
-## The model's actual top pick
+## The clear alternative: Bruno Fernandes
 
-**Bruno Fernandes** (Man Utd, £12.0m) projects for the highest points of anyone in the game over the opening window, ahead of Haaland. He's owned by 43.2% of squads - high, but well short of a "everyone has him" pick, which makes him a genuinely different armband from Haaland rather than just a cheaper copy of the same decision. Between the two, this is closer to a coin flip than the ownership numbers suggest.
+If Haaland's price is the problem, Bruno Fernandes is the obvious next name on the list - and the fixtures make an unusually strong case for him specifically in the opening weeks. Manchester United open the season away at Hull before a home match against Ipswich, two promoted sides in their first two outings, exactly the kind of run a captain-hungry midfielder wants to see early. Off the back of a huge 2025/26 that saw his price rise more than almost anyone else in the game this summer, there's a real argument for United's fixtures making him the safer captain of the two names for the opening fortnight specifically, price gap notwithstanding.
 
-## The real differential
+## The braver differential: Gabriel
 
-Further down the list sits the more interesting name: **Elliot Anderson** (Man City, £6.5m) projects as the third-highest scorer in the model over the same window - at just **12.3% ownership**. For context, that's roughly one in eight squads. A £6.5m midfielder projecting inside the model's top three isn't a small differential; captaining him and being right is the kind of week that actually moves a mini-league table, precisely because so few rivals are exposed to it.
+For those willing to break from the pack, Gabriel is the name getting genuine attention as a differential armband - Arsenal's set-piece threat at the back end of the pitch, stacked on top of a defence that should be among the league's stingiest again, makes for a case that isn't just about clean sheets. It's not a pick for a squad built on safety, but it's the kind of week that separates a mini-league table from a rival who just captained Haaland like everyone else.
 
-He's not alone. **Enzo Le Fée** (Sunderland, £6.0m) and **Marcus Tavernier** (Bournemouth, £6.0m) both project well above their price at 3.3% and 2.0% ownership respectively - neither is an armband for a first XI built on safety, but both are worth knowing about if a mini-league rival has pulled ahead and a differential swing is the only way back.
+## Worth knowing, not worth captaining yet: Elliot Anderson
+
+Away from the armband conversation entirely, Elliot Anderson's move to Man City this summer has already got him flagged as one of the more interesting value picks in the £6-6.5m bracket - a price point that undersells what he offers if he starts regularly in Enzo Maresca's midfield. Too early in a new system to trust with the captaincy itself, but a name worth having on the radar as City's shape becomes clearer over the first few gameweeks.
 
 ## How to actually use this
 
-None of this is "ignore Haaland" - at 26.5 predicted points over the window he's still elite, and there's real value in not fighting the ownership tide when nothing forces you to. It's a case for treating the armband as a real decision rather than an automatic one, especially once a mini-league gap opens up and matching the field stops being the goal. The [Differentials](/differentials) page tracks this exact trade-off - low-ownership, high-scoring players - all season, not just for Gameweek 1.
+None of this is "avoid Haaland" - he's still the correct default for most squads, and there's real value in not fighting the ownership tide when nothing forces you to. It's a case for treating the armband as a genuine weekly decision rather than an automatic one, especially once the fixtures swing in a particular direction or a mini-league gap opens up and matching the field stops being the goal.
 
-*Predicted points and ownership figures pulled directly from this site's live model ahead of Gameweek 1.*
+Sources: [Premier League - Why Fernandes and Haaland look like must-haves to start 2026/27 FPL](https://www.premierleague.com/en/news/4675553/why-fernandes-and-haaland-look-like-must-haves-to-start-202627-fpl), [Premier League - FPL Champion: how to pick your captain](https://www.premierleague.com/en/news/4672128/fpl-champion-how-to-pick-your-captain-and-maximise-your-chips).

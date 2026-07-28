@@ -25,12 +25,12 @@ Ipswich are back after their first stint ended in relegation, this time under ne
 
 ## Hull City
 
-Hull complete the trio, beating Middlesbrough in the Championship play-off final on a stoppage-time winner. They carry the biggest experience gap of the three - the shortest recent top-flight history - and start the season under **Michael Carrick**, who takes charge of a full Premier League campaign at Hull for the first time. Their fixture list doesn't help matters either, sitting among the tougher opening-six runs alongside Coventry.
+Hull complete the trio, beating Middlesbrough in the Championship play-off final on a stoppage-time winner. They carry the biggest experience gap of the three - the shortest recent top-flight history - and go into the season under **Sergej Jakirović**, the Bosnian coach who took over last summer with Hull fighting relegation to League One and has since taken them the other way entirely, on the back of a Croatian league and cup double with Dinamo Zagreb before that. Their fixture list doesn't help matters either, sitting among the tougher opening-six runs alongside Coventry.
 
-**Fantasy read:** the biggest unknown of the three. Worth monitoring rather than committing to early - if Carrick's side finds its feet, cheap Hull assets could be a source of differentials later; if not, it's the kind of squad that's easy to avoid entirely without missing much.
+**Fantasy read:** the biggest unknown of the three. Worth monitoring rather than committing to early - if Jakirović's side finds its feet the way it did in the Championship run-in, cheap Hull assets could be a source of differentials later; if not, it's the kind of squad that's easy to avoid entirely without missing much.
 
 ## The general rule
 
-Newly promoted sides are a well-known trap in Fantasy: cheap price tags look tempting, but the model behind this site's [Fixtures](/fixtures) and [Outlook](/outlook) pages already factors in that promoted teams historically concede more and create less than their price suggests - worth trusting the numbers over the temptation to grab a bargain on reputation alone.
+Newly promoted sides are a well-known trap in Fantasy: cheap price tags look tempting, but the numbers rarely lie - promoted teams historically concede more and create less than their price suggests. Worth checking [Fixtures](/fixtures) and [Outlook](/outlook) for the current picture on all three before grabbing a bargain on reputation alone.
 
-Sources: [Liverpool FC - promoted teams look](https://www.liverpoolfc.com/news/promoted-teams-depth-look-coventry-city-hull-city-and-ipswich-town), [Premier League - Hull City promoted](https://www.premierleague.com/en/news/4664386/all-you-need-to-know-as-hull-city-are-promoted-to-premier-league).
+Sources: [Liverpool FC - promoted teams look](https://www.liverpoolfc.com/news/promoted-teams-depth-look-coventry-city-hull-city-and-ipswich-town), [Premier League - Hull City promoted](https://www.premierleague.com/en/news/4664386/all-you-need-to-know-as-hull-city-are-promoted-to-premier-league), [Vital Football - Sergej Jakirović appointed Hull City manager](https://vitalfootball.co.uk/sergej-jakirovic-to-be-appointed-hull-city-manager/).

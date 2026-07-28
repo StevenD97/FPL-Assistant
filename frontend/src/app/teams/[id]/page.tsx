@@ -12,6 +12,7 @@ type TeamDetail = {
   name: string;
   short_name: string;
   team_badge: string;
+  manager: string | null;
   squad_size: number;
   has_season_history: boolean;
   metrics: Metric[];
@@ -83,7 +84,10 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
         <img src={data.team_badge} alt="" className="h-14 w-14 object-contain" />
         <div>
           <h1 className="text-xl font-bold tracking-tight text-pl-purple">{data.name}</h1>
-          <p className="text-sm text-text-secondary">{data.squad_size} players in the live 2026/27 squad</p>
+          <p className="text-sm text-text-secondary">
+            {data.manager && <>Manager: {data.manager} &middot; </>}
+            {data.squad_size} players in the live 2026/27 squad
+          </p>
         </div>
       </div>
 
