@@ -613,12 +613,6 @@ conventions rather than dropped in as-is. No dark mode.
   ... }`; `gradient` (a plain on-brand banner, no external image) is the
   default for posts with no single team/player to headline, and doubles
   as the fallback if a CDN image 404s.
-- **Team name generator** (My Squad -> Build from scratch) suggests FPL
-  team names from a typed favourite club or player
-  (`frontend/src/lib/teamNames.ts`). Entirely client-side and template-
-  based, not an LLM call: generic templates (`"{X} 'Til I Die"`, etc.)
-  apply to whatever's typed, and a curated pun list per club layers in
-  extra suggestions when the input matches one of the league's 20 teams.
 - **Backend cold starts on Render's free tier.** The deployed backend
   (`fpl-assistant-backend`, see `render.yaml`) runs on Render's free
   plan, which spins the service down after ~15 minutes of no traffic -

@@ -13,7 +13,6 @@ import { TextField } from "@/shared/ui/TextField";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
-import { TeamNameGenerator } from "@/features/squad/TeamNameGenerator";
 import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
 import { API_URL } from "@/shared/lib/api";
 
@@ -602,10 +601,6 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
           </>
         )}
       </p>
-
-      <div className="mb-6">
-        <TeamNameGenerator />
-      </div>
 
       {loading && <BuildSquadSkeleton />}
       {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
