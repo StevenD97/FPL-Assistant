@@ -14,16 +14,10 @@ import { TextField } from "@/shared/ui/TextField";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { apiGet } from "@/shared/lib/api";
-import type {
-  ChipResponse,
-  PlannerResponse,
-  PlayerAlternative,
-  PlayerTrajectory,
-  SquadPlayer,
-  SquadResponse,
-  TransferResult,
-} from "@/shared/types/api";
+import type { SquadPlayer } from "@/shared/types/api";
+import { useAlternatives } from "./hooks/useAlternatives";
+import { useLoadedSquad } from "./hooks/useLoadedSquad";
+import { useSwapPreview } from "./hooks/useSwapPreview";
 
 
 function toPitchPlayer(p: SquadPlayer): PitchPlayer {
@@ -80,148 +74,41 @@ export function LoadTeamPanel({
 }) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
-  const [data, setData] = useState<SquadResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const [optimizer, setOptimizer] = useState<TransferResult | null>(null);
-  const [optimizerLoading, setOptimizerLoading] = useState(false);
-  const [optimizerError, setOptimizerError] = useState<string | null>(null);
-
-  const [suggestFor, setSuggestFor] = useState<{ liveId: number; name: string } | null>(null);
-  const [alternatives, setAlternatives] = useState<PlayerAlternative[] | null>(null);
-  const [alternativesLoading, setAlternativesLoading] = useState(false);
-
-  const [planner, setPlanner] = useState<PlannerResponse | null>(null);
-  const [plannerLoading, setPlannerLoading] = useState(false);
-  const [plannerError, setPlannerError] = useState<string | null>(null);
-
-  const [chips, setChips] = useState<ChipResponse | null>(null);
-  const [chipsLoading, setChipsLoading] = useState(false);
-  const [chipsError, setChipsError] = useState<string | null>(null);
-
-  // Drag-and-drop "preview a swap": drop a candidate (dragged from the
-  // Replacements chips below) onto a planner row to see their trajectory
-  // in that slot instead, without making a real transfer. Keyed by the
-  // *original* squad player's id (the row/slot being previewed).
-  const [swapPreviews, setSwapPreviews] = useState<Record<number, PlayerTrajectory>>({});
-  const [swapLoading, setSwapLoading] = useState<Record<number, boolean>>({});
-  const [dragOverRow, setDragOverRow] = useState<number | null>(null);
-
   const { teamId: connectedId } = useTeam();
 
-  async function loadAlternatives(liveId: number, name: string) {
-    if (suggestFor?.liveId === liveId) {
-      setSuggestFor(null);
-      setAlternatives(null);
-      return;
-    }
-    setSuggestFor({ liveId, name });
-    setAlternatives(null);
-    setAlternativesLoading(true);
-    try {
-      setAlternatives(await apiGet<PlayerAlternative[]>(`/api/players/${liveId}/alternatives?limit=5`));
-    } catch {
-      setAlternatives([]);
-    } finally {
-      setAlternativesLoading(false);
-    }
-  }
+  const {
+    squad: squadRes,
+    optimizer: optimizerRes,
+    planner: plannerRes,
+    chips: chipsRes,
+    load,
+  } = useLoadedSquad();
+  const {
+    suggestFor,
+    alternatives,
+    loading: alternativesLoading,
+    toggle: loadAlternatives,
+  } = useAlternatives();
+  const {
+    previews: swapPreviews,
+    loading: swapLoading,
+    dragOverRow,
+    setDragOverRow,
+    drop: handleSwapDrop,
+    undo: undoSwap,
+  } = useSwapPreview(plannerRes.data);
 
-  async function loadOptimizer(id: string) {
-    setOptimizerLoading(true);
-    setOptimizerError(null);
-    setOptimizer(null);
-    try {
-      setOptimizer(
-        await apiGet<TransferResult>(`/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`)
-      );
-    } catch (err) {
-      // Suggested transfers are a bonus on top of the squad view, not a
-      // blocker - if this fails (e.g. FPL's picks-history reset - see
-      // README) the squad above still loaded fine, so fail quietly here.
-      setOptimizerError(err instanceof Error ? err.message : "Couldn't compute suggested transfers");
-    } finally {
-      setOptimizerLoading(false);
-    }
-  }
-
-  async function loadPlanner(id: string) {
-    setPlannerLoading(true);
-    setPlannerError(null);
-    setPlanner(null);
-    try {
-      setPlanner(await apiGet<PlannerResponse>(`/api/squad/${id}/planner`));
-    } catch (err) {
-      // Same "bonus, not a blocker" treatment as suggested transfers below.
-      setPlannerError(err instanceof Error ? err.message : "Couldn't build the planner");
-    } finally {
-      setPlannerLoading(false);
-    }
-  }
-
-  async function loadChips(id: string) {
-    setChipsLoading(true);
-    setChipsError(null);
-    setChips(null);
-    try {
-      setChips(await apiGet<ChipResponse>(`/api/squad/${id}/chips`));
-    } catch (err) {
-      // Bonus, not a blocker - same as the optimizer/planner above.
-      setChipsError(err instanceof Error ? err.message : "Couldn't scan chip timing");
-    } finally {
-      setChipsLoading(false);
-    }
-  }
-
-  async function handleSwapDrop(originalPlayerId: number, e: React.DragEvent) {
-    e.preventDefault();
-    setDragOverRow(null);
-    const candidateId = Number(e.dataTransfer.getData("text/plain"));
-    if (!candidateId || !planner) return;
-    setSwapLoading((prev) => ({ ...prev, [originalPlayerId]: true }));
-    try {
-      const gwCount = planner.next_events.length;
-      const nextEvent = planner.next_events[0];
-      const row = await apiGet<PlayerTrajectory>(
-        `/api/players/${candidateId}/trajectory?gw_count=${gwCount}&next_event=${nextEvent}`
-      );
-      setSwapPreviews((prev) => ({ ...prev, [originalPlayerId]: row }));
-    } catch {
-      // Dropping an invalid/unfetchable candidate just does nothing - not worth a page-level error.
-    } finally {
-      setSwapLoading((prev) => ({ ...prev, [originalPlayerId]: false }));
-    }
-  }
-
-  function undoSwap(originalPlayerId: number) {
-    setSwapPreviews((prev) => {
-      const next = { ...prev };
-      delete next[originalPlayerId];
-      return next;
-    });
-  }
-
-  async function loadSquad(id: string) {
-    if (!id) return;
-    setLoading(true);
-    setError(null);
-    setData(null);
-    try {
-      setData(await apiGet<SquadResponse>(`/api/squad/${id}`));
-      loadOptimizer(id); // fires automatically alongside the squad view, not gated on a separate action
-      loadPlanner(id);
-      loadChips(id);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Flattened so the markup below reads the same as it did when all of this was
+  // local state - the render output is unchanged, only where the values come
+  // from has moved.
+  const { data, loading, error } = squadRes;
+  const { data: optimizer, loading: optimizerLoading, error: optimizerError } = optimizerRes;
+  const { data: planner, loading: plannerLoading, error: plannerError } = plannerRes;
+  const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    loadSquad(teamId);
+    load(teamId, freeTransfers);
   }
 
   // Which team this panel should show: an explicit workspace selection wins,
@@ -231,7 +118,7 @@ export function LoadTeamPanel({
   useEffect(() => {
     if (activeId != null) {
       setTeamId(String(activeId));
-      loadSquad(String(activeId));
+      load(String(activeId), freeTransfers);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId]);
