@@ -378,35 +378,35 @@
           "id": 13,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
           "position": "MID",
-          "value": 25.44,
+          "value": 25.59,
           "web_name": "Rice"
         },
         {
           "id": 4,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
           "position": "DEF",
-          "value": 25.1,
+          "value": 25.43,
           "web_name": "Gabriel"
         },
         {
           "id": 12,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
           "position": "MID",
-          "value": 23.17,
+          "value": 23.38,
           "web_name": "Saka"
         },
         {
           "id": 8,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
           "position": "DEF",
-          "value": 21.65,
+          "value": 22.05,
           "web_name": "Calafiori"
         },
         {
           "id": 14,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
           "position": "MID",
-          "value": 19.48,
+          "value": 19.6,
           "web_name": "Eze"
         }
       ],

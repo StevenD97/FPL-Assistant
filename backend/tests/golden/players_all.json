@@ -1,25 +1,25 @@
 {
   "body": [
     {
-      "cost": 14.7,
+      "cost": 15.5,
       "fixtures": [
         {
           "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        },
-        {
-          "difficulty": 3,
           "is_home": false,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 5,
+          "is_home": false,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
         },
         {
           "difficulty": 2,
@@ -30,15 +30,15 @@
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
         }
       ],
-      "id": 430,
+      "id": 411,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223094.png",
       "position": "FWD",
-      "predicted_points": 42.362,
+      "predicted_points": 35.678,
       "season_stats": {
         "assists": 8,
         "bonus": 43,
@@ -56,52 +56,52 @@
         "total_points": 239,
         "yellow_cards": 2
       },
-      "selected_by_percent": 62.5,
+      "selected_by_percent": 75.1,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_short": "MCI",
-      "value": 2.88,
+      "value": 2.3,
       "web_name": "Haaland"
     },
     {
-      "cost": 10.4,
+      "cost": 12.0,
       "fixtures": [
         {
           "difficulty": 3,
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
         },
         {
-          "difficulty": 3,
+          "difficulty": 4,
           "is_home": false,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         },
         {
           "difficulty": 3,
           "is_home": true,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
         },
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
         },
         {
           "difficulty": 2,
           "is_home": true,
-          "opponent": "WHU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
         }
       ],
-      "id": 449,
+      "id": 426,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p141746.png",
       "position": "MID",
-      "predicted_points": 31.848,
+      "predicted_points": 31.092,
       "season_stats": {
         "assists": 24,
         "bonus": 41,
@@ -119,96 +119,33 @@
         "total_points": 235,
         "yellow_cards": 5
       },
-      "selected_by_percent": 48.0,
+      "selected_by_percent": 48.7,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_short": "MUN",
-      "value": 3.06,
+      "value": 2.59,
       "web_name": "B.Fernandes"
     },
     {
-      "cost": 5.9,
+      "cost": 6.5,
       "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        },
         {
           "difficulty": 4,
           "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         },
         {
           "difficulty": 2,
           "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        }
-      ],
-      "id": 256,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p247348.png",
-      "position": "DEF",
-      "predicted_points": 26.564,
-      "season_stats": {
-        "assists": 4,
-        "bonus": 9,
-        "clean_sheets": 10,
-        "expected_assists": "3.94",
-        "expected_goal_involvements": "6.39",
-        "expected_goals": "2.45",
-        "goals_conceded": 33,
-        "goals_scored": 4,
-        "ict_index": "139.5",
-        "minutes": 2400,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 29,
-        "total_points": 136,
-        "yellow_cards": 7
-      },
-      "selected_by_percent": 9.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
-      "team_short": "CRY",
-      "value": 4.5,
-      "web_name": "Mu\u00f1oz"
-    },
-    {
-      "cost": 7.2,
-      "fixtures": [
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
         {
           "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 3,
           "is_home": true,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
         },
         {
           "difficulty": 4,
@@ -217,143 +154,17 @@
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
         },
         {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        }
-      ],
-      "id": 21,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
-      "position": "MID",
-      "predicted_points": 26.25,
-      "season_stats": {
-        "assists": 9,
-        "bonus": 23,
-        "clean_sheets": 18,
-        "expected_assists": "7.32",
-        "expected_goal_involvements": "10.47",
-        "expected_goals": "3.15",
-        "goals_conceded": 25,
-        "goals_scored": 4,
-        "ict_index": "215.4",
-        "minutes": 3093,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 35,
-        "total_points": 184,
-        "yellow_cards": 3
-      },
-      "selected_by_percent": 23.3,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
-      "team_short": "ARS",
-      "value": 3.65,
-      "web_name": "Rice"
-    },
-    {
-      "cost": 7.2,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
-        },
-        {
           "difficulty": 4,
           "is_home": false,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 1,
-          "is_home": true,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        },
-        {
-          "difficulty": 5,
-          "is_home": false,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
         }
       ],
-      "id": 136,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
-      "position": "FWD",
-      "predicted_points": 26.212,
-      "season_stats": {
-        "assists": 1,
-        "bonus": 22,
-        "clean_sheets": 10,
-        "expected_assists": "1.83",
-        "expected_goal_involvements": "22.43",
-        "expected_goals": "20.60",
-        "goals_conceded": 50,
-        "goals_scored": 22,
-        "ict_index": "256.9",
-        "minutes": 3282,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 37,
-        "total_points": 181,
-        "yellow_cards": 7
-      },
-      "selected_by_percent": 30.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
-      "team_short": "BRE",
-      "value": 3.64,
-      "web_name": "Thiago"
-    },
-    {
-      "cost": 7.6,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        }
-      ],
-      "id": 283,
+      "id": 223,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p231747.png",
       "position": "FWD",
-      "predicted_points": 26.037,
+      "predicted_points": 28.868,
       "season_stats": {
         "assists": 0,
         "bonus": 13,
@@ -371,241 +182,178 @@
         "total_points": 114,
         "yellow_cards": 2
       },
-      "selected_by_percent": 8.1,
+      "selected_by_percent": 7.6,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_short": "CRY",
-      "value": 3.43,
+      "value": 4.44,
       "web_name": "Mateta"
     },
     {
-      "cost": 5.7,
+      "cost": 8.0,
       "fixtures": [
         {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        },
-        {
           "difficulty": 3,
-          "is_home": true,
+          "is_home": false,
           "opponent": "BHA",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
         },
         {
-          "difficulty": 2,
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 4,
           "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
         }
       ],
-      "id": 517,
+      "id": 106,
       "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
-      "position": "MID",
-      "predicted_points": 25.815,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
+      "position": "FWD",
+      "predicted_points": 28.431,
       "season_stats": {
-        "assists": 5,
-        "bonus": 16,
+        "assists": 1,
+        "bonus": 22,
         "clean_sheets": 10,
-        "expected_assists": "4.79",
-        "expected_goal_involvements": "7.73",
-        "expected_goals": "2.94",
+        "expected_assists": "1.83",
+        "expected_goal_involvements": "22.43",
+        "expected_goals": "20.60",
         "goals_conceded": 50,
-        "goals_scored": 4,
-        "ict_index": "219.0",
-        "minutes": 3332,
+        "goals_scored": 22,
+        "ict_index": "256.9",
+        "minutes": 3282,
         "red_cards": 0,
         "saves": 0,
         "starts": 37,
-        "total_points": 180,
-        "yellow_cards": 8
+        "total_points": 181,
+        "yellow_cards": 7
       },
-      "selected_by_percent": 9.4,
+      "selected_by_percent": 16.5,
       "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
-      "team_short": "NFO",
-      "value": 4.53,
-      "web_name": "Anderson"
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
+      "team_short": "BRE",
+      "value": 3.55,
+      "web_name": "Thiago"
     },
     {
-      "cost": 4.4,
+      "cost": 7.5,
       "fixtures": [
         {
-          "difficulty": 3,
+          "difficulty": 2,
           "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
           "opponent": "BRE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
         },
         {
           "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 2,
           "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        }
-      ],
-      "id": 261,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p427623.png",
-      "position": "DEF",
-      "predicted_points": 25.663,
-      "season_stats": {
-        "assists": 0,
-        "bonus": 5,
-        "clean_sheets": 11,
-        "expected_assists": "1.56",
-        "expected_goal_involvements": "3.98",
-        "expected_goals": "2.42",
-        "goals_conceded": 42,
-        "goals_scored": 1,
-        "ict_index": "107.6",
-        "minutes": 2825,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 31,
-        "total_points": 128,
-        "yellow_cards": 4
-      },
-      "selected_by_percent": 2.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
-      "team_short": "CRY",
-      "value": 5.83,
-      "web_name": "Richards"
-    },
-    {
-      "cost": 5.2,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        }
-      ],
-      "id": 257,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437499.png",
-      "position": "DEF",
-      "predicted_points": 25.443,
-      "season_stats": {
-        "assists": 2,
-        "bonus": 11,
-        "clean_sheets": 11,
-        "expected_assists": "0.83",
-        "expected_goal_involvements": "3.28",
-        "expected_goals": "2.45",
-        "goals_conceded": 47,
-        "goals_scored": 1,
-        "ict_index": "124.3",
-        "minutes": 3085,
-        "red_cards": 1,
-        "saves": 0,
-        "starts": 35,
-        "total_points": 154,
-        "yellow_cards": 4
-      },
-      "selected_by_percent": 7.1,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
-      "team_short": "CRY",
-      "value": 4.89,
-      "web_name": "Lacroix"
-    },
-    {
-      "cost": 7.3,
-      "fixtures": [
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
           "opponent": "TOT",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
+        }
+      ],
+      "id": 13,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+      "position": "MID",
+      "predicted_points": 25.587,
+      "season_stats": {
+        "assists": 9,
+        "bonus": 23,
+        "clean_sheets": 18,
+        "expected_assists": "7.32",
+        "expected_goal_involvements": "10.47",
+        "expected_goals": "3.15",
+        "goals_conceded": 25,
+        "goals_scored": 4,
+        "ict_index": "215.4",
+        "minutes": 3093,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 35,
+        "total_points": 184,
+        "yellow_cards": 3
+      },
+      "selected_by_percent": 21.9,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "value": 3.41,
+      "web_name": "Rice"
+    },
+    {
+      "cost": 8.0,
+      "fixtures": [
         {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
         },
         {
           "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 4,
           "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
           "opponent": "BRE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
         }
       ],
-      "id": 5,
+      "id": 4,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
       "position": "DEF",
-      "predicted_points": 24.809,
+      "predicted_points": 25.435,
       "season_stats": {
         "assists": 5,
         "bonus": 30,
@@ -623,75 +371,12 @@
         "total_points": 209,
         "yellow_cards": 4
       },
-      "selected_by_percent": 45.4,
+      "selected_by_percent": 25.4,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_short": "ARS",
-      "value": 3.4,
+      "value": 3.18,
       "web_name": "Gabriel"
-    },
-    {
-      "cost": 6.0,
-      "fixtures": [
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        }
-      ],
-      "id": 8,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
-      "position": "DEF",
-      "predicted_points": 24.391,
-      "season_stats": {
-        "assists": 6,
-        "bonus": 9,
-        "clean_sheets": 13,
-        "expected_assists": "1.53",
-        "expected_goal_involvements": "6.24",
-        "expected_goals": "4.71",
-        "goals_conceded": 20,
-        "goals_scored": 3,
-        "ict_index": "125.7",
-        "minutes": 2452,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 28,
-        "total_points": 149,
-        "yellow_cards": 5
-      },
-      "selected_by_percent": 15.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
-      "team_short": "ARS",
-      "value": 4.07,
-      "web_name": "J.Timber"
     },
     {
       "cost": 6.5,
@@ -699,39 +384,102 @@
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 1,
-          "is_home": true,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
         },
         {
           "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
         },
         {
-          "difficulty": 4,
-          "is_home": true,
+          "difficulty": 5,
+          "is_home": false,
           "opponent": "ARS",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
         },
         {
-          "difficulty": 3,
-          "is_home": false,
+          "difficulty": 2,
+          "is_home": true,
           "opponent": "LEE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
         }
       ],
-      "id": 237,
+      "id": 481,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
+      "position": "MID",
+      "predicted_points": 24.982,
+      "season_stats": {
+        "assists": 5,
+        "bonus": 16,
+        "clean_sheets": 10,
+        "expected_assists": "4.79",
+        "expected_goal_involvements": "7.73",
+        "expected_goals": "2.94",
+        "goals_conceded": 50,
+        "goals_scored": 4,
+        "ict_index": "219.0",
+        "minutes": 3332,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 37,
+        "total_points": 180,
+        "yellow_cards": 8
+      },
+      "selected_by_percent": 12.1,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
+      "team_short": "MCI",
+      "value": 3.84,
+      "web_name": "Anderson"
+    },
+    {
+      "cost": 7.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        }
+      ],
+      "id": 155,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p448047.png",
       "position": "MID",
-      "predicted_points": 23.616,
+      "predicted_points": 24.497,
       "season_stats": {
         "assists": 5,
         "bonus": 19,
@@ -749,147 +497,27 @@
         "total_points": 157,
         "yellow_cards": 10
       },
-      "selected_by_percent": 12.3,
+      "selected_by_percent": 5.1,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_short": "CHE",
-      "value": 3.63,
+      "value": 3.5,
       "web_name": "Enzo"
     },
     {
-      "cost": 5.0,
+      "cost": 6.0,
       "fixtures": [
         {
-          "difficulty": 3,
+          "difficulty": 2,
           "is_home": true,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
           "opponent": "BRE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        }
-      ],
-      "id": 258,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244723.png",
-      "position": "DEF",
-      "predicted_points": 23.451,
-      "season_stats": {
-        "assists": 3,
-        "bonus": 8,
-        "clean_sheets": 12,
-        "expected_assists": "2.53",
-        "expected_goal_involvements": "4.12",
-        "expected_goals": "1.59",
-        "goals_conceded": 47,
-        "goals_scored": 1,
-        "ict_index": "136.0",
-        "minutes": 3253,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 36,
-        "total_points": 135,
-        "yellow_cards": 6
-      },
-      "selected_by_percent": 2.3,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
-      "team_short": "CRY",
-      "value": 4.69,
-      "web_name": "Mitchell"
-    },
-    {
-      "cost": 8.3,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "WHU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
-        }
-      ],
-      "id": 119,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p446008.png",
-      "position": "MID",
-      "predicted_points": 23.415,
-      "season_stats": {
-        "assists": 3,
-        "bonus": 16,
-        "clean_sheets": 8,
-        "expected_assists": "4.99",
-        "expected_goal_involvements": "16.97",
-        "expected_goals": "11.98",
-        "goals_conceded": 37,
-        "goals_scored": 11,
-        "ict_index": "231.4",
-        "minutes": 2611,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 31,
-        "total_points": 148,
-        "yellow_cards": 4
-      },
-      "selected_by_percent": 15.0,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
-      "team_short": "MUN",
-      "value": 2.82,
-      "web_name": "Mbeumo"
-    },
-    {
-      "cost": 8.0,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
         },
         {
           "difficulty": 4,
@@ -898,407 +526,23 @@
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         },
         {
-          "difficulty": 3,
+          "difficulty": 4,
           "is_home": false,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        }
-      ],
-      "id": 82,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
-      "position": "MID",
-      "predicted_points": 23.324,
-      "season_stats": {
-        "assists": 6,
-        "bonus": 18,
-        "clean_sheets": 12,
-        "expected_assists": "3.12",
-        "expected_goal_involvements": "14.21",
-        "expected_goals": "11.10",
-        "goals_conceded": 52,
-        "goals_scored": 17,
-        "ict_index": "257.7",
-        "minutes": 3200,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 37,
-        "total_points": 202,
-        "yellow_cards": 7
-      },
-      "selected_by_percent": 46.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-      "team_short": "MCI",
-      "value": 2.92,
-      "web_name": "Semenyo"
-    },
-    {
-      "cost": 14.0,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
           "opponent": "AVL",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
         },
         {
-          "difficulty": 5,
-          "is_home": false,
-          "opponent": "MCI",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "WHU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        }
-      ],
-      "id": 381,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p118748.png",
-      "position": "MID",
-      "predicted_points": 23.306,
-      "season_stats": {
-        "assists": 7,
-        "bonus": 11,
-        "clean_sheets": 7,
-        "expected_assists": "5.44",
-        "expected_goal_involvements": "13.67",
-        "expected_goals": "8.23",
-        "goals_conceded": 35,
-        "goals_scored": 7,
-        "ict_index": "207.1",
-        "minutes": 2144,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 23,
-        "total_points": 123,
-        "yellow_cards": 1
-      },
-      "selected_by_percent": 15.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
-      "team_short": "LIV",
-      "value": 1.66,
-      "web_name": "M.Salah"
-    },
-    {
-      "cost": 4.6,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        }
-      ],
-      "id": 694,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p200834.png",
-      "position": "DEF",
-      "predicted_points": 23.218,
-      "season_stats": {
-        "assists": 5,
-        "bonus": 11,
-        "clean_sheets": 9,
-        "expected_assists": "2.65",
-        "expected_goal_involvements": "4.27",
-        "expected_goals": "1.62",
-        "goals_conceded": 40,
-        "goals_scored": 3,
-        "ict_index": "132.9",
-        "minutes": 2784,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 32,
-        "total_points": 151,
-        "yellow_cards": 5
-      },
-      "selected_by_percent": 8.7,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
-      "team_short": "SUN",
-      "value": 5.05,
-      "web_name": "Mukiele"
-    },
-    {
-      "cost": 5.5,
-      "fixtures": [
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "AVL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
-        }
-      ],
-      "id": 160,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p592031.png",
-      "position": "MID",
-      "predicted_points": 23.208,
-      "season_stats": {
-        "assists": 8,
-        "bonus": 9,
-        "clean_sheets": 11,
-        "expected_assists": "5.06",
-        "expected_goal_involvements": "8.87",
-        "expected_goals": "3.81",
-        "goals_conceded": 33,
-        "goals_scored": 3,
-        "ict_index": "180.3",
-        "minutes": 2389,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 26,
-        "total_points": 117,
-        "yellow_cards": 3
-      },
-      "selected_by_percent": 2.5,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
-      "team_short": "BHA",
-      "value": 4.22,
-      "web_name": "Minteh"
-    },
-    {
-      "cost": 10.0,
-      "fixtures": [
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "BUR",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        }
-      ],
-      "id": 16,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
-      "position": "MID",
-      "predicted_points": 22.93,
-      "season_stats": {
-        "assists": 10,
-        "bonus": 18,
-        "clean_sheets": 12,
-        "expected_assists": "7.16",
-        "expected_goal_involvements": "14.73",
-        "expected_goals": "7.57",
-        "goals_conceded": 16,
-        "goals_scored": 7,
-        "ict_index": "230.6",
-        "minutes": 2218,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 25,
-        "total_points": 157,
-        "yellow_cards": 2
-      },
-      "selected_by_percent": 11.6,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
-      "team_short": "ARS",
-      "value": 2.29,
-      "web_name": "Saka"
-    },
-    {
-      "cost": 4.8,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        }
-      ],
-      "id": 670,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p498016.png",
-      "position": "GKP",
-      "predicted_points": 22.756,
-      "season_stats": {
-        "assists": 0,
-        "bonus": 12,
-        "clean_sheets": 10,
-        "expected_assists": "0.10",
-        "expected_goal_involvements": "0.10",
-        "expected_goals": "0.00",
-        "goals_conceded": 46,
-        "goals_scored": 0,
-        "ict_index": "93.1",
-        "minutes": 3150,
-        "red_cards": 0,
-        "saves": 109,
-        "starts": 35,
-        "total_points": 136,
-        "yellow_cards": 4
-      },
-      "selected_by_percent": 8.0,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
-      "team_short": "SUN",
-      "value": 4.74,
-      "web_name": "Roefs"
-    },
-    {
-      "cost": 6.3,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
           "difficulty": 2,
           "is_home": true,
           "opponent": "FUL",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
         }
       ],
-      "id": 299,
+      "id": 237,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p440993.png",
       "position": "MID",
-      "predicted_points": 22.57,
+      "predicted_points": 24.394,
       "season_stats": {
         "assists": 3,
         "bonus": 7,
@@ -1316,79 +560,28 @@
         "total_points": 128,
         "yellow_cards": 2
       },
-      "selected_by_percent": 4.7,
+      "selected_by_percent": 20.8,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_short": "EVE",
-      "value": 3.58,
+      "value": 4.07,
       "web_name": "Ndiaye"
     },
     {
-      "cost": 7.6,
+      "cost": 6.0,
       "fixtures": [
         {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
+          "difficulty": 3,
+          "is_home": false,
           "opponent": "LEE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
         },
         {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
           "difficulty": 2,
-          "is_home": false,
-          "opponent": "WOL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t39.png"
-        }
-      ],
-      "id": 515,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p222531.png",
-      "position": "MID",
-      "predicted_points": 22.474,
-      "season_stats": {
-        "assists": 4,
-        "bonus": 18,
-        "clean_sheets": 10,
-        "expected_assists": "2.91",
-        "expected_goal_involvements": "13.72",
-        "expected_goals": "10.81",
-        "goals_conceded": 45,
-        "goals_scored": 15,
-        "ict_index": "242.5",
-        "minutes": 3101,
-        "red_cards": 0,
-        "saves": 0,
-        "starts": 35,
-        "total_points": 188,
-        "yellow_cards": 1
-      },
-      "selected_by_percent": 9.2,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
-      "team_short": "NFO",
-      "value": 2.96,
-      "web_name": "Gibbs-White"
-    },
-    {
-      "cost": 4.5,
-      "fixtures": [
+          "is_home": true,
+          "opponent": "IPS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png"
+        },
         {
           "difficulty": 3,
           "is_home": false,
@@ -1403,28 +596,331 @@
         },
         {
           "difficulty": 4,
-          "is_home": false,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        }
+      ],
+      "id": 498,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p221466.png",
+      "position": "DEF",
+      "predicted_points": 24.382,
+      "season_stats": {
+        "assists": 6,
+        "bonus": 14,
+        "clean_sheets": 11,
+        "expected_assists": "4.72",
+        "expected_goal_involvements": "6.25",
+        "expected_goals": "1.53",
+        "goals_conceded": 53,
+        "goals_scored": 0,
+        "ict_index": "168.6",
+        "minutes": 3288,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 37,
+        "total_points": 175,
+        "yellow_cards": 8
+      },
+      "selected_by_percent": 11.5,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
+      "team_short": "TOT",
+      "value": 4.06,
+      "web_name": "Senesi"
+    },
+    {
+      "cost": 4.5,
+      "fixtures": [
         {
-          "difficulty": 3,
+          "difficulty": 2,
           "is_home": true,
           "opponent": "NEW",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
         },
         {
-          "difficulty": 3,
+          "difficulty": 5,
           "is_home": false,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
           "opponent": "BOU",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
         }
       ],
-      "id": 295,
+      "id": 269,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p184349.png",
+      "position": "DEF",
+      "predicted_points": 23.611,
+      "season_stats": {
+        "assists": 3,
+        "bonus": 8,
+        "clean_sheets": 6,
+        "expected_assists": "1.80",
+        "expected_goal_involvements": "3.40",
+        "expected_goals": "1.60",
+        "goals_conceded": 29,
+        "goals_scored": 3,
+        "ict_index": "86.7",
+        "minutes": 1816,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 20,
+        "total_points": 95,
+        "yellow_cards": 0
+      },
+      "selected_by_percent": 0.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
+      "team_short": "FUL",
+      "value": 5.25,
+      "web_name": "Sessegnon"
+    },
+    {
+      "cost": 8.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        }
+      ],
+      "id": 427,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p446008.png",
+      "position": "MID",
+      "predicted_points": 23.513,
+      "season_stats": {
+        "assists": 3,
+        "bonus": 16,
+        "clean_sheets": 8,
+        "expected_assists": "4.99",
+        "expected_goal_involvements": "16.97",
+        "expected_goals": "11.98",
+        "goals_conceded": 37,
+        "goals_scored": 11,
+        "ict_index": "231.4",
+        "minutes": 2611,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 31,
+        "total_points": 148,
+        "yellow_cards": 4
+      },
+      "selected_by_percent": 13.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
+      "team_short": "MUN",
+      "value": 2.94,
+      "web_name": "Mbeumo"
+    },
+    {
+      "cost": 9.5,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        }
+      ],
+      "id": 12,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+      "position": "MID",
+      "predicted_points": 23.377,
+      "season_stats": {
+        "assists": 10,
+        "bonus": 18,
+        "clean_sheets": 12,
+        "expected_assists": "7.16",
+        "expected_goal_involvements": "14.73",
+        "expected_goals": "7.57",
+        "goals_conceded": 16,
+        "goals_scored": 7,
+        "ict_index": "230.6",
+        "minutes": 2218,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 25,
+        "total_points": 157,
+        "yellow_cards": 2
+      },
+      "selected_by_percent": 10.8,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "value": 2.46,
+      "web_name": "Saka"
+    },
+    {
+      "cost": 7.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        }
+      ],
+      "id": 368,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p424876.png",
+      "position": "MID",
+      "predicted_points": 23.123,
+      "season_stats": {
+        "assists": 7,
+        "bonus": 21,
+        "clean_sheets": 9,
+        "expected_assists": "6.83",
+        "expected_goal_involvements": "11.59",
+        "expected_goals": "4.76",
+        "goals_conceded": 52,
+        "goals_scored": 6,
+        "ict_index": "260.9",
+        "minutes": 3232,
+        "red_cards": 1,
+        "saves": 0,
+        "starts": 36,
+        "total_points": 160,
+        "yellow_cards": 8
+      },
+      "selected_by_percent": 46.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
+      "team_short": "LIV",
+      "value": 3.3,
+      "web_name": "Szoboszlai"
+    },
+    {
+      "cost": 5.0,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        }
+      ],
+      "id": 231,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p106611.png",
       "position": "DEF",
-      "predicted_points": 22.259,
+      "predicted_points": 22.993,
       "season_stats": {
         "assists": 1,
         "bonus": 8,
@@ -1442,22 +938,16 @@
         "total_points": 131,
         "yellow_cards": 1
       },
-      "selected_by_percent": 3.1,
+      "selected_by_percent": 1.5,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_short": "EVE",
-      "value": 4.95,
+      "value": 4.6,
       "web_name": "Keane"
     },
     {
-      "cost": 5.1,
+      "cost": 5.5,
       "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
         {
           "difficulty": 4,
           "is_home": true,
@@ -1465,73 +955,136 @@
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         },
         {
-          "difficulty": 3,
+          "difficulty": 2,
           "is_home": false,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
         },
         {
           "difficulty": 2,
           "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
         },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        }
+      ],
+      "id": 201,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p247348.png",
+      "position": "DEF",
+      "predicted_points": 22.781,
+      "season_stats": {
+        "assists": 4,
+        "bonus": 9,
+        "clean_sheets": 10,
+        "expected_assists": "3.94",
+        "expected_goal_involvements": "6.39",
+        "expected_goals": "2.45",
+        "goals_conceded": 33,
+        "goals_scored": 4,
+        "ict_index": "139.5",
+        "minutes": 2400,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 29,
+        "total_points": 136,
+        "yellow_cards": 7
+      },
+      "selected_by_percent": 12.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
+      "team_short": "CRY",
+      "value": 4.14,
+      "web_name": "Mu\u00f1oz"
+    },
+    {
+      "cost": 6.0,
+      "fixtures": [
         {
           "difficulty": 3,
           "is_home": false,
           "opponent": "FUL",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
         }
       ],
-      "id": 260,
+      "id": 463,
       "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p209036.png",
-      "position": "DEF",
-      "predicted_points": 22.144,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p470313.png",
+      "position": "FWD",
+      "predicted_points": 22.574,
       "season_stats": {
-        "assists": 5,
-        "bonus": 14,
-        "clean_sheets": 14,
-        "expected_assists": "2.37",
-        "expected_goal_involvements": "6.42",
-        "expected_goals": "4.05",
-        "goals_conceded": 35,
-        "goals_scored": 3,
-        "ict_index": "160.9",
-        "minutes": 3150,
+        "assists": 4,
+        "bonus": 12,
+        "clean_sheets": 8,
+        "expected_assists": "1.53",
+        "expected_goal_involvements": "8.12",
+        "expected_goals": "6.59",
+        "goals_conceded": 29,
+        "goals_scored": 8,
+        "ict_index": "117.5",
+        "minutes": 1896,
         "red_cards": 0,
         "saves": 0,
-        "starts": 35,
-        "total_points": 179,
-        "yellow_cards": 6
+        "starts": 24,
+        "total_points": 108,
+        "yellow_cards": 0
       },
-      "selected_by_percent": 32.6,
+      "selected_by_percent": 1.6,
       "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-      "team_short": "MCI",
-      "value": 4.34,
-      "web_name": "Gu\u00e9hi"
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
+      "team_short": "NEW",
+      "value": 3.76,
+      "web_name": "Woltemade"
     },
     {
-      "cost": 6.3,
+      "cost": 7.5,
       "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
         {
           "difficulty": 2,
           "is_home": true,
           "opponent": "LEE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
         },
         {
           "difficulty": 3,
@@ -1542,15 +1095,147 @@
         {
           "difficulty": 3,
           "is_home": true,
-          "opponent": "AVL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         }
       ],
-      "id": 178,
+      "id": 165,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p475168.png",
+      "position": "FWD",
+      "predicted_points": 22.287,
+      "season_stats": {
+        "assists": 9,
+        "bonus": 30,
+        "clean_sheets": 10,
+        "expected_assists": "1.96",
+        "expected_goal_involvements": "16.87",
+        "expected_goals": "14.91",
+        "goals_conceded": 36,
+        "goals_scored": 15,
+        "ict_index": "212.1",
+        "minutes": 2658,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 31,
+        "total_points": 177,
+        "yellow_cards": 5
+      },
+      "selected_by_percent": 48.8,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+      "team_short": "CHE",
+      "value": 2.97,
+      "web_name": "Jo\u00e3o Pedro"
+    },
+    {
+      "cost": 5.5,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        }
+      ],
+      "id": 8,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
+      "position": "DEF",
+      "predicted_points": 22.048,
+      "season_stats": {
+        "assists": 2,
+        "bonus": 6,
+        "clean_sheets": 13,
+        "expected_assists": "0.76",
+        "expected_goal_involvements": "4.12",
+        "expected_goals": "3.36",
+        "goals_conceded": 8,
+        "goals_scored": 1,
+        "ict_index": "77.9",
+        "minutes": 1697,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 22,
+        "total_points": 109,
+        "yellow_cards": 5
+      },
+      "selected_by_percent": 13.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "value": 4.01,
+      "web_name": "Calafiori"
+    },
+    {
+      "cost": 6.0,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        }
+      ],
+      "id": 136,
       "news": "",
       "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p50175.png",
       "position": "FWD",
-      "predicted_points": 22.074,
+      "predicted_points": 21.961,
       "season_stats": {
         "assists": 1,
         "bonus": 18,
@@ -1568,12 +1253,327 @@
         "total_points": 126,
         "yellow_cards": 5
       },
-      "selected_by_percent": 8.4,
+      "selected_by_percent": 3.0,
       "status": "a",
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_short": "BHA",
-      "value": 3.5,
+      "value": 3.66,
       "web_name": "Welbeck"
+    },
+    {
+      "cost": 5.5,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        }
+      ],
+      "id": 84,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p432830.png",
+      "position": "DEF",
+      "predicted_points": 21.925,
+      "season_stats": {
+        "assists": 2,
+        "bonus": 7,
+        "clean_sheets": 9,
+        "expected_assists": "1.71",
+        "expected_goal_involvements": "3.95",
+        "expected_goals": "2.24",
+        "goals_conceded": 44,
+        "goals_scored": 1,
+        "ict_index": "131.9",
+        "minutes": 2971,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 32,
+        "total_points": 129,
+        "yellow_cards": 7
+      },
+      "selected_by_percent": 2.0,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
+      "team_short": "BRE",
+      "value": 3.99,
+      "web_name": "Collins"
+    },
+    {
+      "cost": 5.0,
+      "fixtures": [
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        }
+      ],
+      "id": 202,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p427623.png",
+      "position": "DEF",
+      "predicted_points": 21.823,
+      "season_stats": {
+        "assists": 0,
+        "bonus": 5,
+        "clean_sheets": 11,
+        "expected_assists": "1.56",
+        "expected_goal_involvements": "3.98",
+        "expected_goals": "2.42",
+        "goals_conceded": 42,
+        "goals_scored": 1,
+        "ict_index": "107.6",
+        "minutes": 2825,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 31,
+        "total_points": 128,
+        "yellow_cards": 4
+      },
+      "selected_by_percent": 0.8,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
+      "team_short": "CRY",
+      "value": 4.36,
+      "web_name": "Richards"
+    },
+    {
+      "cost": 6.5,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        }
+      ],
+      "id": 156,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p247632.png",
+      "position": "MID",
+      "predicted_points": 21.649,
+      "season_stats": {
+        "assists": 7,
+        "bonus": 9,
+        "clean_sheets": 11,
+        "expected_assists": "6.84",
+        "expected_goal_involvements": "11.43",
+        "expected_goals": "4.59",
+        "goals_conceded": 33,
+        "goals_scored": 5,
+        "ict_index": "186.7",
+        "minutes": 2629,
+        "red_cards": 1,
+        "saves": 0,
+        "starts": 30,
+        "total_points": 125,
+        "yellow_cards": 2
+      },
+      "selected_by_percent": 1.2,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+      "team_short": "CHE",
+      "value": 3.33,
+      "web_name": "Neto"
+    },
+    {
+      "cost": 6.0,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "IPS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        }
+      ],
+      "id": 68,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p201658.png",
+      "position": "MID",
+      "predicted_points": 21.612,
+      "season_stats": {
+        "assists": 4,
+        "bonus": 14,
+        "clean_sheets": 11,
+        "expected_assists": "4.60",
+        "expected_goal_involvements": "13.66",
+        "expected_goals": "9.06",
+        "goals_conceded": 44,
+        "goals_scored": 7,
+        "ict_index": "207.9",
+        "minutes": 2732,
+        "red_cards": 0,
+        "saves": 0,
+        "starts": 31,
+        "total_points": 137,
+        "yellow_cards": 6
+      },
+      "selected_by_percent": 1.4,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
+      "team_short": "BOU",
+      "value": 3.6,
+      "web_name": "Tavernier"
+    },
+    {
+      "cost": 6.0,
+      "fixtures": [
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        }
+      ],
+      "id": 200,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437499.png",
+      "position": "DEF",
+      "predicted_points": 21.582,
+      "season_stats": {
+        "assists": 2,
+        "bonus": 11,
+        "clean_sheets": 11,
+        "expected_assists": "0.83",
+        "expected_goal_involvements": "3.28",
+        "expected_goals": "2.45",
+        "goals_conceded": 47,
+        "goals_scored": 1,
+        "ict_index": "124.3",
+        "minutes": 3085,
+        "red_cards": 1,
+        "saves": 0,
+        "starts": 35,
+        "total_points": 154,
+        "yellow_cards": 4
+      },
+      "selected_by_percent": 12.1,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
+      "team_short": "CRY",
+      "value": 3.6,
+      "web_name": "Lacroix"
     }
   ],
   "status": 200
