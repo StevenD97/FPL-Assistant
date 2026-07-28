@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Countdown } from "@/shared/ui/Countdown";
-import { NEXT_DEADLINE_LABEL } from "@/shared/lib/deadline";
+import { Countdown, DeadlineLabel } from "@/shared/ui/Countdown";
 
 /**
  * The purple hero treatment, reused by both cockpit states so the page keeps
@@ -43,7 +42,7 @@ export function CockpitShell({
               Deadline
             </span>
             <Countdown className="block text-lg font-bold text-white" />
-            <span className="block text-[10px] text-[#c9a9d1]">{NEXT_DEADLINE_LABEL}</span>
+            <span className="block text-[10px] text-[#c9a9d1]"><DeadlineLabel /></span>
           </Link>
         </div>
 

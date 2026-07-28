@@ -1,24 +1,39 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NEXT_DEADLINE_ISO, formatCountdown } from "@/shared/lib/deadline";
+import { formatCountdown } from "@/shared/lib/deadline";
+import { useNextDeadline } from "@/shared/lib/useSeasonStatus";
 
-export function Countdown({ target = NEXT_DEADLINE_ISO, className = "" }: { target?: string; className?: string }) {
+/**
+ * Ticking time-to-deadline. With no `target`, counts down to the next gameweek
+ * deadline reported by the backend, so it stays correct without anyone editing
+ * a constant each week.
+ */
+export function Countdown({ target, className = "" }: { target?: string; className?: string }) {
+  const { iso } = useNextDeadline();
+  const deadline = target ?? iso;
+
   // Render a stable placeholder on the server; fill in the live value after
   // mount to avoid a hydration mismatch on the ticking clock.
   const [text, setText] = useState("—");
 
   useEffect(() => {
-    const deadline = new Date(target).getTime();
-    const tick = () => setText(formatCountdown(deadline - Date.now()));
+    const at = new Date(deadline).getTime();
+    const tick = () => setText(formatCountdown(at - Date.now()));
     tick();
     const id = setInterval(tick, 1000 * 30);
     return () => clearInterval(id);
-  }, [target]);
+  }, [deadline]);
 
   return (
     <span className={`font-mono tabular-nums ${className}`} suppressHydrationWarning>
       {text}
     </span>
   );
+}
+
+/** The deadline's own label ("GW1 · Fri 21 Aug, 18:30"), from the same source. */
+export function DeadlineLabel({ className = "" }: { className?: string }) {
+  const { label } = useNextDeadline();
+  return <span className={className}>{label}</span>;
 }

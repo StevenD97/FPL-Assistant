@@ -45,6 +45,9 @@ def season_status():
     return {
         "is_preseason": ctx["is_preseason"],
         "next_event": ctx["next_event"],
+        # Real deadline from bootstrap events[], so the frontend countdown
+        # doesn't have to guess one (and advances by itself each gameweek).
+        "next_deadline": ctx["next_deadline"],
         "archive_season_label": "2025/26",
         "current_season_label": "2026/27",
     }

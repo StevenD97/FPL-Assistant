@@ -9,7 +9,8 @@ Returns the verbatim FPL structures either way, so downstream code is unchanged.
 """
 import json
 import os
-from functools import lru_cache
+import time
+from functools import wraps
 
 import pandas as pd
 import requests
@@ -40,6 +41,45 @@ def ensure_data_fetched():
             json.dump(response.json(), f)
 
 
+def _ttl_cache(seconds):
+    """
+    Like lru_cache, but entries expire.
+
+    These loaders used to be @lru_cache(maxsize=None), i.e. cached for the
+    process's whole lifetime, on the reasoning that "a fresh ingest only takes
+    effect on the next deploy anyway". That stopped being true once ingest
+    became a scheduled job: without an expiry the cron would refresh the DB
+    every hour and the running web process would never notice, serving the
+    snapshot it happened to read at boot until someone redeployed.
+
+    Re-reading is a single indexed row from raw_snapshots, so an expiry costs
+    little; the cache is still what keeps it off the per-request path.
+    """
+
+    def decorate(fn):
+        store: dict = {}
+
+        @wraps(fn)
+        def wrapper(*args):
+            now = time.monotonic()
+            cached = store.get(args)
+            if cached is not None and now - cached[0] < seconds:
+                return cached[1]
+            value = fn(*args)
+            store[args] = (now, value)
+            return value
+
+        wrapper.cache_clear = store.clear
+        return wrapper
+
+    return decorate
+
+
+# Long enough that it stays off the request path, short enough that an hourly
+# ingest is visible without a redeploy.
+SNAPSHOT_TTL_SECONDS = 900
+
+
 def _file_fallback_allowed():
     """DB-first; fall back to the on-disk snapshots unless explicitly disabled."""
     try:
@@ -50,7 +90,7 @@ def _file_fallback_allowed():
         return True
 
 
-@lru_cache(maxsize=None)
+@_ttl_cache(SNAPSHOT_TTL_SECONDS)
 def load_bootstrap(filename="bootstrap_static.json"):
     """
     Reads the latest bootstrap snapshot from the DB (raw_snapshots), keyed by
@@ -62,8 +102,9 @@ def load_bootstrap(filename="bootstrap_static.json"):
     Cached per filename: every predicted-points endpoint loads the same
     bootstrap repeatedly per request - measured ~50-75ms per parse of the
     ~1.4-2.7MB JSON, called 3-5x in a single /api/players request before this
-    was cached. (Cache is process-lifetime; a fresh ingest is picked up on the
-    next process start - the ingest job runs out-of-process.)
+    was cached. Cached with a TTL rather than for the process's lifetime, so
+    the scheduled ingest (which runs out-of-process) is picked up without a
+    redeploy - see _ttl_cache.
     """
     try:
         from fpl.data.db.read import bootstrap_from_db
@@ -78,7 +119,7 @@ def load_bootstrap(filename="bootstrap_static.json"):
         return json.load(f)
 
 
-@lru_cache(maxsize=None)
+@_ttl_cache(SNAPSHOT_TTL_SECONDS)
 def load_fixtures(filename="fixtures.json"):
     """Latest fixtures snapshot from the DB, falling back to the on-disk JSON. See load_bootstrap."""
     try:
@@ -94,7 +135,7 @@ def load_fixtures(filename="fixtures.json"):
         return json.load(f)
 
 
-@lru_cache(maxsize=None)
+@_ttl_cache(SNAPSHOT_TTL_SECONDS)
 def load_gw_history(season="2025_26"):
     """
     Gameweek-by-gameweek player data (one row per player per fixture). Reads
@@ -126,12 +167,10 @@ def load_recent_bootstrap_snapshots(filename="bootstrap_static.json", hours=48):
     [(fetched_at, bootstrap_dict), ...], oldest first - see
     fpl.data.db.read.recent_bootstrap_snapshots for what this actually reads
     (raw_snapshots' full history, not just the latest row). Deliberately
-    NOT @lru_cache'd like load_bootstrap/load_fixtures above - those cache
-    "the latest snapshot" for a process's whole lifetime, which is correct
-    since a fresh ingest only takes effect on the next deploy anyway; this
-    function's entire purpose is to reflect *how that latest value has been
-    changing*, so caching it would silently freeze it at whatever the first
-    call saw.
+    NOT cached at all, unlike load_bootstrap/load_fixtures above - those cache
+    "the latest snapshot" behind a TTL, whereas this function's entire purpose
+    is to reflect *how that latest value has been changing*, so caching it
+    would silently freeze it at whatever the first call saw.
 
     No on-disk fallback (unlike load_bootstrap/load_fixtures) - there's
     only ever one bootstrap JSON file on disk per season, not a time

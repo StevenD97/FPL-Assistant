@@ -11,3 +11,31 @@ services:
         sync: false
       - key: API_FOOTBALL_KEY
         sync: false
+
+  # Keeps Postgres current. Nothing refreshed on its own before this:
+  # ensure_data_fetched only downloads when the on-disk files are missing, and
+  # the ingest CLI was only ever run by hand (last run before this was added:
+  # 2026-07-24). `run` snapshots bootstrap + fixtures and ingests any
+  # newly-finished gameweeks - what prices, injury news and gameweek scoring
+  # all depend on.
+  #
+  # Hourly: FPL prices change nightly (~02:30 UK) and injury news lands through
+  # the day. The web service sees each refresh within SNAPSHOT_TTL_SECONDS
+  # (15 min) rather than needing a redeploy - see fpl/data/loaders.py.
+  #
+  # Two things to know before this runs:
+  #   - Render cron jobs are not on the free plan, unlike the web service above.
+  #   - DATABASE_URL must point at the same database the web service uses.
+  - type: cron
+    name: fpl-assistant-ingest
+    runtime: python
+    rootDir: backend
+    plan: starter
+    schedule: "17 * * * *"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m fpl.data.ingest run
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: API_FOOTBALL_KEY
+        sync: false

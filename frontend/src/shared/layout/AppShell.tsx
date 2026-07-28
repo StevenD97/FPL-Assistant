@@ -8,8 +8,7 @@ import { NavIcon, type IconName } from "./icons";
 import { PageTransition } from "./PageTransition";
 import { CommandPalette, OPEN_PALETTE_EVENT } from "./CommandPalette";
 import { Footer } from "./Footer";
-import { Countdown } from "@/shared/ui/Countdown";
-import { NEXT_DEADLINE_LABEL } from "@/shared/lib/deadline";
+import { Countdown, DeadlineLabel } from "@/shared/ui/Countdown";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { formatRank, initials } from "@/shared/lib/team";
 
@@ -190,7 +189,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-1.5 rounded-xl border border-pl-green/35 bg-pl-green/10 p-3">
             <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-pl-green">Deadline</span>
             <Countdown className="text-lg font-bold text-white" />
-            <span className="text-[11px] text-[#c9a9d1]">{NEXT_DEADLINE_LABEL}</span>
+            <span className="text-[11px] text-[#c9a9d1]"><DeadlineLabel /></span>
           </div>
           <SidebarTeam />
         </div>

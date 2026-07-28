@@ -16,6 +16,11 @@ def get_gw_context(bootstrap=None):
     instead of hardcoded reference-date/event pairs.
 
     Returns:
+      - next_deadline: that gameweek's own deadline_time, verbatim from
+        FPL (UTC, "...Z"). Exposed so the frontend's countdown reads the
+        real deadline instead of assuming one - FPL does not always set it
+        ~90 minutes before the first kickoff, and 2026/27 GW1 is 17:30Z,
+        not the 10:30Z that assumption produced.
       - next_event: the upcoming gameweek to predict for - events[].is_next
         if one exists (mid-season, or pre-season with GW1 still ahead), else
         the in-progress is_current gameweek (last GW of the season, no
@@ -53,6 +58,7 @@ def get_gw_context(bootstrap=None):
 
     return {
         "next_event": reference["id"],
+        "next_deadline": reference["deadline_time"],
         "reference_date": reference_date,
         "is_preseason": not any_finished,
     }

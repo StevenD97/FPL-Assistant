@@ -517,6 +517,7 @@ export type SeasonStatus = {
   archive_season_label: string;
   current_season_label: string;
   is_preseason: boolean;
+  next_deadline: string;
   next_event: number;
 };
 
