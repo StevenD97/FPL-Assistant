@@ -3,10 +3,11 @@ import { PageContainer } from "@/shared/layout/PageContainer";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { HeroActions } from "@/features/home/HeroActions";
 import { HomeBody } from "@/features/home/HomeBody";
-import { MatchdayStrip, type Fixture } from "@/features/home/MatchdayStrip";
+import { MatchdayStrip } from "@/features/home/MatchdayStrip";
 import { BlogCover } from "@/features/blog/BlogCover";
 import { getAllPosts } from "@/shared/lib/blog";
-import { API_URL } from "@/shared/lib/api";
+import { apiGet } from "@/shared/lib/api";
+import type { ScheduleFixture } from "@/shared/types/api";
 
 // Fetches live matchday fixtures at request time; force-dynamic keeps Next
 // from calling the backend at build time (which would fail the deploy if the
@@ -14,11 +15,9 @@ import { API_URL } from "@/shared/lib/api";
 export const dynamic = "force-dynamic";
 
 
-async function getMatchday(): Promise<{ event: number; fixtures: Fixture[] } | null> {
+async function getMatchday(): Promise<{ event: number; fixtures: ScheduleFixture[] } | null> {
   try {
-    const res = await fetch(`${API_URL}/api/fixtures/schedule`, { cache: "no-store" });
-    if (!res.ok) return null;
-    const all: Fixture[] = await res.json();
+    const all = await apiGet<ScheduleFixture[]>("/api/fixtures/schedule", { cache: "no-store" });
     if (!all.length) return null;
     // Feature the next gameweek still to be played (fall back to the last).
     const nextEvent = all.find((f) => !f.finished)?.event ?? all[all.length - 1].event;

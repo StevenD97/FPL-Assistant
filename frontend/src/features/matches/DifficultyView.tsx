@@ -5,18 +5,8 @@ import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { Card } from "@/shared/ui/Card";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { API_URL } from "@/shared/lib/api";
-
-
-type Fixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
-type FixtureRow = {
-  team_id: number;
-  team: string;
-  team_badge: string;
-  fixtures_in_window: number;
-  avg_difficulty: number | null;
-  fixtures: Fixture[];
-};
+import { apiGet } from "@/shared/lib/api";
+import type { FixtureDifficultyRow } from "@/shared/types/api";
 
 // One row per PL club (20), each with a team cell, an avg-FDR cell, and a
 // run of five fixture chips - the same three columns as the loaded table.
@@ -46,15 +36,17 @@ function DifficultySkeleton() {
 }
 
 export function DifficultyView() {
-  const [rows, setRows] = useState<FixtureRow[] | null>(null);
+  const [rows, setRows] = useState<FixtureDifficultyRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${API_URL}/api/fixtures/difficulty?start_event=1&window_size=5`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setRows(await res.json());
+        setRows(
+          await apiGet<FixtureDifficultyRow[]>(
+            "/api/fixtures/difficulty?start_event=1&window_size=5",
+          ),
+        );
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       }

@@ -1,16 +1,5 @@
 import Link from "next/link";
-
-export type Fixture = {
-  event: number;
-  kickoff_time: string | null;
-  finished: boolean;
-  team_h: string;
-  team_a: string;
-  team_h_badge: string;
-  team_a_badge: string;
-  team_h_score: number | null;
-  team_a_score: number | null;
-};
+import type { ScheduleFixture } from "@/shared/types/api";
 
 function kickoffLabel(iso: string | null): string {
   if (!iso) return "TBC";
@@ -24,7 +13,7 @@ function Badge({ src, alt }: { src: string; alt: string }) {
   return <img src={src} alt={alt} className="h-6 w-6 object-contain" />;
 }
 
-export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Fixture[] }) {
+export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: ScheduleFixture[] }) {
   if (fixtures.length === 0) return null;
   return (
     <section>

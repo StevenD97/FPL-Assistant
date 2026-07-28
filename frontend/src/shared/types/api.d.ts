@@ -1,0 +1,597 @@
+// GENERATED FILE — do not edit by hand. Run `npm run gen:api`.
+//
+// Inferred from the pinned response snapshots in
+// backend/tests/golden/, which the backend test suite asserts on
+// every run. See scripts/gen-api-types.mjs for why these are
+// generated from goldens rather than from /openapi.json.
+//
+// Nullability reflects the snapshot: a field that is never null across
+// the sampled responses is typed non-null. Widen it here by adding a
+// `response_model` to the route and regenerating, not by hand.
+
+export type WildcardSuggestion = {
+  reason: string;
+  suggested_event: number;
+};
+
+export type YourRank = {
+  team_id: number;
+  total_points: number;
+  rank: number | null;
+  searched_at_least: number;
+  found_exact: boolean;
+};
+
+export type CaptaincyOption = {
+  captain_flag: string;
+  ep_next: number;
+  pos: string;
+  recommendation_score: number;
+  team_short: string;
+  web_name: string;
+};
+
+export type CategoryScore = {
+  DEF: number;
+  GKP: number;
+  MID: number;
+};
+
+export type ChipResponseBenchBoost = {
+  bench_score: number;
+  double_count: number;
+  event: number;
+};
+
+export type ChipResponseFreeHit = {
+  blank_count: number;
+  event: number;
+  recommended: boolean;
+};
+
+export type ChipResponseTable = {
+  bench_score: number;
+  best_captain_name: string;
+  best_captain_score: number;
+  blank_count: number;
+  double_count: number;
+  event: number;
+  squad_total_score: number;
+};
+
+export type ChipResponseTripleCaptain = {
+  event: number;
+  player: string;
+  score: number;
+};
+
+export type FixtureChip = {
+  difficulty: number;
+  is_home: boolean;
+  opponent: string;
+  opponent_badge: string;
+};
+
+export type FixtureOutlookRow = {
+  avg_difficulty: number | null;
+  fixture_score: number;
+  fixtures: FixtureChip[];
+  team_badge: string;
+  team_short: string;
+  ticker: string;
+};
+
+export type GwRow = {
+  GW: number;
+  assists: number;
+  bonus: number;
+  goals_scored: number;
+  minutes: number;
+  total_points: number;
+};
+
+export type LeaderboardEntry = {
+  id: number;
+  player_photo: string;
+  position: string;
+  value: number;
+  web_name: string;
+};
+
+export type Metric = {
+  key: string;
+  kind: string;
+  label: string;
+  short: string;
+};
+
+export type OutlookFixture = {
+  is_home: boolean;
+  opponent: string;
+  opponent_badge: string;
+};
+
+export type PlannerOpponent = {
+  difficulty: number;
+  is_home: boolean;
+  team: string;
+};
+
+export type Prediction = {
+  appearance_points: number;
+  assist_points: number;
+  bonus_points: number;
+  card_points: number;
+  clean_sheet_points: number;
+  clean_sheet_prob: number;
+  defensive_contribution_points: number;
+  fixture_count: number;
+  fixture_ticker: string;
+  goal_points: number;
+  goals_conceded_points: number;
+  id: number;
+  own_goal_points: number;
+  penalty_miss_points: number;
+  penalty_save_points: number;
+  position: string;
+  predicted_assists: number;
+  predicted_goals: number;
+  predicted_points: number;
+  save_points: number;
+  team_short: string;
+  web_name: string;
+};
+
+export type SeasonStats = {
+  assists: number;
+  bonus: number;
+  clean_sheets: number;
+  expected_assists: string;
+  expected_goal_involvements: string;
+  expected_goals: string;
+  goals_conceded: number;
+  goals_scored: number;
+  ict_index: string;
+  minutes: number;
+  red_cards: number;
+  saves: number;
+  starts: number;
+  total_points: number;
+  yellow_cards: number;
+};
+
+export type SquadPlayer = {
+  captain_flag: string;
+  defensive_contribution_per_90: number;
+  ep_next: number;
+  expected_goal_involvements: number;
+  expected_minutes: number;
+  form: number;
+  ict_index: number;
+  id: number;
+  live_id: number | null;
+  news: string;
+  next_opponent: string;
+  opponent_multiplier: number;
+  player_photo: string;
+  pos: string;
+  position: number;
+  recency_weighted_form: number;
+  recommendation_score: number;
+  role: string;
+  rotation_risk: number;
+  set_piece_duty_score: number;
+  status: string;
+  team_badge: string;
+  team_kit: string;
+  team_short: string;
+  web_name: string;
+};
+
+export type SquadRow = {
+  captain: boolean;
+  cost: number;
+  id: number;
+  player_photo: string;
+  position: string;
+  predicted_points: number;
+  role: string;
+  selected_by_percent: number;
+  status: string;
+  team_badge: string;
+  team_kit: string;
+  team_short: string;
+  value: number;
+  web_name: string;
+};
+
+export type StandingRow = {
+  entry_id: number;
+  entry_name: string;
+  event_total: number;
+  last_rank: number;
+  player_name: string;
+  rank: number;
+  total: number;
+};
+
+export type TeamLeaderboards = {
+  assists: LeaderboardEntry[];
+  bonus: LeaderboardEntry[];
+  defensive_contribution: LeaderboardEntry[];
+  expected_assists: LeaderboardEntry[];
+  expected_goal_involvements: LeaderboardEntry[];
+  expected_goals: LeaderboardEntry[];
+  expected_minutes: LeaderboardEntry[];
+  goal_involvements: LeaderboardEntry[];
+  goals_scored: LeaderboardEntry[];
+  minutes: LeaderboardEntry[];
+  predicted_points: LeaderboardEntry[];
+  red_cards: LeaderboardEntry[];
+  total_points: LeaderboardEntry[];
+  yellow_cards: LeaderboardEntry[];
+};
+
+export type TrajectoryRow = {
+  appearance_points: number;
+  event: number;
+  fixture_count: number;
+  flags: string[];
+  opponents: PlannerOpponent[];
+  predicted_points: number;
+};
+
+export type TransferPlayer = {
+  id: number;
+  player_photo: string;
+  position: string;
+  predicted_points: number;
+  selected_by_percent: number;
+  team_badge: string;
+  team_kit: string;
+  team_short: string;
+  value: number;
+  web_name: string;
+};
+
+export type TrendEntry = {
+  entry_id: number;
+  entry_name: string;
+  player_name: string;
+  series: TrendPoint[];
+};
+
+export type TrendPoint = {
+  event: number;
+  total_points: number;
+};
+
+/** Response of `GET /api/optimizer/best-squad`. */
+export type BestSquadResult = {
+  predicted_points: number;
+  squad: SquadRow[];
+  starting_xi_predicted_points: number;
+  total_cost: number;
+};
+
+/** Response of `GET /api/squad/{team_id}/chips`. */
+export type ChipResponse = {
+  bench_boost: ChipResponseBenchBoost;
+  free_hit: ChipResponseFreeHit;
+  scan_end_event: number;
+  scan_start_event: number;
+  table: ChipResponseTable[];
+  triple_captain: ChipResponseTripleCaptain;
+  wildcard: WildcardSuggestion | null;
+};
+
+/** Response of `GET /api/fixtures/difficulty returns `FixtureDifficultyRow[]`.`. */
+export type FixtureDifficultyRow = {
+  avg_difficulty: number | null;
+  fixture_score: number;
+  fixtures: FixtureChip[];
+  fixtures_in_window: number;
+  team: string;
+  team_badge: string;
+  team_id: number;
+  ticker: string;
+};
+
+/** Response of `GET /api/leagues/{team_id} returns `League[]`.`. */
+export type League = {
+  entry_rank: number;
+  id: number;
+  name: string;
+};
+
+/** Response of `GET /api/squad/{team_id}/planner`. */
+export type PlannerResponse = {
+  event: number;
+  next_events: number[];
+  players: PlayerTrajectory[];
+};
+
+/** Response of `GET /api/players/{player_id}/alternatives returns `PlayerAlternative[]`.`. */
+export type PlayerAlternative = {
+  cost: number;
+  id: number;
+  position: string;
+  predicted_points: number;
+  selected_by_percent: number;
+  team_short: string;
+  value: number;
+  web_name: string;
+};
+
+/** Response of `GET /api/players/{player_id}`. */
+export type PlayerDetail = {
+  cost: number;
+  first_name: string;
+  fixtures: FixtureChip[];
+  gw_history: GwRow[];
+  id: number;
+  news: string;
+  penalties_order: number;
+  player_photo: string;
+  position: string;
+  prediction: Prediction | null;
+  season_stats: SeasonStats | null;
+  second_name: string;
+  selected_by_percent: number;
+  status: string;
+  team_badge: string;
+  team_kit: string;
+  team_name: string;
+  team_short: string;
+  web_name: string;
+};
+
+/** Response of `GET /api/players returns `PlayerListItem[]`.`. */
+export type PlayerListItem = {
+  cost: number;
+  fixtures: FixtureChip[];
+  id: number;
+  news: string;
+  player_photo: string;
+  position: string;
+  predicted_points: number;
+  season_stats: SeasonStats | null;
+  selected_by_percent: number;
+  status: string;
+  team_badge: string;
+  team_short: string;
+  value: number;
+  web_name: string;
+};
+
+/** Response of `GET /api/players/predicted-points-outlook returns `PlayerOutlook[]`.`. */
+export type PlayerOutlook = {
+  fixture_count: number;
+  fixture_ticker: string;
+  fixtures: OutlookFixture[];
+  id: number;
+  live_id: number | null;
+  position: string;
+  predicted_points: number;
+  team_badge: string;
+  team_short: string;
+  web_name: string;
+};
+
+/** Response of `GET /api/players/predicted-points returns `PlayerPredictedPoints[]`.`. */
+export type PlayerPredictedPoints = {
+  appearance_points: number;
+  assist_points: number;
+  bonus_points: number;
+  card_points: number;
+  clean_sheet_points: number;
+  clean_sheet_prob: number;
+  defensive_contribution_points: number;
+  goal_points: number;
+  goals_conceded_points: number;
+  id: number;
+  next_opponent: string;
+  own_goal_points: number;
+  penalty_miss_points: number;
+  penalty_save_points: number;
+  position: string;
+  predicted_assists: number;
+  predicted_goals: number;
+  predicted_points: number;
+  save_points: number;
+  team_short: string;
+  web_name: string;
+};
+
+/** Response of `GET /api/players/scores returns `PlayerScore[]`.`. */
+export type PlayerScore = {
+  confidence_adjusted: number;
+  defensive_contribution_per_90: number;
+  ep_next: number;
+  expected_goal_involvements: number;
+  expected_minutes: number;
+  form: number;
+  ict_index: number;
+  id: number;
+  live_id: number;
+  next_opponent: string;
+  opponent_multiplier: number;
+  penalties_missed: number;
+  penalties_order: number;
+  position: string;
+  recency_weighted_form: number;
+  recommendation_score: number;
+  rotation_risk: number;
+  selected_by_percent: number;
+  set_piece_duty_score: number;
+  team_badge: string;
+  team_short: string;
+  web_name: string;
+};
+
+/** Response of `GET /api/players/{player_id}/trajectory`. */
+export type PlayerTrajectory = {
+  average_predicted_points: number;
+  id: number;
+  player_photo: string;
+  position: string;
+  team_badge: string;
+  team_short: string;
+  trajectory: TrajectoryRow[];
+  web_name: string;
+};
+
+/** Response of `GET /api/squad-builder/players returns `PoolPlayer[]`.`. */
+export type PoolPlayer = {
+  appearance_points: number;
+  corners_and_indirect_freekicks_order: number;
+  cost: number;
+  direct_freekicks_order: number;
+  fixture_count: number;
+  fixture_ticker: string;
+  id: number;
+  news: string;
+  penalties_order: number;
+  player_photo: string;
+  position: string;
+  predicted_points: number;
+  selected_by_percent: number;
+  status: string;
+  team_badge: string;
+  team_kit: string;
+  team_short: string;
+  value: number;
+  web_name: string;
+};
+
+export type PriceMover = {
+  id: number;
+  web_name: string;
+  cost: number;
+  selected_by_percent: number;
+  transfers_in_event: number;
+  transfers_out_event: number;
+  net_transfers_event: number;
+  momentum_pct: number;
+  direction: "rising" | "falling" | "stable";
+  already_moved_today: boolean;
+  // bootstrap's price_change_percent is a string ("0"), not a number.
+  official_progress_percent: string | null;
+  transfer_rate_per_hour: number | null;
+  team_short: string;
+  team_badge: string;
+};
+
+/** Response of `GET /api/players/price-watch`. `owned` is returned in place of
+ * `risers`/`fallers` when the request passes `player_ids`. */
+export type PriceWatchResponse = {
+  has_history_trend: boolean;
+  history_snapshot_count: number;
+  min_net_transfers_to_flag: number;
+  risers?: PriceMover[];
+  fallers?: PriceMover[];
+  owned?: PriceMover[];
+};
+
+/** Response of `GET /api/fixtures/schedule returns `ScheduleFixture[]`.`. */
+export type ScheduleFixture = {
+  event: number;
+  finished: boolean;
+  kickoff_time: string | null;
+  team_a: string;
+  team_a_badge: string;
+  team_a_difficulty: number;
+  team_a_score: number | null;
+  team_h: string;
+  team_h_badge: string;
+  team_h_difficulty: number;
+  team_h_score: number | null;
+};
+
+/** Response of `GET /api/season-status`. */
+export type SeasonStatus = {
+  archive_season_label: string;
+  current_season_label: string;
+  is_preseason: boolean;
+  next_event: number;
+};
+
+/** Response of `GET /api/squad-builder/fixtures returns `SquadBuilderFixtureRow[]`.`. */
+export type SquadBuilderFixtureRow = {
+  avg_difficulty: number | null;
+  fixture_score: number;
+  fixtures: FixtureChip[];
+  fixtures_in_window: number;
+  team: string;
+  team_badge: string;
+  team_id: number;
+  ticker: string;
+};
+
+/** Response of `GET /api/squad/{team_id}`. */
+export type SquadResponse = {
+  bank: number;
+  bench_depth_score: number | null;
+  captaincy_options: CaptaincyOption[];
+  category_scores: CategoryScore;
+  entry_name: string;
+  event: number;
+  fixture_outlook: FixtureOutlookRow[];
+  points: number;
+  squad: SquadPlayer[];
+  squad_value: number;
+};
+
+/** Response of `GET /api/leagues/{league_id}/standings`. */
+export type StandingsResponse = {
+  league_name: string;
+  standings: StandingRow[];
+  trend: TrendEntry[];
+  your_rank: YourRank | null;
+};
+
+/** Response of `GET /api/teams/{team_id}`. */
+export type TeamDetail = {
+  has_season_history: boolean;
+  id: number;
+  leaderboards: TeamLeaderboards;
+  metrics: Metric[];
+  name: string;
+  short_name: string;
+  squad_size: number;
+  team_badge: string;
+};
+
+/** Response of `GET /api/entry/{team_id}`. */
+export type TeamEntry = {
+  bank: number | null;
+  gameweek: number | null;
+  id: number;
+  overall_points: number | null;
+  overall_rank: number | null;
+  player_name: string | null;
+  team_name: string | null;
+  team_value: number | null;
+};
+
+/** Response of `GET /api/teams returns `TeamSummary[]`.`. */
+export type TeamSummary = {
+  id: number;
+  name: string;
+  short_name: string;
+  team_badge: string;
+};
+
+/** Response of `GET /api/squad/{team_id}/optimize-transfers`. */
+export type TransferResult = {
+  bank: number;
+  free_transfers: number;
+  points_hit: number;
+  predicted_points: number;
+  squad: SquadRow[];
+  starting_xi_predicted_points: number;
+  total_cost: number;
+  transferred_in: TransferPlayer[];
+  transferred_out: TransferPlayer[];
+  transfers_made: number;
+};

@@ -5,10 +5,11 @@ import { TextField } from "@/shared/ui/TextField";
 import { Pill } from "@/shared/ui/Pill";
 import { Pagination } from "@/shared/ui/Pagination";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
-import { PlayerListCard, PlayerListCardSkeleton, type PlayerListItem } from "@/features/players/PlayerListCard";
+import { PlayerListCard, PlayerListCardSkeleton } from "@/features/players/PlayerListCard";
+import type { PlayerListItem } from "@/shared/types/api";
 import { useShortlist } from "@/shared/lib/shortlist";
 import { loadSquadDraft } from "@/shared/lib/draft";
-import { API_URL } from "@/shared/lib/api";
+import { apiGet } from "@/shared/lib/api";
 
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
 const PAGE_SIZE = 24;
@@ -107,9 +108,7 @@ export default function PlayersPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/players`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setPlayers(await res.json());
+        setPlayers(await apiGet<PlayerListItem[]>("/api/players"));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {

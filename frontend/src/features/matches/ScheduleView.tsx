@@ -4,23 +4,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { API_URL } from "@/shared/lib/api";
-
-
-type Fixture = {
-  event: number;
-  kickoff_time: string;
-  finished: boolean;
-  team_h: string;
-  team_a: string;
-  team_h_badge: string;
-  team_a_badge: string;
-  team_h_score: number | null;
-  team_a_score: number | null;
-};
+import { apiGet } from "@/shared/lib/api";
+import type { ScheduleFixture } from "@/shared/types/api";
 
 export function ScheduleView() {
-  const [fixtures, setFixtures] = useState<Fixture[] | null>(null);
+  const [fixtures, setFixtures] = useState<ScheduleFixture[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [event, setEvent] = useState(1);
@@ -30,9 +18,7 @@ export function ScheduleView() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/fixtures/schedule`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        const data: Fixture[] = await res.json();
+        const data = await apiGet<ScheduleFixture[]>("/api/fixtures/schedule");
         setFixtures(data);
         const nextUpcoming = data.find((fx) => !fx.finished);
         if (nextUpcoming) setEvent(nextUpcoming.event);
@@ -93,7 +79,10 @@ export function ScheduleView() {
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {rows.map((fx, i) => {
-                const kickoff = new Date(fx.kickoff_time);
+                // A fixture with no confirmed slot has a null kickoff_time;
+                // MatchdayStrip shows those as TBC, so match it rather than
+                // rendering "Invalid Date".
+                const kickoff = fx.kickoff_time ? new Date(fx.kickoff_time) : null;
                 return (
                   <div
                     key={i}
@@ -107,7 +96,7 @@ export function ScheduleView() {
                         <span className="font-mono text-base font-bold text-text-primary">
                           {fx.team_h_score}-{fx.team_a_score}
                         </span>
-                      ) : (
+                      ) : kickoff ? (
                         <>
                           <div className="font-mono text-xs font-medium text-text-primary">
                             {kickoff.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
@@ -116,6 +105,8 @@ export function ScheduleView() {
                             {kickoff.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
                           </div>
                         </>
+                      ) : (
+                        <div className="font-mono text-xs font-medium text-text-primary">TBC</div>
                       )}
                     </div>
                     <div className="flex min-w-0 flex-1 items-center justify-end gap-2">

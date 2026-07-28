@@ -5,34 +5,13 @@ import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import type { PlayerListItem } from "@/shared/types/api";
 
 const POS_ACCENT: Record<string, string> = {
   GKP: "bg-pos-gkp",
   DEF: "bg-pos-def",
   MID: "bg-pos-mid",
   FWD: "bg-pos-fwd",
-};
-
-export type PlayerListItem = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  team_badge: string;
-  player_photo: string;
-  position: string;
-  cost: number;
-  predicted_points: number;
-  value: number;
-  selected_by_percent: number;
-  status: string;
-  news: string;
-  season_stats: {
-    total_points: number;
-    goals_scored: number;
-    assists: number;
-    expected_goal_involvements: string | number;
-  } | null;
-  fixtures: { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string }[];
 };
 
 function Stat({ k, v }: { k: string; v: string | number }) {

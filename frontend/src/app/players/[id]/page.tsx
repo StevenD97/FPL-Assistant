@@ -13,66 +13,14 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { seriesColor } from "@/shared/lib/palette";
 import { linearTrend } from "@/shared/lib/trend";
-import { API_URL } from "@/shared/lib/api";
+import { apiGet } from "@/shared/lib/api";
+import type { PlayerDetail, PlayerListItem } from "@/shared/types/api";
 
 const MAX_COMPARE = 4;
 
-type SeasonStats = {
-  total_points: number;
-  goals_scored: number;
-  assists: number;
-  clean_sheets: number;
-  goals_conceded: number;
-  saves: number;
-  bonus: number;
-  minutes: number;
-  starts: number;
-  yellow_cards: number;
-  red_cards: number;
-  expected_goals: string;
-  expected_assists: string;
-  expected_goal_involvements: string;
-  ict_index: string;
-};
-
-type GwRow = { GW: number; total_points: number; minutes: number; goals_scored: number; assists: number; bonus: number };
-
-type Prediction = {
-  predicted_points: number;
-  predicted_goals: number;
-  predicted_assists: number;
-  clean_sheet_prob: number;
-  goal_points: number;
-  assist_points: number;
-  clean_sheet_points: number;
-  bonus_points: number;
-  defensive_contribution_points: number;
-  fixture_count: number;
-};
-
-type PlayerDetail = {
-  id: number;
-  web_name: string;
-  first_name: string;
-  second_name: string;
-  team_short: string;
-  team_name: string;
-  position: string;
-  cost: number;
-  selected_by_percent: number;
-  status: string;
-  news: string;
-  penalties_order: number;
-  team_badge: string;
-  team_kit: string;
-  player_photo: string;
-  season_stats: SeasonStats | null;
-  gw_history: GwRow[];
-  prediction: Prediction | null;
-  fixtures: { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string }[];
-};
-
-type PlayerSummary = { id: number; web_name: string; team_short: string; position: string };
+// Only the four fields the compare-player autocomplete reads, tied to the
+// generated list contract so a rename upstream is a compile error here.
+type PlayerSummary = Pick<PlayerListItem, "id" | "web_name" | "team_short" | "position">;
 
 type CompareRow = {
   label: string;
@@ -230,9 +178,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/players/${id}`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setData(await res.json());
+        setData(await apiGet<PlayerDetail>(`/api/players/${id}`));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -245,9 +191,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     async function loadAll() {
       try {
-        const res = await fetch(`${API_URL}/api/players`);
-        if (!res.ok) return;
-        setAllPlayers(await res.json());
+        setAllPlayers(await apiGet<PlayerSummary[]>("/api/players"));
       } catch {
         // Compare-player search just won't offer suggestions - not fatal.
       }
@@ -271,9 +215,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
     setAddLoading(true);
     setCompareSearch("");
     try {
-      const res = await fetch(`${API_URL}/api/players/${playerId}`);
-      if (!res.ok) throw new Error("failed");
-      const detail: PlayerDetail = await res.json();
+      const detail = await apiGet<PlayerDetail>(`/api/players/${playerId}`);
       setCompareList((prev) => [...prev, detail]);
     } catch {
       // Silently drop - the search box just stays available to retry.
