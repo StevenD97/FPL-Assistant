@@ -4,7 +4,6 @@ import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
 import { PlayerCard } from "@/features/players/PlayerCard";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
-import { StatTile } from "@/shared/ui/Card";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
@@ -106,6 +105,20 @@ const SEASON_ROWS: CompareRow[] = [
   },
 ];
 
+// Shared with the compare-mode card row, so both places show the same six
+// stats on the card front.
+function cardStats(player: PlayerDetail) {
+  const s = player.season_stats;
+  return [
+    { k: "PTS", v: s ? String(s.total_points) : "—" },
+    { k: "GLS", v: s ? String(s.goals_scored) : "—" },
+    { k: "AST", v: s ? String(s.assists) : "—" },
+    { k: "xGI", v: s ? Number(s.expected_goal_involvements).toFixed(1) : "—" },
+    { k: "ICT", v: s ? Number(s.ict_index).toFixed(0) : "—" },
+    { k: "MIN", v: s ? String(s.minutes) : "—" },
+  ];
+}
+
 function CompareTable({ title, rows, players }: { title: string; rows: CompareRow[]; players: PlayerDetail[] }) {
   return (
     <div className="mb-6 overflow-x-auto rounded-lg border border-border shadow-sm">
@@ -181,12 +194,7 @@ function PlayerDetailSkeleton() {
           </div>
         </div>
         <Skeleton className="mb-3 h-5 w-40" />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full rounded-md" />
-          ))}
-        </div>
-        <Skeleton className="mt-8 h-56 w-full rounded-lg" />
+        <Skeleton className="h-56 w-full rounded-lg" />
       </div>
     </main>
   );
@@ -327,14 +335,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
                 photo={p.player_photo}
                 rating={p.prediction ? p.prediction.predicted_points.toFixed(1) : "—"}
                 windowLabel={p.prediction ? `${p.prediction.fixture_count} GW` : undefined}
-                stats={[
-                  { k: "PTS", v: p.season_stats ? String(p.season_stats.total_points) : "—" },
-                  { k: "GLS", v: p.season_stats ? String(p.season_stats.goals_scored) : "—" },
-                  { k: "AST", v: p.season_stats ? String(p.season_stats.assists) : "—" },
-                  { k: "xGI", v: p.season_stats ? Number(p.season_stats.expected_goal_involvements).toFixed(1) : "—" },
-                  { k: "ICT", v: p.season_stats ? Number(p.season_stats.ict_index).toFixed(0) : "—" },
-                  { k: "MIN", v: p.season_stats ? String(p.season_stats.minutes) : "—" },
-                ]}
+                stats={cardStats(p)}
               />
             </div>
 
@@ -417,7 +418,25 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
           )}
         </section>
 
-        {comparing ? (
+        {comparing && (
+          <section className="mb-8 flex flex-wrap items-start justify-center gap-4">
+            {allSelected.map((player) => (
+              <PlayerCard
+                key={player.id}
+                name={player.web_name}
+                position={player.position}
+                teamShort={player.team_short}
+                teamBadge={player.team_badge}
+                photo={player.player_photo}
+                rating={player.prediction ? player.prediction.predicted_points.toFixed(1) : "—"}
+                windowLabel={player.prediction ? `${player.prediction.fixture_count} GW` : undefined}
+                stats={cardStats(player)}
+              />
+            ))}
+          </section>
+        )}
+
+        {comparing && (
           <>
             <CompareTable
               title={p.prediction ? `Next ${p.prediction.fixture_count} gameweeks` : "Next gameweeks"}
@@ -425,30 +444,6 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
               players={allSelected}
             />
             <CompareTable title="2025/26 season" rows={SEASON_ROWS} players={allSelected} />
-          </>
-        ) : (
-          <>
-            <section className="mb-8">
-              <h2 className="mb-3 font-semibold text-text-primary">2025/26 season</h2>
-              {/* Points/goals/assists/xGI/ICT/minutes already headline the card above -
-                  everything here is the rest of the season record, not a repeat of it. */}
-              {p.season_stats ? (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <StatTile label="Clean sheets" value={p.season_stats.clean_sheets} />
-                  <StatTile label="Bonus" value={p.season_stats.bonus} />
-                  <StatTile label="Starts" value={p.season_stats.starts} />
-                  <StatTile label="xG" value={Number(p.season_stats.expected_goals).toFixed(1)} />
-                  <StatTile label="xA" value={Number(p.season_stats.expected_assists).toFixed(1)} />
-                  <StatTile label="Goals conceded" value={p.season_stats.goals_conceded} />
-                  <StatTile label="Saves" value={p.season_stats.saves} />
-                  <StatTile label="Cards" value={`${p.season_stats.yellow_cards}Y / ${p.season_stats.red_cards}R`} />
-                </div>
-              ) : (
-                <p className="text-sm text-text-muted">
-                  No 2025/26 Premier League record - new to the top flight this season.
-                </p>
-              )}
-            </section>
           </>
         )}
 
