@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { API_URL, fetchJson } from "@/shared/lib/api";
+import { apiGet } from "@/shared/lib/api";
 import { Button } from "@/shared/ui/Button";
 import { TextField } from "@/shared/ui/TextField";
 import {
@@ -79,7 +79,7 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
     setStatus("loading");
     setError(null);
     try {
-      const data = await fetchJson<TeamEntry>(`${API_URL}/api/entry/${id}`);
+      const data = await apiGet<TeamEntry>(`/api/entry/${id}`);
       setEntry(data);
       setTeamId(id);
       setStatus("ready");

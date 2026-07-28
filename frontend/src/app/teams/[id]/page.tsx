@@ -4,20 +4,9 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { PageContainer } from "@/shared/layout/PageContainer";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { TeamLeaderboard, type LeaderboardRow, type Metric } from "@/features/teams/TeamLeaderboard";
-import { API_URL } from "@/shared/lib/api";
-
-type TeamDetail = {
-  id: number;
-  name: string;
-  short_name: string;
-  team_badge: string;
-  manager: string | null;
-  squad_size: number;
-  has_season_history: boolean;
-  metrics: Metric[];
-  leaderboards: Record<string, LeaderboardRow[]>;
-};
+import { TeamLeaderboard } from "@/features/teams/TeamLeaderboard";
+import { apiGet } from "@/shared/lib/api";
+import type { TeamDetail } from "@/shared/types/api";
 
 // Mirrors the loaded shape: badge + name up top, then a grid of leaderboard
 // cards - so the page's shape is stable before the data lands.
@@ -52,9 +41,7 @@ export default function TeamDetailPage({ params }: { params: Promise<{ id: strin
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/teams/${id}`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setData(await res.json());
+        setData(await apiGet<TeamDetail>(`/api/teams/${id}`));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {

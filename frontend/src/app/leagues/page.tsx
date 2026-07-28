@@ -16,42 +16,8 @@ import {
   parseTeamId,
   storeTrackedLeagueIds,
 } from "@/shared/lib/team";
-import { API_URL } from "@/shared/lib/api";
-
-
-type League = { id: number; name: string; entry_rank: number };
-
-type StandingRow = {
-  entry_id: number;
-  player_name: string;
-  entry_name: string;
-  rank: number;
-  last_rank: number;
-  total: number;
-  event_total: number;
-};
-
-type TrendEntry = {
-  entry_id: number;
-  player_name: string;
-  entry_name: string;
-  series: { event: number; total_points: number }[];
-};
-
-type YourRank = {
-  team_id: number;
-  total_points: number;
-  rank: number | null;
-  searched_at_least: number;
-  found_exact: boolean;
-};
-
-type StandingsResponse = {
-  league_name: string;
-  standings: StandingRow[];
-  trend: TrendEntry[];
-  your_rank: YourRank | null;
-};
+import { apiGet } from "@/shared/lib/api";
+import type { League, StandingsResponse } from "@/shared/types/api";
 
 export default function LeaguesPage() {
   const { teamId: connectedTeamId } = useTeam();
@@ -86,9 +52,7 @@ export default function LeaguesPage() {
     setStandings(null);
     setSelectedLeague(null);
     try {
-      const res = await fetch(`${API_URL}/api/leagues/${teamId}`);
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setLeagues(await res.json());
+      setLeagues(await apiGet<League[]>(`/api/leagues/${teamId}`));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -144,9 +108,7 @@ export default function LeaguesPage() {
     try {
       const params = new URLSearchParams();
       if (rankTeamId) params.set("team_id", String(rankTeamId));
-      const res = await fetch(`${API_URL}/api/leagues/${leagueId}/standings?${params}`);
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
-      setStandings(await res.json());
+      setStandings(await apiGet<StandingsResponse>(`/api/leagues/${leagueId}/standings?${params}`));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {

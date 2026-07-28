@@ -3,16 +3,7 @@
 // No login/credentials - just the public team id, like every reputable FPL
 // tool. See the /api/entry/{id} backend endpoint.
 
-export type TeamEntry = {
-  id: number;
-  player_name: string | null;
-  team_name: string | null;
-  overall_rank: number | null;
-  overall_points: number | null;
-  team_value: number | null;
-  bank: number | null;
-  gameweek: number | null;
-};
+export type { TeamEntry } from "@/shared/types/api";
 
 const STORAGE_KEY = "fpl.teamId";
 

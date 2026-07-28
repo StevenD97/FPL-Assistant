@@ -7,43 +7,8 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { formatRank } from "@/shared/lib/team";
-import { API_URL, fetchJson } from "@/shared/lib/api";
-
-type SquadPlayer = {
-  web_name: string;
-  team_short: string;
-  role: string;
-  captain_flag: string;
-  status: string;
-  news: string;
-  rotation_risk: number;
-  live_id: number | null;
-};
-
-type FixtureOutlookRow = {
-  team_short: string;
-  avg_difficulty: number | null;
-};
-
-type SquadResponse = {
-  entry_name: string;
-  event: number;
-  points: number;
-  squad_value: number;
-  bank: number;
-  squad: SquadPlayer[];
-  fixture_outlook: FixtureOutlookRow[];
-};
-
-type OwnedMover = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  team_badge: string;
-  net_transfers_event: number;
-  direction: "rising" | "falling" | "stable";
-  already_moved_today: boolean;
-};
+import { apiGet } from "@/shared/lib/api";
+import type { PriceMover, PriceWatchResponse, SquadResponse } from "@/shared/types/api";
 
 // Roughly "started fewer than 3 games in 5" - mirrors the spirit of
 // squad-builder's own rotation-risk flagging, adapted to this field's
@@ -93,7 +58,7 @@ export function Dashboard() {
   const [squad, setSquad] = useState<SquadResponse | null>(null);
   const [squadError, setSquadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [movers, setMovers] = useState<OwnedMover[] | null>(null);
+  const [movers, setMovers] = useState<PriceMover[] | null>(null);
 
   useEffect(() => {
     if (!entry) return;
@@ -103,14 +68,16 @@ export function Dashboard() {
       setLoading(true);
       setSquadError(null);
       try {
-        const data = await fetchJson<SquadResponse>(`${API_URL}/api/squad/${entry!.id}`);
+        const data = await apiGet<SquadResponse>(`/api/squad/${entry!.id}`);
         if (cancelled) return;
         setSquad(data);
         const ids = data.squad.map((p) => p.live_id).filter((id): id is number => id != null);
         if (ids.length > 0) {
-          fetchJson<{ owned: OwnedMover[] }>(`${API_URL}/api/players/price-watch?player_ids=${ids.join(",")}`)
+          apiGet<PriceWatchResponse>(`/api/players/price-watch?player_ids=${ids.join(",")}`)
             .then((pw) => {
-              if (!cancelled) setMovers(pw.owned);
+              // `owned` is the player_ids variant of the response; risers/fallers
+              // are what a plain request returns instead.
+              if (!cancelled) setMovers(pw.owned ?? []);
             })
             .catch(() => {
               if (!cancelled) setMovers([]);

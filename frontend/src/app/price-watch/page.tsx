@@ -7,33 +7,8 @@ import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { API_URL } from "@/shared/lib/api";
-
-
-type PriceMover = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  team_badge: string;
-  cost: number;
-  selected_by_percent: number;
-  transfers_in_event: number;
-  transfers_out_event: number;
-  net_transfers_event: number;
-  momentum_pct: number;
-  direction: "rising" | "falling" | "stable";
-  already_moved_today: boolean;
-  official_progress_percent: string | null;
-  transfer_rate_per_hour: number | null;
-};
-
-type PriceWatchResponse = {
-  has_history_trend: boolean;
-  history_snapshot_count: number;
-  min_net_transfers_to_flag: number;
-  risers: PriceMover[];
-  fallers: PriceMover[];
-};
+import { apiGet } from "@/shared/lib/api";
+import type { PriceMover, PriceWatchResponse } from "@/shared/types/api";
 
 function formatCount(n: number): string {
   const abs = Math.abs(n);
@@ -120,9 +95,7 @@ export default function PriceWatchPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/players/price-watch?limit=15`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setData(await res.json());
+        setData(await apiGet<PriceWatchResponse>("/api/players/price-watch?limit=15"));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -131,6 +104,13 @@ export default function PriceWatchPage() {
     }
     load();
   }, []);
+
+  // /api/players/price-watch answers in two shapes: risers+fallers for a plain
+  // request, or `owned` when given player_ids (what the Home dashboard asks
+  // for). This page only ever makes the first call, so both keys are always
+  // present here - narrow once rather than guarding at every use.
+  const risers = data?.risers ?? [];
+  const fallers = data?.fallers ?? [];
 
   return (
     <PageContainer>
@@ -145,14 +125,14 @@ export default function PriceWatchPage() {
 
       {data && (
         <>
-          {data.risers.length === 0 && data.fallers.length === 0 && (
+          {risers.length === 0 && fallers.length === 0 && (
             <Alert kind="info">
               No player has crossed {data.min_net_transfers_to_flag.toLocaleString()} net transfers yet today.
               Check back closer to a gameweek deadline.
             </Alert>
           )}
 
-          {!data.has_history_trend && (data.risers.length > 0 || data.fallers.length > 0) && (
+          {!data.has_history_trend && (risers.length > 0 || fallers.length > 0) && (
             <Alert kind="info">
               Showing today&apos;s snapshot only - transfer rate will appear once more data has been collected.
             </Alert>
@@ -163,11 +143,11 @@ export default function PriceWatchPage() {
               <div className="border-b border-border px-3.5 py-3">
                 <h2 className="text-md font-semibold text-text-primary">Likely risers</h2>
               </div>
-              {data.risers.length === 0 ? (
+              {risers.length === 0 ? (
                 <p className="p-3.5 text-sm text-text-muted">No riser activity yet.</p>
               ) : (
                 <ul>
-                  {data.risers.map((m) => (
+                  {risers.map((m) => (
                     <MoverRow key={m.id} mover={m} sign="+" />
                   ))}
                 </ul>
@@ -178,11 +158,11 @@ export default function PriceWatchPage() {
               <div className="border-b border-border px-3.5 py-3">
                 <h2 className="text-md font-semibold text-text-primary">Likely fallers</h2>
               </div>
-              {data.fallers.length === 0 ? (
+              {fallers.length === 0 ? (
                 <p className="p-3.5 text-sm text-text-muted">No faller activity yet.</p>
               ) : (
                 <ul>
-                  {data.fallers.map((m) => (
+                  {fallers.map((m) => (
                     <MoverRow key={m.id} mover={m} sign="-" />
                   ))}
                 </ul>

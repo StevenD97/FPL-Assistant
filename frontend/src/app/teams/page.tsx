@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { API_URL } from "@/shared/lib/api";
-
-type TeamSummary = { id: number; name: string; short_name: string; team_badge: string; manager: string | null };
+import { apiGet } from "@/shared/lib/api";
+import type { TeamSummary } from "@/shared/types/api";
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<TeamSummary[] | null>(null);
@@ -15,9 +14,7 @@ export default function TeamsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${API_URL}/api/teams`);
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        setTeams(await res.json());
+        setTeams(await apiGet<TeamSummary[]>("/api/teams"));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       }

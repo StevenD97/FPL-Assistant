@@ -208,6 +208,12 @@ const NULLABLE = new Set([
   "SquadPlayer.live_id",
   "SquadResponse.bench_depth_score",
   "StandingsResponse.your_rank",
+  // manager_name() is a dict .get() over a hand-maintained club->coach map
+  // (fpl/domain/managers.py), so it returns None for any club missing from it -
+  // which its own docstring says to expect until someone updates it after a
+  // change. All 20 clubs happen to be populated in the golden.
+  "TeamDetail.manager",
+  "TeamSummary.manager",
   "TeamEntry.bank",
   "TeamEntry.gameweek",
   "TeamEntry.overall_points",
@@ -229,6 +235,15 @@ const NULLABLE = new Set([
 const FIELD_TYPES = {
   "ChipResponse.wildcard": "WildcardSuggestion | null",
   "StandingsResponse.your_rank": "YourRank | null",
+  // Keyed by whatever `metrics[].key` the same response lists, which the team
+  // page iterates to decide what to render. Inferring the snapshot's exact key
+  // set would turn "the backend can add a metric and the page picks it up" into
+  // a compile error, so keep it a record.
+  "TeamDetail.leaderboards": "Record<string, LeaderboardEntry[]>",
+  // The backend's METRICS list (fpl/services/teams.py) only ever emits these
+  // two. Keeping the union rather than the inferred `string` preserves the
+  // exhaustiveness the team leaderboard's "Model" vs "2025/26" tag relies on.
+  "Metric.kind": '"actual" | "model"',
 };
 
 /** Declarations that FIELD_TYPES refers to, emitted ahead of everything else. */

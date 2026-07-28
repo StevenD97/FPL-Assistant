@@ -1,9 +1,7 @@
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
-
-export type Metric = { key: string; label: string; short: string; kind: "actual" | "model" };
-export type LeaderboardRow = { id: number; web_name: string; position: string; player_photo: string; value: number };
+import type { LeaderboardEntry, Metric } from "@/shared/types/api";
 
 // xG/xA/xGI/xPts read as one decimal place everywhere else in the app
 // (the player card, the hero stats) - matched here for consistency. Every
@@ -21,7 +19,7 @@ function formatValue(key: string, value: number): string {
 // forward-looking projection, not an FPL-published stat, so they're tagged
 // distinctly from the "2025/26" archived-season actuals everything else here
 // is built from (see fpl/services/teams.py).
-export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: LeaderboardRow[] }) {
+export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: LeaderboardEntry[] }) {
   return (
     <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-2">

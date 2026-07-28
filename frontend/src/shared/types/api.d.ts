@@ -100,7 +100,7 @@ export type LeaderboardEntry = {
 
 export type Metric = {
   key: string;
-  kind: string;
+  kind: "actual" | "model";
   label: string;
   short: string;
 };
@@ -554,8 +554,8 @@ export type StandingsResponse = {
 export type TeamDetail = {
   has_season_history: boolean;
   id: number;
-  leaderboards: TeamLeaderboards;
-  manager: string;
+  leaderboards: Record<string, LeaderboardEntry[]>;
+  manager: string | null;
   metrics: Metric[];
   name: string;
   short_name: string;
@@ -578,7 +578,7 @@ export type TeamEntry = {
 /** Response of `GET /api/teams returns `TeamSummary[]`.`. */
 export type TeamSummary = {
   id: number;
-  manager: string;
+  manager: string | null;
   name: string;
   short_name: string;
   team_badge: string;
