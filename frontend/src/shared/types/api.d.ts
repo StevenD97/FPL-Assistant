@@ -555,6 +555,7 @@ export type TeamDetail = {
   has_season_history: boolean;
   id: number;
   leaderboards: TeamLeaderboards;
+  manager: string;
   metrics: Metric[];
   name: string;
   short_name: string;
@@ -577,6 +578,7 @@ export type TeamEntry = {
 /** Response of `GET /api/teams returns `TeamSummary[]`.`. */
 export type TeamSummary = {
   id: number;
+  manager: string;
   name: string;
   short_name: string;
   team_badge: string;
