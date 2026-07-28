@@ -951,8 +951,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Value</th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Own%</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1002,8 +1002,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                           </td>
                           <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
                           <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                          <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                          <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.value.toFixed(2)}</td>
+                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.selected_by_percent.toFixed(1)}%</td>
                         </tr>
                       );
                     })}
