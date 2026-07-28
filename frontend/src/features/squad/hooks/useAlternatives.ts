@@ -15,21 +15,22 @@ export function useAlternatives() {
     name: string;
   } | null>(null);
   const resource = useAsyncResource<PlayerAlternative[]>();
+  const { run, reset, set } = resource;
 
   const toggle = useCallback(
     async (liveId: number, name: string) => {
       if (suggestFor?.liveId === liveId) {
         setSuggestFor(null);
-        resource.reset();
+        reset();
         return;
       }
       setSuggestFor({ liveId, name });
-      const rows = await resource.run(() => getAlternatives(liveId));
+      const rows = await run(() => getAlternatives(liveId));
       // Nothing actionable to tell the user if this fails - the row just
       // reports no suggestions rather than an error, as it did before.
-      if (!rows) resource.set([]);
+      if (!rows) set([]);
     },
-    [suggestFor, resource],
+    [suggestFor, run, reset, set],
   );
 
   return {

@@ -28,19 +28,26 @@ export function useLoadedSquad() {
   const planner = useAsyncResource<PlannerResponse>("Couldn't build the planner");
   const chips = useAsyncResource<ChipResponse>("Couldn't scan chip timing");
 
+  // Hoisted to plain identifiers so the dependency list below is something
+  // exhaustive-deps can actually verify - each is a stable useCallback.
+  const runSquad = squad.run;
+  const runOptimizer = optimizer.run;
+  const runPlanner = planner.run;
+  const runChips = chips.run;
+
   // freeTransfers is passed in rather than captured so the value used is
   // whatever the form held at submit time, matching the previous behaviour:
   // editing the field alone doesn't re-run anything.
   const load = useCallback(
     async (id: string, freeTransfers: number) => {
       if (!id) return;
-      const loaded = await squad.run(() => getSquad(id));
+      const loaded = await runSquad(() => getSquad(id));
       if (!loaded) return;
-      optimizer.run(() => optimizeTransfers(id, { free_transfers: freeTransfers }));
-      planner.run(() => getPlanner(id));
-      chips.run(() => getChips(id));
+      runOptimizer(() => optimizeTransfers(id, { free_transfers: freeTransfers }));
+      runPlanner(() => getPlanner(id));
+      runChips(() => getChips(id));
     },
-    [squad.run, optimizer.run, planner.run, chips.run],
+    [runSquad, runOptimizer, runPlanner, runChips],
   );
 
   return { squad, optimizer, planner, chips, load };

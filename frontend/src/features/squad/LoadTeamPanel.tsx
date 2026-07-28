@@ -12,28 +12,14 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
 import { FdrChip } from "@/shared/ui/FdrChip";
-import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import type { SquadPlayer } from "@/shared/types/api";
+import { SquadPitch } from "./components/SquadPitch";
+import { SuggestedTransfers } from "./components/SuggestedTransfers";
 import { useAlternatives } from "./hooks/useAlternatives";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
 
 
-function toPitchPlayer(p: SquadPlayer): PitchPlayer {
-  return {
-    id: p.id,
-    name: p.web_name,
-    position: p.pos,
-    teamShort: p.team_short,
-    photo: p.player_photo,
-    teamKit: p.team_kit,
-    isCaptain: p.captain_flag === "(C)",
-    isViceCaptain: p.captain_flag === "(VC)",
-    subtitle: p.next_opponent,
-    href: p.live_id != null ? `/players/${p.live_id}` : undefined,
-  };
-}
 
 // Stand-in for the loaded squad view: summary lines, the pitch, a bench
 // strip, and the two panels (suggested transfers + planner table) below it.
@@ -176,119 +162,14 @@ export function LoadTeamPanel({
             </p>
           </div>
 
-          <div>
-            <PitchFormation
-              players={data.squad.filter((p) => p.role === "Starting XI").map(toPitchPlayer)}
-            />
-            <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
-              <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
-                Bench
-              </span>
-              {data.squad
-                .filter((p) => p.role !== "Starting XI")
-                .map((p) => (
-                  <PlayerLink key={p.id} id={p.live_id} className="flex flex-col items-center gap-1 text-center">
-                    <PlayerPhoto
-                      src={p.player_photo}
-                      name={p.web_name}
-                      className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
-                    />
-                    <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
-                  </PlayerLink>
-                ))}
-            </div>
-          </div>
+          <SquadPitch squad={data.squad} />
 
-          <Card>
-            <h3 className="mb-2 font-semibold text-text-primary">
-              Suggested transfers
-            </h3>
-            <p className="mb-3 text-xs text-text-muted">
-              The optimal transfers for your squad and bank, weighing predicted points against the -4 hit per
-              transfer beyond your free ones.{" "}
-              {onSwitchToOptimize && (
-                <>
-                  See the{" "}
-                  <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
-                    Optimizer
-                  </button>{" "}
-                  tab for a from-scratch solve, or full control over the prediction window.
-                </>
-              )}
-            </p>
-
-            {optimizerLoading && (
-              <p className="text-sm text-text-muted">Solving...</p>
-            )}
-
-            {optimizerError && (
-              <Alert kind="warning">
-                Couldn&apos;t compute suggested transfers ({optimizerError}) - the squad
-                above is unaffected.
-              </Alert>
-            )}
-
-            {optimizer && (
-              <>
-                <p className="mb-3 text-sm text-text-secondary">
-                  <span className="font-mono font-medium text-text-primary">{optimizer.transfers_made}</span>{" "}
-                  transfer{optimizer.transfers_made === 1 ? "" : "s"}
-                  {" · "}
-                  {optimizer.points_hit > 0 ? (
-                    <span className="font-mono text-danger">
-                      -{optimizer.points_hit} pt hit
-                    </span>
-                  ) : (
-                    <span>no hit</span>
-                  )}
-                  {" · "}
-                  predicted XI points (after hit){" "}
-                  <span className="font-mono font-medium text-text-primary">
-                    {optimizer.predicted_points.toFixed(2)}
-                  </span>
-                </p>
-
-                {optimizer.transferred_out.length > 0 ? (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
-                        Out
-                      </p>
-                      <ul className="text-sm">
-                        {optimizer.transferred_out.map((p) => (
-                          <li key={p.id} className="border-t border-border py-1">
-                            {p.web_name}{" "}
-                            <span className="text-text-muted">
-                              ({p.team_short}, {p.position})
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
-                        In
-                      </p>
-                      <ul className="text-sm">
-                        {optimizer.transferred_in.map((p) => (
-                          <li key={p.id} className="border-t border-border py-1">
-                            {p.web_name}{" "}
-                            <span className="text-text-muted">
-                              ({p.team_short}, {p.position})
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ) : (
-                  <Alert kind="success">
-                    No changes recommended - your squad is already optimal for this window.
-                  </Alert>
-                )}
-              </>
-            )}
-          </Card>
+          <SuggestedTransfers
+            optimizer={optimizer}
+            loading={optimizerLoading}
+            error={optimizerError}
+            onSwitchToOptimize={onSwitchToOptimize}
+          />
 
           <Card padded={false} className="overflow-hidden">
             <div className="border-b border-border p-4">
