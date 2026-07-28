@@ -72,7 +72,7 @@ export default function TermsPage() {
   return (
     <PageContainer>
       <PageHeader title="Terms & Conditions" subtitle="Last updated 27 July 2026" />
-      <div className="flex flex-col gap-5 text-sm leading-relaxed text-text-secondary">
+      <div className="flex max-w-2xl flex-col gap-5 text-sm leading-relaxed text-text-secondary">
         {SECTIONS.map((s) => (
           <section key={s.h}>
             <h2 className="mb-1.5 text-md font-semibold text-text-primary">{s.h}</h2>

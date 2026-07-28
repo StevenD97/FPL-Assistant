@@ -13,6 +13,7 @@ import { Select } from "@/shared/ui/Select";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
 import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
@@ -950,8 +951,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Value</th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Own%</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -991,6 +992,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                           <td className="px-3 py-2.5 font-medium text-text-primary">
                             {p.web_name}
                             <StatusBadge status={p.status} news={p.news} />
+                            <ShortlistStar id={p.id} className="ml-1.5 align-middle text-sm" />
                           </td>
                           <td className="px-3 py-2.5">
                             <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
@@ -1000,8 +1002,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                           </td>
                           <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
                           <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                          <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-                          <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
+                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.value.toFixed(2)}</td>
+                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.selected_by_percent.toFixed(1)}%</td>
                         </tr>
                       );
                     })}

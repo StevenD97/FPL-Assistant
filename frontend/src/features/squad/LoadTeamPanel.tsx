@@ -125,6 +125,13 @@ type PlannerPlayer = {
 
 type PlannerResponse = { event: number; next_events: number[]; players: PlannerPlayer[] };
 
+type ChipResponse = {
+  bench_boost: { event: number; bench_score: number; double_count: number };
+  triple_captain: { event: number; player: string; score: number };
+  free_hit: { recommended: boolean; event: number; blank_count: number };
+  wildcard: { reason: string; suggested_event: number } | null;
+};
+
 function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   return {
     id: p.id,
@@ -195,6 +202,10 @@ export function LoadTeamPanel({
   const [plannerLoading, setPlannerLoading] = useState(false);
   const [plannerError, setPlannerError] = useState<string | null>(null);
 
+  const [chips, setChips] = useState<ChipResponse | null>(null);
+  const [chipsLoading, setChipsLoading] = useState(false);
+  const [chipsError, setChipsError] = useState<string | null>(null);
+
   // Drag-and-drop "preview a swap": drop a candidate (dragged from the
   // Replacements chips below) onto a planner row to see their trajectory
   // in that slot instead, without making a real transfer. Keyed by the
@@ -253,6 +264,20 @@ export function LoadTeamPanel({
     }
   }
 
+  async function loadChips(id: string) {
+    setChipsLoading(true);
+    setChipsError(null);
+    setChips(null);
+    try {
+      setChips(await fetchJson(`${API_URL}/api/squad/${id}/chips`));
+    } catch (err) {
+      // Bonus, not a blocker - same as the optimizer/planner above.
+      setChipsError(err instanceof Error ? err.message : "Couldn't scan chip timing");
+    } finally {
+      setChipsLoading(false);
+    }
+  }
+
   async function handleSwapDrop(originalPlayerId: number, e: React.DragEvent) {
     e.preventDefault();
     setDragOverRow(null);
@@ -290,6 +315,7 @@ export function LoadTeamPanel({
       setData(await fetchJson(`${API_URL}/api/squad/${id}`));
       loadOptimizer(id); // fires automatically alongside the squad view, not gated on a separate action
       loadPlanner(id);
+      loadChips(id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -711,6 +737,61 @@ export function LoadTeamPanel({
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Chip strategy - folded in from the old standalone /chips page so
+              it lives with the team it's about. */}
+          <div>
+            <h3 className="mb-1 font-semibold text-text-primary">Chip strategy</h3>
+            <p className="mb-3 text-xs text-text-muted">
+              Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard across the next run.
+            </p>
+            {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
+            {chipsError && (
+              <Alert kind="warning">Couldn&apos;t scan chip timing ({chipsError}) - the squad above is unaffected.</Alert>
+            )}
+            {chips && (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Bench Boost</p>
+                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.bench_boost.event}</p>
+                  <p className="mt-0.5 text-xs text-text-secondary">
+                    bench <span className="font-mono">{chips.bench_boost.bench_score.toFixed(2)}</span> ·{" "}
+                    {chips.bench_boost.double_count} DGW
+                  </p>
+                </Card>
+                <Card>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Triple Captain</p>
+                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.triple_captain.event}</p>
+                  <p className="mt-0.5 text-xs text-text-secondary">
+                    {chips.triple_captain.player} ·{" "}
+                    <span className="font-mono">{chips.triple_captain.score.toFixed(2)}</span>
+                  </p>
+                </Card>
+                <Card>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Free Hit</p>
+                  {chips.free_hit.recommended ? (
+                    <>
+                      <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.free_hit.event}</p>
+                      <p className="mt-0.5 text-xs text-text-secondary">{chips.free_hit.blank_count} of 15 blank</p>
+                    </>
+                  ) : (
+                    <p className="mt-1 text-xs text-text-secondary">No strong case - hold it</p>
+                  )}
+                </Card>
+                <Card>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Wildcard</p>
+                  {chips.wildcard ? (
+                    <>
+                      <p className="mt-1 text-md font-bold text-pl-purple">~GW{chips.wildcard.suggested_event}</p>
+                      <p className="mt-0.5 text-xs text-text-secondary">{chips.wildcard.reason}</p>
+                    </>
+                  ) : (
+                    <p className="mt-1 text-xs text-text-secondary">No major cluster found</p>
+                  )}
+                </Card>
+              </div>
+            )}
           </div>
         </div>
       )}

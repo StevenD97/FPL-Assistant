@@ -6,6 +6,8 @@ import { Pill } from "@/shared/ui/Pill";
 import { Pagination } from "@/shared/ui/Pagination";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { PlayerListCard, PlayerListCardSkeleton, type PlayerListItem } from "@/features/players/PlayerListCard";
+import { useShortlist } from "@/shared/lib/shortlist";
+import { loadSquadDraft } from "@/shared/lib/draft";
 import { API_URL } from "@/shared/lib/api";
 
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
@@ -84,6 +86,21 @@ export default function PlayersPage() {
   const [lens, setLens] = useState<LensKey | null>("all");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [shortlistOnly, setShortlistOnly] = useState(false);
+
+  const shortlist = useShortlist();
+  const shortlistSet = useMemo(() => new Set(shortlist), [shortlist]);
+  // Players already in the saved squad draft, so the list can flag them. Read
+  // once on mount - the draft lives on another page.
+  const draftSet = useMemo(() => new Set(loadSquadDraft().ids), []);
+
+  // Deep-link from the Home shortlist teaser (/players?view=shortlist).
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("view") === "shortlist") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setShortlistOnly(true);
+    }
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -133,6 +150,7 @@ export default function PlayersPage() {
   const rows = useMemo(() => {
     if (!players) return [];
     let pool = players;
+    if (shortlistOnly) pool = pool.filter((p) => shortlistSet.has(p.id));
     if (position !== "All") pool = pool.filter((p) => p.position === position);
     if (ownershipMax != null) pool = pool.filter((p) => p.selected_by_percent <= ownershipMax);
     if (search.trim()) {
@@ -140,7 +158,7 @@ export default function PlayersPage() {
       pool = pool.filter((p) => p.web_name.toLowerCase().includes(q) || p.team_short.toLowerCase().includes(q));
     }
     return [...pool].sort((a, b) => sortValue(b, sortKey) - sortValue(a, sortKey));
-  }, [players, position, ownershipMax, search, sortKey]);
+  }, [players, shortlistOnly, shortlistSet, position, ownershipMax, search, sortKey]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
@@ -248,6 +266,32 @@ export default function PlayersPage() {
             )}
           </div>
 
+          {/* Shortlist toggle - your personal watchlist */}
+          <button
+            type="button"
+            onClick={() => {
+              setShortlistOnly((v) => !v);
+              setPage(1);
+            }}
+            aria-pressed={shortlistOnly}
+            title="Show only your shortlisted players"
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+              shortlistOnly
+                ? "border-pl-yellow bg-pl-yellow/15 text-text-primary"
+                : "border-border bg-white text-text-secondary hover:border-pl-purple/40"
+            }`}
+          >
+            <span className={shortlistOnly ? "text-pl-yellow" : "text-slate-300"} aria-hidden="true">
+              ★
+            </span>
+            Shortlist
+            {shortlist.length > 0 && (
+              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[10px] font-bold text-white">
+                {shortlist.length}
+              </span>
+            )}
+          </button>
+
           {/* Sort */}
           <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
             Sort
@@ -280,11 +324,18 @@ export default function PlayersPage() {
         <>
           <div className={GRID_CLASS}>
             {visible.map((p) => (
-              <PlayerListCard key={p.id} p={p} />
+              <PlayerListCard key={p.id} p={p} inDraft={draftSet.has(p.id)} />
             ))}
           </div>
 
-          {rows.length === 0 && <p className="text-sm text-text-muted">No players match those filters.</p>}
+          {rows.length === 0 &&
+            (shortlistOnly && shortlist.length === 0 ? (
+              <p className="text-sm text-text-muted">
+                Your shortlist is empty. Tap the ☆ on any player to add them here.
+              </p>
+            ) : (
+              <p className="text-sm text-text-muted">No players match those filters.</p>
+            ))}
 
           {rows.length > 0 && (
             <div className="flex flex-col items-center gap-2 pt-1">

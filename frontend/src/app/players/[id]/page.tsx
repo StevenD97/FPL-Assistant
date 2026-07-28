@@ -10,6 +10,7 @@ import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { LineChart } from "@/shared/charts/LineChart";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { seriesColor } from "@/shared/lib/palette";
 import { linearTrend } from "@/shared/lib/trend";
 import { API_URL } from "@/shared/lib/api";
@@ -354,6 +355,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
               </h1>
               <PositionBadge position={p.position} />
               <StatusBadge status={p.status} news={p.news} />
+              <ShortlistStar id={p.id} className="text-2xl" />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-text-secondary">
               <TeamBadge teamShort={p.team_short} name={p.team_name} badgeUrl={p.team_badge} />

@@ -1,13 +1,17 @@
 .claude/settings.local.json
 backend/.env
 backend/venv/
-# FPL data snapshots live in a sibling data/ folder at the repo root. Only the
-# archived training files are tracked; the live snapshots (self-fetched at
-# startup by ensure_data_fetched) and generated CSVs stay ignored.
+# FPL data snapshots live in a sibling data/ folder at the repo root. The
+# archived training files plus a pinned live snapshot (bootstrap_static.json /
+# fixtures.json) are tracked so the deterministic golden tests reproduce for
+# everyone - ensure_data_fetched only fetches when these are missing, so the
+# committed copies win. Generated CSVs stay ignored.
 data/*
 !data/bootstrap_static_2025_26_final.json
 !data/fixtures_2025_26_final.json
 !data/gw_history_2025_26.csv
+!data/bootstrap_static.json
+!data/fixtures.json
 __pycache__/
 *.pyc
 

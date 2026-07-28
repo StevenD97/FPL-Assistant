@@ -3,6 +3,7 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { FdrChip } from "@/shared/ui/FdrChip";
+import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { Skeleton } from "@/shared/ui/Skeleton";
 
 const POS_ACCENT: Record<string, string> = {
@@ -46,7 +47,7 @@ function Stat({ k, v }: { k: string; v: string | number }) {
 // Rich player tile for the Players grid: club badge, position, status, the
 // headline xPts, price/value/ownership, and a season stat strip - scannable
 // at a glance instead of a wall of names.
-export function PlayerListCard({ p }: { p: PlayerListItem }) {
+export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDraft?: boolean }) {
   const s = p.season_stats;
   const xgi = s ? Number(s.expected_goal_involvements).toFixed(1) : "—";
   return (
@@ -68,8 +69,16 @@ export function PlayerListCard({ p }: { p: PlayerListItem }) {
           />
           <span className="font-mono text-[11px] text-text-muted">{p.team_short}</span>
           <PositionBadge position={p.position} />
+          {inDraft && (
+            <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-pl-purple">
+              In draft
+            </span>
+          )}
         </div>
-        <StatusBadge status={p.status} news={p.news} />
+        <div className="flex shrink-0 items-center gap-1.5">
+          <StatusBadge status={p.status} news={p.news} />
+          <ShortlistStar id={p.id} className="text-base" />
+        </div>
       </div>
 
       <div className="mt-2 flex items-center gap-2.5">

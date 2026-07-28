@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       // Outlook and Differentials were folded into Players as lenses.
       { source: "/outlook", destination: "/players", permanent: true },
       { source: "/differentials", destination: "/players", permanent: true },
+      // Chips folded into My Squad (chip timing shows with your loaded team).
+      { source: "/chips", destination: "/squad", permanent: true },
     ];
   },
 };
