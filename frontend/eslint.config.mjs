@@ -31,6 +31,22 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // KNOWN BASELINE: `npx eslint` currently exits 1 on 9
+  // react-hooks/set-state-in-effect errors, all of which predate the
+  // structural refactor. They are two idioms, in 6 files:
+  //
+  //   1. Reading localStorage in a mount effect (TeamProvider, leagues,
+  //      squad). Under SSR this is the *correct* pattern - a lazy useState
+  //      initializer would return real values on the client's first render and
+  //      hydration-mismatch against the server's empty one.
+  //   2. Resetting derived state when something opens or changes
+  //      (CommandPalette, AppShell, LoadTeamPanel).
+  //
+  // Deliberately not silenced. Phase 4 moves the read-only pages' fetching to
+  // the server and Phase 5 moves the interactive features onto data hooks,
+  // which removes most of these outright; whatever survives should then be
+  // fixed properly rather than annotated. Until then, "green" for this repo
+  // means "still exactly these 9" - a 10th means something new was added.
   {
     name: "fpl/architecture",
     rules: {
