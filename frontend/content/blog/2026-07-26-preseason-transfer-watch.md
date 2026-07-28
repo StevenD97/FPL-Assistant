@@ -25,7 +25,7 @@ Three clubs also changed manager over the summer: **Chelsea, Liverpool, and Manc
 
 **Coventry City** (Championship winners), **Ipswich Town** (automatic promotion, second place), and **Hull City** (play-off winners, beating Middlesbrough in the final) are back in the top flight. Ipswich strengthened immediately, signing Ghana international **Abdul Fatawu Issahaku** from Leicester for around £20m - a name worth knowing if you're hunting a cheap-enough differential from a promoted side.
 
-Promoted teams are a genuine trap in Fantasy: cheap defenders and midfielders look tempting on price alone, but the model this site uses already accounts for the fact that promoted sides historically concede more and create less than their price tag suggests (see the fixture difficulty and outlook pages for the numbers, not the vibes).
+Promoted teams are a genuine trap in Fantasy: cheap defenders and midfielders look tempting on price alone, but history says promoted sides concede more and create less than their price tag suggests almost every year (see the fixture difficulty and outlook pages for the numbers, not the vibes).
 
 ## What it means for prices
 
@@ -33,7 +33,7 @@ FPL's price reveals landed with a few standouts. **Erling Haaland** is priced at
 
 On the incoming side, Morgan Rogers' move to Chelsea prices him at £7.5m, and **Marcos Senesi**'s switch from Bournemouth to Tottenham prices him at £6.0m - both worth a look if you're building out midfield or defensive depth on a budget.
 
-FPL itself is also launching a **Price Change Predictor** this season, using official transfer data to flag who's likely to rise or fall each night. It's the same signal our own [Price Watch](/price-watch) page tracks - net transfers in versus out, updated as the data comes in - so the two are worth checking together once the season and daily transfer activity are both live.
+FPL itself is also launching a **Price Change Predictor** this season, using official transfer data to flag who's likely to rise or fall each night - worth checking alongside our own [Price Watch](/price-watch) page once the season and daily transfer activity are both live.
 
 ## Early captain thinking
 

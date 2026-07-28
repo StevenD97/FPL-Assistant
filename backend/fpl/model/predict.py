@@ -12,16 +12,21 @@ history categories (bonus, saves, cards, own goals, defensive contribution).
 
 Approximations worth knowing about:
   - Bonus points are a flat recency-weighted average rather than a simulation
-    of the BPS system (which would need every player's per-match stats).
+    of the BPS system (which would need every player's per-match stats) - a
+    fixture-dominance-scaled version was tried and rejected on walk-forward
+    evidence, see rules.BONUS_FIXTURE_SENSITIVITY's docstring.
   - Defensive contribution and saves assume the underlying count is Poisson-
     distributed with the recency-weighted average as its rate.
+  - Team attack/defence strength (fpl.model.strengths) is trained on a blend
+    of actual goals and team-aggregated expected goals, not raw goals alone -
+    see rules.TEAM_XG_WEIGHT's docstring for why.
 """
 from functools import lru_cache
 
 import pandas as pd
 
 from fpl.data.loaders import load_bootstrap, load_fixtures
-from fpl.domain.fixtures import build_fixtures_by_team_event
+from fpl.domain.fixtures import build_fixtures_by_team_event, compute_congestion
 from fpl.model.involvement import (
     compute_appearance_probabilities,
     compute_appearance_probabilities_blended,
@@ -35,7 +40,10 @@ from fpl.model.rules import (
     APPEARANCE_POINTS_60_PLUS,
     APPEARANCE_POINTS_ANY,
     ASSIST_POINTS,
+    BONUS_FIXTURE_SENSITIVITY,
     CLEAN_SHEET_POINTS,
+    CONGESTION_APPEARANCE_WEIGHT,
+    CONGESTION_WINDOW_DAYS,
     CORNER_TAKER_ASSIST_SHARE_BOOST,
     DEFENSIVE_CONTRIBUTION_POINTS,
     DEFENSIVE_CONTRIBUTION_THRESHOLD,
@@ -53,6 +61,7 @@ from fpl.model.rules import (
     SAVE_POINTS,
     SHARE_SMOOTHING_ALPHA,
     SHRINKAGE_GAMES,
+    TEAM_XG_WEIGHT,
     YELLOW_CARD_POINTS,
     _poisson_expected_floor_division,
     _poisson_prob_at_least,
@@ -65,7 +74,7 @@ from fpl.model.strengths import (
 )
 
 
-def _fixture_points(position, team_xg, opp_xg, share, appearance, history_rates):
+def _fixture_points(position, team_xg, opp_xg, share, appearance, history_rates, bonus_fixture_sensitivity=0.0):
     """Every scoring category's expected points for one player, one fixture."""
     p_any = appearance["p_any"]
     p_60_plus = appearance["p_60_plus"]
@@ -88,7 +97,12 @@ def _fixture_points(position, team_xg, opp_xg, share, appearance, history_rates)
         )
 
     # Personal-history categories, gated by probability of playing at all.
-    bonus_points = history_rates["bonus"] * p_any
+    # Bonus additionally scales with how favourable THIS fixture looks
+    # (team_xg vs opp_xg) rather than applying a flat season average to
+    # every fixture regardless of opponent - see BONUS_FIXTURE_SENSITIVITY.
+    fixture_dominance = team_xg - opp_xg
+    bonus_multiplier = max(0.4, 1 + bonus_fixture_sensitivity * fixture_dominance)
+    bonus_points = history_rates["bonus"] * p_any * bonus_multiplier
     save_points = SAVE_POINTS * (history_rates["saves"] / SAVE_DIVISOR) * p_any if position == "GKP" else 0.0
     penalty_save_points = PENALTY_SAVE_POINTS * history_rates["penalties_saved"] * p_any if position == "GKP" else 0.0
     penalty_miss_points = PENALTY_MISS_POINTS * history_rates["penalties_missed"] * p_any
@@ -142,7 +156,9 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
                            fixtures_file="fixtures_2025_26_final.json",
                            shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                            roster_bootstrap_file=None, roster_fixtures_file=None,
-                           current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
+                           current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA,
+                           xg_weight=TEAM_XG_WEIGHT, congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                           bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
     """
     Returns a DataFrame, one row per player, with predicted_points for
     their next fixture(s) and every category it's built from (see
@@ -187,7 +203,8 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha,
+        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha, xg_weight, congestion_weight,
+        bonus_fixture_sensitivity,
     )
     return _predict_for_event(context, next_event)
 
@@ -196,7 +213,9 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
 def _build_prediction_context(reference_date, half_life_days, season, bootstrap_file, fixtures_file,
                                shrinkage_games, apply_live_signals,
                                roster_bootstrap_file=None, roster_fixtures_file=None, current_season="2026_27",
-                               smoothing_alpha=SHARE_SMOOTHING_ALPHA):
+                               smoothing_alpha=SHARE_SMOOTHING_ALPHA, xg_weight=TEAM_XG_WEIGHT,
+                               congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                               bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
     """
     Everything predict_player_points() needs that depends only on
     reference_date (not on which gameweek is being predicted) - team
@@ -241,7 +260,7 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
         # current_season has a finished gameweek before reference_date.
         team_strengths, league_avgs = compute_team_goal_strengths_blended(
             reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
-            archive_bootstrap=bootstrap, roster_bootstrap=roster_bootstrap,
+            xg_weight=xg_weight, archive_bootstrap=bootstrap, roster_bootstrap=roster_bootstrap,
         )
         involvement = compute_player_involvement_shares_blended(
             reference_date, half_life_days, season, current_season, shrinkage_games=shrinkage_games,
@@ -260,7 +279,8 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
         # Archived-only mode (eval tools / player_scores): season is fully
         # finished, so there's no "current season" to blend in and no remap
         # needed - unchanged from before blending existed.
-        team_strengths, league_avgs = compute_team_goal_strengths(reference_date, half_life_days, season, shrinkage_games)
+        team_strengths, league_avgs = compute_team_goal_strengths(
+            reference_date, half_life_days, season, shrinkage_games, xg_weight)
         involvement = compute_player_involvement_shares(reference_date, half_life_days, season, smoothing_alpha)
         appearance_probs = compute_appearance_probabilities(reference_date, half_life_days, season)
         history_rates = compute_personal_history_rates(reference_date, half_life_days, season)
@@ -270,6 +290,15 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
     teams_df = pd.DataFrame(roster_bootstrap["teams"])
     positions = pd.DataFrame(roster_bootstrap["element_types"])[["id", "singular_name_short"]]
     team_short_lookup = teams_df.set_index("id")["short_name"].to_dict()
+
+    # Forward-looking fixture pileup (scheduled kickoffs, not results - safe
+    # for a walk-forward backtest) over the next CONGESTION_WINDOW_DAYS from
+    # reference_date, one figure per team reused across every gameweek this
+    # context predicts (see congestion_weight's docstring in fpl.model.rules).
+    congestion_by_team = (
+        compute_congestion(roster_fixtures, teams_df["id"].tolist(), reference_date, CONGESTION_WINDOW_DAYS)
+        if congestion_weight else {}
+    )
 
     df = pd.DataFrame(roster_bootstrap["elements"])[[
         "id", "web_name", "team", "element_type",
@@ -292,6 +321,9 @@ def _build_prediction_context(reference_date, half_life_days, season, bootstrap_
         "live_availability": live_availability,
         "team_short_lookup": team_short_lookup,
         "apply_live_signals": apply_live_signals,
+        "congestion_by_team": congestion_by_team,
+        "congestion_weight": congestion_weight,
+        "bonus_fixture_sensitivity": bonus_fixture_sensitivity,
     }
 
 
@@ -327,6 +359,16 @@ def _predict_for_event(context, next_event):
         appearance = appearance_probs.get(player["id"], default_appearance)
         rates = history_rates.get(player["id"], default_history)
 
+        # Forward fixture-pileup dampening - unlike apply_live_signals below,
+        # this only depends on scheduled kickoff dates (known in advance),
+        # so it's safe to apply unconditionally, including inside a backtest.
+        congestion_weight = context["congestion_weight"]
+        if congestion_weight:
+            games_over = context["congestion_by_team"].get(player["team"], 0)
+            if games_over > 0:
+                factor = max(0.3, 1 - congestion_weight * games_over)
+                appearance = {"p_any": appearance["p_any"] * factor, "p_60_plus": appearance["p_60_plus"] * factor}
+
         if apply_live_signals:
             # Fresh dicts, not in-place mutation - share/appearance may be the
             # shared default_* object above, reused across every player with
@@ -350,7 +392,10 @@ def _predict_for_event(context, next_event):
             else:
                 opp_xg, team_xg = predict_fixture_xg(fx["opponent"], player["team"], team_strengths, league_avgs)
 
-            fixture_result = _fixture_points(player["position"], team_xg, opp_xg, share, appearance, rates)
+            fixture_result = _fixture_points(
+                player["position"], team_xg, opp_xg, share, appearance, rates,
+                context["bonus_fixture_sensitivity"],
+            )
             for key in _BREAKDOWN_KEYS:
                 totals[key] += fixture_result[key]
             opponent_labels.append(f"{team_short_lookup[fx['opponent']]}({'H' if fx['is_home'] else 'A'})")
@@ -369,7 +414,9 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
                                 fixtures_file="fixtures_2025_26_final.json",
                                 shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                                 roster_bootstrap_file=None, roster_fixtures_file=None,
-                                current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
+                                current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA,
+                                xg_weight=TEAM_XG_WEIGHT, congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                                bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
     """
     Returns a DataFrame, one row per player, with every _BREAKDOWN_KEYS
     category (goal_points, assist_points, clean_sheet_points, bonus_points,
@@ -391,7 +438,7 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
     result = _predict_multi_gw_breakdown_cached(
         reference_date, tuple(next_events), half_life_days, season, bootstrap_file, fixtures_file,
         shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
-        smoothing_alpha,
+        smoothing_alpha, xg_weight, congestion_weight, bonus_fixture_sensitivity,
     )
     return result.copy()
 
@@ -400,7 +447,9 @@ def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, s
 def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_days, season, bootstrap_file,
                                         fixtures_file, shrinkage_games, apply_live_signals,
                                         roster_bootstrap_file, roster_fixtures_file, current_season="2026_27",
-                                        smoothing_alpha=SHARE_SMOOTHING_ALPHA):
+                                        smoothing_alpha=SHARE_SMOOTHING_ALPHA, xg_weight=TEAM_XG_WEIGHT,
+                                        congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                                        bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
     """
     The actual per-player, per-gameweek prediction loop, cached - almost
     every caller across the app (players list, player detail, squad
@@ -418,7 +467,8 @@ def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_da
     """
     context = _build_prediction_context(
         reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games, apply_live_signals,
-        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha,
+        roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha, xg_weight, congestion_weight,
+        bonus_fixture_sensitivity,
     )
     per_gw = {event: _predict_for_event(context, event).set_index("id") for event in next_events}
 
@@ -445,7 +495,9 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
                              fixtures_file="fixtures_2025_26_final.json",
                              shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
                              roster_bootstrap_file=None, roster_fixtures_file=None,
-                             current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA):
+                             current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA,
+                             xg_weight=TEAM_XG_WEIGHT, congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                             bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
     """
     predict_multi_gw_breakdown(), collapsed to just predicted_points (plus
     fixture_count/fixture_ticker) - the headline metric for the app, not
@@ -459,7 +511,7 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
     breakdown = predict_multi_gw_breakdown(
         reference_date, next_events, half_life_days, season, bootstrap_file, fixtures_file,
         shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
-        smoothing_alpha,
+        smoothing_alpha, xg_weight, congestion_weight, bonus_fixture_sensitivity,
     )
     return breakdown[[
         "id", "web_name", "team_short", "position", "predicted_points", "fixture_count", "fixture_ticker",

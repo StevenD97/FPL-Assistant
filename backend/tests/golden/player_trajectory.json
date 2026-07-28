@@ -1,6 +1,6 @@
 {
   "body": {
-    "average_predicted_points": 3.71,
+    "average_predicted_points": 4.13,
     "id": 1,
     "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
     "position": "GKP",
@@ -19,7 +19,7 @@
             "team": "BUR"
           }
         ],
-        "predicted_points": 4.2
+        "predicted_points": 4.53
       },
       {
         "appearance_points": 2.0,
@@ -33,7 +33,7 @@
             "team": "SUN"
           }
         ],
-        "predicted_points": 3.23
+        "predicted_points": 4.19
       },
       {
         "appearance_points": 2.0,
@@ -47,7 +47,7 @@
             "team": "TOT"
           }
         ],
-        "predicted_points": 3.61
+        "predicted_points": 4.45
       },
       {
         "appearance_points": 2.0,
@@ -63,7 +63,7 @@
             "team": "CHE"
           }
         ],
-        "predicted_points": 3.5
+        "predicted_points": 3.48
       },
       {
         "appearance_points": 2.0,
@@ -77,7 +77,7 @@
             "team": "BRE"
           }
         ],
-        "predicted_points": 4.44
+        "predicted_points": 4.14
       },
       {
         "appearance_points": 2.0,
@@ -93,7 +93,7 @@
             "team": "AVL"
           }
         ],
-        "predicted_points": 3.31
+        "predicted_points": 4.0
       }
     ],
     "web_name": "Raya"

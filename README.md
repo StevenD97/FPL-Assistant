@@ -145,16 +145,78 @@ conventions rather than dropped in as-is. No dark mode.
   gameweek (GW2-38): predicts every player using only data strictly
   before that gameweek, then checks the prediction against what they
   actually scored. Current baseline (run `venv\Scripts\python.exe backtest.py`
-  to reproduce): pooled Pearson r = 0.57 (r² = 0.32), Spearman rank
-  correlation = 0.70, MAE = 0.93 pts/player/gameweek, top-20 precision
-  (overlap between predicted and actual top 20 scorers) = 14%. Reads as:
-  the model is meaningfully better than chance at *ranking* players
-  (Spearman 0.70), noticeably worse at nailing the *exact* points total
-  (Pearson 0.57) - expected, given how much of FPL scoring (bonus points,
-  explosive one-off hauls) is inherently high-variance. No strong
-  systematic bias by position (mean predicted-minus-actual error is
-  within ±0.06 pts for every position) and accuracy is stable across the
-  season rather than degrading late on.
+  to reproduce): pooled Pearson r = 0.572 (r² = 0.327), Spearman rank
+  correlation = 0.704, MAE = 0.931 pts/player/gameweek, top-20 precision
+  (overlap between predicted and actual top 20 scorers) = 14.6%, top-50
+  precision = 25.8%. Reads as: the model is meaningfully better than
+  chance at *ranking* players (Spearman 0.704), noticeably worse at
+  nailing the *exact* points total (Pearson 0.572) - expected, given how
+  much of FPL scoring (bonus points, explosive one-off hauls) is
+  inherently high-variance. No strong systematic bias by position (mean
+  predicted-minus-actual error is within ±0.05 pts for every position)
+  and accuracy is stable across the season rather than degrading late on.
+  A decile-by-decile calibration check (mean predicted vs mean actual
+  points, bucketed by predicted_points) shows the model is well-behaved
+  through the middle of the distribution but systematically undershoots
+  its own mid-high deciles (e.g. predicted ~0.88 vs actual ~1.11 in the
+  6th decile) while slightly overshooting the very top decile (predicted
+  ~4.31 vs actual ~3.87) - consistent with predicting a *conditional
+  mean* for a right-skewed, boom-or-bust scoring distribution (explosive
+  hauls pull the top bucket's actual mean down relative to its most
+  confident predictions, everyday-good performances pull the middle
+  buckets' actual mean up past a cautious prediction) rather than a
+  correctable bug.
+  **Team-strength training switched from actual goals to team-aggregated
+  expected goals** (`TEAM_XG_WEIGHT`, `strengths.py`): summing each
+  team's player-level `expected_goals` per fixture (already in
+  `gw_history`, previously only used for individual involvement shares)
+  gives a less noisy "how good is this team's attack/defence" signal
+  than the small-integer final score, the same regression-to-the-mean
+  reasoning that motivated `SHARE_SMOOTHING_ALPHA`'s xG/xA switch below,
+  now applied one level up. A 0.0-1.0 grid search
+  (`tools/eval/experiment_team_xg.py`) found accuracy increasing
+  monotonically with the xG blend weight and flat between 0.8 and 1.0 -
+  no partial blend beat going all the way, so `TEAM_XG_WEIGHT=1.0` is now
+  the default (fully xG-trained, no blend with actual goals). Full
+  GW2-38 backtest vs the old actual-goals-only baseline: Pearson r
+  0.569->0.572, Spearman 0.703->0.704, MAE 0.933->0.931, top-20 precision
+  0.135->0.146, and DEF/GKP's mean bias roughly halved (DEF +0.010-> -0.004,
+  GKP +0.064->+0.052) - team-level defence ratios are now trained on the
+  same quality-of-chances-conceded signal already used for saves/
+  defensive-contribution player-level rates, instead of noisy actual
+  goals conceded. Re-ran `tune.py`'s `half_life_days`/`SHRINKAGE_GAMES`
+  grid search under the new xG-trained strengths to check the old
+  defaults still held - they did, still jointly optimal (21 days / 3
+  games) and still best on top-20 precision specifically.
+  **Two related ideas tried and rejected on the same walk-forward
+  evidence, left implemented but switched off** (both in `rules.py`,
+  searches in `tools/eval/experiment_congestion.py` /
+  `experiment_bonus.py`): dampening a congested team's appearance
+  probability by scheduled fixture pileups in the next 7 days
+  (`CONGESTION_APPEARANCE_WEIGHT`) improved MAE marginally and
+  monotonically (0.931->0.928 at weight 0.05) but left Pearson/Spearman/
+  top-20 completely flat to 3 decimal places at every weight tried -
+  reads as shrinkage quietly trimming a few outlier predictions, not a
+  real ranking signal, most likely because `fixtures.json` is
+  Premier-League-only (no European/domestic-cup fixtures), so it can
+  only ever see rare PL-vs-PL pileups, not the actual driver of most
+  squad rotation. Scaling a player's bonus-points rate by this fixture's
+  expected scoreline dominance (`BONUS_FIXTURE_SENSITIVITY`, team_xg -
+  opp_xg) left MAE/Pearson/Spearman unchanged but made top-20 precision
+  strictly *worse* as sensitivity increased (0.146->0.139 at 0.2,
+  ->0.131 at 0.5) - real FPL bonus is BPS-ranked *within* a match (only
+  the top 3 by BPS score across 22 players), so it depends on a player's
+  performance relative to the other 21 on the pitch, not on the match's
+  aggregate expected-goals margin; a flat recency-weighted bonus rate
+  already captures who tends to be a bonus-magnet better than reweighting
+  it by scoreline dominance does. A third idea - ensembling this model
+  with `recommendation_score`'s FPL-canned `ep_next` - was desk-rejected
+  rather than tested: `ep_next` and this app's own `strength_*` fields
+  are sourced from a single frozen end-of-season bootstrap snapshot, so
+  any backtest using them would compare this model's genuinely
+  point-in-time predictions against a target that already "knows" how
+  the season ended - unfixable lookahead bias with the data this app
+  currently has, not a case of the idea failing to help.
   **Found via a live-app report, not the backtest**: `compute_player_involvement_shares()`
   (splits a predicted team goal tally down to individual players by each
   player's historical share of their team's goals/assists) had no
@@ -199,17 +261,17 @@ conventions rather than dropped in as-is. No dark mode.
   wide range of both, so this pair of knobs is tapped out as a lever for
   further accuracy.
 - `multi_gw_backtest.py` answers the question that actually matters for
-  whether this is sellable: is the ~14% single-gameweek top-20 hit rate
+  whether this is sellable: is the ~15% single-gameweek top-20 hit rate
   a modeling shortfall, or just football's inherent single-match
   variance? (For context: random guessing gets ~2.4% here, so single-
   gameweek predictions are already a real 6x edge over chance, not
-  noise - but "14%" alone undersells that.) Tested by summing
+  noise - but "15%" alone undersells that.) Tested by summing
   predictions over wider windows (3 and 5 gameweeks, still using only
   data available before the window starts) and checking whether
   correlation improves - if the model's signal is real and weekly
   scoring is just noisy, averaging over more weeks should cancel that
-  noise out and reveal it. It does, cleanly: r² goes from 0.32 (1 GW) to
-  0.48 (3 GW) to 0.52 (5 GW), top-20 precision from 14% to 16% to 18%,
+  noise out and reveal it. It does, cleanly: r² goes from 0.33 (1 GW) to
+  0.48 (3 GW) to 0.52 (5 GW), top-20 precision from 15% to 16% to 17%,
   with no change to the model itself. Conclusion: the single-gameweek ceiling is mostly
   variance, not a data or modeling gap - the product implication is to
   lead with multi-week outlooks ("best transfer targets for the next 5

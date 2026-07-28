@@ -375,39 +375,39 @@
       ],
       "predicted_points": [
         {
-          "id": 21,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
-          "position": "MID",
-          "value": 26.25,
-          "web_name": "Rice"
-        },
-        {
           "id": 5,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
           "position": "DEF",
-          "value": 24.81,
+          "value": 26.43,
           "web_name": "Gabriel"
+        },
+        {
+          "id": 21,
+          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "position": "MID",
+          "value": 26.37,
+          "web_name": "Rice"
         },
         {
           "id": 8,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
           "position": "DEF",
-          "value": 24.39,
+          "value": 26.17,
           "web_name": "J.Timber"
-        },
-        {
-          "id": 16,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
-          "position": "MID",
-          "value": 22.93,
-          "web_name": "Saka"
         },
         {
           "id": 7,
           "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
           "position": "DEF",
-          "value": 21.29,
+          "value": 23.15,
           "web_name": "Calafiori"
+        },
+        {
+          "id": 16,
+          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "position": "MID",
+          "value": 23.08,
+          "web_name": "Saka"
         }
       ],
       "red_cards": [],
@@ -486,6 +486,7 @@
         }
       ]
     },
+    "manager": "Mikel Arteta",
     "metrics": [
       {
         "key": "total_points",

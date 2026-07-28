@@ -39,7 +39,7 @@
         "captain_flag": "(C)",
         "ep_next": 8.8,
         "pos": "GKP",
-        "recommendation_score": 0.4333470543361346,
+        "recommendation_score": 0.43334705433613446,
         "team_short": "ARS",
         "web_name": "Raya"
       }
@@ -291,45 +291,6 @@
         "fixture_score": 14,
         "fixtures": [
           {
-            "difficulty": 3,
-            "is_home": true,
-            "opponent": "AVL",
-            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
-          },
-          {
-            "difficulty": 5,
-            "is_home": false,
-            "opponent": "MCI",
-            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
-          },
-          {
-            "difficulty": 3,
-            "is_home": true,
-            "opponent": "NFO",
-            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-          },
-          {
-            "difficulty": 3,
-            "is_home": false,
-            "opponent": "WHU",
-            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
-          },
-          {
-            "difficulty": 2,
-            "is_home": true,
-            "opponent": "SUN",
-            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-          }
-        ],
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
-        "team_short": "LIV",
-        "ticker": "AVL(H,FDR3) | MCI(A,FDR5) | NFO(H,FDR3) | WHU(A,FDR3) | SUN(H,FDR2)"
-      },
-      {
-        "avg_difficulty": 3.2,
-        "fixture_score": 14,
-        "fixtures": [
-          {
             "difficulty": 4,
             "is_home": true,
             "opponent": "ARS",
@@ -363,6 +324,45 @@
         "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t90.png",
         "team_short": "BUR",
         "ticker": "ARS(H,FDR4) | WHU(A,FDR3) | CHE(H,FDR3) | BRE(A,FDR3) | CRY(H,FDR3)"
+      },
+      {
+        "avg_difficulty": 3.2,
+        "fixture_score": 14,
+        "fixtures": [
+          {
+            "difficulty": 3,
+            "is_home": true,
+            "opponent": "AVL",
+            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+          },
+          {
+            "difficulty": 5,
+            "is_home": false,
+            "opponent": "MCI",
+            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+          },
+          {
+            "difficulty": 3,
+            "is_home": true,
+            "opponent": "NFO",
+            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+          },
+          {
+            "difficulty": 3,
+            "is_home": false,
+            "opponent": "WHU",
+            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t21.png"
+          },
+          {
+            "difficulty": 2,
+            "is_home": true,
+            "opponent": "SUN",
+            "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+          }
+        ],
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
+        "team_short": "LIV",
+        "ticker": "AVL(H,FDR3) | MCI(A,FDR5) | NFO(H,FDR3) | WHU(A,FDR3) | SUN(H,FDR2)"
       },
       {
         "avg_difficulty": 3.2,
@@ -461,8 +461,8 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
         "pos": "GKP",
         "position": 1,
-        "recency_weighted_form": 3.6443942259548643,
-        "recommendation_score": 0.4333470543361346,
+        "recency_weighted_form": 3.644394225954864,
+        "recommendation_score": 0.43334705433613446,
         "role": "Starting XI",
         "rotation_risk": 0,
         "set_piece_duty_score": 0.0,
@@ -569,7 +569,7 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p221466.png",
         "pos": "DEF",
         "position": 5,
-        "recency_weighted_form": 3.153485948643909,
+        "recency_weighted_form": 3.1534859486439095,
         "recommendation_score": 0.42967736169212845,
         "role": "Starting XI",
         "rotation_risk": 0,
@@ -596,7 +596,7 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p472769.png",
         "pos": "DEF",
         "position": 6,
-        "recency_weighted_form": 4.8984119907297705,
+        "recency_weighted_form": 4.898411990729771,
         "recommendation_score": 0.29229109380056784,
         "role": "Starting XI",
         "rotation_risk": 0,
@@ -650,7 +650,7 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
         "pos": "MID",
         "position": 8,
-        "recency_weighted_form": 2.517530886952159,
+        "recency_weighted_form": 2.5175308869521595,
         "recommendation_score": 0.33876557509698196,
         "role": "Starting XI",
         "rotation_risk": 0,
@@ -785,7 +785,7 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
         "pos": "FWD",
         "position": 13,
-        "recency_weighted_form": 7.785196044876608,
+        "recency_weighted_form": 7.785196044876607,
         "recommendation_score": 0.4656760319172572,
         "role": "Bench",
         "rotation_risk": 0,
@@ -812,7 +812,7 @@
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223094.png",
         "pos": "FWD",
         "position": 14,
-        "recency_weighted_form": 5.427427217459394,
+        "recency_weighted_form": 5.427427217459395,
         "recommendation_score": 0.6411530571698287,
         "role": "Bench",
         "rotation_risk": 0,

@@ -85,6 +85,74 @@ SHRINKAGE_GAMES = 3
 # the least aggressive smoothing that still captures the top-20 gain.
 SHARE_SMOOTHING_ALPHA = 0.5
 
+# How much of each match's goals_for/goals_against (team-strength training)
+# is blended toward team-aggregated expected goals instead of the actual
+# final score - see compute_team_goal_strengths' docstring. 1.0 (fully
+# xG-based, no blend with actual goals) per tools/eval/experiment_team_xg.py:
+# same reasoning as compute_player_involvement_shares' xG/xA switch, now
+# applied at the team level. Full GW2-38 backtest, xg_weight=1.0 vs the old
+# 0.0 (actual-goals-only) default: Pearson r 0.569->0.572 (r^2 0.324->0.327),
+# Spearman 0.703->0.704, MAE 0.933->0.931, top-20 precision 0.135->0.146 (the
+# metric this was actually picked on, same as SHARE_SMOOTHING_ALPHA's
+# search - closest to "would this have helped pick a captain/differential").
+# Also roughly halved DEF's mean bias (+0.010 -> -0.004) and GKP's
+# (+0.064 -> +0.052) - team-level defence ratios are now trained on the
+# same quality-of-chances-conceded signal already used for saves/defensive-
+# contribution player-level rates, instead of noisy actual goals conceded.
+# A 0.0-1.0 grid search (both the tune.py-style sampled grid and full-backtest
+# spot checks at 0.8/1.0) found accuracy increasing monotonically with
+# xg_weight and effectively flat between 0.8 and 1.0 - no evidence a partial
+# blend beats going all the way, so this mirrors SHARE_SMOOTHING_ALPHA's
+# "trust the better signal fully" precedent rather than splitting the
+# difference for its own sake.
+TEAM_XG_WEIGHT = 1.0
+
+# Per extra fixture in a team's next CONGESTION_WINDOW_DAYS (beyond the one
+# "normal" game a week - see fpl.domain.fixtures.compute_congestion), how
+# much to shave off that team's players' appearance probability for the
+# fixture being predicted - forward-looking fixture *scheduling* (not
+# results), so safe to use in a walk-forward backtest without lookahead.
+# 0.0 (off) - tried and rejected, see tools/eval/experiment_congestion.py.
+# A 0.0-0.20 grid found MAE improving slightly and monotonically (0.931 ->
+# 0.928 pooled at 0.05, better still further out) but Pearson r, Spearman r,
+# and top-20 precision completely flat to 3 decimal places at every weight -
+# reads as shrinkage toward the mean quietly trimming a few congested teams'
+# outlier predictions, not a real ranking-quality signal. Most likely cause:
+# this app's fixtures.json is Premier-League-only (no European/domestic-cup
+# fixtures), so the "extra PL games" this can detect are rare and don't
+# capture the actual driver of most squad rotation. Left wired up (not
+# deleted) since a fixtures source that includes cup/European fixtures would
+# make this a much stronger, worth-revisiting signal - see the report's
+# "requires additional data" section.
+CONGESTION_APPEARANCE_WEIGHT = 0.0
+
+# Scales a player's recency-weighted bonus rate by how favourable THIS
+# fixture's expected scoreline is for their team (team_xg - opp_xg), instead
+# of applying their flat season-long average unconditionally to every
+# fixture regardless of opponent. Real FPL bonus (BPS-ranked, top 3 in each
+# match) clusters on the winning side of a comfortable match - goals,
+# assists, clean sheets, and defensive actions all skew the same way at
+# once - so a single per-fixture "how dominant is this expected to be"
+# signal seemed like a reasonable, position-agnostic proxy without needing
+# a full BPS simulation. 0.0 (off) - tried and rejected, see
+# tools/eval/experiment_bonus.py. A 0.0-0.5 grid found MAE/Pearson/Spearman
+# unchanged to 3 decimal places (pooled MAE 0.9563 at every value on the
+# search sample) while top-20 precision only ever got *worse* as sensitivity
+# increased (0.1423 -> 0.1385 at 0.2, 0.1308 at 0.5) - i.e. the flat
+# recency-weighted bonus rate already captures which players are bonus-
+# magnets, and reweighting it by this fixture's scoreline just adds noise
+# rather than signal. Most likely cause: bonus is BPS-ranked *within* a
+# match (only the top 3 by BPS score), so it depends on a player's
+# performance *relative to the 21 others on the pitch*, not on the match's
+# aggregate expected-goals margin - a heavily favoured team can still have
+# its bonus points split among 4-5 contributors, and a struggling team's
+# best defender can still nail down 3 BPS points in a narrow loss. Left
+# wired up (not deleted) as a documented dead end, not a live parameter to
+# revisit without a genuinely different mechanism (e.g. modelling BPS
+# directly) - see the research report's "considered and rejected" section.
+BONUS_FIXTURE_SENSITIVITY = 0.0
+CONGESTION_WINDOW_DAYS = 7
+
 # Minimum recency-weighted appearance evidence (sum of per-fixture weight,
 # see recency_weights) for a player to count toward their position's average
 # share when building compute_player_involvement_shares' smoothing prior -

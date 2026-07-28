@@ -111,7 +111,7 @@ def _remap_team_strengths_to_roster(team_strengths, training_teams, roster_teams
 
 
 def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_26",
-                                 shrinkage_games=SHRINKAGE_GAMES):
+                                 shrinkage_games=SHRINKAGE_GAMES, xg_weight=0.0):
     """
     team_id -> {attack_home, attack_away, defence_home, defence_away}:
     recency-weighted goals scored/conceded, home/away split, each
@@ -121,6 +121,19 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
 
     Also returns the league-wide average home/away goals, needed to turn
     these ratios back into expected goals for a specific fixture.
+
+    xg_weight (0-1, default 0.0 - byte-identical to the original actual-
+    goals-only behaviour): blends each match's goals_for/goals_against
+    toward team-aggregated expected goals (each team's players' own
+    gw_history `expected_goals`, summed per fixture - xg_against for a
+    team is just its opponent's xg_for in that same fixture) before the
+    recency/shrinkage pipeline below runs unchanged on the blended column.
+    Same motivation as compute_player_involvement_shares' xG/xA switch:
+    a single match's actual score is a small-integer outcome count that
+    bakes in finishing variance, while xG (Opta's own chance-quality
+    estimate) is far more stable game to game - see
+    backend/tools/eval/experiment_team_xg.py for the backtest evidence
+    behind whatever default this app actually calls this with.
     """
     history = load_gw_history(season)
     past = history[history["kickoff_time"] < reference_date]
@@ -137,6 +150,19 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
     matches = past.drop_duplicates(subset=["GW", "fixture", "team_id"]).copy()
     matches["goals_for"] = matches["team_h_score"].where(matches["was_home"], matches["team_a_score"])
     matches["goals_against"] = matches["team_a_score"].where(matches["was_home"], matches["team_h_score"])
+
+    if xg_weight > 0:
+        fixture_xg = past.groupby(["fixture", "team_id"], as_index=False)["expected_goals"].sum() \
+            .rename(columns={"expected_goals": "xg_for"})
+        matches = matches.merge(fixture_xg, on=["fixture", "team_id"], how="left")
+        opponent_xg = fixture_xg.rename(columns={"team_id": "opponent_team", "xg_for": "xg_against"})
+        matches = matches.merge(opponent_xg, on=["fixture", "opponent_team"], how="left")
+        # Missing xG for a given match (rare - e.g. a row with no per-player
+        # data) falls back to that match's actual goals rather than NaN-ing
+        # the whole blend out.
+        matches["goals_for"] = (1 - xg_weight) * matches["goals_for"] + xg_weight * matches["xg_for"].fillna(matches["goals_for"])
+        matches["goals_against"] = (1 - xg_weight) * matches["goals_against"] + xg_weight * matches["xg_against"].fillna(matches["goals_against"])
+
     matches["weight"] = recency_weights(matches["kickoff_time"], reference_date, half_life_days)
 
     home = matches[matches["was_home"]]
@@ -171,7 +197,7 @@ def compute_team_goal_strengths(reference_date, half_life_days=21, season="2025_
 def compute_team_goal_strengths_blended(reference_date, half_life_days=21,
                                          archive_season="2025_26", current_season="2026_27",
                                          archive_half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
-                                         shrinkage_games=SHRINKAGE_GAMES,
+                                         shrinkage_games=SHRINKAGE_GAMES, xg_weight=0.0,
                                          archive_bootstrap=None, roster_bootstrap=None):
     """
     Team strengths blended across the archived and current seasons, ending
@@ -195,7 +221,7 @@ def compute_team_goal_strengths_blended(reference_date, half_life_days=21,
     blend two already-same-id-space seasons directly (no remap needed).
     """
     archive_strengths, archive_avgs = compute_team_goal_strengths(
-        reference_date, archive_half_life_days, archive_season, shrinkage_games)
+        reference_date, archive_half_life_days, archive_season, shrinkage_games, xg_weight)
     if archive_bootstrap is not None and roster_bootstrap is not None:
         archive_strengths = _remap_team_strengths_to_roster(
             archive_strengths, archive_bootstrap["teams"], roster_bootstrap["teams"])
@@ -205,7 +231,7 @@ def compute_team_goal_strengths_blended(reference_date, half_life_days=21,
         return archive_strengths, archive_avgs
 
     current_strengths, current_avgs = compute_team_goal_strengths(
-        reference_date, half_life_days, current_season, shrinkage_games)
+        reference_date, half_life_days, current_season, shrinkage_games, xg_weight)
     blended_strengths = _blend_dicts(
         archive_strengths, current_strengths, weight,
         ["attack_home", "attack_away", "defence_home", "defence_away"], DEFAULT_TEAM_STRENGTH,

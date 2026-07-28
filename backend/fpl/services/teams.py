@@ -15,6 +15,7 @@ from fpl.config import (
     LIVE_FIXTURES_FILE,
 )
 from fpl.data.loaders import load_bootstrap
+from fpl.domain.managers import manager_name
 from fpl.domain.media import player_photo_url, team_badge_url
 from fpl.domain.scoring import compute_player_scores
 from fpl.model.ids import map_player_stats_to_roster
@@ -90,6 +91,7 @@ def list_teams():
             "name": t["name"],
             "short_name": t["short_name"],
             "team_badge": team_badge_url(t["code"]),
+            "manager": manager_name(t["code"]),
         }
         for t in sorted(live["teams"], key=lambda t: t["name"])
     ]
@@ -161,6 +163,7 @@ def team_detail(team_id, ref_date, next_event, gw_count=5):
         "name": team["name"],
         "short_name": team["short_name"],
         "team_badge": team_badge_url(team["code"]),
+        "manager": manager_name(team["code"]),
         "squad_size": len(squad),
         "has_season_history": any(p["total_points"] > 0 for p in players),
         "metrics": METRICS,

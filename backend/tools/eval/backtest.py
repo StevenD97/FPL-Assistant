@@ -46,7 +46,13 @@ import pandas as pd
 from fpl.config import DATA_DIR
 from fpl.data.loaders import load_bootstrap, load_gw_history
 from fpl.model.predict import predict_player_points
-from fpl.model.rules import SHARE_SMOOTHING_ALPHA, SHRINKAGE_GAMES
+from fpl.model.rules import (
+    BONUS_FIXTURE_SENSITIVITY,
+    CONGESTION_APPEARANCE_WEIGHT,
+    SHARE_SMOOTHING_ALPHA,
+    SHRINKAGE_GAMES,
+    TEAM_XG_WEIGHT,
+)
 
 SEASON = os.environ.get("BACKTEST_SEASON", "2025_26")
 BOOTSTRAP_FILE = f"bootstrap_static_{SEASON}_final.json"
@@ -72,9 +78,35 @@ def _top_n_precision(merged, n=20):
     return len(predicted_top & actual_top) / n
 
 
+def calibration_table(compiled_df, n_bins=10):
+    """
+    Buckets every backtested (predicted_points > 0) prediction, pooled
+    across the whole run, into n_bins equal-sized groups by predicted_points
+    and compares each bucket's mean prediction against its mean actual
+    score. A well-calibrated model has mean_actual track mean_predicted
+    bucket by bucket, not just balance out on average across the whole
+    pool - e.g. a model that's badly wrong on nailed-on 8-point players but
+    compensates with an equal-and-opposite error on bench fodder would
+    still show a good pooled MAE/Pearson, and this is the check that would
+    catch it. Zero predictions (blank gameweeks, or a player with no signal
+    at all) are excluded - they're a known, deliberate zero, not something
+    calibration is meaningfully asking about.
+    """
+    df = compiled_df[compiled_df["predicted_points"] > 0].copy()
+    df["decile"] = pd.qcut(df["predicted_points"], n_bins, duplicates="drop")
+    table = df.groupby("decile", observed=True).agg(
+        n=("predicted_points", "size"),
+        mean_predicted=("predicted_points", "mean"),
+        mean_actual=("actual_points", "mean"),
+    ).reset_index()
+    table["gap"] = (table["mean_predicted"] - table["mean_actual"]).round(3)
+    return table
+
+
 def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
                   shrinkage_games=SHRINKAGE_GAMES, smoothing_alpha=SHARE_SMOOTHING_ALPHA,
-                  gameweeks=None):
+                  xg_weight=TEAM_XG_WEIGHT, congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                  bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY, gameweeks=None):
     """gameweeks overrides min_gw/max_gw with an explicit list - tune.py uses this to sample every Nth week."""
     bootstrap = load_bootstrap(BOOTSTRAP_FILE)
     event_deadlines = {
@@ -93,7 +125,8 @@ def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
         predicted = predict_player_points(
             event_deadlines[gw], gw, half_life_days=half_life_days, season=SEASON,
             bootstrap_file=BOOTSTRAP_FILE, fixtures_file=FIXTURES_FILE, shrinkage_games=shrinkage_games,
-            smoothing_alpha=smoothing_alpha,
+            smoothing_alpha=smoothing_alpha, xg_weight=xg_weight, congestion_weight=congestion_weight,
+            bonus_fixture_sensitivity=bonus_fixture_sensitivity,
         )
         actual = _actual_points_by_gw(history, gw).rename("actual_points")
 
@@ -117,7 +150,8 @@ def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
             "rmse": (merged["error"] ** 2).mean() ** 0.5,
             "pearson_r": pearson_r,
             "spearman_r": spearman_r,
-            "top20_precision": _top_n_precision(merged),
+            "top20_precision": _top_n_precision(merged, 20),
+            "top50_precision": _top_n_precision(merged, 50),
         })
 
     per_gw = pd.DataFrame(per_gw_rows)
@@ -138,6 +172,10 @@ def summarize(per_gw, compiled_df):
     print(f"Pearson r:  {pooled_pearson:.3f}  (r^2 = {pooled_pearson ** 2:.3f})")
     print(f"Spearman r: {pooled_spearman:.3f}")
     print(f"Mean top-20 precision: {per_gw['top20_precision'].mean():.3f}")
+    print(f"Mean top-50 precision: {per_gw['top50_precision'].mean():.3f}")
+
+    print("\n=== Calibration: mean predicted vs mean actual, by predicted-points decile (pooled) ===")
+    print(calibration_table(compiled_df).to_string(index=False))
 
     print("\n=== Mean absolute error by position ===")
     print(compiled_df.groupby("position")["error"].apply(lambda e: e.abs().mean()).round(3))
