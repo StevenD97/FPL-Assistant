@@ -17,45 +17,14 @@ import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
 import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
-import { API_URL } from "@/shared/lib/api";
-
-
-type Position = "GKP" | "DEF" | "MID" | "FWD";
-
-type PoolPlayer = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  position: Position;
-  predicted_points: number;
-  value: number;
-  selected_by_percent: number;
-  status: string;
-  news: string;
-  penalties_order: number;
-  direct_freekicks_order: number;
-  corners_and_indirect_freekicks_order: number;
-  appearance_points: number;
-  fixture_count: number;
-  fixture_ticker: string;
-  cost: number;
-  team_badge: string;
-  team_kit: string;
-  player_photo: string;
-};
-
-type FixtureChip = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
-
-type FixtureRow = {
-  team_id: number;
-  team: string;
-  team_badge: string;
-  fixtures_in_window: number;
-  fixture_score: number;
-  avg_difficulty: number | null;
-  ticker: string;
-  fixtures: FixtureChip[];
-};
+import { apiGet } from "@/shared/lib/api";
+import type {
+  FixtureChip,
+  PlayerAlternative,
+  PoolPlayer,
+  Position,
+  SquadBuilderFixtureRow,
+} from "@/shared/types/api";
 
 // One piece of squad feedback, shown one at a time in the Feedback carousel.
 // "positive"/"warning"/"info" drive the card's accent color; the optional
@@ -72,15 +41,6 @@ type Insight = {
   stat?: { value: number; avg: number; unit: string };
   gauge?: { pct: number };
   suggestions?: PoolPlayer[];
-};
-
-type SwapCandidate = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  cost: number;
-  predicted_points: number;
-  value: number;
 };
 
 const POSITION_ORDER: Position[] = ["GKP", "DEF", "MID", "FWD"];
@@ -135,7 +95,7 @@ function mean(values: number[]): number {
 function computeDiagnostics(
   squad: PoolPlayer[],
   squadIds: Set<number>,
-  fixtures: FixtureRow[],
+  fixtures: SquadBuilderFixtureRow[],
   allPlayers: PoolPlayer[],
   budgetRemaining: number
 ): Insight[] {
@@ -567,7 +527,7 @@ function BuildSquadSkeleton() {
 
 export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
   const [players, setPlayers] = useState<PoolPlayer[] | null>(null);
-  const [fixtures, setFixtures] = useState<FixtureRow[] | null>(null);
+  const [fixtures, setFixtures] = useState<SquadBuilderFixtureRow[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -601,14 +561,12 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
       setLoading(true);
       setError(null);
       try {
-        const [playersRes, fixturesRes] = await Promise.all([
-          fetch(`${API_URL}/api/squad-builder/players`),
-          fetch(`${API_URL}/api/squad-builder/fixtures`),
+        const [playerPool, fixtureRows] = await Promise.all([
+          apiGet<PoolPlayer[]>("/api/squad-builder/players"),
+          apiGet<SquadBuilderFixtureRow[]>("/api/squad-builder/fixtures"),
         ]);
-        if (!playersRes.ok) throw new Error(`Players request failed (${playersRes.status})`);
-        if (!fixturesRes.ok) throw new Error(`Fixtures request failed (${fixturesRes.status})`);
-        setPlayers(await playersRes.json());
-        setFixtures(await fixturesRes.json());
+        setPlayers(playerPool);
+        setFixtures(fixtureRows);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -705,7 +663,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
   }
 
   const [swapTargetId, setSwapTargetId] = useState<number | null>(null);
-  const [swapOptions, setSwapOptions] = useState<SwapCandidate[] | null>(null);
+  const [swapOptions, setSwapOptions] = useState<PlayerAlternative[] | null>(null);
   const [swapLoading, setSwapLoading] = useState(false);
 
   async function loadSwapOptions(player: PoolPlayer) {
@@ -718,11 +676,9 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     setSwapOptions(null);
     setSwapLoading(true);
     try {
-      const res = await fetch(
-        `${API_URL}/api/players/${player.id}/alternatives?limit=5&exclude=${squadIdList.join(",")}`
+      const alts = await apiGet<PlayerAlternative[]>(
+        `/api/players/${player.id}/alternatives?limit=5&exclude=${squadIdList.join(",")}`
       );
-      if (!res.ok) throw new Error("failed");
-      const alts = (await res.json()) as SwapCandidate[];
       setSwapOptions(alts.filter((a) => a.cost <= budgetRemaining + player.cost));
     } catch {
       setSwapOptions([]);

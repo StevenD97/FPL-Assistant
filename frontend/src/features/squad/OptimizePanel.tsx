@@ -12,52 +12,8 @@ import { TextField } from "@/shared/ui/TextField";
 import { Alert } from "@/shared/ui/Alert";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
-import { API_URL, fetchJson } from "@/shared/lib/api";
-
-type SquadRow = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  position: string;
-  predicted_points: number;
-  value: number;
-  selected_by_percent: number;
-  status: string;
-  role: "Starting XI" | "Bench";
-  captain: boolean;
-  cost: number;
-  team_badge: string;
-  team_kit: string;
-  player_photo: string;
-};
-
-type BestSquadResult = {
-  squad: SquadRow[];
-  total_cost: number;
-  predicted_points: number;
-};
-
-type TransferPlayer = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  position: string;
-  predicted_points: number;
-  value: number;
-  selected_by_percent: number;
-  team_badge: string;
-  team_kit: string;
-  player_photo: string;
-};
-
-type TransferResult = BestSquadResult & {
-  transfers_made: number;
-  free_transfers: number;
-  points_hit: number;
-  bank: number;
-  transferred_out: TransferPlayer[];
-  transferred_in: TransferPlayer[];
-};
+import { apiGet } from "@/shared/lib/api";
+import type { BestSquadResult, SquadRow, TransferResult } from "@/shared/types/api";
 
 const POSITION_ORDER = ["GKP", "DEF", "MID", "FWD"];
 
@@ -164,8 +120,8 @@ function BestSquadPanel() {
     setError(null);
     try {
       setResult(
-        await fetchJson(
-          `${API_URL}/api/optimizer/best-squad?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&budget=${budget}`
+        await apiGet<BestSquadResult>(
+          `/api/optimizer/best-squad?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&budget=${budget}`
         )
       );
     } catch (err) {
@@ -260,8 +216,8 @@ function TransfersPanel() {
     setError(null);
     try {
       setResult(
-        await fetchJson(
-          `${API_URL}/api/squad/${teamId}/optimize-transfers?event=${event}&reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&free_transfers=${freeTransfers}`
+        await apiGet<TransferResult>(
+          `/api/squad/${teamId}/optimize-transfers?event=${event}&reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=${gwCount}&free_transfers=${freeTransfers}`
         )
       );
     } catch (err) {

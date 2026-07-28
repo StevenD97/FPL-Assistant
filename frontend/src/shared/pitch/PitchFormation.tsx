@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { teamColorVar } from "@/shared/lib/teamColors";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
-
-type Position = "GKP" | "DEF" | "MID" | "FWD";
+import type { Position } from "@/shared/types/api";
 
 export type PitchPlayer = {
   id: number;

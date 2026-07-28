@@ -1,4 +1,4 @@
-type Position = "GKP" | "DEF" | "MID" | "FWD";
+import type { Position } from "@/shared/types/api";
 
 const POSITION_BG: Record<Position, string> = {
   GKP: "bg-pos-gkp",

@@ -244,10 +244,37 @@ const FIELD_TYPES = {
   // two. Keeping the union rather than the inferred `string` preserves the
   // exhaustiveness the team leaderboard's "Model" vs "2025/26" tag relies on.
   "Metric.kind": '"actual" | "model"',
+  // fpl/optimize/squad.py assigns exactly one of these two per row. The panels
+  // sort on it ("Starting XI" first), so the union is worth keeping over the
+  // inferred string.
+  "SquadRow.role": '"Starting XI" | "Bench"',
+  "SquadPlayer.role": '"Starting XI" | "Bench"',
+};
+
+/**
+ * Closed sets that appear under the same field name across many responses.
+ * Listing every owner in FIELD_TYPES would be a dozen near-identical lines, so
+ * these are matched on field name instead, wherever it occurs.
+ *
+ * Every observed value is checked against the union at generation time (see
+ * assertEnumFields), so if the backend ever emits a fifth position this fails
+ * loudly rather than quietly producing a type that lies.
+ */
+const ENUM_FIELDS = {
+  position: "Position",
+  pos: "Position",
+};
+
+const ENUM_VALUES = {
+  Position: ["GKP", "DEF", "MID", "FWD"],
 };
 
 /** Declarations that FIELD_TYPES refers to, emitted ahead of everything else. */
-const EXTRA_TYPES = `export type WildcardSuggestion = {
+const EXTRA_TYPES = `/** FPL's four squad positions. Closed set - the optimizer's squad and
+ * starting-XI limits are keyed on exactly these (fpl/optimize/squad.py). */
+export type Position = "GKP" | "DEF" | "MID" | "FWD";
+
+export type WildcardSuggestion = {
   reason: string;
   suggested_event: number;
 };
@@ -523,6 +550,7 @@ function renderInline(node, names, depth, ownerOverride) {
     const key = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(k) ? k : JSON.stringify(k);
     const path = `${owner}.${k}`;
     let type = render(slot.node, names, depth + 1);
+    if (ENUM_FIELDS[k] && type === "string") type = ENUM_FIELDS[k];
     if (FIELD_TYPES[path]) {
       fieldTypesApplied.add(path);
       type = FIELD_TYPES[path];
@@ -548,10 +576,55 @@ function declare(name, node, names, route) {
   return `${head}${body};\n`;
 }
 
+/**
+ * Walk the raw golden bodies and check every value found under an ENUM_FIELDS
+ * key is in that union. Guards the one way the enum shortcut could go wrong:
+ * the backend growing a new value that the union then silently excludes.
+ */
+function assertEnumFields(bodies) {
+  const seen = new Map(); // field -> Set(values)
+
+  function walk(node) {
+    if (Array.isArray(node)) {
+      for (const el of node) walk(el);
+      return;
+    }
+    if (node && typeof node === "object") {
+      for (const [k, v] of Object.entries(node)) {
+        if (ENUM_FIELDS[k] && typeof v === "string") {
+          if (!seen.has(k)) seen.set(k, new Set());
+          seen.get(k).add(v);
+        }
+        walk(v);
+      }
+    }
+  }
+  for (const body of bodies) walk(body);
+
+  const problems = [];
+  for (const [field, values] of seen) {
+    const allowed = new Set(ENUM_VALUES[ENUM_FIELDS[field]]);
+    const extra = [...values].filter((v) => !allowed.has(v));
+    if (extra.length) {
+      problems.push(
+        `${field} has value(s) not in ${ENUM_FIELDS[field]}: ${extra.join(", ")}`,
+      );
+    }
+  }
+  if (problems.length) {
+    throw new Error(
+      `Enum field check failed:\n  ${problems.join("\n  ")}\n` +
+        `Widen ENUM_VALUES (and EXTRA_TYPES) or drop the field from ENUM_FIELDS.`,
+    );
+  }
+  return seen;
+}
+
 function main() {
   const roots = new Map();
   const routes = new Map();
   const arrayResponses = new Set();
+  const bodies = [];
 
   for (const file of readdirSync(GOLDEN_DIR).sort()) {
     if (!file.endsWith(".json")) continue;
@@ -561,6 +634,7 @@ function main() {
     const [typeName, route, kind] = spec;
     const golden = JSON.parse(readFileSync(join(GOLDEN_DIR, file), "utf8"));
     if (!("body" in golden)) continue;
+    bodies.push(golden.body);
     const node = fold(emptyNode(), golden.body);
     if (kind === "item") {
       if (!node.arr) throw new Error(`${key}: expected an array body`);
@@ -572,6 +646,7 @@ function main() {
     routes.set(typeName, route);
   }
 
+  const enumsSeen = assertEnumFields(bodies);
   for (const node of roots.values()) reconcileEmptyArrays(node);
 
   const shapes = collectShapes(roots);
@@ -650,8 +725,12 @@ function main() {
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, out.join("\n"));
   const declared = shared.length + roots.size;
+  const enums = [...enumsSeen]
+    .map(([field, values]) => `${field}=${values.size}`)
+    .join(" ");
   console.log(
-    `api.d.ts: ${declared} types (${roots.size} responses, ${shared.length} nested/shared) from ${GOLDEN_DIR.replace(/.*\//, "golden/")}`,
+    `api.d.ts: ${declared} types (${roots.size} responses, ${shared.length} nested/shared)` +
+      `${enums ? `; enum fields checked: ${enums}` : ""}`,
   );
 }
 

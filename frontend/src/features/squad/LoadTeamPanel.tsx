@@ -14,129 +14,23 @@ import { TextField } from "@/shared/ui/TextField";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { API_URL, fetchJson } from "@/shared/lib/api";
+import { apiGet } from "@/shared/lib/api";
+import type {
+  ChipResponse,
+  PlannerResponse,
+  PlayerAlternative,
+  PlayerTrajectory,
+  SquadPlayer,
+  SquadResponse,
+  TransferResult,
+} from "@/shared/types/api";
 
-
-type SquadPlayer = {
-  id: number;
-  live_id: number | null;
-  position: number;
-  web_name: string;
-  team_short: string;
-  pos: string;
-  role: string;
-  captain_flag: string;
-  recommendation_score: number;
-  next_opponent: string;
-  opponent_multiplier: number;
-  rotation_risk: number;
-  form: number;
-  ep_next: number;
-  expected_minutes: number;
-  expected_goal_involvements: number;
-  ict_index: number;
-  defensive_contribution_per_90: number;
-  set_piece_duty_score: number;
-  team_badge: string;
-  team_kit: string;
-  player_photo: string;
-};
-
-type CaptaincyOption = {
-  web_name: string;
-  team_short: string;
-  pos: string;
-  recommendation_score: number;
-  ep_next: number;
-  captain_flag: string;
-};
-
-type FixtureOutlookFixture = { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string };
-
-type FixtureOutlookRow = {
-  team_short: string;
-  team_badge: string;
-  fixture_score: number;
-  avg_difficulty: number | null;
-  ticker: string;
-  fixtures: FixtureOutlookFixture[];
-};
-
-type SquadResponse = {
-  entry_name: string;
-  event: number;
-  points: number;
-  squad_value: number;
-  bank: number;
-  squad: SquadPlayer[];
-  category_scores: Record<string, number>;
-  bench_depth_score: number | null;
-  captaincy_options: CaptaincyOption[];
-  fixture_outlook: FixtureOutlookRow[];
-};
-
-type TransferPlayer = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  position: string;
-  predicted_points: number;
-};
-
-type OptimizerResponse = {
-  transfers_made: number;
-  free_transfers: number;
-  points_hit: number;
-  predicted_points: number;
-  transferred_out: TransferPlayer[];
-  transferred_in: TransferPlayer[];
-};
-
-type Alternative = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  cost: number;
-  predicted_points: number;
-  value: number;
-};
-
-type PlannerOpponent = { team: string; is_home: boolean; difficulty: number };
-
-type PlannerGw = {
-  event: number;
-  predicted_points: number;
-  appearance_points: number;
-  fixture_count: number;
-  opponents: PlannerOpponent[];
-  flags: string[];
-};
-
-type PlannerPlayer = {
-  id: number;
-  web_name: string;
-  team_short: string;
-  position: string;
-  team_badge: string;
-  player_photo: string;
-  average_predicted_points: number;
-  trajectory: PlannerGw[];
-};
-
-type PlannerResponse = { event: number; next_events: number[]; players: PlannerPlayer[] };
-
-type ChipResponse = {
-  bench_boost: { event: number; bench_score: number; double_count: number };
-  triple_captain: { event: number; player: string; score: number };
-  free_hit: { recommended: boolean; event: number; blank_count: number };
-  wildcard: { reason: string; suggested_event: number } | null;
-};
 
 function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   return {
     id: p.id,
     name: p.web_name,
-    position: p.pos as PitchPlayer["position"],
+    position: p.pos,
     teamShort: p.team_short,
     photo: p.player_photo,
     teamKit: p.team_kit,
@@ -190,12 +84,12 @@ export function LoadTeamPanel({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [optimizer, setOptimizer] = useState<OptimizerResponse | null>(null);
+  const [optimizer, setOptimizer] = useState<TransferResult | null>(null);
   const [optimizerLoading, setOptimizerLoading] = useState(false);
   const [optimizerError, setOptimizerError] = useState<string | null>(null);
 
   const [suggestFor, setSuggestFor] = useState<{ liveId: number; name: string } | null>(null);
-  const [alternatives, setAlternatives] = useState<Alternative[] | null>(null);
+  const [alternatives, setAlternatives] = useState<PlayerAlternative[] | null>(null);
   const [alternativesLoading, setAlternativesLoading] = useState(false);
 
   const [planner, setPlanner] = useState<PlannerResponse | null>(null);
@@ -210,7 +104,7 @@ export function LoadTeamPanel({
   // Replacements chips below) onto a planner row to see their trajectory
   // in that slot instead, without making a real transfer. Keyed by the
   // *original* squad player's id (the row/slot being previewed).
-  const [swapPreviews, setSwapPreviews] = useState<Record<number, PlannerPlayer>>({});
+  const [swapPreviews, setSwapPreviews] = useState<Record<number, PlayerTrajectory>>({});
   const [swapLoading, setSwapLoading] = useState<Record<number, boolean>>({});
   const [dragOverRow, setDragOverRow] = useState<number | null>(null);
 
@@ -226,7 +120,7 @@ export function LoadTeamPanel({
     setAlternatives(null);
     setAlternativesLoading(true);
     try {
-      setAlternatives(await fetchJson(`${API_URL}/api/players/${liveId}/alternatives?limit=5`));
+      setAlternatives(await apiGet<PlayerAlternative[]>(`/api/players/${liveId}/alternatives?limit=5`));
     } catch {
       setAlternatives([]);
     } finally {
@@ -239,7 +133,9 @@ export function LoadTeamPanel({
     setOptimizerError(null);
     setOptimizer(null);
     try {
-      setOptimizer(await fetchJson(`${API_URL}/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`));
+      setOptimizer(
+        await apiGet<TransferResult>(`/api/squad/${id}/optimize-transfers?free_transfers=${freeTransfers}`)
+      );
     } catch (err) {
       // Suggested transfers are a bonus on top of the squad view, not a
       // blocker - if this fails (e.g. FPL's picks-history reset - see
@@ -255,7 +151,7 @@ export function LoadTeamPanel({
     setPlannerError(null);
     setPlanner(null);
     try {
-      setPlanner(await fetchJson(`${API_URL}/api/squad/${id}/planner`));
+      setPlanner(await apiGet<PlannerResponse>(`/api/squad/${id}/planner`));
     } catch (err) {
       // Same "bonus, not a blocker" treatment as suggested transfers below.
       setPlannerError(err instanceof Error ? err.message : "Couldn't build the planner");
@@ -269,7 +165,7 @@ export function LoadTeamPanel({
     setChipsError(null);
     setChips(null);
     try {
-      setChips(await fetchJson(`${API_URL}/api/squad/${id}/chips`));
+      setChips(await apiGet<ChipResponse>(`/api/squad/${id}/chips`));
     } catch (err) {
       // Bonus, not a blocker - same as the optimizer/planner above.
       setChipsError(err instanceof Error ? err.message : "Couldn't scan chip timing");
@@ -287,8 +183,8 @@ export function LoadTeamPanel({
     try {
       const gwCount = planner.next_events.length;
       const nextEvent = planner.next_events[0];
-      const row = await fetchJson<PlannerPlayer>(
-        `${API_URL}/api/players/${candidateId}/trajectory?gw_count=${gwCount}&next_event=${nextEvent}`
+      const row = await apiGet<PlayerTrajectory>(
+        `/api/players/${candidateId}/trajectory?gw_count=${gwCount}&next_event=${nextEvent}`
       );
       setSwapPreviews((prev) => ({ ...prev, [originalPlayerId]: row }));
     } catch {
@@ -312,7 +208,7 @@ export function LoadTeamPanel({
     setError(null);
     setData(null);
     try {
-      setData(await fetchJson(`${API_URL}/api/squad/${id}`));
+      setData(await apiGet<SquadResponse>(`/api/squad/${id}`));
       loadOptimizer(id); // fires automatically alongside the squad view, not gated on a separate action
       loadPlanner(id);
       loadChips(id);

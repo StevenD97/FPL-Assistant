@@ -9,6 +9,10 @@
 // the sampled responses is typed non-null. Widen it here by adding a
 // `response_model` to the route and regenerating, not by hand.
 
+/** FPL's four squad positions. Closed set - the optimizer's squad and
+ * starting-XI limits are keyed on exactly these (fpl/optimize/squad.py). */
+export type Position = "GKP" | "DEF" | "MID" | "FWD";
+
 export type WildcardSuggestion = {
   reason: string;
   suggested_event: number;
@@ -25,7 +29,7 @@ export type YourRank = {
 export type CaptaincyOption = {
   captain_flag: string;
   ep_next: number;
-  pos: string;
+  pos: Position;
   recommendation_score: number;
   team_short: string;
   web_name: string;
@@ -93,7 +97,7 @@ export type GwRow = {
 export type LeaderboardEntry = {
   id: number;
   player_photo: string;
-  position: string;
+  position: Position;
   value: number;
   web_name: string;
 };
@@ -133,7 +137,7 @@ export type Prediction = {
   own_goal_points: number;
   penalty_miss_points: number;
   penalty_save_points: number;
-  position: string;
+  position: Position;
   predicted_assists: number;
   predicted_goals: number;
   predicted_points: number;
@@ -174,11 +178,11 @@ export type SquadPlayer = {
   next_opponent: string;
   opponent_multiplier: number;
   player_photo: string;
-  pos: string;
+  pos: Position;
   position: number;
   recency_weighted_form: number;
   recommendation_score: number;
-  role: string;
+  role: "Starting XI" | "Bench";
   rotation_risk: number;
   set_piece_duty_score: number;
   status: string;
@@ -193,9 +197,9 @@ export type SquadRow = {
   cost: number;
   id: number;
   player_photo: string;
-  position: string;
+  position: Position;
   predicted_points: number;
-  role: string;
+  role: "Starting XI" | "Bench";
   selected_by_percent: number;
   status: string;
   team_badge: string;
@@ -244,7 +248,7 @@ export type TrajectoryRow = {
 export type TransferPlayer = {
   id: number;
   player_photo: string;
-  position: string;
+  position: Position;
   predicted_points: number;
   selected_by_percent: number;
   team_badge: string;
@@ -315,7 +319,7 @@ export type PlannerResponse = {
 export type PlayerAlternative = {
   cost: number;
   id: number;
-  position: string;
+  position: Position;
   predicted_points: number;
   selected_by_percent: number;
   team_short: string;
@@ -333,7 +337,7 @@ export type PlayerDetail = {
   news: string;
   penalties_order: number;
   player_photo: string;
-  position: string;
+  position: Position;
   prediction: Prediction | null;
   season_stats: SeasonStats | null;
   second_name: string;
@@ -353,7 +357,7 @@ export type PlayerListItem = {
   id: number;
   news: string;
   player_photo: string;
-  position: string;
+  position: Position;
   predicted_points: number;
   season_stats: SeasonStats | null;
   selected_by_percent: number;
@@ -371,7 +375,7 @@ export type PlayerOutlook = {
   fixtures: OutlookFixture[];
   id: number;
   live_id: number | null;
-  position: string;
+  position: Position;
   predicted_points: number;
   team_badge: string;
   team_short: string;
@@ -394,7 +398,7 @@ export type PlayerPredictedPoints = {
   own_goal_points: number;
   penalty_miss_points: number;
   penalty_save_points: number;
-  position: string;
+  position: Position;
   predicted_assists: number;
   predicted_goals: number;
   predicted_points: number;
@@ -418,7 +422,7 @@ export type PlayerScore = {
   opponent_multiplier: number;
   penalties_missed: number;
   penalties_order: number;
-  position: string;
+  position: Position;
   recency_weighted_form: number;
   recommendation_score: number;
   rotation_risk: number;
@@ -434,7 +438,7 @@ export type PlayerTrajectory = {
   average_predicted_points: number;
   id: number;
   player_photo: string;
-  position: string;
+  position: Position;
   team_badge: string;
   team_short: string;
   trajectory: TrajectoryRow[];
@@ -453,7 +457,7 @@ export type PoolPlayer = {
   news: string;
   penalties_order: number;
   player_photo: string;
-  position: string;
+  position: Position;
   predicted_points: number;
   selected_by_percent: number;
   status: string;

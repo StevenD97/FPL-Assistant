@@ -4,7 +4,7 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000
 // {"detail": "..."} body - e.g. explaining that FPL purges manager pick
 // history at each season boundary, not just a bare status code. Falls
 // back to the status code if the body isn't JSON or has no detail field.
-export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
   if (!res.ok) {
     let detail: string | undefined;
