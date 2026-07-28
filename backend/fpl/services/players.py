@@ -243,6 +243,24 @@ def player_detail(player_id, ref_date, next_event, gw_count=5):
     )
     prediction = breakdown[breakdown["id"] == player_id].to_dict(orient="records")
 
+    # Structured, badge-ready form of the prediction's fixture_ticker (a plain
+    # "HUL(A) | IPS(H)" string) - lets the player-detail page render an
+    # opponent badge per fixture instead of parsing it, same shape as
+    # predicted_points_outlook's structured_fixtures.
+    team_badges = team_badge_by_short_name(live)
+    team_short_lookup = {t["id"]: t["short_name"] for t in live["teams"]}
+    fixtures_by_team_event = build_fixtures_by_team_event(load_fixtures(LIVE_FIXTURES_FILE))
+    fixtures = []
+    for event in next_events:
+        for fx in fixtures_by_team_event[live_player["team"]].get(event, []):
+            opponent = team_short_lookup[fx["opponent"]]
+            fixtures.append({
+                "opponent": opponent,
+                "is_home": fx["is_home"],
+                "difficulty": fx["difficulty"],
+                "opponent_badge": team_badges[opponent],
+            })
+
     team = teams_by_id[live_player["team"]]
     return {
         "id": player_id,
@@ -263,6 +281,7 @@ def player_detail(player_id, ref_date, next_event, gw_count=5):
         "season_stats": season_stats,
         "gw_history": gw_history,
         "prediction": prediction[0] if prediction else None,
+        "fixtures": fixtures,
     }
 
 

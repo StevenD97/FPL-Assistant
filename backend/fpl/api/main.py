@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from fpl.api.routers import fixtures, health, leagues, optimizer, players, squad
+from fpl.api.routers import fixtures, health, leagues, optimizer, players, squad, teams
 from fpl.data.loaders import ensure_data_fetched
 
 load_dotenv()
@@ -34,7 +34,7 @@ DEFAULT_ALLOWED_ORIGINS = [
 # a depth (e.g. /api/players/scores vs /api/players/{player_id}); each router
 # orders its own routes so literals win. Across routers the prefixes are
 # disjoint, so router order is cosmetic (drives /docs grouping).
-_ROUTERS = [health, players, fixtures, optimizer, squad, leagues]
+_ROUTERS = [health, players, teams, fixtures, optimizer, squad, leagues]
 
 
 @asynccontextmanager

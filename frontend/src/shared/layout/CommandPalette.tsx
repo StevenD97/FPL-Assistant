@@ -12,6 +12,7 @@ const COMMANDS: Cmd[] = [
   { label: "Home", href: "/", icon: "home" },
   { label: "My Squad", href: "/squad", icon: "squad", keywords: "build optimize transfers team draft chips wildcard bench boost triple captain free hit" },
   { label: "Players", href: "/players", icon: "players", keywords: "search browse database outlook predicted points differentials low ownership" },
+  { label: "Teams", href: "/teams", icon: "teams", keywords: "clubs top 5 goals assists xg xa xgi minutes bonus cards leaderboard" },
   { label: "Price Watch", href: "/price-watch", icon: "price-watch", keywords: "rises falls transfers momentum" },
   { label: "Matches", href: "/matches", icon: "fixtures", keywords: "fixtures schedule results difficulty fdr calendar" },
   { label: "Leagues", href: "/leagues", icon: "leagues", keywords: "mini standings rivals" },

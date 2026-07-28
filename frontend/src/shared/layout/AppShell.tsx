@@ -31,6 +31,7 @@ const NAV_SECTIONS: NavSection[] = [
     label: "Research",
     items: [
       { href: "/players", label: "Players", icon: "players" },
+      { href: "/teams", label: "Teams", icon: "teams" },
       { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
     ],
   },

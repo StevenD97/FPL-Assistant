@@ -9,6 +9,7 @@ type IconName =
   | "outlook"
   | "differentials"
   | "price-watch"
+  | "teams"
   | "fixtures"
   | "schedule"
   | "chips"
@@ -37,6 +38,7 @@ const PATHS: Record<IconName, React.ReactNode> = {
   outlook: <path d="M4 19V5M4 19h16M7 15l3.5-4 3 2.5L20 7" />,
   differentials: <path d="M12 2 4 12l8 10 8-10z" />,
   "price-watch": <path d="M7 17V7m0 0-3 3m3-3 3 3M17 7v10m0 0-3-3m3 3 3-3" />,
+  teams: <path d="M12 3.2 18.5 5.5v5c0 5-2.8 8.6-6.5 10.3-3.7-1.7-6.5-5.3-6.5-10.3v-5L12 3.2Z" />,
   fixtures: (
     <>
       <rect x="3" y="4.5" width="18" height="16" rx="2" />

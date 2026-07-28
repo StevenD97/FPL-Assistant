@@ -4,10 +4,10 @@ import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
 import { PlayerCard } from "@/features/players/PlayerCard";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
-import { StatTile } from "@/shared/ui/Card";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { FdrChip } from "@/shared/ui/FdrChip";
 import { LineChart } from "@/shared/charts/LineChart";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
@@ -48,7 +48,6 @@ type Prediction = {
   bonus_points: number;
   defensive_contribution_points: number;
   fixture_count: number;
-  fixture_ticker: string;
 };
 
 type PlayerDetail = {
@@ -70,6 +69,7 @@ type PlayerDetail = {
   season_stats: SeasonStats | null;
   gw_history: GwRow[];
   prediction: Prediction | null;
+  fixtures: { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string }[];
 };
 
 type PlayerSummary = { id: number; web_name: string; team_short: string; position: string };
@@ -105,6 +105,20 @@ const SEASON_ROWS: CompareRow[] = [
     format: (n) => n.toFixed(2),
   },
 ];
+
+// Shared with the compare-mode card row, so both places show the same six
+// stats on the card front.
+function cardStats(player: PlayerDetail) {
+  const s = player.season_stats;
+  return [
+    { k: "PTS", v: s ? String(s.total_points) : "—" },
+    { k: "GLS", v: s ? String(s.goals_scored) : "—" },
+    { k: "AST", v: s ? String(s.assists) : "—" },
+    { k: "xGI", v: s ? Number(s.expected_goal_involvements).toFixed(1) : "—" },
+    { k: "ICT", v: s ? Number(s.ict_index).toFixed(0) : "—" },
+    { k: "MIN", v: s ? String(s.minutes) : "—" },
+  ];
+}
 
 function CompareTable({ title, rows, players }: { title: string; rows: CompareRow[]; players: PlayerDetail[] }) {
   return (
@@ -181,12 +195,7 @@ function PlayerDetailSkeleton() {
           </div>
         </div>
         <Skeleton className="mb-3 h-5 w-40" />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full rounded-md" />
-          ))}
-        </div>
-        <Skeleton className="mt-8 h-56 w-full rounded-lg" />
+        <Skeleton className="h-56 w-full rounded-lg" />
       </div>
     </main>
   );
@@ -327,14 +336,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
                 photo={p.player_photo}
                 rating={p.prediction ? p.prediction.predicted_points.toFixed(1) : "—"}
                 windowLabel={p.prediction ? `${p.prediction.fixture_count} GW` : undefined}
-                stats={[
-                  { k: "PTS", v: p.season_stats ? String(p.season_stats.total_points) : "—" },
-                  { k: "GLS", v: p.season_stats ? String(p.season_stats.goals_scored) : "—" },
-                  { k: "AST", v: p.season_stats ? String(p.season_stats.assists) : "—" },
-                  { k: "xGI", v: p.season_stats ? Number(p.season_stats.expected_goal_involvements).toFixed(1) : "—" },
-                  { k: "ICT", v: p.season_stats ? Number(p.season_stats.ict_index).toFixed(0) : "—" },
-                  { k: "MIN", v: p.season_stats ? String(p.season_stats.minutes) : "—" },
-                ]}
+                stats={cardStats(p)}
               />
             </div>
 
@@ -361,11 +363,19 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
               <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
               {p.penalties_order === 1 && <span>Primary penalty taker</span>}
             </div>
-            {p.prediction && (
-              <p className="text-sm text-text-muted">
-                Next {p.prediction.fixture_count} gameweeks ·{" "}
-                <span className="font-mono text-text-secondary">{p.prediction.fixture_ticker}</span>
-              </p>
+            {p.fixtures.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <span className="text-sm text-text-muted">Next {p.prediction?.fixture_count ?? p.fixtures.length} gameweeks</span>
+                {p.fixtures.map((fx, i) => (
+                  <FdrChip
+                    key={i}
+                    opponent={fx.opponent}
+                    isHome={fx.is_home}
+                    difficulty={fx.difficulty}
+                    badgeUrl={fx.opponent_badge}
+                  />
+                ))}
+              </div>
             )}
             {p.news && (
               <p className="mt-1 max-w-lg rounded-md bg-warning-bg px-3 py-2 text-sm text-warning">{p.news}</p>
@@ -410,7 +420,25 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
           )}
         </section>
 
-        {comparing ? (
+        {comparing && (
+          <section className="mb-8 flex flex-wrap items-start justify-center gap-4">
+            {allSelected.map((player) => (
+              <PlayerCard
+                key={player.id}
+                name={player.web_name}
+                position={player.position}
+                teamShort={player.team_short}
+                teamBadge={player.team_badge}
+                photo={player.player_photo}
+                rating={player.prediction ? player.prediction.predicted_points.toFixed(1) : "—"}
+                windowLabel={player.prediction ? `${player.prediction.fixture_count} GW` : undefined}
+                stats={cardStats(player)}
+              />
+            ))}
+          </section>
+        )}
+
+        {comparing && (
           <>
             <CompareTable
               title={p.prediction ? `Next ${p.prediction.fixture_count} gameweeks` : "Next gameweeks"}
@@ -418,28 +446,6 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
               players={allSelected}
             />
             <CompareTable title="2025/26 season" rows={SEASON_ROWS} players={allSelected} />
-          </>
-        ) : (
-          <>
-            <section className="mb-8">
-              <h2 className="mb-3 font-semibold text-text-primary">2025/26 season</h2>
-              {p.season_stats ? (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <StatTile label="Total points" value={p.season_stats.total_points} />
-                  <StatTile label="Goals" value={p.season_stats.goals_scored} />
-                  <StatTile label="Assists" value={p.season_stats.assists} />
-                  <StatTile label="Clean sheets" value={p.season_stats.clean_sheets} />
-                  <StatTile label="Minutes" value={p.season_stats.minutes} />
-                  <StatTile label="Bonus" value={p.season_stats.bonus} />
-                  <StatTile label="ICT index" value={p.season_stats.ict_index} />
-                  <StatTile label="xGI" value={p.season_stats.expected_goal_involvements} />
-                </div>
-              ) : (
-                <p className="text-sm text-text-muted">
-                  No 2025/26 Premier League record - new to the top flight this season.
-                </p>
-              )}
-            </section>
           </>
         )}
 

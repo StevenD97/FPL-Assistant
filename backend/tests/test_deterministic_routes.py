@@ -34,6 +34,8 @@ DETERMINISTIC_ROUTES = [
     ("player_detail", f"/api/players/1?{P}"),
     ("player_alternatives", f"/api/players/1/alternatives?{P}"),
     ("player_trajectory", "/api/players/1/trajectory?reference_date=2025-11-30&next_event=10&gw_count=6"),
+    ("teams_list", "/api/teams"),
+    ("team_detail", f"/api/teams/1?{P}"),
 ]
 
 
