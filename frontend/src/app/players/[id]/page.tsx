@@ -8,6 +8,7 @@ import { StatTile } from "@/shared/ui/Card";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { FdrChip } from "@/shared/ui/FdrChip";
 import { LineChart } from "@/shared/charts/LineChart";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { seriesColor } from "@/shared/lib/palette";
@@ -47,7 +48,6 @@ type Prediction = {
   bonus_points: number;
   defensive_contribution_points: number;
   fixture_count: number;
-  fixture_ticker: string;
 };
 
 type PlayerDetail = {
@@ -69,6 +69,7 @@ type PlayerDetail = {
   season_stats: SeasonStats | null;
   gw_history: GwRow[];
   prediction: Prediction | null;
+  fixtures: { opponent: string; is_home: boolean; difficulty: number; opponent_badge: string }[];
 };
 
 type PlayerSummary = { id: number; web_name: string; team_short: string; position: string };
@@ -359,11 +360,19 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
               <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
               {p.penalties_order === 1 && <span>Primary penalty taker</span>}
             </div>
-            {p.prediction && (
-              <p className="text-sm text-text-muted">
-                Next {p.prediction.fixture_count} gameweeks ·{" "}
-                <span className="font-mono text-text-secondary">{p.prediction.fixture_ticker}</span>
-              </p>
+            {p.fixtures.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                <span className="text-sm text-text-muted">Next {p.prediction?.fixture_count ?? p.fixtures.length} gameweeks</span>
+                {p.fixtures.map((fx, i) => (
+                  <FdrChip
+                    key={i}
+                    opponent={fx.opponent}
+                    isHome={fx.is_home}
+                    difficulty={fx.difficulty}
+                    badgeUrl={fx.opponent_badge}
+                  />
+                ))}
+              </div>
             )}
             {p.news && (
               <p className="mt-1 max-w-lg rounded-md bg-warning-bg px-3 py-2 text-sm text-warning">{p.news}</p>
@@ -421,16 +430,18 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
           <>
             <section className="mb-8">
               <h2 className="mb-3 font-semibold text-text-primary">2025/26 season</h2>
+              {/* Points/goals/assists/xGI/ICT/minutes already headline the card above -
+                  everything here is the rest of the season record, not a repeat of it. */}
               {p.season_stats ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <StatTile label="Total points" value={p.season_stats.total_points} />
-                  <StatTile label="Goals" value={p.season_stats.goals_scored} />
-                  <StatTile label="Assists" value={p.season_stats.assists} />
                   <StatTile label="Clean sheets" value={p.season_stats.clean_sheets} />
-                  <StatTile label="Minutes" value={p.season_stats.minutes} />
                   <StatTile label="Bonus" value={p.season_stats.bonus} />
-                  <StatTile label="ICT index" value={p.season_stats.ict_index} />
-                  <StatTile label="xGI" value={p.season_stats.expected_goal_involvements} />
+                  <StatTile label="Starts" value={p.season_stats.starts} />
+                  <StatTile label="xG" value={Number(p.season_stats.expected_goals).toFixed(1)} />
+                  <StatTile label="xA" value={Number(p.season_stats.expected_assists).toFixed(1)} />
+                  <StatTile label="Goals conceded" value={p.season_stats.goals_conceded} />
+                  <StatTile label="Saves" value={p.season_stats.saves} />
+                  <StatTile label="Cards" value={`${p.season_stats.yellow_cards}Y / ${p.season_stats.red_cards}R`} />
                 </div>
               ) : (
                 <p className="text-sm text-text-muted">
