@@ -1,7 +1,39 @@
 {
   "body": {
-    "cost": 6.2,
+    "cost": 6.0,
     "first_name": "David",
+    "fixtures": [
+      {
+        "difficulty": 2,
+        "is_home": true,
+        "opponent": "HUL",
+        "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+      },
+      {
+        "difficulty": 3,
+        "is_home": false,
+        "opponent": "NEW",
+        "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+      },
+      {
+        "difficulty": 4,
+        "is_home": true,
+        "opponent": "MCI",
+        "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+      },
+      {
+        "difficulty": 3,
+        "is_home": false,
+        "opponent": "BRE",
+        "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+      },
+      {
+        "difficulty": 3,
+        "is_home": false,
+        "opponent": "TOT",
+        "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+      }
+    ],
     "gw_history": [
       {
         "GW": 1,
@@ -318,21 +350,21 @@
       "assist_points": 0.058,
       "bonus_points": 0.85,
       "card_points": -0.285,
-      "clean_sheet_points": 7.779,
-      "clean_sheet_prob": 0.389,
+      "clean_sheet_points": 8.013,
+      "clean_sheet_prob": 0.401,
       "defensive_contribution_points": 0.0,
       "fixture_count": 5,
-      "fixture_ticker": "BUR(A) | SUN(A) | TOT(H) | CHE(A) | BRE(H)",
+      "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
       "goal_points": 0.0,
-      "goals_conceded_points": -1.374,
+      "goals_conceded_points": -1.345,
       "id": 1,
       "own_goal_points": 0.0,
       "penalty_miss_points": 0.0,
       "penalty_save_points": 0.0,
       "position": "GKP",
-      "predicted_assists": 0.02,
+      "predicted_assists": 0.019,
       "predicted_goals": 0.0,
-      "predicted_points": 18.982,
+      "predicted_points": 19.246,
       "save_points": 1.955,
       "team_short": "ARS",
       "web_name": "Raya"
@@ -355,7 +387,7 @@
       "yellow_cards": 1
     },
     "second_name": "Raya Mart\u00edn",
-    "selected_by_percent": 36.4,
+    "selected_by_percent": 29.9,
     "status": "a",
     "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
     "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3-66.png",
