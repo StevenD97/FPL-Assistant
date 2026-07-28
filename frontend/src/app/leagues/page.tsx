@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/Button";
 import { Pill } from "@/shared/ui/Pill";
 import { TextField } from "@/shared/ui/TextField";
 import { TableSkeleton } from "@/shared/ui/Skeleton";
+import { ConnectTeamPrompt } from "@/shared/team/ConnectTeamPrompt";
 import { LineChart } from "@/shared/charts/LineChart";
 import { seriesColor } from "@/shared/lib/palette";
 import {
@@ -173,6 +174,26 @@ export default function LeaguesPage() {
           Standings and score trends for your mini-leagues - or track any public league, including a country
           league, to see where your score would rank without joining.
         </p>
+
+        {/* Identity first: if a team is connected, one tap loads its leagues -
+            no re-entering an ID. Otherwise coach them to connect. */}
+        {connectedTeamId ? (
+          <div className="mb-5 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-white px-4 py-3 shadow-sm">
+            <span className="text-sm text-text-secondary">
+              Connected as team <span className="font-mono font-semibold text-text-primary">{connectedTeamId}</span>
+            </span>
+            <Button size="sm" onClick={() => findLeagues(connectedTeamId)} disabled={loading}>
+              {loading ? "Loading…" : "Find my leagues"}
+            </Button>
+          </div>
+        ) : (
+          <div className="mb-5">
+            <ConnectTeamPrompt
+              title="Connect to see your leagues"
+              body="Add your FPL team to load your mini-leagues in one tap — or look up any team or public league below."
+            />
+          </div>
+        )}
 
         {/* One search: toggle picks what a bare number means; a pasted FPL URL
             is auto-detected either way. */}

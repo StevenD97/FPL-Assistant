@@ -82,7 +82,7 @@ export function GetStartedSteps() {
             <p className="text-xs leading-relaxed text-text-secondary">
               Predicted points, suggested transfers, and captaincy picks - recomputed every gameweek.
             </p>
-            <Link href="/outlook" className="text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/players" className="text-xs font-semibold text-pl-purple hover:underline">
               See predictions →
             </Link>
           </Step>

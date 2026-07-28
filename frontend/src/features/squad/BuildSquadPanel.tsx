@@ -11,6 +11,7 @@ import { Select } from "@/shared/ui/Select";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
 import { Skeleton } from "@/shared/ui/Skeleton";
+import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation } from "@/shared/pitch/PitchFormation";
 import { TeamNameGenerator } from "@/features/squad/TeamNameGenerator";
@@ -815,6 +816,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                           <td className="px-3 py-2.5 font-medium text-text-primary">
                             {p.web_name}
                             <StatusBadge status={p.status} news={p.news} />
+                            <ShortlistStar id={p.id} className="ml-1.5 align-middle text-sm" />
                           </td>
                           <td className="px-3 py-2.5">
                             <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
