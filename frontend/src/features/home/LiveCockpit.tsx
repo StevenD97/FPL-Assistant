@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { formatRank } from "@/shared/lib/team";
@@ -65,6 +66,7 @@ export function LiveCockpit({
   entry: TeamEntry | null;
 }) {
   const { squad, transfers, leagues, movers } = data;
+  const bench = squad.squad.filter((p) => p.role !== "Starting XI");
   const captain = squad.squad.find((p) => p.captain_flag === "(C)");
   const bestCaptain = squad.captaincy_options?.[0];
   const chip = nextChip(data.chips);
@@ -77,29 +79,33 @@ export function LiveCockpit({
     <CockpitShell
       eyebrow={`Gameweek ${squad.event} · your dashboard`}
       title={squad.entry_name}
-      subtitle={
-        entry?.overall_rank != null ? (
-          <>
-            Overall rank{" "}
-            <span className="font-mono font-semibold text-white">
-              {formatRank(entry.overall_rank)}
-            </span>
-          </>
-        ) : undefined
-      }
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <CockpitStat label={`GW${squad.event} points`} value={squad.points} />
-        <CockpitStat label="Squad value" value={`£${squad.squad_value.toFixed(1)}m`} />
-        <CockpitStat label="In the bank" value={`£${squad.bank.toFixed(1)}m`} />
+        <CockpitStat
+          label={`GW${squad.event} points`}
+          value={squad.points}
+          hint={
+            entry?.overall_rank != null ? `Rank ${formatRank(entry.overall_rank)}` : undefined
+          }
+        />
+        <CockpitStat
+          label="Squad value"
+          value={`£${squad.squad_value.toFixed(1)}m`}
+          hint={`£${squad.bank.toFixed(1)}m in the bank`}
+        />
         <CockpitStat
           label="Captain"
-          value={<span className="text-base">{captain?.web_name ?? "—"}</span>}
+          value={captain?.web_name ?? "—"}
           hint={
             bestCaptain && bestCaptain.web_name !== captain?.web_name
               ? `Model prefers ${bestCaptain.web_name}`
               : "Matches the model"
           }
+        />
+        <CockpitStat
+          label="Bench strength"
+          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(1) : "—"}
+          hint="Higher is a stronger bench"
         />
       </div>
 
@@ -116,6 +122,7 @@ export function LiveCockpit({
             </Link>
           </div>
           <PitchFormation
+            inset
             players={squad.squad.filter((p) => p.role === "Starting XI").map(toPitchPlayer)}
           />
         </div>
@@ -163,6 +170,29 @@ export function LiveCockpit({
                     <span className="min-w-0 truncate text-white">{l.name}</span>
                     <span className="shrink-0 font-mono text-xs font-semibold text-pl-green">
                       {l.entry_rank > 0 ? formatRank(l.entry_rank) : "—"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+
+          {bench.length > 0 && (
+            <Panel title="Bench" href="/squad" cta="Reorder">
+              <ul className="flex flex-col">
+                {bench.map((p) => (
+                  <li
+                    key={p.id}
+                    className="flex items-center gap-2.5 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                  >
+                    <PlayerPhoto
+                      src={p.player_photo}
+                      name={p.web_name}
+                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-white/10 object-cover object-top text-[8px]"
+                    />
+                    <span className="min-w-0 flex-1 truncate text-white">{p.web_name}</span>
+                    <span className="shrink-0 text-[11px] text-[#c9a9d1]">
+                      {p.pos} · {p.team_short}
                     </span>
                   </li>
                 ))}

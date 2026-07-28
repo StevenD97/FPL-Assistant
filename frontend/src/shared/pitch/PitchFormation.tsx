@@ -34,6 +34,7 @@ export function PitchFormation({
   onPlayerClick,
   onRemove,
   onSlotClick,
+  inset = false,
 }: {
   players: PitchPlayer[];
   /** Render N dashed placeholder slots per position (the build-a-squad template). */
@@ -44,12 +45,23 @@ export function PitchFormation({
   onRemove?: (id: number) => void;
   /** If set, clicking an empty placeholder slot invokes this with its position. */
   onSlotClick?: (position: Position) => void;
+  /**
+   * Pad the rows clear of the penalty boxes. Off by default so the squad
+   * workspace keeps the taller pitch it was designed against; the home cockpit
+   * turns it on, where the forwards and keeper would otherwise sit on top of
+   * the box markings.
+   */
+  inset?: boolean;
 }) {
   const byRow: Record<number, PitchPlayer[]> = { 0: [], 1: [], 2: [], 3: [] };
   for (const p of players) byRow[ROWS[p.position]].push(p);
 
   return (
-    <div className="bg-fpl-pitch relative flex min-h-[480px] flex-col justify-between gap-5 overflow-hidden rounded-lg px-3 py-8 sm:px-6 sm:gap-6">
+    <div
+      className={`bg-fpl-pitch relative flex min-h-[480px] flex-col justify-between gap-5 overflow-hidden rounded-lg px-3 sm:px-6 sm:gap-6 ${
+        inset ? "py-14 sm:py-16" : "py-8"
+      }`}
+    >
       {/* Pitch markings */}
       <div className="pointer-events-none absolute inset-4 rounded-lg border-2 border-white/25" />
       <div className="pointer-events-none absolute left-4 right-4 top-1/2 -translate-y-1/2 border-t-2 border-white/25" />

@@ -64,10 +64,17 @@ export function CockpitStat({
   hint?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/15 bg-white/10 px-3.5 py-3">
+    <div className="flex flex-col rounded-lg border border-white/15 bg-white/10 px-3.5 py-3">
       <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{label}</p>
-      <p className="mt-0.5 font-mono text-xl font-extrabold leading-none text-white">{value}</p>
-      {hint && <p className="mt-1 text-[11px] text-[#c9a9d1]">{hint}</p>}
+      {/* Every value renders at the same size in the same fixed-height box, so
+          the four read as one row of numbers rather than drifting off each
+          other's baseline when one holds a name instead of a figure. */}
+      <p className="mt-1 flex h-6 items-center truncate font-mono text-xl font-extrabold leading-none text-white">
+        {value}
+      </p>
+      {/* Reserved whether or not there's a hint, so tiles with one don't sit
+          taller than the rest. */}
+      <p className="mt-1 h-4 truncate text-[11px] leading-4 text-[#c9a9d1]">{hint}</p>
     </div>
   );
 }
