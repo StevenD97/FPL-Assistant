@@ -3,6 +3,7 @@ import { PageContainer } from "@/shared/layout/PageContainer";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { HeroActions } from "@/features/home/HeroActions";
 import { HomeBody } from "@/features/home/HomeBody";
+import { HomeLanding } from "@/features/home/HomeLanding";
 import { MatchdayStrip } from "@/features/home/MatchdayStrip";
 import { BlogCover } from "@/features/blog/BlogCover";
 import { getAllPosts } from "@/shared/lib/blog";
@@ -40,28 +41,33 @@ export default async function LandingPage() {
 
   return (
     <PageContainer>
-      {/* Hero */}
-      <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 text-white lg:p-8">
-        <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(0,255,135,0.28),transparent_70%)]" />
-        <div className="relative flex flex-col gap-4">
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
-            Fantasy Premier League · 2026/27
-          </span>
-          <h1 className="max-w-3xl text-2xl font-bold leading-[1.05] tracking-tight lg:text-3xl">
-            Decisions, not gut feel.
-          </h1>
-          <p className="max-w-2xl text-sm leading-relaxed text-[#e6d4ea] lg:text-base">
-            Transfer, captaincy, and chip recommendations built on two independent prediction approaches - a
-            recommendation score and a full points-per-category model - plus exact optimization for squad and
-            transfer decisions.
-          </p>
-          <HeroActions />
-        </div>
-      </div>
+      {/* A connected manager gets their cockpit here instead of the marketing
+          hero. The hero is passed in as a prop so it stays server-rendered for
+          the visitors it's actually for. */}
+      <HomeLanding
+        hero={
+          <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 text-white lg:p-8">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(0,255,135,0.28),transparent_70%)]" />
+            <div className="relative flex flex-col gap-4">
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
+                Fantasy Premier League · 2026/27
+              </span>
+              <h1 className="max-w-3xl text-2xl font-bold leading-[1.05] tracking-tight lg:text-3xl">
+                Decisions, not gut feel.
+              </h1>
+              <p className="max-w-2xl text-sm leading-relaxed text-[#e6d4ea] lg:text-base">
+                Transfer, captaincy, and chip recommendations built on two independent prediction approaches - a
+                recommendation score and a full points-per-category model - plus exact optimization for squad and
+                transfer decisions.
+              </p>
+              <HeroActions />
+            </div>
+          </div>
+        }
+      />
 
-      {/* Your cockpit (connected) or the guided setup path (new visitor) -
-          sits right under the hero so returning managers see their numbers
-          first, before matchday and the blog. */}
+      {/* Guided setup for a new visitor, plus the shortlist teaser. The
+          connected manager's numbers now live in the cockpit above. */}
       <HomeBody />
 
       {/* Matchday */}

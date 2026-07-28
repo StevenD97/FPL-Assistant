@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import type { PlannerResponse, PlayerTrajectory } from "@/shared/types/api";
-import { getTrajectory } from "../api";
+import { getTrajectory } from "@/shared/api/squad";
 
 /**
  * "What would this player's next few gameweeks look like in that slot?" - drag a

@@ -5,20 +5,19 @@ import { useTeam } from "@/shared/team/TeamProvider";
 import { useShortlist } from "@/shared/lib/shortlist";
 import { Card } from "@/shared/ui/Card";
 import { GetStartedSteps } from "@/features/home/GetStartedSteps";
-import { Dashboard } from "@/features/home/Dashboard";
 
-// Landing page's job changes once a manager is connected: a new visitor
-// needs walking through setup (GetStartedSteps), a returning one wants
-// their own numbers front and centre (Dashboard) instead of being asked
-// to set up again. The shortlist teaser threads the personal watchlist onto
-// the landing page whenever it has entries.
+// What sits under the top of the landing page. A new visitor still needs
+// walking through setup; a connected manager doesn't, because their numbers
+// are now the hero itself (HomeLanding -> HomeCockpit) rather than a strip
+// below a marketing pitch. The shortlist teaser threads the personal watchlist
+// on for either.
 export function HomeBody() {
   const { entry } = useTeam();
   const shortlist = useShortlist();
 
   return (
     <div className="flex flex-col gap-6">
-      {entry ? <Dashboard /> : <GetStartedSteps />}
+      {!entry && <GetStartedSteps />}
 
       {shortlist.length > 0 && (
         <Card className="flex flex-wrap items-center justify-between gap-3">

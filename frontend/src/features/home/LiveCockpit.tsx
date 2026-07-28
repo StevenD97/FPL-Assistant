@@ -1,0 +1,224 @@
+"use client";
+
+import Link from "next/link";
+import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { formatRank } from "@/shared/lib/team";
+import type { SquadPlayer, TeamEntry } from "@/shared/types/api";
+import type { LiveCockpitData } from "./hooks/useCockpit";
+import { CockpitShell, CockpitStat } from "./components/CockpitShell";
+
+function toPitchPlayer(p: SquadPlayer): PitchPlayer {
+  return {
+    id: p.id,
+    name: p.web_name,
+    position: p.pos,
+    teamShort: p.team_short,
+    photo: p.player_photo,
+    teamKit: p.team_kit,
+    isCaptain: p.captain_flag === "(C)",
+    isViceCaptain: p.captain_flag === "(VC)",
+    subtitle: p.next_opponent,
+    href: p.live_id != null ? `/players/${p.live_id}` : undefined,
+  };
+}
+
+/** The soonest chip worth playing, so the hero shows one recommendation not four. */
+function nextChip(chips: LiveCockpitData["chips"]) {
+  if (!chips) return null;
+  const options = [
+    chips.wildcard && {
+      name: "Wildcard",
+      event: chips.wildcard.suggested_event,
+      detail: chips.wildcard.reason,
+    },
+    chips.triple_captain && {
+      name: "Triple Captain",
+      event: chips.triple_captain.event,
+      detail: chips.triple_captain.player,
+    },
+    chips.bench_boost && {
+      name: "Bench Boost",
+      event: chips.bench_boost.event,
+      detail: `Bench worth ${chips.bench_boost.bench_score.toFixed(1)}`,
+    },
+    chips.free_hit?.recommended && {
+      name: "Free Hit",
+      event: chips.free_hit.event,
+      detail: `${chips.free_hit.blank_count} blanking`,
+    },
+  ].filter(Boolean) as { name: string; event: number; detail: string }[];
+  return options.sort((a, b) => a.event - b.event)[0] ?? null;
+}
+
+/**
+ * The landing page for a connected manager once their first gameweek has
+ * locked: the same shell as the pre-season cockpit, filled with their own
+ * numbers, XI, captaincy call, chip timing, transfer suggestion, mini-league
+ * standings and price alerts.
+ */
+export function LiveCockpit({
+  data,
+  entry,
+}: {
+  data: LiveCockpitData;
+  entry: TeamEntry | null;
+}) {
+  const { squad, transfers, leagues, movers } = data;
+  const captain = squad.squad.find((p) => p.captain_flag === "(C)");
+  const bestCaptain = squad.captaincy_options?.[0];
+  const chip = nextChip(data.chips);
+  const topTransfer =
+    transfers && transfers.transferred_in.length > 0
+      ? { out: transfers.transferred_out[0], in: transfers.transferred_in[0] }
+      : null;
+
+  return (
+    <CockpitShell
+      eyebrow={`Gameweek ${squad.event} · your dashboard`}
+      title={squad.entry_name}
+      subtitle={
+        entry?.overall_rank != null ? (
+          <>
+            Overall rank{" "}
+            <span className="font-mono font-semibold text-white">
+              {formatRank(entry.overall_rank)}
+            </span>
+          </>
+        ) : undefined
+      }
+    >
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <CockpitStat label={`GW${squad.event} points`} value={squad.points} />
+        <CockpitStat label="Squad value" value={`£${squad.squad_value.toFixed(1)}m`} />
+        <CockpitStat label="In the bank" value={`£${squad.bank.toFixed(1)}m`} />
+        <CockpitStat
+          label="Captain"
+          value={<span className="text-base">{captain?.web_name ?? "—"}</span>}
+          hint={
+            bestCaptain && bestCaptain.web_name !== captain?.web_name
+              ? `Model prefers ${bestCaptain.web_name}`
+              : "Matches the model"
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
+        {/* The XI, straight on the landing page - the thing a manager actually
+            wants to look at. */}
+        <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+              Your starting XI
+            </p>
+            <Link href="/squad" className="text-[11px] font-semibold text-pl-green hover:underline">
+              Open workspace →
+            </Link>
+          </div>
+          <PitchFormation
+            players={squad.squad.filter((p) => p.role === "Starting XI").map(toPitchPlayer)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {topTransfer && (
+            <Panel title="Suggested transfer" href="/squad" cta="See all">
+              <div className="flex items-center gap-2 text-sm">
+                {/* pl-pink, not the --danger token: that one is tuned for text
+                    on white and drops to unreadable on the purple hero. */}
+                <span className="min-w-0 flex-1 truncate text-pl-pink">
+                  ↓ {topTransfer.out?.web_name}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-right font-semibold text-pl-green">
+                  ↑ {topTransfer.in?.web_name}
+                </span>
+              </div>
+              {transfers && (
+                <p className="mt-1 text-[11px] text-[#c9a9d1]">
+                  {transfers.transfers_made} transfer
+                  {transfers.transfers_made === 1 ? "" : "s"}
+                  {transfers.points_hit > 0 ? ` · -${transfers.points_hit} hit` : " · no hit"}
+                </p>
+              )}
+            </Panel>
+          )}
+
+          {chip && (
+            <Panel title="Chip timing" href="/squad" cta="Full scan">
+              <p className="text-sm font-semibold text-white">
+                {chip.name} <span className="text-pl-green">· GW{chip.event}</span>
+              </p>
+              <p className="mt-0.5 truncate text-[11px] text-[#c9a9d1]">{chip.detail}</p>
+            </Panel>
+          )}
+
+          {leagues.length > 0 && (
+            <Panel title="Mini-leagues" href="/leagues" cta="Standings">
+              <ul className="flex flex-col">
+                {leagues.slice(0, 3).map((l) => (
+                  <li
+                    key={l.id}
+                    className="flex items-center justify-between gap-3 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                  >
+                    <span className="min-w-0 truncate text-white">{l.name}</span>
+                    <span className="shrink-0 font-mono text-xs font-semibold text-pl-green">
+                      {l.entry_rank > 0 ? formatRank(l.entry_rank) : "—"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+
+          {movers.length > 0 && (
+            <Panel title="Price watch · your players" href="/price-watch" cta="All movers">
+              <ul className="flex flex-col">
+                {movers.slice(0, 3).map((m) => (
+                  <li
+                    key={m.id}
+                    className="flex items-center justify-between gap-3 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                  >
+                    <TeamBadge teamShort={m.team_short} name={m.web_name} badgeUrl={m.team_badge} />
+                    <span
+                      className={`shrink-0 font-mono text-xs font-semibold ${
+                        m.direction === "rising" ? "text-pl-green" : "text-pl-pink"
+                      }`}
+                    >
+                      {m.direction === "rising" ? "+" : "-"}
+                      {Math.abs(m.net_transfers_event).toLocaleString("en-GB")}
+                      {m.already_moved_today ? " (moved)" : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+        </div>
+      </div>
+    </CockpitShell>
+  );
+}
+
+function Panel({
+  title,
+  href,
+  cta,
+  children,
+}: {
+  title: string;
+  href: string;
+  cta: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{title}</p>
+        <Link href={href} className="text-[11px] font-semibold text-pl-green hover:underline">
+          {cta} →
+        </Link>
+      </div>
+      {children}
+    </div>
+  );
+}

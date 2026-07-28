@@ -7,8 +7,8 @@ import type {
   SquadResponse,
   TransferResult,
 } from "@/shared/types/api";
-import { getChips, getPlanner, getSquad, optimizeTransfers } from "../api";
-import { useAsyncResource } from "./useAsyncResource";
+import { getChips, getPlanner, getSquad, optimizeTransfers } from "@/shared/api/squad";
+import { useAsyncResource } from "@/shared/lib/useAsyncResource";
 
 /**
  * The four requests behind the loaded-team view. Loading a squad kicks off the

@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from "react";
 import type { PlayerAlternative } from "@/shared/types/api";
-import { getAlternatives } from "../api";
-import { useAsyncResource } from "./useAsyncResource";
+import { getAlternatives } from "@/shared/api/squad";
+import { useAsyncResource } from "@/shared/lib/useAsyncResource";
 
 /**
  * Replacement suggestions for one squad player, opened from that player's row.
