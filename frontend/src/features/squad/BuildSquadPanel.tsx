@@ -31,6 +31,7 @@ import {
 } from "./diagnostics";
 import { pickSquadCompletion } from "./completion";
 import { InsightCarousel } from "./components/InsightCarousel";
+import { TransferSuggestions } from "./components/TransferSuggestions";
 
 // A 15-man squad = a starting XI on the pitch + a 4-man bench. The XI is seeded
 // as a 4-4-2 (the neutral default); the bench takes the one-per-position
@@ -241,6 +242,19 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     setSwapOptions(null);
   }
 
+  function transferIcon(p: PoolPlayer) {
+    return (
+      <TransferSuggestions
+        playerId={p.id}
+        playerName={p.web_name}
+        maxCost={budgetRemaining + p.cost}
+        excludeIds={squadIdList}
+        onSelect={(newId) => swapPlayer(p.id, newId)}
+        triggerClassName="h-5 w-5"
+      />
+    );
+  }
+
   function closeStats() {
     setStatsId(null);
     setSwapTargetId(null);
@@ -362,6 +376,10 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                 emptyByPosition={pitchEmptyByPosition}
                 onPlayerClick={(id) => setStatsId(id)}
                 onRemove={removePlayer}
+                renderTransfer={(pp) => {
+                  const p = playersById.get(pp.id);
+                  return p ? transferIcon(p) : null;
+                }}
                 onSlotClick={(pos) => {
                   setPositionFilter(pos);
                   setSearch("");
@@ -387,6 +405,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                           >
                             ×
                           </button>
+                          <div className="absolute -left-1 -top-1 z-[2]">{transferIcon(p)}</div>
                           <button
                             onClick={() => setStatsId(p.id)}
                             aria-label={`View ${p.web_name}'s stats`}

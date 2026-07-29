@@ -169,7 +169,12 @@ function PitchPlayerCard({
           ×
         </button>
       )}
-      {!onRemove && transfer && <div className="absolute -right-1 -top-1 z-[2]">{transfer}</div>}
+      {/* Shares the top-right corner with onRemove when neither is present
+          alongside a captain badge (BuildSquadPanel's draft never shows
+          one), so it moves to top-left instead when onRemove is active. */}
+      {transfer && (
+        <div className={`absolute z-[2] ${onRemove ? "-left-1 -top-1" : "-right-1 -top-1"}`}>{transfer}</div>
+      )}
       {onPlayerClick ? (
         <button
           type="button"
