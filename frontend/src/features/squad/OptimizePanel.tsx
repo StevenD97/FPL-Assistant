@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/Button";
 import { CaptainBadge } from "@/shared/ui/CaptainBadge";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
@@ -8,6 +8,7 @@ import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 import { TextField } from "@/shared/ui/TextField";
 import { Alert } from "@/shared/ui/Alert";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
@@ -130,6 +131,15 @@ function BestSquadPanel() {
   const [result, setResult] = useState<BestSquadResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const status = useSeasonStatus();
+
+  const seededFromStatus = useRef(false);
+  useEffect(() => {
+    if (!status || seededFromStatus.current) return;
+    seededFromStatus.current = true;
+    setNextEvent(status.next_event);
+    setReferenceDate(status.next_deadline.slice(0, 10));
+  }, [status]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -229,6 +239,20 @@ function TransfersPanel() {
   const [result, setResult] = useState<TransferResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const status = useSeasonStatus();
+
+  // Seed the form from the real current gameweek once season status loads,
+  // instead of leaving the GW1 placeholder defaults in place once the
+  // season has actually moved on - only once, so it doesn't clobber a
+  // manual edit made before the fetch lands.
+  const seededFromStatus = useRef(false);
+  useEffect(() => {
+    if (!status || seededFromStatus.current) return;
+    seededFromStatus.current = true;
+    setEvent(Math.max(1, status.next_event - 1));
+    setNextEvent(status.next_event);
+    setReferenceDate(status.next_deadline.slice(0, 10));
+  }, [status]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -256,10 +280,13 @@ function TransfersPanel() {
         transfers&quot; under Load my team; this panel adds full control over the prediction window and
         gameweek.
       </p>
-      <Alert kind="warning">
-        No team ID has a fetchable squad until 2026/27 GW1 locks (2026-08-21) - FPL resets pick history each
-        season boundary.
-      </Alert>
+      {status?.is_preseason !== false && (
+        <Alert kind="warning">
+          No team ID has a fetchable squad until {status?.current_season_label ?? "2026/27"} GW1 locks
+          {status?.next_deadline ? ` (${status.next_deadline.slice(0, 10)})` : ""} - FPL resets pick history each
+          season boundary.
+        </Alert>
+      )}
       <form onSubmit={handleSubmit} className="mb-6 mt-6 flex flex-wrap items-end gap-4">
         <TextField
           label="Team ID"

@@ -44,6 +44,23 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
 
     picks = pd.DataFrame(picks_data["picks"])
 
+    # picks come from FPL's live API, so `element` is a live-season id; the
+    # merge below is against player_scores, computed from bootstrap_file
+    # (archived by default) - a *different* id-space, since FPL reassigns
+    # element ids every season (see compute_player_scores' docstring).
+    # Remapped by code (the stable cross-season id), same fix already
+    # applied to build_chip_strategy for the identical problem.
+    from fpl.model.ids import resolve_live_to_training_id
+
+    live_bootstrap_for_remap = load_bootstrap()
+    archived_elements = load_bootstrap(bootstrap_file)["elements"]
+    live_elements = live_bootstrap_for_remap["elements"]
+    picks["element"] = picks["element"].apply(
+        lambda live_id: resolve_live_to_training_id(live_id, live_elements, archived_elements)
+    )
+    picks = picks.dropna(subset=["element"])
+    picks["element"] = picks["element"].astype(int)
+
     player_scores = compute_player_scores(reference_date, next_event,
                                            bootstrap_file=bootstrap_file, fixtures_file=fixtures_file)
     fixture_scores = compute_fixture_difficulty(fixture_start_event, window_size,
