@@ -203,7 +203,6 @@ body {
 .bg-fpl-sidebar { background: linear-gradient(180deg, #37003c, #240028); }
 .bg-fpl-hero { background: linear-gradient(125deg, #37003c 0%, #5f2a66 60%, #37003c 100%); }
 .bg-fpl-panel { background: linear-gradient(120deg, #37003c, #5f2a66); }
-.bg-fpl-logo { background: linear-gradient(140deg, #00ff87, #04f5ff); }
 
 /* Mowed-stripe pitch texture: alternating horizontal bands (like a real
    groundskeeper's mowing pattern) over the base green gradient, plus a
