@@ -6,6 +6,7 @@ import { HomeBody } from "@/features/home/HomeBody";
 import { HomeLanding } from "@/features/home/HomeLanding";
 import { MatchdayStrip } from "@/features/home/MatchdayStrip";
 import { BlogCover } from "@/features/blog/BlogCover";
+import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 import { getAllPosts } from "@/shared/lib/blog";
 import { apiGet } from "@/shared/lib/api";
 import type { ScheduleFixture } from "@/shared/types/api";
@@ -102,6 +103,8 @@ export default async function LandingPage() {
           </div>
         </section>
       )}
+
+      <DiscordCTA />
 
       <p className="text-sm text-text-muted">
         <SeasonDataNote mode="blended" /> Fixture and roster data is already live.
