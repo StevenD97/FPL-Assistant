@@ -1,6 +1,6 @@
 {
   "body": {
-    "average_predicted_points": 4.13,
+    "average_predicted_points": 3.91,
     "id": 1,
     "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
     "position": "GKP",
@@ -15,11 +15,11 @@
         "opponents": [
           {
             "difficulty": 2,
-            "is_home": false,
-            "team": "BUR"
+            "is_home": true,
+            "team": "HUL"
           }
         ],
-        "predicted_points": 4.53
+        "predicted_points": 4.57
       },
       {
         "appearance_points": 2.0,
@@ -30,40 +30,40 @@
           {
             "difficulty": 3,
             "is_home": false,
-            "team": "SUN"
+            "team": "NEW"
           }
         ],
-        "predicted_points": 4.19
+        "predicted_points": 3.42
       },
       {
         "appearance_points": 2.0,
         "event": 12,
         "fixture_count": 1,
-        "flags": [],
+        "flags": [
+          "Tough fixture vs MCI (FDR 4)"
+        ],
         "opponents": [
           {
-            "difficulty": 3,
+            "difficulty": 4,
             "is_home": true,
-            "team": "TOT"
+            "team": "MCI"
           }
         ],
-        "predicted_points": 4.45
+        "predicted_points": 3.96
       },
       {
         "appearance_points": 2.0,
         "event": 13,
         "fixture_count": 1,
-        "flags": [
-          "Tough fixture vs CHE (FDR 4)"
-        ],
+        "flags": [],
         "opponents": [
           {
-            "difficulty": 4,
+            "difficulty": 3,
             "is_home": false,
-            "team": "CHE"
+            "team": "BRE"
           }
         ],
-        "predicted_points": 3.48
+        "predicted_points": 3.28
       },
       {
         "appearance_points": 2.0,
@@ -73,27 +73,25 @@
         "opponents": [
           {
             "difficulty": 3,
-            "is_home": true,
-            "team": "BRE"
+            "is_home": false,
+            "team": "TOT"
           }
         ],
-        "predicted_points": 4.14
+        "predicted_points": 4.33
       },
       {
         "appearance_points": 2.0,
         "event": 15,
         "fixture_count": 1,
-        "flags": [
-          "Tough fixture vs AVL (FDR 4)"
-        ],
+        "flags": [],
         "opponents": [
           {
-            "difficulty": 4,
-            "is_home": false,
-            "team": "AVL"
+            "difficulty": 3,
+            "is_home": true,
+            "team": "BOU"
           }
         ],
-        "predicted_points": 4.0
+        "predicted_points": 3.89
       }
     ],
     "web_name": "Raya"

@@ -418,7 +418,7 @@ export type PlayerScore = {
   form: number;
   ict_index: number;
   id: number;
-  live_id: number;
+  live_id: number | null;
   next_opponent: string;
   opponent_multiplier: number;
   penalties_missed: number;
@@ -506,11 +506,11 @@ export type ScheduleFixture = {
   team_a: string;
   team_a_badge: string;
   team_a_difficulty: number;
-  team_a_score: number | null;
+  team_a_score: null;
   team_h: string;
   team_h_badge: string;
   team_h_difficulty: number;
-  team_h_score: number | null;
+  team_h_score: null;
 };
 
 /** Response of `GET /api/season-status`. */
