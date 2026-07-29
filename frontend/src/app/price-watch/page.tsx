@@ -3,6 +3,7 @@ import { Card } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { apiGet } from "@/shared/lib/api";
 import type { PriceMover, PriceWatchResponse } from "@/shared/types/api";
 
@@ -94,6 +95,20 @@ export default async function PriceWatchPage() {
               Showing today&apos;s snapshot only - transfer rate will appear once more data has been collected.
             </Alert>
           )}
+
+          {/* One legend covers every row's figures, since net transfers / rate
+              / ownership repeat identically down both lists below. */}
+          <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+            <span className="flex items-center gap-1">
+              Net transfers <InfoTooltip term="netTransfers" />
+            </span>
+            <span className="flex items-center gap-1">
+              Rate/hr <InfoTooltip term="transferRate" />
+            </span>
+            <span className="flex items-center gap-1">
+              Owned <InfoTooltip term="ownership" />
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card padded={false} className="overflow-hidden">

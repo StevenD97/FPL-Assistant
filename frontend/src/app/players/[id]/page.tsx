@@ -11,10 +11,12 @@ import { FdrChip } from "@/shared/ui/FdrChip";
 import { LineChart } from "@/shared/charts/LineChart";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { seriesColor } from "@/shared/lib/palette";
 import { linearTrend } from "@/shared/lib/trend";
 import { apiGet } from "@/shared/lib/api";
 import type { PlayerDetail, PlayerListItem } from "@/shared/types/api";
+import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 const MAX_COMPARE = 4;
 
@@ -24,31 +26,54 @@ type PlayerSummary = Pick<PlayerListItem, "id" | "web_name" | "team_short" | "po
 
 type CompareRow = {
   label: string;
+  tooltip?: StatGlossaryKey;
   get: (p: PlayerDetail) => number | null;
   format?: (n: number) => string;
 };
 
 const PREDICTION_ROWS: CompareRow[] = [
-  { label: "Predicted points", get: (p) => p.prediction?.predicted_points ?? null, format: (n) => n.toFixed(1) },
-  { label: "Predicted goals", get: (p) => p.prediction?.predicted_goals ?? null, format: (n) => n.toFixed(2) },
-  { label: "Predicted assists", get: (p) => p.prediction?.predicted_assists ?? null, format: (n) => n.toFixed(2) },
+  {
+    label: "Predicted points",
+    tooltip: "predictedPoints",
+    get: (p) => p.prediction?.predicted_points ?? null,
+    format: (n) => n.toFixed(1),
+  },
+  {
+    label: "Predicted goals",
+    tooltip: "predictedGoals",
+    get: (p) => p.prediction?.predicted_goals ?? null,
+    format: (n) => n.toFixed(2),
+  },
+  {
+    label: "Predicted assists",
+    tooltip: "predictedAssists",
+    get: (p) => p.prediction?.predicted_assists ?? null,
+    format: (n) => n.toFixed(2),
+  },
   {
     label: "Clean sheet prob",
+    tooltip: "cleanSheetProb",
     get: (p) => (p.prediction ? p.prediction.clean_sheet_prob * 100 : null),
     format: (n) => `${n.toFixed(0)}%`,
   },
 ];
 
 const SEASON_ROWS: CompareRow[] = [
-  { label: "Total points", get: (p) => p.season_stats?.total_points ?? null },
-  { label: "Goals", get: (p) => p.season_stats?.goals_scored ?? null },
-  { label: "Assists", get: (p) => p.season_stats?.assists ?? null },
-  { label: "Clean sheets", get: (p) => p.season_stats?.clean_sheets ?? null },
-  { label: "Minutes", get: (p) => p.season_stats?.minutes ?? null },
-  { label: "Bonus", get: (p) => p.season_stats?.bonus ?? null },
-  { label: "ICT index", get: (p) => (p.season_stats ? Number(p.season_stats.ict_index) : null), format: (n) => n.toFixed(1) },
+  { label: "Total points", tooltip: "totalPts", get: (p) => p.season_stats?.total_points ?? null },
+  { label: "Goals", tooltip: "goals", get: (p) => p.season_stats?.goals_scored ?? null },
+  { label: "Assists", tooltip: "assists", get: (p) => p.season_stats?.assists ?? null },
+  { label: "Clean sheets", tooltip: "cleanSheets", get: (p) => p.season_stats?.clean_sheets ?? null },
+  { label: "Minutes", tooltip: "minutes", get: (p) => p.season_stats?.minutes ?? null },
+  { label: "Bonus", tooltip: "bonus", get: (p) => p.season_stats?.bonus ?? null },
+  {
+    label: "ICT index",
+    tooltip: "ictIndex",
+    get: (p) => (p.season_stats ? Number(p.season_stats.ict_index) : null),
+    format: (n) => n.toFixed(1),
+  },
   {
     label: "xGI",
+    tooltip: "xgi",
     get: (p) => (p.season_stats ? Number(p.season_stats.expected_goal_involvements) : null),
     format: (n) => n.toFixed(2),
   },
@@ -56,15 +81,15 @@ const SEASON_ROWS: CompareRow[] = [
 
 // Shared with the compare-mode card row, so both places show the same six
 // stats on the card front.
-function cardStats(player: PlayerDetail) {
+function cardStats(player: PlayerDetail): { k: string; v: string; tooltip: StatGlossaryKey }[] {
   const s = player.season_stats;
   return [
-    { k: "PTS", v: s ? String(s.total_points) : "—" },
-    { k: "GLS", v: s ? String(s.goals_scored) : "—" },
-    { k: "AST", v: s ? String(s.assists) : "—" },
-    { k: "xGI", v: s ? Number(s.expected_goal_involvements).toFixed(1) : "—" },
-    { k: "ICT", v: s ? Number(s.ict_index).toFixed(0) : "—" },
-    { k: "MIN", v: s ? String(s.minutes) : "—" },
+    { k: "PTS", v: s ? String(s.total_points) : "—", tooltip: "totalPts" },
+    { k: "GLS", v: s ? String(s.goals_scored) : "—", tooltip: "goals" },
+    { k: "AST", v: s ? String(s.assists) : "—", tooltip: "assists" },
+    { k: "xGI", v: s ? Number(s.expected_goal_involvements).toFixed(1) : "—", tooltip: "xgi" },
+    { k: "ICT", v: s ? Number(s.ict_index).toFixed(0) : "—", tooltip: "ictIndex" },
+    { k: "MIN", v: s ? String(s.minutes) : "—", tooltip: "minutes" },
   ];
 }
 
@@ -87,7 +112,12 @@ function CompareTable({ title, rows, players }: { title: string; rows: CompareRo
             const baseline = row.get(players[0]);
             return (
               <tr key={row.label} className="border-t border-border">
-                <td className="px-3 py-2.5 text-text-secondary">{row.label}</td>
+                <td className="px-3 py-2.5 text-text-secondary">
+                  <span className="inline-flex items-center gap-1">
+                    {row.label}
+                    {row.tooltip && <InfoTooltip term={row.tooltip} />}
+                  </span>
+                </td>
                 {players.map((p, i) => {
                   const value = row.get(p);
                   return (
@@ -151,11 +181,14 @@ function PlayerDetailSkeleton() {
 
 // Big headline tile for the hero - larger than the StatTile used lower down,
 // so the key predictions read as the focal point around the card.
-function HeroStat({ label, value }: { label: string; value: string }) {
+function HeroStat({ label, value, tooltip }: { label: string; value: string; tooltip?: StatGlossaryKey }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-white px-3 py-4 text-center shadow-sm">
       <span className="font-mono text-2xl font-bold text-pl-purple">{value}</span>
-      <span className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">{label}</span>
+      <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+        {label}
+        {tooltip && <InfoTooltip term={tooltip} />}
+      </span>
     </div>
   );
 }
@@ -263,8 +296,8 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
           <div className="flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
             {p.prediction && (
               <div className="order-2 grid w-full max-w-xs grid-cols-2 gap-3 lg:order-1 lg:w-52">
-                <HeroStat label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} />
-                <HeroStat label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} />
+                <HeroStat label="Predicted points" value={p.prediction.predicted_points.toFixed(1)} tooltip="predictedPoints" />
+                <HeroStat label="Predicted goals" value={p.prediction.predicted_goals.toFixed(2)} tooltip="predictedGoals" />
               </div>
             )}
 
@@ -284,8 +317,12 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
 
             {p.prediction && (
               <div className="order-3 grid w-full max-w-xs grid-cols-2 gap-3 lg:w-52">
-                <HeroStat label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} />
-                <HeroStat label="Clean sheet prob" value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`} />
+                <HeroStat label="Predicted assists" value={p.prediction.predicted_assists.toFixed(2)} tooltip="predictedAssists" />
+                <HeroStat
+                  label="Clean sheet prob"
+                  value={`${(p.prediction.clean_sheet_prob * 100).toFixed(0)}%`}
+                  tooltip="cleanSheetProb"
+                />
               </div>
             )}
           </div>
@@ -302,12 +339,18 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-text-secondary">
               <TeamBadge teamShort={p.team_short} name={p.team_name} badgeUrl={p.team_badge} />
               <span className="font-mono">£{p.cost.toFixed(1)}m</span>
-              <span className="font-mono">{p.selected_by_percent.toFixed(1)}% owned</span>
+              <span className="inline-flex items-center gap-1 font-mono">
+                {p.selected_by_percent.toFixed(1)}% owned
+                <InfoTooltip term="ownership" />
+              </span>
               {p.penalties_order === 1 && <span>Primary penalty taker</span>}
             </div>
             {p.fixtures.length > 0 && (
               <div className="flex flex-wrap items-center justify-center gap-1.5">
-                <span className="text-sm text-text-muted">Next {p.prediction?.fixture_count ?? p.fixtures.length} gameweeks</span>
+                <span className="inline-flex items-center gap-1 text-sm text-text-muted">
+                  Next {p.prediction?.fixture_count ?? p.fixtures.length} gameweeks
+                  <InfoTooltip term="fdr" />
+                </span>
                 {p.fixtures.map((fx, i) => (
                   <FdrChip
                     key={i}

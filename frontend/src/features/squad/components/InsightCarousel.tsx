@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
 import { FdrChip } from "@/shared/ui/FdrChip";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import type { Insight, Tone } from "../diagnostics";
 
 // One piece of squad feedback, shown one at a time in the Feedback carousel.
@@ -45,6 +46,7 @@ function InsightStat({ stat }: { stat: NonNullable<Insight["stat"]> }) {
         vs {stat.avg.toFixed(2)}
         {stat.unit} average
       </span>
+      <InfoTooltip term={stat.unit.includes("£m") ? "ptsPerMillion" : "xPts"} />
     </div>
   );
 }

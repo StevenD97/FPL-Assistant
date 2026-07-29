@@ -1,7 +1,27 @@
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 import type { LeaderboardEntry, Metric } from "@/shared/types/api";
+
+// Maps the API's metric.key (see backend/fpl/services/teams.py) to its glossary entry.
+const METRIC_TOOLTIP: Record<string, StatGlossaryKey> = {
+  total_points: "totalPts",
+  predicted_points: "xPts",
+  goals_scored: "goals",
+  expected_goals: "xg",
+  assists: "assists",
+  expected_assists: "xa",
+  goal_involvements: "goalInvolvements",
+  expected_goal_involvements: "xgi",
+  minutes: "minutes",
+  expected_minutes: "xMins",
+  defensive_contribution: "defensiveContributions",
+  yellow_cards: "yellowCards",
+  red_cards: "redCards",
+  bonus: "bonus",
+};
 
 // xG/xA/xGI/xPts read as one decimal place everywhere else in the app
 // (the player card, the hero stats) - matched here for consistency. Every
@@ -23,7 +43,10 @@ export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: Leader
   return (
     <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-text-primary">{metric.label}</h3>
+        <h3 className="flex items-center gap-1 text-sm font-semibold text-text-primary">
+          {metric.label}
+          {METRIC_TOOLTIP[metric.key] && <InfoTooltip term={METRIC_TOOLTIP[metric.key]} />}
+        </h3>
         <span
           className={`shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${
             metric.kind === "model" ? "bg-pl-purple/10 text-pl-purple" : "bg-surface-sunken text-text-muted"

@@ -46,6 +46,7 @@ export function PreSeasonCockpit({
           label="Top xPts"
           value={data.topPicks[0] ? data.topPicks[0].predicted_points.toFixed(1) : "—"}
           hint={data.topPicks[0]?.web_name ?? "Loading"}
+          tooltip="xPts"
         />
         <CockpitStat
           label="Kindest start"
@@ -55,6 +56,7 @@ export function PreSeasonCockpit({
               ? `Avg FDR ${data.kindestOpeners[0].avg_difficulty}`
               : "Next 5 GWs"
           }
+          tooltip="avgFdr"
         />
         <CockpitStat label="Gameweek" value="1" hint="Season opener" />
       </div>

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TextField } from "@/shared/ui/TextField";
 import { Pill } from "@/shared/ui/Pill";
 import { Pagination } from "@/shared/ui/Pagination";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { PlayerListCard, PlayerListCardSkeleton } from "@/features/players/PlayerListCard";
 import type { PlayerListItem } from "@/shared/types/api";
@@ -307,6 +308,32 @@ export default function PlayersPage() {
             </select>
           </label>
         </div>
+      </div>
+
+      {/* One legend covers every card's stat strip, since the same abbreviations
+          repeat on every card in the grid below. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+        <span className="flex items-center gap-1">
+          xPts <InfoTooltip term="xPts" />
+        </span>
+        <span className="flex items-center gap-1">
+          GLS <InfoTooltip term="goals" />
+        </span>
+        <span className="flex items-center gap-1">
+          AST <InfoTooltip term="assists" />
+        </span>
+        <span className="flex items-center gap-1">
+          xGI <InfoTooltip term="xgi" />
+        </span>
+        <span className="flex items-center gap-1">
+          Value <InfoTooltip term="value" />
+        </span>
+        <span className="flex items-center gap-1">
+          Own% <InfoTooltip term="ownership" />
+        </span>
+        <span className="flex items-center gap-1">
+          Fixtures <InfoTooltip term="fdr" />
+        </span>
       </div>
 
       {error && <p className="text-sm font-medium text-danger">{error}</p>}

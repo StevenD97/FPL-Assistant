@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Countdown, DeadlineLabel } from "@/shared/ui/Countdown";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 /**
  * The purple hero treatment, reused by both cockpit states so the page keeps
@@ -57,14 +59,25 @@ export function CockpitStat({
   label,
   value,
   hint,
+  tooltip,
 }: {
   label: string;
   value: React.ReactNode;
   hint?: React.ReactNode;
+  /** Key into STAT_GLOSSARY - shows an "i" info trigger next to the label. */
+  tooltip?: StatGlossaryKey;
 }) {
   return (
     <div className="flex flex-col rounded-lg border border-white/15 bg-white/10 px-3.5 py-3">
-      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{label}</p>
+      <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+        {label}
+        {tooltip && (
+          <InfoTooltip
+            term={tooltip}
+            className="border-white/40 text-white/70 hover:border-white hover:bg-white/20 hover:text-white"
+          />
+        )}
+      </p>
       {/* Every value renders at the same size in the same fixed-height box, so
           the four read as one row of numbers rather than drifting off each
           other's baseline when one holds a name instead of a figure. */}

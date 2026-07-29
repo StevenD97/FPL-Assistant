@@ -8,6 +8,7 @@ import { TextField } from "@/shared/ui/TextField";
 import { TableSkeleton } from "@/shared/ui/Skeleton";
 import { ConnectTeamPrompt } from "@/shared/team/ConnectTeamPrompt";
 import { LineChart } from "@/shared/charts/LineChart";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { seriesColor } from "@/shared/lib/palette";
 import {
   formatRank,
@@ -308,7 +309,11 @@ export default function LeaguesPage() {
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Rank</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Manager</th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">GW pts</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                          <span className="inline-flex items-center gap-1">
+                            GW pts <InfoTooltip term="gwPts" />
+                          </span>
+                        </th>
                         <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Total</th>
                       </tr>
                     </thead>

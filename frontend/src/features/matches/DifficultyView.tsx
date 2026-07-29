@@ -1,6 +1,7 @@
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { FdrChip } from "@/shared/ui/FdrChip";
 import { Card } from "@/shared/ui/Card";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import type { FixtureDifficultyRow } from "@/shared/types/api";
 
 /** Presentational: rows are fetched on the server and passed in. */
@@ -14,8 +15,16 @@ export function DifficultyView({ rows }: { rows: FixtureDifficultyRow[] }) {
           <thead className="bg-surface-sunken">
             <tr>
               <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Team</th>
-              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Avg FDR</th>
-              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Next 5</th>
+              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                <span className="inline-flex items-center gap-1">
+                  Avg FDR <InfoTooltip term="avgFdr" />
+                </span>
+              </th>
+              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                <span className="inline-flex items-center gap-1">
+                  Next 5 <InfoTooltip term="fdr" />
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>

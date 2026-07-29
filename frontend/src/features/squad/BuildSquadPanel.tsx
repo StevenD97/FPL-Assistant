@@ -10,6 +10,7 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { Select } from "@/shared/ui/Select";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
@@ -295,6 +296,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
           <div className="mb-6 flex flex-wrap items-end gap-6">
             <TextField
               label="Budget (£m)"
+              hint="budget"
               type="number"
               min={80}
               max={120}
@@ -453,9 +455,21 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
                       <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pred pts</th>
-                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Value</th>
-                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Own%</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                        <span className="inline-flex items-center gap-1">
+                          Pred pts <InfoTooltip term="xPts" />
+                        </span>
+                      </th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
+                        <span className="inline-flex items-center gap-1">
+                          Value <InfoTooltip term="value" />
+                        </span>
+                      </th>
+                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
+                        <span className="inline-flex items-center gap-1">
+                          Own% <InfoTooltip term="ownership" />
+                        </span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -555,7 +569,9 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                 <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-secondary">
                   <TeamBadge teamShort={statsPlayer.team_short} name={statsPlayer.team_short} badgeUrl={statsPlayer.team_badge} />
                   <span className="font-mono">£{statsPlayer.cost.toFixed(1)}m</span>
-                  <span className="font-mono">{statsPlayer.selected_by_percent.toFixed(1)}% owned</span>
+                  <span className="inline-flex items-center gap-1 font-mono">
+                    {statsPlayer.selected_by_percent.toFixed(1)}% owned <InfoTooltip term="ownership" />
+                  </span>
                   <StatusBadge status={statsPlayer.status} news={statsPlayer.news} />
                 </div>
               </div>
@@ -569,14 +585,15 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <StatTile label="xPts · 5GW" value={statsPlayer.predicted_points.toFixed(1)} />
-              <StatTile label="Value" value={statsPlayer.value.toFixed(2)} />
-              <StatTile label="Own %" value={`${statsPlayer.selected_by_percent.toFixed(1)}%`} />
+              <StatTile label="xPts · 5GW" value={statsPlayer.predicted_points.toFixed(1)} tooltip="xPts" />
+              <StatTile label="Value" value={statsPlayer.value.toFixed(2)} tooltip="value" />
+              <StatTile label="Own %" value={`${statsPlayer.selected_by_percent.toFixed(1)}%`} tooltip="ownership" />
             </div>
             {statsPlayer.fixture_ticker && (
-              <p className="mt-3 text-xs text-text-muted">
+              <p className="mt-3 flex items-center gap-1 text-xs text-text-muted">
                 Next {statsPlayer.fixture_count}:{" "}
                 <span className="font-mono text-text-secondary">{statsPlayer.fixture_ticker}</span>
+                <InfoTooltip term="fdr" />
               </p>
             )}
 
