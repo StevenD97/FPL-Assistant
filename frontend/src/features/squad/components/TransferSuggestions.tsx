@@ -40,6 +40,7 @@ export function TransferSuggestions({
   playerName,
   maxCost,
   excludeIds,
+  onSelect,
   triggerClassName = "",
 }: {
   /** Live 2026/27 player id - what /api/players/{id}/alternatives expects. */
@@ -47,6 +48,12 @@ export function TransferSuggestions({
   playerName: string;
   maxCost: number;
   excludeIds: number[];
+  /**
+   * If set, a candidate performs the swap in place instead of navigating to
+   * its profile - for an editable draft (BuildSquadPanel), where there's
+   * something to actually swap. Omitted for a real, read-only loaded squad.
+   */
+  onSelect?: (candidateId: number) => void;
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -167,12 +174,9 @@ export function TransferSuggestions({
             )}
             {!loading && !error && candidates && candidates.length > 0 && (
               <ul className="flex flex-col gap-1">
-                {candidates.map((c) => (
-                  <li key={c.id}>
-                    <PlayerLink
-                      id={c.id}
-                      className="flex items-center justify-between gap-2 rounded-md px-1.5 py-1 text-xs hover:bg-surface-sunken"
-                    >
+                {candidates.map((c) => {
+                  const rowContent = (
+                    <>
                       <span className="min-w-0 flex-1 truncate font-medium text-text-primary">
                         {c.web_name} <span className="text-text-muted">({c.team_short})</span>
                       </span>
@@ -180,9 +184,32 @@ export function TransferSuggestions({
                       <span className="shrink-0 font-mono font-semibold text-pl-purple">
                         {c.predicted_points.toFixed(1)}
                       </span>
-                    </PlayerLink>
-                  </li>
-                ))}
+                    </>
+                  );
+                  return (
+                    <li key={c.id}>
+                      {onSelect ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSelect(c.id);
+                            setOpen(false);
+                          }}
+                          className="flex w-full items-center justify-between gap-2 rounded-md px-1.5 py-1 text-xs hover:bg-surface-sunken"
+                        >
+                          {rowContent}
+                        </button>
+                      ) : (
+                        <PlayerLink
+                          id={c.id}
+                          className="flex items-center justify-between gap-2 rounded-md px-1.5 py-1 text-xs hover:bg-surface-sunken"
+                        >
+                          {rowContent}
+                        </PlayerLink>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>,
