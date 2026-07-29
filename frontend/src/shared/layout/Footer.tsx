@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
+import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -18,6 +19,7 @@ export function Footer() {
             only — not betting, gambling, or financial advice.
           </p>
           <div className="flex shrink-0 items-center gap-x-5 gap-y-1 text-xs">
+            <DiscordCTA variant="inline" className="text-text-secondary hover:text-pl-purple" />
             <Link href="/privacy" className="text-text-secondary transition-colors hover:text-pl-purple">
               Privacy
             </Link>

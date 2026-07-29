@@ -10,6 +10,7 @@ import { PageTransition } from "./PageTransition";
 import { CommandPalette, OPEN_PALETTE_EVENT } from "./CommandPalette";
 import { Footer } from "./Footer";
 import { Countdown, DeadlineLabel } from "@/shared/ui/Countdown";
+import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { formatRank, initials } from "@/shared/lib/team";
 
@@ -181,6 +182,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="text-[11px] text-[#c9a9d1]"><DeadlineLabel /></span>
           </div>
           <SidebarTeam />
+          <DiscordCTA
+            variant="inline"
+            className="justify-center rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm font-medium text-[#d9c4de] hover:bg-white/10 hover:text-white"
+          />
         </div>
       </aside>
 
@@ -284,6 +289,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </Link>
                   );
                 })}
+                <DiscordCTA variant="tile" />
               </div>
               <div className="mt-4">
                 <SidebarTeam />

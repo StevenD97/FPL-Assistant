@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/shared/layout/PageContainer";
 import { BlogCover } from "@/features/blog/BlogCover";
+import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 import { getAllPosts, getPost, formatBlogDate } from "@/shared/lib/blog";
 
 export function generateStaticParams() {
@@ -39,6 +40,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <h1 className="mb-4 text-2xl font-bold tracking-tight text-pl-purple">{post.title}</h1>
         <div className="blog-prose" dangerouslySetInnerHTML={{ __html: post.html }} />
       </article>
+      <div className="mx-auto mt-8 max-w-3xl">
+        <DiscordCTA />
+      </div>
     </PageContainer>
   );
 }
