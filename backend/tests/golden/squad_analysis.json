@@ -447,6 +447,7 @@
     "squad": [
       {
         "captain_flag": "(C)",
+        "cost": 6.2,
         "defensive_contribution_per_90": 0.0,
         "ep_next": 8.8,
         "expected_goal_involvements": 0.07,
@@ -474,6 +475,7 @@
       },
       {
         "captain_flag": "(VC)",
+        "cost": 7.3,
         "defensive_contribution_per_90": 9.07,
         "ep_next": 8.8,
         "expected_goal_involvements": 4.69,
@@ -501,6 +503,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 5.1,
         "defensive_contribution_per_90": 7.94,
         "ep_next": 5.7,
         "expected_goal_involvements": 6.42,
@@ -528,6 +531,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 6.1,
         "defensive_contribution_per_90": 9.26,
         "ep_next": 5.7,
         "expected_goal_involvements": 5.21,
@@ -555,6 +559,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 5.2,
         "defensive_contribution_per_90": 11.47,
         "ep_next": 8.7,
         "expected_goal_involvements": 6.25,
@@ -582,6 +587,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 5.3,
         "defensive_contribution_per_90": 5.86,
         "ep_next": 2.5,
         "expected_goal_involvements": 8.79,
@@ -609,6 +615,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 10.4,
         "defensive_contribution_per_90": 8.43,
         "ep_next": 5.5,
         "expected_goal_involvements": 23.07,
@@ -636,6 +643,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 8.0,
         "defensive_contribution_per_90": 6.64,
         "ep_next": 4.3,
         "expected_goal_involvements": 14.21,
@@ -663,6 +671,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 7.2,
         "defensive_contribution_per_90": 10.94,
         "ep_next": 4.8,
         "expected_goal_involvements": 10.47,
@@ -690,6 +699,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 7.3,
         "defensive_contribution_per_90": 6.31,
         "ep_next": 3.7,
         "expected_goal_involvements": 11.16,
@@ -717,6 +727,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 5.8,
         "defensive_contribution_per_90": 5.96,
         "ep_next": 1.8,
         "expected_goal_involvements": 10.65,
@@ -744,6 +755,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 4.0,
         "defensive_contribution_per_90": 0.0,
         "ep_next": 0.7,
         "expected_goal_involvements": 0.04,
@@ -771,6 +783,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 7.2,
         "defensive_contribution_per_90": 5.87,
         "ep_next": 2.3,
         "expected_goal_involvements": 22.43,
@@ -798,6 +811,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 14.7,
         "defensive_contribution_per_90": 3.17,
         "ep_next": 7.3,
         "expected_goal_involvements": 28.17,
@@ -825,6 +839,7 @@
       },
       {
         "captain_flag": "",
+        "cost": 7.4,
         "defensive_contribution_per_90": 4.67,
         "ep_next": 2.5,
         "expected_goal_involvements": 16.87,
