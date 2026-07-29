@@ -60,15 +60,20 @@ export function getChips(teamId: string | number) {
   return apiGet<ChipResponse>(`/api/squad/${teamId}/chips`);
 }
 
-/** `exclude` keeps players already in the draft out of the suggestions. */
+/**
+ * `exclude` keeps players already in the squad/draft out of the suggestions;
+ * `maxCost` caps candidates at what's affordable - the bank (or budget left)
+ * plus whatever selling the replaced player frees up.
+ */
 export function getAlternatives(
   playerId: number,
-  params: { limit?: number; exclude?: number[] } = {},
+  params: { limit?: number; exclude?: number[]; maxCost?: number } = {},
 ) {
   return apiGet<PlayerAlternative[]>(
     `/api/players/${playerId}/alternatives${query({
       limit: params.limit ?? 5,
       exclude: params.exclude?.length ? params.exclude.join(",") : undefined,
+      max_cost: params.maxCost,
     })}`,
   );
 }

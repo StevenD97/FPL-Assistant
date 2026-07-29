@@ -173,7 +173,7 @@ export function LoadTeamPanel({
             </p>
           </div>
 
-          <SquadPitch squad={data.squad} />
+          <SquadPitch squad={data.squad} bank={data.bank} />
 
           <SuggestedTransfers
             optimizer={optimizer}

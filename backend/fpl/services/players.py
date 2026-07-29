@@ -285,7 +285,7 @@ def player_detail(player_id, ref_date, next_event, gw_count=5):
     }
 
 
-def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_count=5):
+def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_count=5, max_cost=None):
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     predicted = predict_multi_gw_points(
@@ -310,6 +310,8 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     cols = ["id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value", "selected_by_percent"]
     df = candidates[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
+    if max_cost is not None:
+        df = df[df["cost"] <= max_cost]
     return df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
 
 

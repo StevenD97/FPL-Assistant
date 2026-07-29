@@ -34,6 +34,7 @@ export function PitchFormation({
   onPlayerClick,
   onRemove,
   onSlotClick,
+  renderTransfer,
   inset = false,
 }: {
   players: PitchPlayer[];
@@ -45,6 +46,12 @@ export function PitchFormation({
   onRemove?: (id: number) => void;
   /** If set, clicking an empty placeholder slot invokes this with its position. */
   onSlotClick?: (position: Position) => void;
+  /**
+   * If set, each player card renders this in its top-right corner - the
+   * transfer-suggestions icon. Not meant to be combined with `onRemove`
+   * (same corner); callers only ever pass one or the other.
+   */
+  renderTransfer?: (player: PitchPlayer) => React.ReactNode;
   /**
    * Pad the rows clear of the penalty boxes. Off by default so the squad
    * workspace keeps the taller pitch it was designed against; the home cockpit
@@ -76,7 +83,13 @@ export function PitchFormation({
         return (
           <div key={row} className="z-[1] flex flex-wrap items-start justify-center gap-3 sm:gap-6">
             {byRow[row].map((p) => (
-              <PitchPlayerCard key={p.id} player={p} onPlayerClick={onPlayerClick} onRemove={onRemove} />
+              <PitchPlayerCard
+                key={p.id}
+                player={p}
+                onPlayerClick={onPlayerClick}
+                onRemove={onRemove}
+                transfer={renderTransfer?.(p)}
+              />
             ))}
             {Array.from({ length: empties }).map((_, i) => (
               <EmptySlot key={`empty-${pos}-${i}`} position={pos} onClick={onSlotClick} />
@@ -113,10 +126,12 @@ function PitchPlayerCard({
   player: p,
   onPlayerClick,
   onRemove,
+  transfer,
 }: {
   player: PitchPlayer;
   onPlayerClick?: (id: number) => void;
   onRemove?: (id: number) => void;
+  transfer?: React.ReactNode;
 }) {
   const badge = (
     <div className="relative">
@@ -154,6 +169,7 @@ function PitchPlayerCard({
           ×
         </button>
       )}
+      {!onRemove && transfer && <div className="absolute -right-1 -top-1 z-[2]">{transfer}</div>}
       {onPlayerClick ? (
         <button
           type="button"

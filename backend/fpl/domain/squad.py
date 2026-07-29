@@ -103,8 +103,15 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     # `id` above is this bootstrap_file's element id (archived-2025/26 by
     # default) - add live_id so the frontend can link to /players/{live_id}
     # without mixing season id-spaces (see map_archived_ids_to_live).
-    live_ids = map_archived_ids_to_live(squad_rows["id"].tolist(), load_bootstrap(bootstrap_file), load_bootstrap())
+    live_bootstrap = load_bootstrap()
+    live_ids = map_archived_ids_to_live(squad_rows["id"].tolist(), load_bootstrap(bootstrap_file), live_bootstrap)
     squad_rows["live_id"] = nullable_int_column(squad_rows["id"].map(live_ids))
+
+    # Current live price, not the archived-season one `squad` was scored
+    # against - this has to line up with `bank`/`squad_value` below (both
+    # live figures) for transfer-budget math to be correct.
+    live_cost_by_id = {p["id"]: p["now_cost"] for p in live_bootstrap["elements"]}
+    squad_rows["cost"] = squad_rows["live_id"].map(lambda lid: round(live_cost_by_id[lid] / 10, 1) if lid in live_cost_by_id else None)
 
     # Official PL CDN images (see team_badge_url/team_kit_url/player_photo_url).
     # `team` above is bootstrap_file's own numeric team id-space (archived by

@@ -85,10 +85,13 @@ def player_alternatives(
     reference_date: Optional[str] = None,
     next_event: Optional[int] = None,
     gw_count: int = 5,
+    max_cost: Optional[float] = None,
 ):
     ref_date, next_event = resolve_gw_params(reference_date, next_event)
     try:
-        return service.player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_count=gw_count)
+        return service.player_alternatives(
+            player_id, exclude, limit, ref_date, next_event, gw_count=gw_count, max_cost=max_cost
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 

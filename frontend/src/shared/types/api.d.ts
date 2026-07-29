@@ -166,6 +166,7 @@ export type SeasonStats = {
 
 export type SquadPlayer = {
   captain_flag: string;
+  cost: number;
   defensive_contribution_per_90: number;
   ep_next: number;
   expected_goal_involvements: number;
