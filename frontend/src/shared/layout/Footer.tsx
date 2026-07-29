@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/brand/Logo";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -6,10 +7,7 @@ export function Footer() {
     <footer className="border-t border-border bg-white px-4 py-6 pb-24 lg:px-6 lg:pb-6">
       <div className="mx-auto flex max-w-6xl flex-col gap-4">
         <div className="flex items-center gap-2">
-          <span className="bg-fpl-logo flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-bold text-pl-purple">
-            x
-          </span>
-          <span className="text-sm font-bold text-pl-purple">xFPL</span>
+          <Logo size={24} tone="light" />
           <span className="text-xs text-text-muted">· Independent FPL analytics</span>
         </div>
 

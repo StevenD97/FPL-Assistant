@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
+import { Logo } from "@/components/brand/Logo";
 import { NavIcon, type IconName } from "./icons";
 import { PageTransition } from "./PageTransition";
 import { CommandPalette, OPEN_PALETTE_EVENT } from "./CommandPalette";
@@ -53,17 +54,6 @@ const PRIMARY = new Set(["/", "/squad", "/players", "/leagues"]);
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-function LogoMark({ size = 30 }: { size?: number }) {
-  return (
-    <span
-      className="bg-fpl-logo flex shrink-0 items-center justify-center rounded-[9px] font-bold text-pl-purple"
-      style={{ width: size, height: size, fontSize: size * 0.5 }}
-    >
-      x
-    </span>
-  );
 }
 
 function SidebarTeam() {
@@ -131,9 +121,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen">
       {/* Desktop sidebar */}
       <aside className="bg-fpl-sidebar sticky top-0 hidden h-screen w-[236px] shrink-0 flex-col gap-6 border-r border-white/10 px-3.5 py-5 lg:flex">
-        <Link href="/" className="flex items-center gap-2.5 px-2">
-          <LogoMark />
-          <span className="text-base font-bold text-white">xFPL</span>
+        <Link href="/" className="flex items-center px-2">
+          <Logo size={37} tone="dark" />
         </Link>
 
         <button
@@ -200,7 +189,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Mobile header */}
         <header className="bg-fpl-hero sticky top-0 z-20 flex items-center justify-between gap-3 px-4 py-3 lg:hidden">
           <Link href="/" className="flex items-center gap-2.5">
-            <LogoMark size={30} />
+            <Logo variant="mark" size={30} tone="dark" />
             <span className="flex flex-col leading-tight">
               <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-pl-green">
                 {current?.label ?? "xFPL"}
