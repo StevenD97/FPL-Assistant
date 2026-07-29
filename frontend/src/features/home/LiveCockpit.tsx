@@ -87,11 +87,13 @@ export function LiveCockpit({
           hint={
             entry?.overall_rank != null ? `Rank ${formatRank(entry.overall_rank)}` : undefined
           }
+          tooltip="gwPts"
         />
         <CockpitStat
           label="Squad value"
           value={`£${squad.squad_value.toFixed(1)}m`}
           hint={`£${squad.bank.toFixed(1)}m in the bank`}
+          tooltip="squadValue"
         />
         <CockpitStat
           label="Captain"
@@ -101,11 +103,13 @@ export function LiveCockpit({
               ? `Model prefers ${bestCaptain.web_name}`
               : "Matches the model"
           }
+          tooltip="captain"
         />
         <CockpitStat
           label="Bench strength"
           value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(1) : "—"}
           hint="Higher is a stronger bench"
+          tooltip="benchStrength"
         />
       </div>
 

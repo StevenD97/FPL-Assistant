@@ -10,6 +10,7 @@ import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
 import { Alert } from "@/shared/ui/Alert";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { apiGet } from "@/shared/lib/api";
@@ -68,14 +69,30 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
       <table className="w-full text-left text-sm">
         <thead className="bg-surface-sunken">
           <tr>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Role</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+              <span className="inline-flex items-center gap-1">
+                Role <InfoTooltip term="role" />
+              </span>
+            </th>
             <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
             <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
             <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
             <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Predicted pts</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Value</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Own%</th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+              <span className="inline-flex items-center gap-1">
+                Predicted pts <InfoTooltip term="xPts" />
+              </span>
+            </th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+              <span className="inline-flex items-center gap-1">
+                Value <InfoTooltip term="value" />
+              </span>
+            </th>
+            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+              <span className="inline-flex items-center gap-1">
+                Own% <InfoTooltip term="ownership" />
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -140,6 +157,7 @@ function BestSquadPanel() {
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-4">
         <TextField
           label="As of"
+          hint="asOf"
           type="date"
           value={referenceDate}
           onChange={(e) => setReferenceDate(e.target.value)}
@@ -156,6 +174,7 @@ function BestSquadPanel() {
         />
         <TextField
           label="Window (GWs)"
+          hint="window"
           type="number"
           min={1}
           max={10}
@@ -165,6 +184,7 @@ function BestSquadPanel() {
         />
         <TextField
           label="Budget (£m)"
+          hint="budget"
           type="number"
           min={80}
           max={120}
@@ -189,6 +209,7 @@ function BestSquadPanel() {
             {" · "}
             Predicted starting XI points{" "}
             <span className="font-mono font-medium text-text-primary">{result.predicted_points.toFixed(2)}</span>
+            <InfoTooltip term="xPts" />
           </p>
           <IdealXI squad={result.squad} />
           <SquadTable squad={result.squad} />
@@ -242,6 +263,7 @@ function TransfersPanel() {
       <form onSubmit={handleSubmit} className="mb-6 mt-6 flex flex-wrap items-end gap-4">
         <TextField
           label="Team ID"
+          hint="teamId"
           type="number"
           value={teamId}
           onChange={(e) => setTeamId(e.target.value)}
@@ -259,6 +281,7 @@ function TransfersPanel() {
         />
         <TextField
           label="As of"
+          hint="asOf"
           type="date"
           value={referenceDate}
           onChange={(e) => setReferenceDate(e.target.value)}
@@ -275,6 +298,7 @@ function TransfersPanel() {
         />
         <TextField
           label="Window (GWs)"
+          hint="window"
           type="number"
           min={1}
           max={10}
@@ -284,6 +308,7 @@ function TransfersPanel() {
         />
         <TextField
           label="Free transfers"
+          hint="freeTransfers"
           type="number"
           min={0}
           max={5}
@@ -306,7 +331,9 @@ function TransfersPanel() {
             <span className="font-mono font-medium text-text-primary">{result.transfers_made}</span> transfer{result.transfers_made === 1 ? "" : "s"}
             {" · "}
             {result.points_hit > 0 ? (
-              <span className="font-mono text-danger">-{result.points_hit} pt hit</span>
+              <span className="inline-flex items-center gap-1 font-mono text-danger">
+                -{result.points_hit} pt hit <InfoTooltip term="transferHit" />
+              </span>
             ) : (
               <span>no hit</span>
             )}
@@ -317,6 +344,7 @@ function TransfersPanel() {
             Squad cost <span className="font-mono font-medium text-text-primary">£{result.total_cost.toFixed(1)}m</span>
             {" · "}
             Bank left <span className="font-mono font-medium text-text-primary">£{result.bank.toFixed(1)}m</span>
+            <InfoTooltip term="bankLeft" />
             {" of "}
             <span className="font-mono font-medium text-text-primary">
               £{(result.total_cost + result.bank).toFixed(1)}m

@@ -11,6 +11,7 @@ import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
 import { FdrChip } from "@/shared/ui/FdrChip";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PlannerTable } from "./components/PlannerTable";
 import { SquadPitch } from "./components/SquadPitch";
@@ -121,6 +122,7 @@ export function LoadTeamPanel({
         {!embedded && (
           <TextField
             label="Team ID"
+            hint="teamId"
             value={teamId}
             onChange={(e) => setTeamId(e.target.value)}
             placeholder="e.g. 1178869"
@@ -128,6 +130,7 @@ export function LoadTeamPanel({
         )}
         <TextField
           label="Free transfers"
+          hint="freeTransfers"
           type="number"
           min={0}
           max={5}
@@ -155,10 +158,18 @@ export function LoadTeamPanel({
             <h2 className="text-lg font-semibold text-text-primary">
               {data.entry_name} - GW{data.event}
             </h2>
-            <p className="text-text-secondary">
-              <span className="font-mono">{data.points}</span> points that GW - £
-              <span className="font-mono">{data.squad_value}</span>m squad
-              value - £<span className="font-mono">{data.bank}</span>m in bank
+            <p className="flex flex-wrap items-center gap-x-1 text-text-secondary">
+              <span>
+                <span className="font-mono">{data.points}</span> points that GW <InfoTooltip term="gwPts" />
+              </span>
+              <span>
+                {" - £"}
+                <span className="font-mono">{data.squad_value}</span>m squad value <InfoTooltip term="squadValue" />
+              </span>
+              <span>
+                {" - £"}
+                <span className="font-mono">{data.bank}</span>m in bank <InfoTooltip term="bankLeft" />
+              </span>
             </p>
           </div>
 
@@ -190,14 +201,46 @@ export function LoadTeamPanel({
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
                   <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Role</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Score</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next opp</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">EP next</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">xGI</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">ICT</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Def/90</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Set-piece duty</th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      Role <InfoTooltip term="role" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      Score <InfoTooltip term="score" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      Next opp <InfoTooltip term="nextOpponent" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      EP next <InfoTooltip term="epNext" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      xGI <InfoTooltip term="xgi" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      ICT <InfoTooltip term="ictIndex" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      Def/90 <InfoTooltip term="def90" />
+                    </span>
+                  </th>
+                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="inline-flex items-center gap-1">
+                      Set-piece duty <InfoTooltip term="setPieceDuty" />
+                    </span>
+                  </th>
                   <th className="px-3 py-2.5"></th>
                 </tr>
               </thead>
@@ -269,15 +312,23 @@ export function LoadTeamPanel({
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             {Object.entries(data.category_scores).map(([pos, score]) => (
-              <StatTile key={pos} label={pos} value={score.toFixed(3)} />
+              <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
             ))}
-            <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} />
+            <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} tooltip="benchStrength" />
           </div>
 
           <div>
-            <h3 className="mb-2 font-semibold text-text-primary">
+            <h3 className="mb-1 font-semibold text-text-primary">
               Captaincy options
             </h3>
+            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+              <span className="flex items-center gap-1">
+                Score <InfoTooltip term="score" />
+              </span>
+              <span className="flex items-center gap-1">
+                EP next <InfoTooltip term="epNext" />
+              </span>
+            </p>
             <ul className="space-y-1 text-sm text-text-secondary">
               {data.captaincy_options.map((c, i) => (
                 <li key={i}>
@@ -290,9 +341,17 @@ export function LoadTeamPanel({
           </div>
 
           <div>
-            <h3 className="mb-2 font-semibold text-text-primary">
+            <h3 className="mb-1 font-semibold text-text-primary">
               Fixture outlook
             </h3>
+            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+              <span className="flex items-center gap-1">
+                Score <InfoTooltip term="score" />
+              </span>
+              <span className="flex items-center gap-1">
+                Avg FDR <InfoTooltip term="avgFdr" />
+              </span>
+            </p>
             <ul className="space-y-1.5 text-sm text-text-secondary">
               {data.fixture_outlook.map((f, i) => (
                 <li key={i} className="flex flex-wrap items-center gap-1.5">
@@ -329,7 +388,9 @@ export function LoadTeamPanel({
             {chips && (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <Card>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Bench Boost</p>
+                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                    Bench Boost <InfoTooltip term="benchBoost" />
+                  </p>
                   <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.bench_boost.event}</p>
                   <p className="mt-0.5 text-xs text-text-secondary">
                     bench <span className="font-mono">{chips.bench_boost.bench_score.toFixed(2)}</span> ·{" "}
@@ -337,7 +398,9 @@ export function LoadTeamPanel({
                   </p>
                 </Card>
                 <Card>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Triple Captain</p>
+                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                    Triple Captain <InfoTooltip term="tripleCaptain" />
+                  </p>
                   <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.triple_captain.event}</p>
                   <p className="mt-0.5 text-xs text-text-secondary">
                     {chips.triple_captain.player} ·{" "}
@@ -345,7 +408,9 @@ export function LoadTeamPanel({
                   </p>
                 </Card>
                 <Card>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Free Hit</p>
+                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                    Free Hit <InfoTooltip term="freeHit" />
+                  </p>
                   {chips.free_hit.recommended ? (
                     <>
                       <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.free_hit.event}</p>
@@ -356,7 +421,9 @@ export function LoadTeamPanel({
                   )}
                 </Card>
                 <Card>
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Wildcard</p>
+                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                    Wildcard <InfoTooltip term="wildcard" />
+                  </p>
                   {chips.wildcard ? (
                     <>
                       <p className="mt-1 text-md font-bold text-pl-purple">~GW{chips.wildcard.suggested_event}</p>

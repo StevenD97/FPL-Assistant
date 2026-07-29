@@ -1,5 +1,6 @@
 import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import type { TransferResult } from "@/shared/types/api";
 
 /**
@@ -56,8 +57,8 @@ export function SuggestedTransfers({
             transfer{optimizer.transfers_made === 1 ? "" : "s"}
             {" · "}
             {optimizer.points_hit > 0 ? (
-              <span className="font-mono text-danger">
-                -{optimizer.points_hit} pt hit
+              <span className="inline-flex items-center gap-1 font-mono text-danger">
+                -{optimizer.points_hit} pt hit <InfoTooltip term="transferHit" />
               </span>
             ) : (
               <span>no hit</span>

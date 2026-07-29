@@ -1,4 +1,6 @@
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 const POS_COLOR: Record<string, string> = {
   GKP: "#ffdd3c",
@@ -29,7 +31,7 @@ export function PlayerCard({
   rating: string;
   ratingLabel?: string;
   windowLabel?: string;
-  stats: { k: string; v: string }[];
+  stats: { k: string; v: string; tooltip?: StatGlossaryKey }[];
   /** "hero" enlarges the card + photo for the player-detail hero. */
   size?: "md" | "hero";
 }) {
@@ -63,8 +65,14 @@ export function PlayerCard({
             <span className="mt-1 text-[10px] font-bold text-[#c9a9d1]">{teamShort}</span>
           )}
         </div>
-        <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#c9a9d1]">
+        <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#c9a9d1]">
           {windowLabel ? `${ratingLabel} · ${windowLabel}` : ratingLabel}
+          {ratingLabel === "xPTS" && (
+            <InfoTooltip
+              term="xPts"
+              className="border-white/40 text-white/70 hover:border-white hover:bg-white/20 hover:text-white"
+            />
+          )}
         </span>
       </div>
 
@@ -84,7 +92,15 @@ export function PlayerCard({
         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
           {stats.map((s) => (
             <div key={s.k} className="flex items-center justify-between text-[13px]">
-              <span className="font-semibold text-[#c9a9d1]">{s.k}</span>
+              <span className="flex items-center gap-1 font-semibold text-[#c9a9d1]">
+                {s.k}
+                {s.tooltip && (
+                  <InfoTooltip
+                    term={s.tooltip}
+                    className="border-white/40 text-white/70 hover:border-white hover:bg-white/20 hover:text-white"
+                  />
+                )}
+              </span>
               <span className="font-mono font-bold">{s.v}</span>
             </div>
           ))}
