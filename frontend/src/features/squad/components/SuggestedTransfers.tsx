@@ -14,12 +14,60 @@ export function SuggestedTransfers({
   loading,
   error,
   onSwitchToOptimize,
+  compact = false,
 }: {
   optimizer: TransferResult | null;
   loading: boolean;
   error: string | null;
   onSwitchToOptimize?: () => void;
+  /**
+   * Dashboard variant: just the out/in pairs and the cost line, with no Card,
+   * heading or explanation - the surrounding Panel supplies those, and the full
+   * version is one tap away on the Planner tab.
+   */
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <>
+        {loading && <p className="text-sm text-text-muted">Solving…</p>}
+        {error && <p className="text-xs text-text-secondary">Couldn&apos;t compute suggestions.</p>}
+        {optimizer &&
+          (optimizer.transferred_out.length > 0 ? (
+            <>
+              <ul className="flex flex-col">
+                {optimizer.transferred_out.map((out, i) => {
+                  const incoming = optimizer.transferred_in[i];
+                  return (
+                    <li
+                      key={out.id}
+                      className="flex items-center gap-2 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
+                    >
+                      <span className="min-w-0 flex-1 truncate text-danger">↓ {out.web_name}</span>
+                      {incoming && (
+                        <span className="min-w-0 flex-1 truncate text-right font-semibold text-success">
+                          ↑ {incoming.web_name}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="mt-1 text-[11px] text-text-secondary">
+                {optimizer.transfers_made} transfer{optimizer.transfers_made === 1 ? "" : "s"}
+                {optimizer.points_hit > 0 ? ` · -${optimizer.points_hit} hit` : " · no hit"} ·{" "}
+                <span className="font-mono">{optimizer.predicted_points.toFixed(1)}</span> pts
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-text-secondary">
+              No changes recommended - your squad is already optimal.
+            </p>
+          ))}
+      </>
+    );
+  }
+
   return (
     <Card>
       <h3 className="mb-2 font-semibold text-text-primary">

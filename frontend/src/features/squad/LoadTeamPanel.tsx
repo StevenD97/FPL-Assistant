@@ -5,23 +5,39 @@ import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
 import { StatTile } from "@/shared/ui/Card";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
-import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { Panel } from "@/shared/ui/Panel";
+import { Tabs, TabPanel, type TabItem } from "@/shared/ui/Tabs";
+import { nextChip } from "@/shared/lib/chips";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { PlannerTable } from "./components/PlannerTable";
+import { SquadDetailTable } from "./components/SquadDetailTable";
 import { SquadPitch } from "./components/SquadPitch";
 import { SuggestedTransfers } from "./components/SuggestedTransfers";
-import { TransferSuggestions } from "./components/TransferSuggestions";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
 
+// This panel stacked everything in one scroll (~380 values, with the same 15
+// players drawn three separate times). It's four tabs now, and the first is a
+// dashboard - the team sheet with the key reads wrapped around it, the way the
+// home cockpit works - so the deeper tables are a tap away rather than below.
+//
+// Planner keeps the squad detail table beside it deliberately: picking a
+// replacement there previews in the planner and scrolls to it, so the two want
+// to share a panel.
+type SquadTab = "squad" | "planner" | "analysis" | "chips";
 
+const SQUAD_TABS: readonly TabItem<SquadTab>[] = [
+  { id: "squad", label: "Squad" },
+  { id: "planner", label: "Planner" },
+  { id: "analysis", label: "Analysis" },
+  { id: "chips", label: "Chips" },
+];
 
 // Stand-in for the loaded squad view: summary lines, the pitch, a bench
 // strip, and the two panels (suggested transfers + planner table) below it.
@@ -62,6 +78,7 @@ export function LoadTeamPanel({
 }) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
+  const [tab, setTab] = useState<SquadTab>("squad");
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -100,6 +117,12 @@ export function LoadTeamPanel({
   // What's already owned can't also be a "replacement" - excluded by live id
   // (the id-space player_alternatives itself works in).
   const squadLiveIds = data?.squad.map((p) => p.live_id).filter((id): id is number => id != null) ?? [];
+
+  // Dashboard summaries: one captaincy call and one chip, rather than the full
+  // lists behind the Analysis and Chips tabs.
+  const topCaptain = data?.captaincy_options?.[0] ?? null;
+  const currentCaptain = data?.squad.find((p) => p.captain_flag === "(C)") ?? null;
+  const chip = nextChip(chips);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -161,140 +184,135 @@ export function LoadTeamPanel({
       {loading && !data && <SquadViewSkeleton />}
 
       {data && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div>
             <h2 className="text-lg font-semibold text-text-primary">
               {data.entry_name} - GW{data.event}
             </h2>
-            <p className="flex flex-wrap items-center gap-x-1 text-text-secondary">
-              <span>
-                <span className="font-mono">{data.points}</span> points that GW <InfoTooltip term="gwPts" />
-              </span>
-              <span>
-                {" - £"}
-                <span className="font-mono">{data.squad_value}</span>m squad value <InfoTooltip term="squadValue" />
-              </span>
-              <span>
-                {" - £"}
-                <span className="font-mono">{data.bank}</span>m in bank <InfoTooltip term="bankLeft" />
-              </span>
+            <p className="mt-0.5 text-xs text-text-muted">
+              Your dashboard for this team - the numbers that matter around the team sheet.
             </p>
           </div>
 
-          <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
-
-          <SuggestedTransfers
-            optimizer={optimizer}
-            loading={optimizerLoading}
-            error={optimizerError}
-            onSwitchToOptimize={onSwitchToOptimize}
-          />
-
-          <div ref={plannerSectionRef}>
-            <PlannerTable
-              planner={planner}
-              loading={plannerLoading}
-              error={plannerError}
-              swapPreviews={swapPreviews}
-              swapLoading={swapLoading}
-              dragOverRow={dragOverRow}
-              setDragOverRow={setDragOverRow}
-              onSwapDrop={handleSwapDrop}
-              onUndoSwap={undoSwap}
+          {/* The prose summary line these replace said the same three things in
+              a sentence; as tiles they line up with the home dashboard. */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatTile label={`GW${data.event} points`} value={data.points} tooltip="gwPts" />
+            <StatTile label="Squad value" value={`£${data.squad_value}m`} tooltip="squadValue" />
+            <StatTile label="In the bank" value={`£${data.bank}m`} tooltip="bankLeft" />
+            {/* 3dp, not 1: these scores live in a 0-1 band (0.034 here), so one
+                decimal rounds every realistic value to "0.0". */}
+            <StatTile
+              label="Bench strength"
+              value={data.bench_depth_score?.toFixed(3) ?? "-"}
+              tooltip="benchStrength"
             />
           </div>
 
-          <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-surface-sunken">
-                <tr>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Role <InfoTooltip term="role" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Score <InfoTooltip term="score" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Next opp <InfoTooltip term="nextOpponent" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      EP next <InfoTooltip term="epNext" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      xGI <InfoTooltip term="xgi" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      ICT <InfoTooltip term="ictIndex" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Def/90 <InfoTooltip term="def90" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Set-piece duty <InfoTooltip term="setPieceDuty" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.squad.map((p) => (
-                  <tr key={p.position} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-medium">
-                      <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <PositionBadge position={p.pos} />
-                    </td>
-                    <td className="px-3 py-2.5">{p.role}</td>
-                    <td className="px-3 py-2.5 font-mono">
-                      {p.recommendation_score.toFixed(3)}
-                    </td>
-                    <td className="px-3 py-2.5">{p.next_opponent}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ep_next}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
-                    <td className="px-3 py-2.5">
-                      {p.live_id != null && (
-                        <TransferSuggestions
-                          playerId={p.live_id}
-                          playerName={p.web_name}
-                          maxCost={data.bank + p.cost}
-                          excludeIds={squadLiveIds}
-                          onSelect={(candidateId) => handleReplace(p.live_id!, candidateId)}
-                          trigger="Suggest"
-                          triggerClassName="text-xs text-pl-purple hover:underline"
-                        />
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Tabs tabs={SQUAD_TABS} value={tab} onChange={setTab} label="Squad views" />
 
+          {/* Dashboard view: the team sheet leads, with the reads that used to be
+              separate stacked sections wrapped around it as summary panels, each
+              a tap from the tab holding the full version. */}
+          <TabPanel id="squad" active={tab === "squad"}>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.35fr_1fr]">
+              <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
+
+              <div className="flex flex-col gap-3">
+                <Panel title="Suggested transfer" cta="Planner" onAction={() => setTab("planner")}>
+                  <SuggestedTransfers
+                    optimizer={optimizer}
+                    loading={optimizerLoading}
+                    error={optimizerError}
+                    onSwitchToOptimize={onSwitchToOptimize}
+                    compact
+                  />
+                </Panel>
+
+                <Panel title="Captaincy pick" cta="All options" onAction={() => setTab("analysis")}>
+                  {topCaptain ? (
+                    <>
+                      <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-text-primary">
+                        {topCaptain.web_name}
+                        <PositionBadge position={topCaptain.pos} />
+                        <TeamBadge teamShort={topCaptain.team_short} name={topCaptain.team_short} />
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-text-secondary">
+                        <span className="font-mono">{topCaptain.ep_next.toFixed(1)}</span> expected points
+                        {currentCaptain && currentCaptain.web_name !== topCaptain.web_name
+                          ? ` · you have ${currentCaptain.web_name}`
+                          : " · matches your armband"}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-text-muted">No captaincy read yet.</p>
+                  )}
+                </Panel>
+
+                <Panel title="Chip timing" cta="Full scan" onAction={() => setTab("chips")}>
+                  {chipsLoading && <p className="text-sm text-text-muted">Scanning…</p>}
+                  {!chipsLoading && chip && (
+                    <>
+                      <p className="text-sm font-semibold text-text-primary">
+                        {chip.name} <span className="text-pl-purple">· GW{chip.event}</span>
+                      </p>
+                      <p className="mt-0.5 truncate text-[11px] text-text-secondary">{chip.detail}</p>
+                    </>
+                  )}
+                  {!chipsLoading && !chip && (
+                    <p className="text-sm text-text-muted">No chip worth playing yet.</p>
+                  )}
+                </Panel>
+
+                <Panel title="Squad strength" cta="Breakdown" onAction={() => setTab("analysis")}>
+                  <ul className="flex flex-col">
+                    {Object.entries(data.category_scores).map(([pos, score]) => (
+                      <li
+                        key={pos}
+                        className="flex items-center justify-between gap-3 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
+                      >
+                        <span className="text-text-secondary">{pos}</span>
+                        <span className="font-mono font-semibold text-pl-purple">{score.toFixed(3)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              </div>
+            </div>
+          </TabPanel>
+
+          <TabPanel id="planner" active={tab === "planner"} className="space-y-8">
+            <SuggestedTransfers
+              optimizer={optimizer}
+              loading={optimizerLoading}
+              error={optimizerError}
+              onSwitchToOptimize={onSwitchToOptimize}
+            />
+
+            <div ref={plannerSectionRef}>
+              <PlannerTable
+                planner={planner}
+                loading={plannerLoading}
+                error={plannerError}
+                swapPreviews={swapPreviews}
+                swapLoading={swapLoading}
+                dragOverRow={dragOverRow}
+                setDragOverRow={setDragOverRow}
+                onSwapDrop={handleSwapDrop}
+                onUndoSwap={undoSwap}
+              />
+            </div>
+
+            <SquadDetailTable
+              squad={data.squad}
+              bank={data.bank}
+              excludeIds={squadLiveIds}
+              onReplace={handleReplace}
+            />
+
+          </TabPanel>
+
+          <TabPanel id="analysis" active={tab === "analysis"} className="space-y-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             {Object.entries(data.category_scores).map(([pos, score]) => (
               <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
@@ -303,10 +321,11 @@ export function LoadTeamPanel({
           </div>
 
           <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
+          </TabPanel>
 
           {/* Chip strategy - folded in from the old standalone /chips page so
               it lives with the team it's about. */}
-          <div>
+          <TabPanel id="chips" active={tab === "chips"}>
             <h3 className="mb-1 font-semibold text-text-primary">Chip strategy</h3>
             <p className="mb-3 text-xs text-text-muted">
               Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
@@ -329,7 +348,7 @@ export function LoadTeamPanel({
                 ))}
               </div>
             )}
-          </div>
+          </TabPanel>
         </div>
       )}
     </div>
