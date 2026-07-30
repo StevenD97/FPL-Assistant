@@ -37,20 +37,37 @@ export type CaptaincyOption = {
 
 export type CategoryScore = {
   DEF: number;
+  FWD: number;
   GKP: number;
   MID: number;
 };
 
-export type ChipResponseBenchBoost = {
+export type ChipResponsePeriod = {
+  bench_boost: ChipResponsePeriodBenchBoost;
+  end_event: number;
+  free_hit: ChipResponsePeriodFreeHit;
+  label: string;
+  start_event: number;
+  triple_captain: ChipResponsePeriodTripleCaptain;
+  wildcard: WildcardSuggestion | null;
+};
+
+export type ChipResponsePeriodBenchBoost = {
   bench_score: number;
   double_count: number;
   event: number;
 };
 
-export type ChipResponseFreeHit = {
+export type ChipResponsePeriodFreeHit = {
   blank_count: number;
   event: number;
   recommended: boolean;
+};
+
+export type ChipResponsePeriodTripleCaptain = {
+  event: number;
+  player: string;
+  score: number;
 };
 
 export type ChipResponseTable = {
@@ -61,12 +78,6 @@ export type ChipResponseTable = {
   double_count: number;
   event: number;
   squad_total_score: number;
-};
-
-export type ChipResponseTripleCaptain = {
-  event: number;
-  player: string;
-  score: number;
 };
 
 export type FixtureChip = {
@@ -281,13 +292,11 @@ export type BestSquadResult = {
 
 /** Response of `GET /api/squad/{team_id}/chips`. */
 export type ChipResponse = {
-  bench_boost: ChipResponseBenchBoost;
-  free_hit: ChipResponseFreeHit;
+  periods: ChipResponsePeriod[];
+  reset_event: number;
   scan_end_event: number;
   scan_start_event: number;
   table: ChipResponseTable[];
-  triple_captain: ChipResponseTripleCaptain;
-  wildcard: WildcardSuggestion | null;
 };
 
 /** Response of `GET /api/fixtures/difficulty returns `FixtureDifficultyRow[]`.`. */
@@ -506,11 +515,11 @@ export type ScheduleFixture = {
   team_a: string;
   team_a_badge: string;
   team_a_difficulty: number;
-  team_a_score: null;
+  team_a_score: number | null;
   team_h: string;
   team_h_badge: string;
   team_h_difficulty: number;
-  team_h_score: null;
+  team_h_score: number | null;
 };
 
 /** Response of `GET /api/season-status`. */
@@ -594,6 +603,8 @@ export type TeamSummary = {
 export type TransferResult = {
   bank: number;
   free_transfers: number;
+  gw_count: number;
+  next_event: number;
   points_hit: number;
   predicted_points: number;
   squad: SquadRow[];

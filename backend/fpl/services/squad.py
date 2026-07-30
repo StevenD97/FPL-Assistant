@@ -123,6 +123,11 @@ def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
     attach_player_media(result["squad"], team_code_by_id)
     attach_player_media(result["transferred_out"], team_code_by_id)
     attach_player_media(result["transferred_in"], team_code_by_id)
+    # So the frontend can say exactly what starting_xi_predicted_points/predicted_points
+    # are summed over, instead of leaving the reader to guess whether a combined
+    # multi-gameweek total is a single gameweek's score (see SuggestedTransfers.tsx).
+    result["gw_count"] = gw_count
+    result["next_event"] = next_event
     return result
 
 

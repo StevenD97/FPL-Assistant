@@ -24,29 +24,35 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   };
 }
 
-/** The soonest chip worth playing, so the hero shows one recommendation not four. */
+/**
+ * The soonest chip worth playing, so the hero shows one recommendation not
+ * four. Only looks at the current period (periods[0]) - chips reset fresh at
+ * the mid-season deadline (see fpl.model.rules.CHIP_RESET_EVENT), so a chip
+ * suggestion from the far side of that reset isn't playable yet.
+ */
 function nextChip(chips: LiveCockpitData["chips"]) {
-  if (!chips) return null;
+  const period = chips?.periods[0];
+  if (!period) return null;
   const options = [
-    chips.wildcard && {
+    period.wildcard && {
       name: "Wildcard",
-      event: chips.wildcard.suggested_event,
-      detail: chips.wildcard.reason,
+      event: period.wildcard.suggested_event,
+      detail: period.wildcard.reason,
     },
-    chips.triple_captain && {
+    {
       name: "Triple Captain",
-      event: chips.triple_captain.event,
-      detail: chips.triple_captain.player,
+      event: period.triple_captain.event,
+      detail: period.triple_captain.player,
     },
-    chips.bench_boost && {
+    {
       name: "Bench Boost",
-      event: chips.bench_boost.event,
-      detail: `Bench worth ${chips.bench_boost.bench_score.toFixed(1)}`,
+      event: period.bench_boost.event,
+      detail: `Bench worth ${period.bench_boost.bench_score.toFixed(1)}`,
     },
-    chips.free_hit?.recommended && {
+    period.free_hit.recommended && {
       name: "Free Hit",
-      event: chips.free_hit.event,
-      detail: `${chips.free_hit.blank_count} blanking`,
+      event: period.free_hit.event,
+      detail: `${period.free_hit.blank_count} blanking`,
     },
   ].filter(Boolean) as { name: string; event: number; detail: string }[];
   return options.sort((a, b) => a.event - b.event)[0] ?? null;

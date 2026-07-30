@@ -64,10 +64,12 @@ export function SuggestedTransfers({
               <span>no hit</span>
             )}
             {" · "}
-            predicted XI points (after hit){" "}
+            predicted XI points, GW{optimizer.next_event}
+            {optimizer.gw_count > 1 ? `-${optimizer.next_event + optimizer.gw_count - 1}` : ""} combined (after hit){" "}
             <span className="font-mono font-medium text-text-primary">
               {optimizer.predicted_points.toFixed(2)}
-            </span>
+            </span>{" "}
+            <InfoTooltip term="predictedXiWindow" />
           </p>
 
           {optimizer.transferred_out.length > 0 ? (

@@ -12,6 +12,54 @@ from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.gameweek import detect_blank_double_gameweeks
 from fpl.domain.scoring import compute_player_scores
+from fpl.model.rules import CHIP_RESET_EVENT
+
+
+def _period_recommendation(period_table, doubles, blanks, start_event, end_event, label):
+    """One period's (pre- or post-reset half) own independent chip recommendation -
+    each half gets a fresh Wildcard/Free Hit/Triple Captain/Bench Boost, so a
+    period straddling CHIP_RESET_EVENT must never average across both halves."""
+    bb_row = period_table.loc[period_table["bench_score"].idxmax()]
+    tc_row = period_table.loc[period_table["best_captain_score"].idxmax()]
+    fh_row = period_table.loc[period_table["blank_count"].idxmax()]
+
+    doubles_here = [d for d in doubles if start_event <= d[0] < end_event]
+    blanks_here = [b for b in blanks if start_event <= b[0] < end_event]
+    double_counts_by_event = Counter(event for event, _, _ in doubles_here)
+    blank_counts_by_event = Counter(event for event, _ in blanks_here)
+
+    wildcard_recommendation = None
+    if double_counts_by_event:
+        biggest_dgw_event, num_teams = double_counts_by_event.most_common(1)[0]
+        wildcard_recommendation = {
+            "reason": f"GW{biggest_dgw_event} has the most teams doubling league-wide ({num_teams} teams)",
+            "suggested_event": biggest_dgw_event - 1,
+        }
+    elif blank_counts_by_event:
+        biggest_bgw_event, num_teams = blank_counts_by_event.most_common(1)[0]
+        wildcard_recommendation = {
+            "reason": f"GW{biggest_bgw_event} has the most teams blanking league-wide ({num_teams} teams)",
+            "suggested_event": biggest_bgw_event,
+        }
+
+    return {
+        "label": label,
+        "start_event": start_event,
+        "end_event": end_event - 1,
+        "bench_boost": {
+            "event": int(bb_row["event"]), "bench_score": bb_row["bench_score"],
+            "double_count": int(bb_row["double_count"]),
+        },
+        "triple_captain": {
+            "event": int(tc_row["event"]), "player": tc_row["best_captain_name"],
+            "score": tc_row["best_captain_score"],
+        },
+        "free_hit": {
+            "recommended": bool(fh_row["blank_count"] >= 3),
+            "event": int(fh_row["event"]), "blank_count": int(fh_row["blank_count"]),
+        },
+        "wildcard": wildcard_recommendation,
+    }
 
 
 def build_chip_strategy(team_id, scan_start_event, scan_end_event,
@@ -21,6 +69,12 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     Scans a gameweek window and recommends timing for Bench Boost, Triple
     Captain, Free Hit (based on the manager's squad) and Wildcard (based on
     the league-wide blank/double gameweek calendar).
+
+    Every manager gets a completely fresh set of all four chips at
+    CHIP_RESET_EVENT's deadline - an unused chip from before it is lost, not
+    carried over - so a scan window straddling that gameweek must produce two
+    independent recommendations (one per half), never one pooled across both;
+    see periods below.
 
     Assumes the manager's squad (taken from their current gameweek) stays
     unchanged across the scan window - a simplifying assumption; a real
@@ -87,46 +141,30 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
         })
 
     chip_table = pd.DataFrame(rows)
-
-    bb_row = chip_table.loc[chip_table["bench_score"].idxmax()]
-    tc_row = chip_table.loc[chip_table["best_captain_score"].idxmax()]
-    fh_row = chip_table.loc[chip_table["blank_count"].idxmax()]
-
     blanks, doubles = detect_blank_double_gameweeks(bootstrap, fixtures)
-    doubles_in_scan = [d for d in doubles if scan_start_event <= d[0] < scan_end_event]
-    blanks_in_scan = [b for b in blanks if scan_start_event <= b[0] < scan_end_event]
-    double_counts_by_event = Counter(event for event, _, _ in doubles_in_scan)
-    blank_counts_by_event = Counter(event for event, _ in blanks_in_scan)
 
-    wildcard_recommendation = None
-    if double_counts_by_event:
-        biggest_dgw_event, num_teams = double_counts_by_event.most_common(1)[0]
-        wildcard_recommendation = {
-            "reason": f"GW{biggest_dgw_event} has the most teams doubling league-wide ({num_teams} teams)",
-            "suggested_event": biggest_dgw_event - 1,
-        }
-    elif blank_counts_by_event:
-        biggest_bgw_event, num_teams = blank_counts_by_event.most_common(1)[0]
-        wildcard_recommendation = {
-            "reason": f"GW{biggest_bgw_event} has the most teams blanking league-wide ({num_teams} teams)",
-            "suggested_event": biggest_bgw_event,
-        }
+    # Split the scan window at CHIP_RESET_EVENT if it falls inside it - each
+    # side gets its own independent recommendation (see docstring).
+    if scan_start_event < CHIP_RESET_EVENT < scan_end_event:
+        boundaries = [
+            (scan_start_event, CHIP_RESET_EVENT, "Before the reset"),
+            (CHIP_RESET_EVENT, scan_end_event, "After the reset"),
+        ]
+    else:
+        label = "After the reset" if scan_start_event >= CHIP_RESET_EVENT else "Before the reset"
+        boundaries = [(scan_start_event, scan_end_event, label)]
+
+    periods = []
+    for start_event, end_event, label in boundaries:
+        period_table = chip_table[(chip_table["event"] >= start_event) & (chip_table["event"] < end_event)]
+        if period_table.empty:
+            continue
+        periods.append(_period_recommendation(period_table, doubles, blanks, start_event, end_event, label))
 
     return {
         "scan_start_event": scan_start_event,
         "scan_end_event": scan_end_event - 1,
+        "reset_event": CHIP_RESET_EVENT,
         "table": chip_table.to_dict(orient="records"),
-        "bench_boost": {
-            "event": int(bb_row["event"]), "bench_score": bb_row["bench_score"],
-            "double_count": int(bb_row["double_count"]),
-        },
-        "triple_captain": {
-            "event": int(tc_row["event"]), "player": tc_row["best_captain_name"],
-            "score": tc_row["best_captain_score"],
-        },
-        "free_hit": {
-            "recommended": bool(fh_row["blank_count"] >= 3),
-            "event": int(fh_row["event"]), "blank_count": int(fh_row["blank_count"]),
-        },
-        "wildcard": wildcard_recommendation,
+        "periods": periods,
     }

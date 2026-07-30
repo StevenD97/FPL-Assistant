@@ -20,7 +20,16 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
 }
 
 /** The starting XI laid out on the pitch, with the four-man bench beneath it. */
-export function SquadPitch({ squad, bank }: { squad: SquadPlayer[]; bank: number }) {
+export function SquadPitch({
+  squad,
+  bank,
+  onReplace,
+}: {
+  squad: SquadPlayer[];
+  bank: number;
+  /** Previews swapping `candidateId` into `originalPlayerId`'s slot (see useSwapPreview). */
+  onReplace: (originalPlayerId: number, candidateId: number) => void;
+}) {
   const squadById = new Map(squad.map((p) => [p.id, p]));
   // What's already owned can't also be a "replacement" - excluded by live id
   // (the id-space player_alternatives itself works in).
@@ -28,12 +37,14 @@ export function SquadPitch({ squad, bank }: { squad: SquadPlayer[]; bank: number
 
   function transferIcon(p: SquadPlayer) {
     if (p.live_id == null) return null;
+    const liveId = p.live_id;
     return (
       <TransferSuggestions
-        playerId={p.live_id}
+        playerId={liveId}
         playerName={p.web_name}
         maxCost={bank + p.cost}
         excludeIds={excludeIds}
+        onSelect={(candidateId) => onReplace(liveId, candidateId)}
         triggerClassName="h-5 w-5"
       />
     );

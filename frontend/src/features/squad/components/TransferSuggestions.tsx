@@ -2,11 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { getAlternatives } from "@/shared/api/squad";
 import type { PlayerAlternative } from "@/shared/types/api";
-
-type Coords = { top: number; left: number; placement: "top" | "bottom" };
 
 // Two opposing arrows - the universal "swap" glyph, drawn in the same 24x24
 // stroke style as the nav icons (shared/layout/icons.tsx) rather than pulling
@@ -30,10 +27,14 @@ function TransferGlyph({ className = "" }: { className?: string }) {
 }
 
 /**
- * Tiny "find a replacement" affordance for a squad player: an icon that
- * opens a small popover of the top 3 same-position players affordable
- * within `maxCost` (typically bank + this player's own price - what
- * selling them would free up).
+ * "Find a replacement" affordance for a squad player: a small trigger that
+ * opens a modal listing the top 3 same-position players affordable within
+ * `maxCost` (typically bank + this player's own price - what selling them
+ * would free up). Picking one calls onSelect - it never navigates away, so
+ * the result is always visible without hunting for it further down the page
+ * (a modal rather than an anchored popover, so it lands the same way
+ * regardless of where the trigger sits on a long, scrolled page - the pitch,
+ * the bench, or a table row).
  */
 export function TransferSuggestions({
   playerId,
@@ -41,6 +42,7 @@ export function TransferSuggestions({
   maxCost,
   excludeIds,
   onSelect,
+  trigger,
   triggerClassName = "",
 }: {
   /** Live 2026/27 player id - what /api/players/{id}/alternatives expects. */
@@ -48,70 +50,33 @@ export function TransferSuggestions({
   playerName: string;
   maxCost: number;
   excludeIds: number[];
-  /**
-   * If set, a candidate performs the swap in place instead of navigating to
-   * its profile - for an editable draft (BuildSquadPanel), where there's
-   * something to actually swap. Omitted for a real, read-only loaded squad.
-   */
-  onSelect?: (candidateId: number) => void;
+  /** Performs the swap in place - always provided; there's no read-only mode. */
+  onSelect: (candidateId: number) => void;
+  /** Custom trigger content (e.g. a "Suggest" text link) - defaults to the icon glyph. */
+  trigger?: React.ReactNode;
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [coords, setCoords] = useState<Coords | null>(null);
   const [candidates, setCandidates] = useState<PlayerAlternative[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const popoverId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
-
-    function updatePosition() {
-      const rect = triggerRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const placement: Coords["placement"] = window.innerHeight - rect.bottom < 220 ? "top" : "bottom";
-      const left = Math.min(Math.max(rect.left + rect.width / 2, 140), window.innerWidth - 140);
-      const top = placement === "bottom" ? rect.bottom + 6 : rect.top - 6;
-      setCoords({ top, left, placement });
-    }
-
-    updatePosition();
-    window.addEventListener("scroll", updatePosition, true);
-    window.addEventListener("resize", updatePosition);
-
-    function handleOutside(event: MouseEvent | TouchEvent) {
-      const target = event.target as Node;
-      // The popover is portaled to document.body, so it's not a descendant
-      // of triggerRef - without this check, a mousedown on a suggestion link
-      // reads as "outside", closing (and unmounting) the popover before the
-      // click that should have navigated ever fires.
-      if (triggerRef.current?.contains(target) || popoverRef.current?.contains(target)) return;
-      setOpen(false);
-    }
     function handleKey(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
     }
-    document.addEventListener("mousedown", handleOutside);
-    document.addEventListener("touchstart", handleOutside);
     document.addEventListener("keydown", handleKey);
-
-    return () => {
-      window.removeEventListener("scroll", updatePosition, true);
-      window.removeEventListener("resize", updatePosition);
-      document.removeEventListener("mousedown", handleOutside);
-      document.removeEventListener("touchstart", handleOutside);
-      document.removeEventListener("keydown", handleKey);
-    };
+    return () => document.removeEventListener("keydown", handleKey);
   }, [open]);
 
-  async function toggle(event: React.MouseEvent) {
+  async function openModal(event: React.MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    const next = !open;
-    setOpen(next);
-    if (next && candidates === null && !loading) {
+    setOpen(true);
+    if (candidates === null && !loading) {
       setLoading(true);
       setError(false);
       try {
@@ -127,91 +92,85 @@ export function TransferSuggestions({
 
   return (
     <>
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={toggle}
-        aria-label={`Find a replacement for ${playerName}`}
-        aria-expanded={open}
-        aria-describedby={open ? popoverId : undefined}
-        className={`flex items-center justify-center rounded-full bg-pl-purple text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
-      >
-        <TransferGlyph className="h-3 w-3" />
-      </button>
+      {trigger ? (
+        <button type="button" onClick={openModal} className={triggerClassName}>
+          {trigger}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={openModal}
+          aria-label={`Find a replacement for ${playerName}`}
+          className={`flex items-center justify-center rounded-full bg-pl-purple text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
+        >
+          <TransferGlyph className="h-3 w-3" />
+        </button>
+      )}
       {open &&
-        coords &&
         typeof document !== "undefined" &&
         createPortal(
-          <div
-            id={popoverId}
-            ref={popoverRef}
-            role="dialog"
-            aria-label={`Replacement options for ${playerName}`}
-            style={{
-              position: "fixed",
-              top: coords.top,
-              left: coords.left,
-              transform: `translate(-50%, ${coords.placement === "bottom" ? "0" : "-100%"})`,
-            }}
-            className="z-[100] w-64 rounded-lg border border-border bg-white p-3 shadow-lg"
-          >
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <span className="text-xs font-semibold text-text-primary">Replace {playerName}</span>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="text-text-muted hover:text-text-primary"
-              >
-                ×
-              </button>
-            </div>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div
+              className="animate-fpl-fade absolute inset-0 bg-black/50"
+              onClick={() => setOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+              className="animate-fpl-fade relative w-full max-w-xs rounded-lg border border-border bg-white p-4 shadow-lg"
+            >
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span id={titleId} className="text-sm font-semibold text-text-primary">
+                  Replace {playerName}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close"
+                  className="text-lg leading-none text-text-muted hover:text-text-primary"
+                >
+                  ×
+                </button>
+              </div>
 
-            {loading && <p className="text-xs text-text-muted">Finding replacements…</p>}
-            {!loading && error && <p className="text-xs text-danger">Couldn&apos;t load suggestions.</p>}
-            {!loading && !error && candidates && candidates.length === 0 && (
-              <p className="text-xs text-text-muted">No affordable replacements found.</p>
-            )}
-            {!loading && !error && candidates && candidates.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {candidates.map((c) => {
-                  const rowContent = (
-                    <>
-                      <span className="min-w-0 flex-1 truncate font-medium text-text-primary">
-                        {c.web_name} <span className="text-text-muted">({c.team_short})</span>
-                      </span>
-                      <span className="shrink-0 font-mono text-text-secondary">£{c.cost.toFixed(1)}m</span>
-                      <span className="shrink-0 font-mono font-semibold text-pl-purple">
-                        {c.predicted_points.toFixed(1)}
-                      </span>
-                    </>
-                  );
-                  return (
+              {loading && <p className="text-sm text-text-muted">Finding replacements…</p>}
+              {!loading && error && <p className="text-sm text-danger">Couldn&apos;t load suggestions.</p>}
+              {!loading && !error && candidates && candidates.length === 0 && (
+                <p className="text-sm text-text-muted">No affordable replacements found.</p>
+              )}
+              {!loading && !error && candidates && candidates.length > 0 && (
+                <ul className="flex flex-col gap-1">
+                  {candidates.map((c) => (
                     <li key={c.id}>
-                      {onSelect ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onSelect(c.id);
-                            setOpen(false);
-                          }}
-                          className="flex w-full items-center justify-between gap-2 rounded-md px-1.5 py-1 text-xs hover:bg-surface-sunken"
-                        >
-                          {rowContent}
-                        </button>
-                      ) : (
-                        <PlayerLink
-                          id={c.id}
-                          className="flex items-center justify-between gap-2 rounded-md px-1.5 py-1 text-xs hover:bg-surface-sunken"
-                        >
-                          {rowContent}
-                        </PlayerLink>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onSelect(c.id);
+                          setOpen(false);
+                        }}
+                        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm hover:bg-surface-sunken"
+                      >
+                        <span className="min-w-0 flex-1 truncate text-left font-medium text-text-primary">
+                          {c.web_name} <span className="text-text-muted">({c.team_short})</span>
+                        </span>
+                        <span className="shrink-0 font-mono text-text-secondary">£{c.cost.toFixed(1)}m</span>
+                        <span className="shrink-0 font-mono font-semibold text-pl-purple">
+                          {c.predicted_points.toFixed(1)}
+                        </span>
+                      </button>
                     </li>
-                  );
-                })}
-              </ul>
-            )}
+                  ))}
+                </ul>
+              )}
+              {!loading && !error && candidates && candidates.length > 0 && (
+                <p className="mt-3 text-[11px] text-text-muted">
+                  Picking one previews the swap in your Transfer planner below.
+                </p>
+              )}
+            </div>
           </div>,
           document.body,
         )}

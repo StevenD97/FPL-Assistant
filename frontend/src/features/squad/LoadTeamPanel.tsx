@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
-import { Card, StatTile } from "@/shared/ui/Card";
+import { StatTile } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
-import { FdrChip } from "@/shared/ui/FdrChip";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { CaptaincyOptions } from "./components/CaptaincyOptions";
+import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { PlannerTable } from "./components/PlannerTable";
 import { SquadPitch } from "./components/SquadPitch";
 import { SuggestedTransfers } from "./components/SuggestedTransfers";
-import { useAlternatives } from "./hooks/useAlternatives";
+import { TransferSuggestions } from "./components/TransferSuggestions";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
 
@@ -71,19 +72,23 @@ export function LoadTeamPanel({
     load,
   } = useLoadedSquad();
   const {
-    suggestFor,
-    alternatives,
-    loading: alternativesLoading,
-    toggle: loadAlternatives,
-  } = useAlternatives();
-  const {
     previews: swapPreviews,
     loading: swapLoading,
     dragOverRow,
     setDragOverRow,
     drop: handleSwapDrop,
+    selectCandidate,
     undo: undoSwap,
   } = useSwapPreview(plannerRes.data);
+  const plannerSectionRef = useRef<HTMLDivElement>(null);
+
+  // A picked replacement previews in the Transfer planner table below - jump
+  // there so the effect is immediately visible instead of something the
+  // reader has to go hunting for further down a long page.
+  function handleReplace(originalPlayerId: number, candidateId: number) {
+    selectCandidate(originalPlayerId, candidateId);
+    plannerSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   // Flattened so the markup below reads the same as it did when all of this was
   // local state - the render output is unchanged, only where the values come
@@ -92,6 +97,9 @@ export function LoadTeamPanel({
   const { data: optimizer, loading: optimizerLoading, error: optimizerError } = optimizerRes;
   const { data: planner, loading: plannerLoading, error: plannerError } = plannerRes;
   const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
+  // What's already owned can't also be a "replacement" - excluded by live id
+  // (the id-space player_alternatives itself works in).
+  const squadLiveIds = data?.squad.map((p) => p.live_id).filter((id): id is number => id != null) ?? [];
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -173,7 +181,7 @@ export function LoadTeamPanel({
             </p>
           </div>
 
-          <SquadPitch squad={data.squad} bank={data.bank} />
+          <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
 
           <SuggestedTransfers
             optimizer={optimizer}
@@ -182,17 +190,19 @@ export function LoadTeamPanel({
             onSwitchToOptimize={onSwitchToOptimize}
           />
 
-          <PlannerTable
-            planner={planner}
-            loading={plannerLoading}
-            error={plannerError}
-            swapPreviews={swapPreviews}
-            swapLoading={swapLoading}
-            dragOverRow={dragOverRow}
-            setDragOverRow={setDragOverRow}
-            onSwapDrop={handleSwapDrop}
-            onUndoSwap={undoSwap}
-          />
+          <div ref={plannerSectionRef}>
+            <PlannerTable
+              planner={planner}
+              loading={plannerLoading}
+              error={plannerError}
+              swapPreviews={swapPreviews}
+              swapLoading={swapLoading}
+              dragOverRow={dragOverRow}
+              setDragOverRow={setDragOverRow}
+              onSwapDrop={handleSwapDrop}
+              onUndoSwap={undoSwap}
+            />
+          </div>
 
           <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
             <table className="w-full text-left text-sm">
@@ -268,12 +278,15 @@ export function LoadTeamPanel({
                     <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
                     <td className="px-3 py-2.5">
                       {p.live_id != null && (
-                        <button
-                          onClick={() => loadAlternatives(p.live_id!, p.web_name)}
-                          className="text-xs text-pl-purple hover:underline"
-                        >
-                          {suggestFor?.liveId === p.live_id ? "Hide" : "Suggest"}
-                        </button>
+                        <TransferSuggestions
+                          playerId={p.live_id}
+                          playerName={p.web_name}
+                          maxCost={data.bank + p.cost}
+                          excludeIds={squadLiveIds}
+                          onSelect={(candidateId) => handleReplace(p.live_id!, candidateId)}
+                          trigger="Suggest"
+                          triggerClassName="text-xs text-pl-purple hover:underline"
+                        />
                       )}
                     </td>
                   </tr>
@@ -282,34 +295,6 @@ export function LoadTeamPanel({
             </table>
           </div>
 
-          {suggestFor && (
-            <Card>
-              <h3 className="mb-3 font-semibold text-text-primary">
-                Replacements for {suggestFor.name}
-              </h3>
-              {alternativesLoading ? (
-                <p className="text-sm text-text-muted">Loading...</p>
-              ) : alternatives && alternatives.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {alternatives.map((a) => (
-                    <PlayerLink key={a.id} id={a.id}>
-                      <span
-                        draggable
-                        onDragStart={(e) => e.dataTransfer.setData("text/plain", String(a.id))}
-                        className="inline-block cursor-grab rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50 active:cursor-grabbing"
-                        title="Drag onto a Transfer planner row to preview swapping them in"
-                      >
-                        {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
-                      </span>
-                    </PlayerLink>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-text-muted">No alternatives found.</p>
-              )}
-            </Card>
-          )}
-
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             {Object.entries(data.category_scores).map(([pos, score]) => (
               <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
@@ -317,122 +302,31 @@ export function LoadTeamPanel({
             <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} tooltip="benchStrength" />
           </div>
 
-          <div>
-            <h3 className="mb-1 font-semibold text-text-primary">
-              Captaincy options
-            </h3>
-            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
-              <span className="flex items-center gap-1">
-                Score <InfoTooltip term="score" />
-              </span>
-              <span className="flex items-center gap-1">
-                EP next <InfoTooltip term="epNext" />
-              </span>
-            </p>
-            <ul className="space-y-1 text-sm text-text-secondary">
-              {data.captaincy_options.map((c, i) => (
-                <li key={i}>
-                  {c.web_name} ({c.team_short}, {c.pos}) - score{" "}
-                  <span className="font-mono">{c.recommendation_score.toFixed(3)}</span>, EP next{" "}
-                  <span className="font-mono">{c.ep_next}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-1 font-semibold text-text-primary">
-              Fixture outlook
-            </h3>
-            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
-              <span className="flex items-center gap-1">
-                Score <InfoTooltip term="score" />
-              </span>
-              <span className="flex items-center gap-1">
-                Avg FDR <InfoTooltip term="avgFdr" />
-              </span>
-            </p>
-            <ul className="space-y-1.5 text-sm text-text-secondary">
-              {data.fixture_outlook.map((f, i) => (
-                <li key={i} className="flex flex-wrap items-center gap-1.5">
-                  <TeamBadge teamShort={f.team_short} name={f.team_short} badgeUrl={f.team_badge} />
-                  <span>
-                    score <span className="font-mono">{f.fixture_score}</span> (avg FDR{" "}
-                    <span className="font-mono">{f.avg_difficulty}</span>)
-                  </span>
-                  {f.fixtures.map((fx, fi) => (
-                    <FdrChip
-                      key={fi}
-                      opponent={fx.opponent}
-                      isHome={fx.is_home}
-                      difficulty={fx.difficulty}
-                      badgeUrl={fx.opponent_badge}
-                    />
-                  ))}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
 
           {/* Chip strategy - folded in from the old standalone /chips page so
               it lives with the team it's about. */}
           <div>
             <h3 className="mb-1 font-semibold text-text-primary">Chip strategy</h3>
             <p className="mb-3 text-xs text-text-muted">
-              Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard across the next run.
+              Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
+              {chips && (
+                <>
+                  Every manager gets a completely fresh set of all four chips at the GW{chips.reset_event} deadline
+                  - anything unused before it is lost, not carried over - so the two halves below are scored
+                  independently.
+                </>
+              )}
             </p>
             {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
             {chipsError && (
               <Alert kind="warning">Couldn&apos;t scan chip timing ({chipsError}) - the squad above is unaffected.</Alert>
             )}
             {chips && (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Bench Boost <InfoTooltip term="benchBoost" />
-                  </p>
-                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.bench_boost.event}</p>
-                  <p className="mt-0.5 text-xs text-text-secondary">
-                    bench <span className="font-mono">{chips.bench_boost.bench_score.toFixed(2)}</span> ·{" "}
-                    {chips.bench_boost.double_count} DGW
-                  </p>
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Triple Captain <InfoTooltip term="tripleCaptain" />
-                  </p>
-                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.triple_captain.event}</p>
-                  <p className="mt-0.5 text-xs text-text-secondary">
-                    {chips.triple_captain.player} ·{" "}
-                    <span className="font-mono">{chips.triple_captain.score.toFixed(2)}</span>
-                  </p>
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Free Hit <InfoTooltip term="freeHit" />
-                  </p>
-                  {chips.free_hit.recommended ? (
-                    <>
-                      <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.free_hit.event}</p>
-                      <p className="mt-0.5 text-xs text-text-secondary">{chips.free_hit.blank_count} of 15 blank</p>
-                    </>
-                  ) : (
-                    <p className="mt-1 text-xs text-text-secondary">No strong case - hold it</p>
-                  )}
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Wildcard <InfoTooltip term="wildcard" />
-                  </p>
-                  {chips.wildcard ? (
-                    <>
-                      <p className="mt-1 text-md font-bold text-pl-purple">~GW{chips.wildcard.suggested_event}</p>
-                      <p className="mt-0.5 text-xs text-text-secondary">{chips.wildcard.reason}</p>
-                    </>
-                  ) : (
-                    <p className="mt-1 text-xs text-text-secondary">No major cluster found</p>
-                  )}
-                </Card>
+              <div className="space-y-5">
+                {chips.periods.map((period) => (
+                  <ChipPeriodCards key={period.label} period={period} />
+                ))}
               </div>
             )}
           </div>
