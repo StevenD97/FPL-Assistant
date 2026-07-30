@@ -2,6 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
+import { TableFrame, Th } from "@/shared/ui/Table";
 import { PlayerCard } from "@/features/players/PlayerCard";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
@@ -95,15 +96,20 @@ function cardStats(player: PlayerDetail): { k: string; v: string; tooltip: StatG
 
 function CompareTable({ title, rows, players }: { title: string; rows: CompareRow[]; players: PlayerDetail[] }) {
   return (
-    <div className="mb-6 overflow-x-auto rounded-lg border border-border shadow-sm">
-      <table className="w-full text-left text-sm">
+    <div className="mb-6">
+      {/* The title lives above the table, not in the header row: `table-cards`
+          hides the thead on mobile, and this table is transposed (stats down,
+          players across) so each row becomes a card headed by the stat with one
+          labelled line per player - which needs the player names as data-labels. */}
+      <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-text-muted">{title}</h3>
+      <TableFrame>
         <thead className="bg-surface-sunken">
           <tr>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">{title}</th>
+            <Th>
+              <span className="sr-only">Stat</span>
+            </Th>
             {players.map((p) => (
-              <th key={p.id} className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                {p.web_name}
-              </th>
+              <Th key={p.id}>{p.web_name}</Th>
             ))}
           </tr>
         </thead>
@@ -112,7 +118,7 @@ function CompareTable({ title, rows, players }: { title: string; rows: CompareRo
             const baseline = row.get(players[0]);
             return (
               <tr key={row.label} className="border-t border-border">
-                <td className="px-3 py-2.5 text-text-secondary">
+                <td className="cell-primary px-3 py-2.5 text-text-secondary">
                   <span className="inline-flex items-center gap-1">
                     {row.label}
                     {row.tooltip && <InfoTooltip term={row.tooltip} />}
@@ -121,7 +127,7 @@ function CompareTable({ title, rows, players }: { title: string; rows: CompareRo
                 {players.map((p, i) => {
                   const value = row.get(p);
                   return (
-                    <td key={p.id} className="px-3 py-2.5 font-mono">
+                    <td key={p.id} data-label={p.web_name} className="px-3 py-2.5 font-mono">
                       {value === null ? (
                         "-"
                       ) : (
@@ -137,7 +143,7 @@ function CompareTable({ title, rows, players }: { title: string; rows: CompareRo
             );
           })}
         </tbody>
-      </table>
+      </TableFrame>
     </div>
   );
 }

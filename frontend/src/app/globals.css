@@ -303,6 +303,13 @@ body {
     font-size: 15px; font-weight: 600;
   }
   table.table-cards td.cell-primary::before { content: none; }
+  /* A full-width expanded panel inside a card row (the "More" row on the
+     optimizer's squad table): it holds its own layout, so opt out of the
+     label:value flex treatment. */
+  table.table-cards td.cell-detail {
+    display: block; text-align: left; padding: 6px 14px 2px;
+  }
+  table.table-cards td.cell-detail::before { content: none; }
 }
 
 /* --- Scrollbar --- */

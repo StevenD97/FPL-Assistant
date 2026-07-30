@@ -469,22 +469,22 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                 <table className="w-full text-left text-sm">
                   <thead className="sticky top-0 bg-surface-sunken">
                     <tr>
-                      <th className="w-8 px-3 py-2.5"></th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      <th className="w-8 px-2 py-2.5 sm:px-3"></th>
+                      <th className="px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
+                      <th className="px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+                      <th className="hidden px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">Pos</th>
+                      <th className="px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
+                      <th className="px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
                         <span className="inline-flex items-center gap-1">
                           Pred pts <InfoTooltip term="xPts" />
                         </span>
                       </th>
-                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
+                      <th className="hidden px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
                         <span className="inline-flex items-center gap-1">
                           Value <InfoTooltip term="value" />
                         </span>
                       </th>
-                      <th className="hidden px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
+                      <th className="hidden px-2 py-2.5 sm:px-3 text-xs font-semibold uppercase tracking-wide text-text-muted sm:table-cell">
                         <span className="inline-flex items-center gap-1">
                           Own% <InfoTooltip term="ownership" />
                         </span>
@@ -513,7 +513,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                               : "cursor-not-allowed opacity-45"
                           }`}
                         >
-                          <td className="px-3 py-2.5">
+                          <td className="px-2 py-2.5 sm:px-3">
                             <span
                               className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${
                                 inSquad
@@ -525,21 +525,21 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
                               {inSquad ? "✓" : "+"}
                             </span>
                           </td>
-                          <td className="px-3 py-2.5 font-medium text-text-primary">
+                          <td className="px-2 py-2.5 sm:px-3 font-medium text-text-primary">
                             {p.web_name}
                             <StatusBadge status={p.status} news={p.news} />
                             <ShortlistStar id={p.id} className="ml-1.5 align-middle text-sm" />
                           </td>
-                          <td className="px-3 py-2.5">
+                          <td className="px-2 py-2.5 sm:px-3">
                             <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                           </td>
-                          <td className="px-3 py-2.5">
+                          <td className="hidden px-2 py-2.5 sm:px-3 sm:table-cell">
                             <PositionBadge position={p.position} />
                           </td>
-                          <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-                          <td className="px-3 py-2.5 font-mono">{p.predicted_points.toFixed(1)}</td>
-                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.value.toFixed(2)}</td>
-                          <td className="hidden px-3 py-2.5 font-mono sm:table-cell">{p.selected_by_percent.toFixed(1)}%</td>
+                          <td className="px-2 py-2.5 sm:px-3 font-mono">£{p.cost.toFixed(1)}m</td>
+                          <td className="px-2 py-2.5 sm:px-3 font-mono">{p.predicted_points.toFixed(1)}</td>
+                          <td className="hidden px-2 py-2.5 sm:px-3 font-mono sm:table-cell">{p.value.toFixed(2)}</td>
+                          <td className="hidden px-2 py-2.5 sm:px-3 font-mono sm:table-cell">{p.selected_by_percent.toFixed(1)}%</td>
                         </tr>
                       );
                     })}

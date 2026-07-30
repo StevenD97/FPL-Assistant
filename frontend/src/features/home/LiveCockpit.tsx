@@ -47,7 +47,10 @@ function nextChip(chips: LiveCockpitData["chips"]) {
     {
       name: "Bench Boost",
       event: period.bench_boost.event,
-      detail: `Bench worth ${period.bench_boost.bench_score.toFixed(1)}`,
+      // 3dp, matching the backend's own rounding: bench_score is the sum of
+      // four sub-1.0 recommendation scores (0.0-0.263 across a full scan), so
+      // coarser rounding collapses nearly every value to "0.0".
+      detail: `Bench worth ${period.bench_boost.bench_score.toFixed(3)}`,
     },
     period.free_hit.recommended && {
       name: "Free Hit",
@@ -113,7 +116,7 @@ export function LiveCockpit({
         />
         <CockpitStat
           label="Bench strength"
-          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(1) : "—"}
+          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(3) : "—"}
           hint="Higher is a stronger bench"
           tooltip="benchStrength"
         />

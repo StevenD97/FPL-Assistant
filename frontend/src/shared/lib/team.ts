@@ -103,6 +103,32 @@ export function storeTrackedLeagueIds(ids: number[]): void {
   }
 }
 
+// Label cache for tracked leagues, learned when a league's standings load.
+// The id list above stays the source of truth - this only supplies a nicer
+// name than "League 314" once we've seen one, so an uncached id still renders.
+const LEAGUE_NAMES_KEY = "fpl.trackedLeagueNames";
+
+export function loadTrackedLeagueNames(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const v = window.localStorage.getItem(LEAGUE_NAMES_KEY);
+    if (!v) return {};
+    const parsed = JSON.parse(v);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function storeTrackedLeagueName(id: number, name: string): void {
+  try {
+    const next = { ...loadTrackedLeagueNames(), [String(id)]: name };
+    window.localStorage.setItem(LEAGUE_NAMES_KEY, JSON.stringify(next));
+  } catch {
+    // Ignore.
+  }
+}
+
 export function formatRank(n: number | null): string {
   return n == null ? "—" : n.toLocaleString("en-GB");
 }

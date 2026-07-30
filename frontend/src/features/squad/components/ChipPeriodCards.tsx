@@ -24,7 +24,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
           </p>
           <p className="mt-1 text-md font-bold text-pl-purple">GW{period.bench_boost.event}</p>
           <p className="mt-0.5 text-xs text-text-secondary">
-            bench <span className="font-mono">{period.bench_boost.bench_score.toFixed(2)}</span> ·{" "}
+            bench <span className="font-mono">{period.bench_boost.bench_score.toFixed(3)}</span> ·{" "}
             {period.bench_boost.double_count} DGW
           </p>
         </Card>

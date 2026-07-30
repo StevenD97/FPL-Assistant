@@ -1,24 +1,35 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Button } from "@/shared/ui/Button";
-import { Pill } from "@/shared/ui/Pill";
+import { Select } from "@/shared/ui/Select";
 import { TextField } from "@/shared/ui/TextField";
 import { TableSkeleton } from "@/shared/ui/Skeleton";
 import { ConnectTeamPrompt } from "@/shared/team/ConnectTeamPrompt";
 import { LineChart } from "@/shared/charts/LineChart";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { seriesColor } from "@/shared/lib/palette";
+import { pickTrendSeries, TREND_SERIES_CAP } from "@/shared/lib/leagueTrend";
 import {
   formatRank,
   loadTrackedLeagueIds,
+  loadTrackedLeagueNames,
   parseLeagueId,
   parseTeamId,
   storeTrackedLeagueIds,
+  storeTrackedLeagueName,
 } from "@/shared/lib/team";
 import { apiGet } from "@/shared/lib/api";
 import type { League, StandingsResponse } from "@/shared/types/api";
+
+// The two things the one search box can look up. Values double as the
+// <option> text, so they're shared between the control and the mode it maps to.
+const TEAM_OPTION = "A team";
+const LEAGUE_OPTION = "A league";
+
+/** A row in the unified league list, whichever source it came from. */
+type LeagueChoice = { id: number; name: string; tracked: boolean };
 
 export default function LeaguesPage() {
   const { teamId: connectedTeamId } = useTeam();
@@ -36,6 +47,8 @@ export default function LeaguesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [trackedIds, setTrackedIds] = useState<number[]>([]);
+  const [trackedNames, setTrackedNames] = useState<Record<string, string>>({});
+  const [showAllTrend, setShowAllTrend] = useState(false);
 
   // Whose perspective "your rank" is computed from: the last team id searched,
   // falling back to whatever team is connected app-wide (sidebar).
@@ -43,7 +56,31 @@ export default function LeaguesPage() {
 
   useEffect(() => {
     setTrackedIds(loadTrackedLeagueIds());
+    setTrackedNames(loadTrackedLeagueNames());
   }, []);
+
+  // The team's own leagues and the tracked public ones, merged into one list.
+  // A league in both shows once, keeping its real name from the team lookup.
+  const leagueChoices = useMemo<LeagueChoice[]>(() => {
+    const byId = new Map<number, LeagueChoice>();
+    for (const lg of leagues ?? []) {
+      byId.set(lg.id, { id: lg.id, name: lg.name, tracked: trackedIds.includes(lg.id) });
+    }
+    for (const id of trackedIds) {
+      const existing = byId.get(id);
+      if (existing) {
+        existing.tracked = true;
+        continue;
+      }
+      byId.set(id, { id, name: trackedNames[String(id)] ?? `League ${id}`, tracked: true });
+    }
+    return [...byId.values()];
+  }, [leagues, trackedIds, trackedNames]);
+
+  const trendSeries = useMemo(
+    () => pickTrendSeries(standings?.trend ?? [], { showAll: showAllTrend, myEntryId: rankTeamId }),
+    [standings, showAllTrend, rankTeamId],
+  );
 
   async function findLeagues(teamId: number) {
     setRankTeamInput(String(teamId));
@@ -61,12 +98,22 @@ export default function LeaguesPage() {
     }
   }
 
-  function trackAndLoad(leagueId: number) {
+  // Pin a league to this device. Names are cached separately from the id list,
+  // so a league tracked before we ever saw its standings still gets a label.
+  function trackLeague(leagueId: number, name?: string) {
     setTrackedIds((prev) => {
       const next = prev.includes(leagueId) ? prev : [...prev, leagueId];
       storeTrackedLeagueIds(next);
       return next;
     });
+    if (name) {
+      storeTrackedLeagueName(leagueId, name);
+      setTrackedNames((prev) => ({ ...prev, [String(leagueId)]: name }));
+    }
+  }
+
+  function trackAndLoad(leagueId: number) {
+    trackLeague(leagueId);
     loadStandings(leagueId);
   }
 
@@ -109,7 +156,14 @@ export default function LeaguesPage() {
     try {
       const params = new URLSearchParams();
       if (rankTeamId) params.set("team_id", String(rankTeamId));
-      setStandings(await apiGet<StandingsResponse>(`/api/leagues/${leagueId}/standings?${params}`));
+      const res = await apiGet<StandingsResponse>(`/api/leagues/${leagueId}/standings?${params}`);
+      setStandings(res);
+      // Learn the real name whether or not it's tracked yet, so the list can
+      // label it properly the moment it is.
+      if (res.league_name) {
+        storeTrackedLeagueName(leagueId, res.league_name);
+        setTrackedNames((prev) => ({ ...prev, [String(leagueId)]: res.league_name }));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -121,7 +175,10 @@ export default function LeaguesPage() {
     const next = trackedIds.filter((x) => x !== id);
     setTrackedIds(next);
     storeTrackedLeagueIds(next);
-    if (selectedLeague === id) {
+    // Only close the standings if untracking drops the league off the list
+    // entirely - one of the team's own leagues stays selectable either way.
+    const stillListed = (leagues ?? []).some((lg) => lg.id === id);
+    if (selectedLeague === id && !stillListed) {
       setSelectedLeague(null);
       setStandings(null);
     }
@@ -158,17 +215,17 @@ export default function LeaguesPage() {
           </div>
         )}
 
-        {/* One search: toggle picks what a bare number means; a pasted FPL URL
-            is auto-detected either way. */}
-        <div className="mb-3 flex flex-wrap items-center gap-1.5">
-          <Pill active={mode === "team"} onClick={() => setMode("team")}>
-            My leagues
-          </Pill>
-          <Pill active={mode === "league"} onClick={() => setMode("league")}>
-            Public league
-          </Pill>
-        </div>
-        <form onSubmit={handleSearch} className="flex items-end gap-3">
+        {/* One search row for both intents. The selector only disambiguates a
+            bare number (is 314 a team or a league?) - a pasted FPL URL is
+            auto-detected and overrides it either way. */}
+        <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-3">
+          <Select
+            label="Look up"
+            options={[TEAM_OPTION, LEAGUE_OPTION]}
+            value={mode === "team" ? TEAM_OPTION : LEAGUE_OPTION}
+            onChange={(e) => setMode(e.target.value === LEAGUE_OPTION ? "league" : "team")}
+            wrapperClassName="w-[9.5rem]"
+          />
           <TextField
             label={mode === "team" ? "Team ID or URL" : "League ID or URL"}
             value={query}
@@ -176,7 +233,7 @@ export default function LeaguesPage() {
             placeholder={
               mode === "team" ? "e.g. 1178869 or your team URL" : "e.g. 314 or …/leagues/314/standings/c"
             }
-            wrapperClassName="min-w-[240px] flex-1 sm:max-w-md"
+            wrapperClassName="min-w-[200px] flex-1 sm:max-w-sm"
           />
           <Button type="submit" disabled={loading || !query.trim()}>
             {loading ? "Loading..." : mode === "team" ? "Find leagues" : "Track"}
@@ -184,62 +241,66 @@ export default function LeaguesPage() {
         </form>
         <p className="mb-4 mt-1.5 text-xs text-text-secondary">
           {mode === "team"
-            ? "See the mini-leagues your team is in, then pick one for standings and trends."
-            : "Track any public league (joined or not), including a country league, to see where your score ranks. Saved on this device."}
+            ? "Loads the mini-leagues that team is in, then pick one below for standings and trends."
+            : "Tracks any public league (joined or not), including a country league, to see where your score ranks. Saved on this device."}
         </p>
 
         {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 
-        {leagues && leagues.length > 0 && (
-          <div className="mb-4">
+        {/* One list, not two: the leagues your team is in and the public ones
+            you've tracked are the same choice - pick one to open its standings.
+            Provenance is a marker on the row rather than a separate section. */}
+        {leagueChoices.length > 0 && (
+          <div className="mb-6">
             <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
               Your leagues
             </span>
             <div className="flex flex-wrap gap-2">
-              {leagues.map((lg) => (
-                <button
-                  key={lg.id}
-                  onClick={() => loadStandings(lg.id)}
-                  className={`rounded-md border px-3 py-1.5 text-sm font-medium transition-colors duration-fast ease-standard ${
-                    selectedLeague === lg.id
-                      ? "border-pl-purple bg-pl-purple text-white"
-                      : "border-border-strong text-text-primary hover:bg-slate-50"
-                  }`}
-                >
-                  {lg.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {trackedIds.length > 0 && (
-          <div className="mb-6">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-              Tracked leagues
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {trackedIds.map((id) => (
-                <span
-                  key={id}
-                  className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors duration-fast ease-standard ${
-                    selectedLeague === id
-                      ? "border-pl-purple bg-pl-purple text-white"
-                      : "border-border-strong bg-white text-text-primary"
-                  }`}
-                >
-                  <button onClick={() => loadStandings(id)} className="hover:underline">
-                    League {id}
-                  </button>
-                  <button
-                    onClick={() => untrackLeague(id)}
-                    aria-label={`Stop tracking league ${id}`}
-                    className="opacity-70 hover:opacity-100"
+              {leagueChoices.map((lg) => {
+                const selected = selectedLeague === lg.id;
+                return (
+                  <span
+                    key={lg.id}
+                    className={`flex items-center gap-1.5 rounded-md border pl-3 pr-2 py-1.5 text-sm font-medium transition-colors duration-fast ease-standard ${
+                      selected
+                        ? "border-pl-purple bg-pl-purple text-white"
+                        : "border-border-strong bg-white text-text-primary hover:bg-slate-50"
+                    }`}
                   >
-                    ×
-                  </button>
-                </span>
-              ))}
+                    <button onClick={() => loadStandings(lg.id)} className="hover:underline">
+                      {lg.name}
+                    </button>
+                    {lg.tracked && (
+                      <span
+                        title="Tracked on this device"
+                        className={`font-mono text-[10px] font-semibold uppercase tracking-wide ${
+                          selected ? "text-white/70" : "text-text-muted"
+                        }`}
+                      >
+                        tracked
+                      </span>
+                    )}
+                    {lg.tracked ? (
+                      <button
+                        onClick={() => untrackLeague(lg.id)}
+                        aria-label={`Stop tracking ${lg.name}`}
+                        className="opacity-70 hover:opacity-100"
+                      >
+                        ×
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => trackLeague(lg.id, lg.name)}
+                        aria-label={`Track ${lg.name}`}
+                        title="Keep this league on this device"
+                        className="opacity-70 hover:opacity-100"
+                      >
+                        +
+                      </button>
+                    )}
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}
@@ -248,29 +309,14 @@ export default function LeaguesPage() {
 
         {standings && (
           <div>
+            {/* Tracking lives on the list row above (+ / ×), so the header is
+                just the league's name - no second control for the same thing. */}
             <div className="mb-3 flex items-center gap-3">
               <h2 className="font-semibold text-text-primary">{standings.league_name}</h2>
-              {selectedLeague != null && (
-                trackedIds.includes(selectedLeague) ? (
-                  <span className="text-xs font-medium text-pl-purple">Tracked</span>
-                ) : (
-                  <button
-                    onClick={() => {
-                      const next = [...trackedIds, selectedLeague];
-                      setTrackedIds(next);
-                      storeTrackedLeagueIds(next);
-                    }}
-                    className="rounded-md border border-pl-purple px-2.5 py-1 text-xs font-semibold text-pl-purple hover:bg-pl-purple/5"
-                  >
-                    + Track this league
-                  </button>
-                )
+              {selectedLeague != null && trackedIds.includes(selectedLeague) && (
+                <span className="text-xs font-medium text-pl-purple">Tracked</span>
               )}
             </div>
-            <p className="mb-3 -mt-2 text-xs text-text-muted">
-              Tap &quot;Track this league&quot; to save it here, then clear the Team ID field (or connect your own
-              team) to see where <em>your</em> score would rank in it.
-            </p>
 
             {standings.your_rank && (
               <div className="mb-4 rounded-lg border border-pl-purple/30 bg-pl-purple/5 px-4 py-3 text-sm">
@@ -331,14 +377,35 @@ export default function LeaguesPage() {
                   </table>
                 </div>
 
-                <h3 className="mb-3 font-semibold text-text-primary">Total points by gameweek</h3>
+                {/* Capped by default: a league can return 20 entries, and 20
+                    lines on one axis is unreadable. Your own team is always
+                    kept, whatever its rank, so the chart stays about you. */}
+                <div className="mb-3 flex flex-wrap items-center gap-3">
+                  <h3 className="font-semibold text-text-primary">Total points by gameweek</h3>
+                  {standings.trend.length > TREND_SERIES_CAP && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAllTrend((v) => !v)}
+                      className="text-xs font-semibold text-pl-purple hover:underline"
+                    >
+                      {showAllTrend
+                        ? `Show top ${TREND_SERIES_CAP}`
+                        : `Show all ${standings.trend.length}`}
+                    </button>
+                  )}
+                </div>
                 <LineChart
-                  series={standings.trend.map((entry, i) => ({
+                  series={trendSeries.map((entry, i) => ({
                     label: entry.player_name,
                     color: seriesColor(i),
                     points: entry.series.map((s) => ({ x: s.event, y: s.total_points })),
                   }))}
                 />
+                {!showAllTrend && standings.trend.length > trendSeries.length && (
+                  <p className="mt-2 text-xs text-text-muted">
+                    Showing {trendSeries.length} of {standings.trend.length} managers.
+                  </p>
+                )}
               </>
             )}
           </div>
