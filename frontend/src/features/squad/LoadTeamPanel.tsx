@@ -224,6 +224,8 @@ export function LoadTeamPanel({
                     optimizer={optimizer}
                     loading={optimizerLoading}
                     error={optimizerError}
+                    teamId={teamId}
+                    freeTransfers={freeTransfers}
                     onSwitchToOptimize={onSwitchToOptimize}
                     compact
                   />
