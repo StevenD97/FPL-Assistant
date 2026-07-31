@@ -45,6 +45,8 @@ export function optimizeTransfers(
     reference_date?: string;
     next_event?: number;
     gw_count?: number;
+    /** Force exactly this many transfers instead of letting the solver pick its own count. */
+    transfers?: number;
   },
 ) {
   return apiGet<TransferResult>(

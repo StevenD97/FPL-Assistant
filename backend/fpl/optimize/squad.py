@@ -166,7 +166,7 @@ def optimize_best_squad(players_df, budget=DEFAULT_BUDGET):
     return result
 
 
-def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_transfers=None):
+def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_transfers=None, exact_transfers=None):
     """
     Given an existing 15-man squad (by player id) and money in the bank,
     finds the provably optimal set of transfers: which players to buy
@@ -181,6 +181,12 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
     max_transfers caps how many changes the solver may consider (None =
     unlimited, bounded only by squad size/budget) - useful to keep the
     search fast, or to model "I only want to make 1-2 changes."
+    exact_transfers, if given, forces the transfer count to exactly this
+    many rather than letting the solver choose - "show me the best 3
+    transfers" even where the solver's own unconstrained answer is fewer -
+    takes precedence over max_transfers (the two aren't meant to combine).
+    Can raise the module's usual "no Optimal solution" ValueError if that
+    exact count isn't legal under the squad's rules/budget.
     """
     players_df = players_df.reset_index(drop=True)
     id_to_idx = {row.id: i for i, row in players_df.iterrows()}
@@ -197,7 +203,9 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
     xi_vars, captain_vars = _add_starting_xi_and_captain(prob, squad_vars, players_df)
 
     transfers_out = pulp.lpSum(1 - squad_vars[i] for i in current_idx)
-    if max_transfers is not None:
+    if exact_transfers is not None:
+        prob += transfers_out == exact_transfers, "exact_transfers"
+    elif max_transfers is not None:
         prob += transfers_out <= max_transfers, "max_transfers"
 
     paid_transfers = pulp.LpVariable("paid_transfers", lowBound=0)

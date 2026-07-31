@@ -48,7 +48,10 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
               <p className="mt-0.5 text-xs text-text-secondary">{period.free_hit.blank_count} of 15 blank</p>
             </>
           ) : (
-            <p className="mt-1 text-xs text-text-secondary">No strong case - hold it</p>
+            <p className="mt-1 text-xs text-text-secondary">
+              Hold it - at most {period.free_hit.blank_count} of 15 blank this window, not enough to be worth
+              it. Save it for a run of injuries/suspensions or a bigger blank gameweek.
+            </p>
           )}
         </Card>
         <Card>
@@ -61,7 +64,10 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
               <p className="mt-0.5 text-xs text-text-secondary">{period.wildcard.reason}</p>
             </>
           ) : (
-            <p className="mt-1 text-xs text-text-secondary">No major cluster found</p>
+            <p className="mt-1 text-xs text-text-secondary">
+              Hold it - no cluster of blank/double gameweeks in this window worth rebuilding around yet. Wait
+              for fixtures to congest, or for your squad to need a bigger overhaul than a couple of transfers.
+            </p>
           )}
         </Card>
       </div>

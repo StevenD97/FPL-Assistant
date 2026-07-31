@@ -18,8 +18,10 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
   return (
     <div>
       <h3 className="mb-1 font-semibold text-text-primary">Captaincy options</h3>
-      <p className="mb-3 flex items-center gap-1 text-xs text-text-muted">
-        Your starting XI, ranked by the model&apos;s rating <InfoTooltip term="score" /> - highest first.
+      <p className="mb-3 flex flex-wrap items-center gap-1 text-xs text-text-muted">
+        Your starting XI, ranked by Rating <InfoTooltip term="score" /> - a blend of form, fixture, underlying
+        quality and set-piece duty, not just next gameweek&apos;s expected points on its own, so a lower expected-points
+        figure can still rank above a higher one.
       </p>
       <div className="grid gap-2.5 sm:grid-cols-2">
         {options.map((option, i) => {
@@ -59,9 +61,13 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
                   {row && <span>vs {row.next_opponent}</span>}
                 </div>
                 <p className="mt-1 text-xs text-text-secondary">
-                  {RANK_LABEL[i] ?? `${i + 1}th pick`} ·{" "}
-                  <span className="font-mono font-medium text-text-primary">{option.ep_next.toFixed(1)}</span> expected
-                  points next gameweek
+                  {RANK_LABEL[i] ?? `${i + 1}th pick`} · Rating{" "}
+                  <span className="font-mono font-medium text-text-primary">
+                    {option.recommendation_score.toFixed(2)}
+                  </span>{" "}
+                  ·{" "}
+                  <span className="font-mono font-medium text-text-primary">{option.ep_next.toFixed(1)}</span> pts
+                  expected next gameweek
                 </p>
               </div>
             </div>

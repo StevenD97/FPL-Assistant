@@ -87,6 +87,7 @@ def squad_optimize_transfers(
     gw_count: int = 5,
     free_transfers: int = 1,
     max_transfers: Optional[int] = None,
+    transfers: Optional[int] = None,
 ):
     ref_date, next_event = resolve_gw_params(reference_date, next_event)
     if event is None:
@@ -109,10 +110,20 @@ def squad_optimize_transfers(
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
     current_squad_ids = [pick["element"] for pick in picks_data["picks"]]
     bank = picks_data["entry_history"]["bank"]
-    return service.optimize_transfers_compute(
-        current_squad_ids, bank, ref_date, next_event,
-        gw_count=gw_count, free_transfers=free_transfers, max_transfers=max_transfers,
-    )
+    try:
+        return service.optimize_transfers_compute(
+            current_squad_ids, bank, ref_date, next_event,
+            gw_count=gw_count, free_transfers=free_transfers, max_transfers=max_transfers,
+            exact_transfers=transfers,
+        )
+    except ValueError as e:
+        if transfers is not None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Couldn't find a legal squad using exactly {transfers} transfer"
+                       f"{'s' if transfers != 1 else ''} under your budget - try a different number.",
+            )
+        raise HTTPException(status_code=502, detail=str(e))
 
 
 @router.get("/api/squad/{team_id}/planner")
