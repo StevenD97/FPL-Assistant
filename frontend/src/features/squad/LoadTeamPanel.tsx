@@ -1,43 +1,42 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
 import { StatTile } from "@/shared/ui/Card";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
-import { Panel } from "@/shared/ui/Panel";
-import { Tabs, TabPanel, type TabItem } from "@/shared/ui/Tabs";
+import { StatBar } from "@/shared/ui/StatBar";
+import { Inspector } from "@/shared/ui/Inspector";
 import { nextChip } from "@/shared/lib/chips";
-import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { PlannerTable } from "./components/PlannerTable";
 import { SquadDetailTable } from "./components/SquadDetailTable";
 import { SquadPitch } from "./components/SquadPitch";
+import { SquadReadRail, type ReadRow, type SquadRead } from "./components/SquadReadRail";
 import { SuggestedTransfers } from "./components/SuggestedTransfers";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
 
-// This panel stacked everything in one scroll (~380 values, with the same 15
-// players drawn three separate times). It's four tabs now, and the first is a
-// dashboard - the team sheet with the key reads wrapped around it, the way the
-// home cockpit works - so the deeper tables are a tap away rather than below.
+// The team sheet is the one thing always on screen here; everything else is a
+// "read" you summon beside it and dismiss.
 //
-// Planner keeps the squad detail table beside it deliberately: picking a
-// replacement there previews in the planner and scrolls to it, so the two want
-// to share a panel.
-type SquadTab = "squad" | "planner" | "analysis" | "chips";
-
-const SQUAD_TABS: readonly TabItem<SquadTab>[] = [
-  { id: "squad", label: "Squad" },
-  { id: "planner", label: "Planner" },
-  { id: "analysis", label: "Analysis" },
-  { id: "chips", label: "Chips" },
-];
+// This replaced a tab bar plus a rail of four summary cards, which was two
+// navigations to the same content (and two cards that opened the same tab), and
+// which threw the pitch away whenever you looked at anything. Now the pitch
+// never unmounts - so a formation edit or a swap preview survives opening a
+// read - and only one deep thing is on screen at a time.
+const READ_TITLES: Record<SquadRead, string> = {
+  transfers: "Suggested transfers",
+  captaincy: "Captaincy options",
+  chips: "Chip strategy",
+  strength: "Squad strength",
+  detail: "Squad detail",
+  planner: "Transfer planner",
+};
 
 // Stand-in for the loaded squad view: summary lines, the pitch, a bench
 // strip, and the two panels (suggested transfers + planner table) below it.
@@ -78,7 +77,7 @@ export function LoadTeamPanel({
 }) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
-  const [tab, setTab] = useState<SquadTab>("squad");
+  const [read, setRead] = useState<SquadRead | null>(null);
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -97,14 +96,13 @@ export function LoadTeamPanel({
     selectCandidate,
     undo: undoSwap,
   } = useSwapPreview(plannerRes.data);
-  const plannerSectionRef = useRef<HTMLDivElement>(null);
-
-  // A picked replacement previews in the Transfer planner table below - jump
-  // there so the effect is immediately visible instead of something the
-  // reader has to go hunting for further down a long page.
+  // A picked replacement previews in the planner, so open that read - the
+  // effect is immediately visible instead of something to go hunting for. This
+  // used to be a scrollIntoView down a long page; with the planner in the
+  // Inspector it just phases in beside the pitch you picked from.
   function handleReplace(originalPlayerId: number, candidateId: number) {
     selectCandidate(originalPlayerId, candidateId);
-    plannerSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setRead("planner");
   }
 
   // Flattened so the markup below reads the same as it did when all of this was
@@ -119,10 +117,76 @@ export function LoadTeamPanel({
   const squadLiveIds = data?.squad.map((p) => p.live_id).filter((id): id is number => id != null) ?? [];
 
   // Dashboard summaries: one captaincy call and one chip, rather than the full
-  // lists behind the Analysis and Chips tabs.
+  // lists behind their reads.
   const topCaptain = data?.captaincy_options?.[0] ?? null;
   const currentCaptain = data?.squad.find((p) => p.captain_flag === "(C)") ?? null;
   const chip = nextChip(chips);
+  const startingCount = data?.squad.filter((p) => p.role === "Starting XI").length ?? 0;
+  const benchCount = (data?.squad.length ?? 0) - startingCount;
+  // Strongest line, so the rail's strength row says something specific rather
+  // than repeating four numbers the Inspector already lists.
+  const bestLine = data
+    ? Object.entries(data.category_scores).sort(([, a], [, b]) => b - a)[0]
+    : null;
+  // Keyed by player id, not a list - count the keys.
+  const previewCount = Object.keys(swapPreviews).length;
+
+  // The rail is the menu and the overview at once, so each row carries the
+  // readout its summary card used to.
+  const readRows: ReadRow[] = [
+    {
+      id: "transfers",
+      label: "Suggested transfers",
+      summary: optimizerLoading
+        ? "Solving…"
+        : optimizer && optimizer.transferred_out.length > 0
+          ? `↓ ${optimizer.transferred_out[0]?.web_name} ↑ ${optimizer.transferred_in[0]?.web_name}${
+              optimizer.transfers_made > 1 ? ` +${optimizer.transfers_made - 1} more` : ""
+            }`
+          : optimizer
+            ? "Already optimal - no changes"
+            : "Not available",
+    },
+    {
+      id: "captaincy",
+      label: "Captaincy",
+      summary: topCaptain
+        ? `${topCaptain.web_name} · ${topCaptain.ep_next.toFixed(1)} xP${
+            currentCaptain && currentCaptain.web_name !== topCaptain.web_name
+              ? ` · you have ${currentCaptain.web_name}`
+              : " · matches your armband"
+          }`
+        : "No read yet",
+    },
+    {
+      id: "chips",
+      label: "Chip timing",
+      summary: chipsLoading
+        ? "Scanning…"
+        : chip
+          ? `${chip.name} · GW${chip.event}`
+          : "Nothing worth playing yet",
+    },
+    {
+      id: "strength",
+      label: "Squad strength",
+      summary: bestLine ? `${bestLine[0]} strongest at ${bestLine[1].toFixed(3)}` : "—",
+    },
+    {
+      id: "detail",
+      label: "Squad detail",
+      summary: `${data?.squad.length ?? 0} players · xGI, ICT, Def/90, set pieces`,
+    },
+    {
+      id: "planner",
+      label: "Transfer planner",
+      summary: plannerLoading
+        ? "Building outlook…"
+        : previewCount > 0
+          ? `${previewCount} swap${previewCount === 1 ? "" : "s"} previewed`
+          : "Points outlook per gameweek",
+    },
+  ];
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -194,165 +258,158 @@ export function LoadTeamPanel({
             </p>
           </div>
 
-          {/* The prose summary line these replace said the same three things in
-              a sentence; as tiles they line up with the home dashboard. */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatTile label={`GW${data.event} points`} value={data.points} tooltip="gwPts" />
-            <StatTile label="Squad value" value={`£${data.squad_value}m`} tooltip="squadValue" />
-            <StatTile label="In the bank" value={`£${data.bank}m`} tooltip="bankLeft" />
-            {/* 3dp, not 1: these scores live in a 0-1 band (0.034 here), so one
-                decimal rounds every realistic value to "0.0". */}
-            <StatTile
-              label="Bench strength"
-              value={data.bench_depth_score?.toFixed(3) ?? "-"}
-              tooltip="benchStrength"
-            />
-          </div>
+          {/* One banded bar, headline first, with a context line under each
+              number - four equal tiles gave four equal-weight numbers and no
+              reading order. */}
+          <StatBar
+            items={[
+              {
+                label: `GW${data.event} points`,
+                value: data.points,
+                hint: `${startingCount} in the XI`,
+                tooltip: "gwPts",
+              },
+              {
+                label: "Squad value",
+                value: `£${data.squad_value}m`,
+                hint: `${data.squad.length} players`,
+                tooltip: "squadValue",
+              },
+              {
+                label: "In the bank",
+                value: `£${data.bank}m`,
+                hint: data.bank > 0 ? "free to spend" : "nothing spare",
+                tooltip: "bankLeft",
+              },
+              {
+                // 3dp, not 1: these scores live in a 0-1 band (0.034 here), so
+                // one decimal rounds every realistic value to "0.0".
+                label: "Bench strength",
+                value: data.bench_depth_score?.toFixed(3) ?? "-",
+                hint: `${benchCount} on the bench`,
+                tooltip: "benchStrength",
+              },
+            ]}
+          />
 
-          <Tabs tabs={SQUAD_TABS} value={tab} onChange={setTab} label="Squad views" />
+          {/* The team sheet holds its column; the rail beside it is both the menu
+              and the overview, and the Inspector takes the rail's place when a
+              read is open. */}
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
+            <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
 
-          {/* Dashboard view: the team sheet leads, with the reads that used to be
-              separate stacked sections wrapped around it as summary panels, each
-              a tap from the tab holding the full version. */}
-          <TabPanel id="squad" active={tab === "squad"}>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.35fr_1fr]">
-              <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
+            {/* Rail and panel occupy the same single grid cell, so they stack
+                without absolute positioning or z-index (DOM order paints the
+                panel on top) and the cell is always as tall as the taller of
+                the two.
+                The rail is hidden rather than unmounted on purpose: unmounting
+                it returned it the instant `read` cleared, while the panel was
+                still 180ms into animating out of the same column - so closing
+                jumped the layout by the panel's height. Keeping it mounted
+                holds the column steady through the exit. */}
+            <div className="grid">
+              <div
+                className={`col-start-1 row-start-1 ${
+                  read != null ? "invisible pointer-events-none" : ""
+                }`}
+              >
+                <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
+              </div>
 
-              <div className="flex flex-col gap-3">
-                <Panel title="Suggested transfer" cta="Planner" onAction={() => setTab("planner")}>
-                  <SuggestedTransfers
-                    optimizer={optimizer}
-                    loading={optimizerLoading}
-                    error={optimizerError}
-                    teamId={teamId}
-                    freeTransfers={freeTransfers}
-                    onSwitchToOptimize={onSwitchToOptimize}
-                    compact
-                  />
-                </Panel>
-
-                <Panel title="Captaincy pick" cta="All options" onAction={() => setTab("analysis")}>
-                  {topCaptain ? (
-                    <>
-                      <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-text-primary">
-                        {topCaptain.web_name}
-                        <PositionBadge position={topCaptain.pos} />
-                        <TeamBadge teamShort={topCaptain.team_short} name={topCaptain.team_short} />
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-text-secondary">
-                        <span className="font-mono">{topCaptain.ep_next.toFixed(1)}</span> expected points
-                        {currentCaptain && currentCaptain.web_name !== topCaptain.web_name
-                          ? ` · you have ${currentCaptain.web_name}`
-                          : " · matches your armband"}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-text-muted">No captaincy read yet.</p>
+              <div className="col-start-1 row-start-1">
+                <Inspector
+                  open={read != null}
+                  title={read ? READ_TITLES[read] : ""}
+                  eyebrow={data.entry_name}
+                  onClose={() => setRead(null)}
+                >
+                  {read === "transfers" && (
+                    <SuggestedTransfers
+                      optimizer={optimizer}
+                      loading={optimizerLoading}
+                      error={optimizerError}
+                      teamId={teamId}
+                      freeTransfers={freeTransfers}
+                      onSwitchToOptimize={onSwitchToOptimize}
+                    />
                   )}
-                </Panel>
 
-                <Panel title="Chip timing" cta="Full scan" onAction={() => setTab("chips")}>
-                  {chipsLoading && <p className="text-sm text-text-muted">Scanning…</p>}
-                  {!chipsLoading && chip && (
-                    <>
-                      <p className="text-sm font-semibold text-text-primary">
-                        {chip.name} <span className="text-pl-purple">· GW{chip.event}</span>
+                  {read === "captaincy" && (
+                    <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
+                  )}
+
+                  {read === "chips" && (
+                    <div>
+                      <p className="mb-3 text-xs text-text-muted">
+                        Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
+                        {chips && (
+                          <>
+                            Every manager gets a completely fresh set of all four chips at the GW
+                            {chips.reset_event} deadline - anything unused before it is lost, not carried
+                            over - so the two halves below are scored independently.
+                          </>
+                        )}
                       </p>
-                      <p className="mt-0.5 truncate text-[11px] text-text-secondary">{chip.detail}</p>
-                    </>
+                      {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
+                      {chipsError && (
+                        <Alert kind="warning">
+                          Couldn&apos;t scan chip timing ({chipsError}) - the squad is unaffected.
+                        </Alert>
+                      )}
+                      {chips && (
+                        <div className="space-y-5">
+                          {chips.periods.map((period) => (
+                            <ChipPeriodCards key={period.label} period={period} />
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   )}
-                  {!chipsLoading && !chip && (
-                    <p className="text-sm text-text-muted">No chip worth playing yet.</p>
-                  )}
-                </Panel>
 
-                <Panel title="Squad strength" cta="Breakdown" onAction={() => setTab("analysis")}>
-                  <ul className="flex flex-col">
-                    {Object.entries(data.category_scores).map(([pos, score]) => (
-                      <li
-                        key={pos}
-                        className="flex items-center justify-between gap-3 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
-                      >
-                        <span className="text-text-secondary">{pos}</span>
-                        <span className="font-mono font-semibold text-pl-purple">{score.toFixed(3)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Panel>
+                  {read === "strength" && (
+                    <div>
+                      <p className="mb-3 text-xs text-text-muted">
+                        How each position scores for this squad, and how much is sitting on the bench.
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        {Object.entries(data.category_scores).map(([pos, score]) => (
+                          <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
+                        ))}
+                        <StatTile
+                          label="Bench depth"
+                          value={data.bench_depth_score?.toFixed(3) ?? "-"}
+                          tooltip="benchStrength"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {read === "detail" && (
+                    <SquadDetailTable
+                      squad={data.squad}
+                      bank={data.bank}
+                      excludeIds={squadLiveIds}
+                      onReplace={handleReplace}
+                    />
+                  )}
+
+                  {read === "planner" && (
+                    <PlannerTable
+                      planner={planner}
+                      loading={plannerLoading}
+                      error={plannerError}
+                      swapPreviews={swapPreviews}
+                      swapLoading={swapLoading}
+                      dragOverRow={dragOverRow}
+                      setDragOverRow={setDragOverRow}
+                      onSwapDrop={handleSwapDrop}
+                      onUndoSwap={undoSwap}
+                    />
+                  )}
+                </Inspector>
               </div>
             </div>
-          </TabPanel>
-
-          <TabPanel id="planner" active={tab === "planner"} className="space-y-8">
-            <SuggestedTransfers
-              optimizer={optimizer}
-              loading={optimizerLoading}
-              error={optimizerError}
-              teamId={teamId}
-              freeTransfers={freeTransfers}
-              onSwitchToOptimize={onSwitchToOptimize}
-            />
-
-            <div ref={plannerSectionRef}>
-              <PlannerTable
-                planner={planner}
-                loading={plannerLoading}
-                error={plannerError}
-                swapPreviews={swapPreviews}
-                swapLoading={swapLoading}
-                dragOverRow={dragOverRow}
-                setDragOverRow={setDragOverRow}
-                onSwapDrop={handleSwapDrop}
-                onUndoSwap={undoSwap}
-              />
-            </div>
-
-            <SquadDetailTable
-              squad={data.squad}
-              bank={data.bank}
-              excludeIds={squadLiveIds}
-              onReplace={handleReplace}
-            />
-
-          </TabPanel>
-
-          <TabPanel id="analysis" active={tab === "analysis"} className="space-y-8">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-            {Object.entries(data.category_scores).map(([pos, score]) => (
-              <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
-            ))}
-            <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} tooltip="benchStrength" />
           </div>
-
-          <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
-          </TabPanel>
-
-          {/* Chip strategy - folded in from the old standalone /chips page so
-              it lives with the team it's about. */}
-          <TabPanel id="chips" active={tab === "chips"}>
-            <h3 className="mb-1 font-semibold text-text-primary">Chip strategy</h3>
-            <p className="mb-3 text-xs text-text-muted">
-              Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
-              {chips && (
-                <>
-                  Every manager gets a completely fresh set of all four chips at the GW{chips.reset_event} deadline
-                  - anything unused before it is lost, not carried over - so the two halves below are scored
-                  independently.
-                </>
-              )}
-            </p>
-            {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
-            {chipsError && (
-              <Alert kind="warning">Couldn&apos;t scan chip timing ({chipsError}) - the squad above is unaffected.</Alert>
-            )}
-            {chips && (
-              <div className="space-y-5">
-                {chips.periods.map((period) => (
-                  <ChipPeriodCards key={period.label} period={period} />
-                ))}
-              </div>
-            )}
-          </TabPanel>
         </div>
       )}
     </div>
