@@ -16,6 +16,8 @@ export type PitchPlayer = {
   subtitle?: string;
   // If set, the player's badge/photo becomes a link (e.g. to their detail page).
   href?: string;
+  // Highlight ring - e.g. picked as the subject of a pending substitution.
+  selected?: boolean;
 };
 
 // Row index by position, and its inverse so empty-slot placeholders know which
@@ -32,6 +34,7 @@ export function PitchFormation({
   players,
   emptyByPosition,
   onPlayerClick,
+  playerClickLabel,
   onRemove,
   onSlotClick,
   renderTransfer,
@@ -42,6 +45,8 @@ export function PitchFormation({
   emptyByPosition?: Partial<Record<Position, number>>;
   /** If set, clicking a player invokes this instead of following `href`. */
   onPlayerClick?: (id: number) => void;
+  /** Accessible label for the `onPlayerClick` button - callers give this a verb matching what the click actually does (view stats, select for a substitution, ...). */
+  playerClickLabel?: (name: string) => string;
   /** If set, each player shows a small × remove control. */
   onRemove?: (id: number) => void;
   /** If set, clicking an empty placeholder slot invokes this with its position. */
@@ -87,6 +92,7 @@ export function PitchFormation({
                 key={p.id}
                 player={p}
                 onPlayerClick={onPlayerClick}
+                playerClickLabel={playerClickLabel}
                 onRemove={onRemove}
                 transfer={renderTransfer?.(p)}
               />
@@ -125,16 +131,18 @@ function EmptySlot({ position, onClick }: { position: Position; onClick?: (posit
 function PitchPlayerCard({
   player: p,
   onPlayerClick,
+  playerClickLabel,
   onRemove,
   transfer,
 }: {
   player: PitchPlayer;
   onPlayerClick?: (id: number) => void;
+  playerClickLabel?: (name: string) => string;
   onRemove?: (id: number) => void;
   transfer?: React.ReactNode;
 }) {
   const badge = (
-    <div className="relative">
+    <div className={`relative rounded-full ${p.selected ? "ring-4 ring-pl-green ring-offset-2" : ""}`}>
       <PlayerPhoto
         src={p.photo}
         name={p.name}
@@ -155,6 +163,20 @@ function PitchPlayerCard({
         </span>
       )}
     </div>
+  );
+
+  const content = (
+    <>
+      {badge}
+      <span className="whitespace-nowrap rounded-sm bg-white/[0.92] px-2 py-0.5 text-[11px] font-medium text-text-primary">
+        {p.name}
+      </span>
+      {p.subtitle && (
+        <span className="whitespace-nowrap rounded-sm bg-black/20 px-1.5 py-0.5 text-[10px] font-mono text-white">
+          {p.subtitle}
+        </span>
+      )}
+    </>
   );
 
   return (
@@ -179,25 +201,20 @@ function PitchPlayerCard({
         <button
           type="button"
           onClick={() => onPlayerClick(p.id)}
-          className="transition-transform duration-fast ease-standard hover:scale-105"
-          aria-label={`View ${p.name}'s stats`}
+          className="flex flex-col items-center gap-1 transition-transform duration-fast ease-standard hover:scale-105"
+          aria-label={playerClickLabel ? playerClickLabel(p.name) : `View ${p.name}'s stats`}
         >
-          {badge}
+          {content}
         </button>
       ) : p.href ? (
-        <Link href={p.href} className="transition-transform duration-fast ease-standard hover:scale-105">
-          {badge}
+        <Link
+          href={p.href}
+          className="flex flex-col items-center gap-1 transition-transform duration-fast ease-standard hover:scale-105"
+        >
+          {content}
         </Link>
       ) : (
-        badge
-      )}
-      <span className="whitespace-nowrap rounded-sm bg-white/[0.92] px-2 py-0.5 text-[11px] font-medium text-text-primary">
-        {p.name}
-      </span>
-      {p.subtitle && (
-        <span className="whitespace-nowrap rounded-sm bg-black/20 px-1.5 py-0.5 text-[10px] font-mono text-white">
-          {p.subtitle}
-        </span>
+        content
       )}
     </div>
   );
