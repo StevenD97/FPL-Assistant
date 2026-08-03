@@ -157,9 +157,17 @@
      undersized at 1600px.
 
      Each clamp is solved for its endpoints rather than eyeballed - it hits the
-     min at a 375px viewport and the max at 1440px:
+     min at a 375px viewport and the max at 1280px:
        slope = (max - min) / (W2 - W1)      vw part = slope * 100
        fixed part = min - slope * W1
+     The maxima are the previous fixed values (32/44/60), and 1280px is where
+     they're reached, so a laptop and anything wider renders exactly as it did
+     before - desktop loses no size. Only the range *below* a laptop changes,
+     which is the gap this was for: the old fixed steps jumped 32 -> 44 -> 60
+     with nothing between, so a 44px heading was oversized in a 900px window.
+     Topping out at 1440px instead (the first attempt) quietly shrank every
+     desktop heading, which is the opposite of the point.
+
      The fixed part is in `rem`, not `px`, so the whole value still scales with
      the reader's browser font-size setting. A pure-vw interpolant ignores that
      preference (WCAG 1.4.4); mixing in rem keeps it honoured. */
@@ -171,9 +179,9 @@
   --text-md: 17px;
   --text-lg: 20px;
   --text-xl: 24px;
-  --text-2xl: clamp(1.625rem, 0.56vw + 1.493rem, 2rem); /* 26 -> 32px */
-  --text-3xl: clamp(2rem, 1.13vw + 1.736rem, 2.75rem); /* 32 -> 44px */
-  --text-4xl: clamp(2.375rem, 2.07vw + 1.891rem, 3.75rem); /* 38 -> 60px */
+  --text-2xl: clamp(1.625rem, 0.663vw + 1.47rem, 2rem); /* 26 -> 32px by 1280 */
+  --text-3xl: clamp(2rem, 1.326vw + 1.689rem, 2.75rem); /* 32 -> 44px by 1280 */
+  --text-4xl: clamp(2.375rem, 2.431vw + 1.805rem, 3.75rem); /* 38 -> 60px by 1280 */
   --tracking-wide: 0.04em;
 
   /* Radius */

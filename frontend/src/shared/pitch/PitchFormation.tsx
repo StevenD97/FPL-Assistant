@@ -132,8 +132,13 @@ export function PitchFormation({
 
   return (
     <div className={PITCH_CONTAINER}>
+      {/* `min-h` stays a fixed 480px rather than scaling with the container. The
+          interior (kits, markings, gaps) is what needed to follow the container;
+          the pitch's *height* is the canvas those sit on, and making it fluid
+          only took height away - a 549px-wide workspace pitch lost ~50px of
+          vertical room for no gain. */}
       <div
-        className={`bg-fpl-pitch relative flex min-h-[clamp(22rem,78cqw,30rem)] flex-col justify-between gap-[clamp(1.25rem,4.6cqw,1.5rem)] overflow-hidden rounded-lg px-[clamp(0.75rem,4.6cqw,1.5rem)] ${
+        className={`bg-fpl-pitch relative flex min-h-[480px] flex-col justify-between gap-[clamp(1.25rem,4.6cqw,1.5rem)] overflow-hidden rounded-lg px-[clamp(0.75rem,4.6cqw,1.5rem)] ${
           inset ? "py-[clamp(3.5rem,13cqw,4rem)]" : "py-[clamp(1.5rem,6cqw,2rem)]"
         }`}
       >
