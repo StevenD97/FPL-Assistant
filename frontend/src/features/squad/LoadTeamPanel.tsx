@@ -328,129 +328,114 @@ export function LoadTeamPanel({
             ]}
           />
 
-          {/* The team sheet holds its column; the rail beside it is both the menu
-              and the overview, and the Inspector takes the rail's place when a
-              read is open. */}
+          {/* The team sheet and the rail share the top row; the read itself opens
+              full width underneath.
+              It used to open *in* the rail's column, which kept everything on one
+              screen but left a read 431px wide on a 1440px display - a quarter of
+              the page for the content the reader actually asked for, and prose
+              cards wrapping to a few words a line. Beneath the pitch it gets the
+              full 1088px while the team sheet stays visible, which was the point
+              of moving reads out of tabs in the first place.
+              Separating them also retires three workarounds the shared cell
+              needed: the rail no longer has to stay mounted-but-hidden to stop the
+              column collapsing mid-exit, and the panel no longer needs
+              `pointer-events-none` to avoid swallowing clicks on the rail it was
+              invisibly covering. */}
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
             <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
-
-            {/* Rail and panel occupy the same single grid cell, so they stack
-                without absolute positioning or z-index (DOM order paints the
-                panel on top) and the cell is always as tall as the taller of
-                the two.
-                The rail is hidden rather than unmounted on purpose: unmounting
-                it returned it the instant `read` cleared, while the panel was
-                still 180ms into animating out of the same column - so closing
-                jumped the layout by the panel's height. Keeping it mounted
-                holds the column steady through the exit. */}
-            <div className="grid">
-              <div
-                className={`col-start-1 row-start-1 ${
-                  read != null ? "invisible pointer-events-none" : ""
-                }`}
-              >
-                <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
-              </div>
-
-              {/* pointer-events-none is load-bearing: a grid item stretches to
-                  fill its cell by default, so this wrapper covers the whole
-                  rail even with nothing open and - being later in DOM order -
-                  swallows every click on it. The panel itself takes pointer
-                  events back. self-start keeps the empty wrapper zero-height. */}
-              <div className="pointer-events-none col-start-1 row-start-1 self-start">
-                <Inspector
-                  open={read != null}
-                  title={read ? READ_TITLES[read] : ""}
-                  eyebrow={data.entry_name}
-                  onClose={() => setRead(null)}
-                >
-                  {read === "transfers" && (
-                    <SuggestedTransfers
-                      optimizer={optimizer}
-                      loading={optimizerLoading}
-                      error={optimizerError}
-                      teamId={teamId}
-                      freeTransfers={freeTransfers}
-                      onSwitchToOptimize={onSwitchToOptimize}
-                    />
-                  )}
-
-                  {read === "captaincy" && (
-                    <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
-                  )}
-
-                  {read === "chips" && (
-                    <div>
-                      <p className="mb-3 text-xs text-text-muted">
-                        Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
-                        {chips && (
-                          <>
-                            Every manager gets a completely fresh set of all four chips at the GW
-                            {chips.reset_event} deadline - anything unused before it is lost, not carried
-                            over - so the two halves below are scored independently.
-                          </>
-                        )}
-                      </p>
-                      {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
-                      {chipsError && (
-                        <Alert kind="warning">
-                          Couldn&apos;t scan chip timing ({chipsError}) - the squad is unaffected.
-                        </Alert>
-                      )}
-                      {chips && (
-                        <div className="space-y-5">
-                          {chips.periods.map((period) => (
-                            <ChipPeriodCards key={period.label} period={period} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {read === "strength" && (
-                    <div>
-                      <p className="mb-3 text-xs text-text-muted">
-                        How each position scores for this squad, and how much is sitting on the bench.
-                      </p>
-                      <div className="grid grid-cols-2 gap-3">
-                        {Object.entries(data.category_scores).map(([pos, score]) => (
-                          <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
-                        ))}
-                        <StatTile
-                          label="Bench depth"
-                          value={data.bench_depth_score?.toFixed(3) ?? "-"}
-                          tooltip="benchStrength"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {read === "detail" && (
-                    <SquadDetailTable
-                      squad={data.squad}
-                      bank={data.bank}
-                      excludeIds={squadLiveIds}
-                      onReplace={handleReplace}
-                    />
-                  )}
-
-                  {read === "planner" && (
-                    <PlannerTable
-                      planner={planner}
-                      loading={plannerLoading}
-                      error={plannerError}
-                      swapPreviews={swapPreviews}
-                      swapLoading={swapLoading}
-                      dragOverRow={dragOverRow}
-                      setDragOverRow={setDragOverRow}
-                      onSwapDrop={handleSwapDrop}
-                      onUndoSwap={undoSwap}
-                    />
-                  )}
-                </Inspector>
-              </div>
-            </div>
+            <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
           </div>
+
+          <Inspector
+            open={read != null}
+            title={read ? READ_TITLES[read] : ""}
+            eyebrow={data.entry_name}
+            onClose={() => setRead(null)}
+          >
+            {read === "transfers" && (
+              <SuggestedTransfers
+                optimizer={optimizer}
+                loading={optimizerLoading}
+                error={optimizerError}
+                teamId={teamId}
+                freeTransfers={freeTransfers}
+                onSwitchToOptimize={onSwitchToOptimize}
+              />
+            )}
+
+            {read === "captaincy" && (
+              <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
+            )}
+
+            {read === "chips" && (
+              <div>
+                <p className="mb-3 text-xs text-text-muted">
+                  Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
+                  {chips && (
+                    <>
+                      Every manager gets a completely fresh set of all four chips at the GW
+                      {chips.reset_event} deadline - anything unused before it is lost, not carried over - so
+                      the two halves below are scored independently.
+                    </>
+                  )}
+                </p>
+                {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
+                {chipsError && (
+                  <Alert kind="warning">
+                    Couldn&apos;t scan chip timing ({chipsError}) - the squad is unaffected.
+                  </Alert>
+                )}
+                {chips && (
+                  <div className="space-y-5">
+                    {chips.periods.map((period) => (
+                      <ChipPeriodCards key={period.label} period={period} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {read === "strength" && (
+              <div>
+                <p className="mb-3 text-xs text-text-muted">
+                  How each position scores for this squad, and how much is sitting on the bench.
+                </p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  {Object.entries(data.category_scores).map(([pos, score]) => (
+                    <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
+                  ))}
+                  <StatTile
+                    label="Bench depth"
+                    value={data.bench_depth_score?.toFixed(3) ?? "-"}
+                    tooltip="benchStrength"
+                  />
+                </div>
+              </div>
+            )}
+
+            {read === "detail" && (
+              <SquadDetailTable
+                squad={data.squad}
+                bank={data.bank}
+                excludeIds={squadLiveIds}
+                onReplace={handleReplace}
+              />
+            )}
+
+            {read === "planner" && (
+              <PlannerTable
+                planner={planner}
+                loading={plannerLoading}
+                error={plannerError}
+                swapPreviews={swapPreviews}
+                swapLoading={swapLoading}
+                dragOverRow={dragOverRow}
+                setDragOverRow={setDragOverRow}
+                onSwapDrop={handleSwapDrop}
+                onUndoSwap={undoSwap}
+              />
+            )}
+          </Inspector>
         </div>
       )}
     </div>
