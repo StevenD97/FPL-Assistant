@@ -8,7 +8,7 @@ import { BuildSquadPanel } from "@/features/squad/BuildSquadPanel";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Button } from "@/shared/ui/Button";
 import { TextField } from "@/shared/ui/TextField";
-import { parseTeamId } from "@/shared/lib/team";
+import { loadStoredTeamId, parseTeamId } from "@/shared/lib/team";
 import { deleteLocalTeam, useLocalTeams } from "@/shared/lib/localTeams";
 import { useSquadDraftCount } from "@/shared/lib/draft";
 
@@ -56,11 +56,23 @@ export default function SquadPage() {
   // Default landing view. Your own team wins, then anything you've saved here,
   // and only with nothing at all do we open the draft - the page is for the team
   // you already have, not for starting another one.
+  //
+  // `connectedId` arrives a beat late (TeamProvider restores it from localStorage
+  // and fetches the entry), so defaulting on the first pass opened the *draft* and
+  // then swapped to your team once the id landed - a flash of the wrong workspace
+  // on every visit. Reading the stored id directly tells us a team is coming, so
+  // we can wait for it instead of guessing and correcting.
   const [chosen, setChosen] = useState(false);
   useEffect(() => {
     if (chosen) return;
-    if (connectedId != null) setSelection({ kind: "fpl", id: connectedId });
-    else if (localTeams.length > 0) setSelection({ kind: "local", id: localTeams[0].id });
+    if (connectedId != null) {
+      setSelection({ kind: "fpl", id: connectedId });
+      return;
+    }
+    // A team is stored but hasn't loaded yet - hold rather than mount something
+    // we're about to replace.
+    if (loadStoredTeamId() != null) return;
+    if (localTeams.length > 0) setSelection({ kind: "local", id: localTeams[0].id });
     else setSelection({ kind: "draft" });
   }, [connectedId, localTeams, chosen]);
 

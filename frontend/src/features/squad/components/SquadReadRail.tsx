@@ -2,13 +2,25 @@
 
 import type { ReactNode } from "react";
 
-export type SquadRead = "transfers" | "captaincy" | "chips" | "strength" | "detail" | "planner";
+export type SquadRead =
+  | "transfers"
+  | "captaincy"
+  | "chips"
+  | "strength"
+  | "detail"
+  | "planner"
+  | "setup";
 
 /**
- * One accent per read, drawn from the semantic palette rather than six
+ * One accent per read, drawn from the semantic palette rather than seven
  * arbitrary hues, so the set reads as designed instead of as noise. Colour plus
  * glyph makes each row recognisable before it's read - which is the point of a
  * menu you return to repeatedly.
+ *
+ * `setup` deliberately takes the quietest tone in the set. It belongs in the rail
+ * because it's the same shape of interaction as the rest - pick a row, it opens
+ * beside the team sheet - but it's the one row you visit once rather than return
+ * to, so it shouldn't compete with the reads that carry an answer.
  */
 const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: string }> = {
   transfers: { icon: "text-success", text: "text-success", tint: "bg-success-bg", bar: "bg-success" },
@@ -17,6 +29,7 @@ const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: 
   strength: { icon: "text-info", text: "text-info", tint: "bg-info-bg", bar: "bg-info" },
   detail: { icon: "text-slate-600", text: "text-slate-600", tint: "bg-slate-100", bar: "bg-slate-600" },
   planner: { icon: "text-pl-pink", text: "text-pl-pink", tint: "bg-danger-bg", bar: "bg-pl-pink" },
+  setup: { icon: "text-slate-500", text: "text-slate-500", tint: "bg-slate-100", bar: "bg-slate-400" },
 };
 
 export type ReadRow = {
@@ -24,6 +37,12 @@ export type ReadRow = {
   label: string;
   /** One-line readout, so the rail still says something with nothing open. */
   summary: ReactNode;
+  /**
+   * In the rail, but not a read. Sits below a divider and is left out of the
+   * header count, so "Reads 6" keeps meaning six answers about the squad even
+   * though setup shares the same list and the same panel.
+   */
+  aside?: boolean;
 };
 
 /**
@@ -50,15 +69,23 @@ export function SquadReadRail({
       <p className="flex items-center gap-2 border-b border-border bg-surface-sunken px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted">
         Reads
         <span className="font-mono text-[10px] font-semibold normal-case tracking-normal text-text-muted/70">
-          {rows.length}
+          {rows.filter((r) => !r.aside).length}
         </span>
       </p>
       <ul>
-        {rows.map((row) => {
+        {rows.map((row, i) => {
           const isActive = active === row.id;
           const tone = TONES[row.id];
+          // A heavier rule where the asides begin, so setup reads as attached to
+          // the rail rather than as a seventh answer.
+          const startsAsides = row.aside && !rows[i - 1]?.aside;
           return (
-            <li key={row.id} className="border-b border-border last:border-b-0">
+            <li
+              key={row.id}
+              className={`border-b border-border last:border-b-0 ${
+                startsAsides ? "border-t-2 border-t-border" : ""
+              }`}
+            >
               <button
                 type="button"
                 onClick={() => onSelect(row.id)}
@@ -179,6 +206,16 @@ function ReadIcon({ id }: { id: SquadRead }) {
         <svg {...common}>
           <rect x="3" y="5" width="18" height="16" rx="2" />
           <path d="M3 10h18M8 3v4M16 3v4" />
+        </svg>
+      );
+    case "setup":
+      // Sliders - settings rather than a cog, since these are values you dial in
+      // rather than options you switch on.
+      return (
+        <svg {...common}>
+          <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+          <circle cx="16" cy="7" r="2.2" />
+          <circle cx="8" cy="17" r="2.2" />
         </svg>
       );
   }
