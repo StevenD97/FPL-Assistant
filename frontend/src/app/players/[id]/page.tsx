@@ -3,7 +3,7 @@
 import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
 import { TableFrame, Th } from "@/shared/ui/Table";
-import { PlayerCard } from "@/features/players/PlayerCard";
+import { PlayerCard } from "@/shared/ui/PlayerCard";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { TextField } from "@/shared/ui/TextField";

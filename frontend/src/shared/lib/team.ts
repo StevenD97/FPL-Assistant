@@ -129,6 +129,46 @@ export function storeTrackedLeagueName(id: number, name: string): void {
   }
 }
 
+// Label cache for tracked teams, learned when an entry loads. Same shape and
+// same reasoning as the league cache above: the id list stays the source of
+// truth, this only means a chip can say "Bruno's XI" instead of "Team 1178869"
+// once we've seen the name. An uncached id still renders, just less usefully.
+const TEAM_NAMES_KEY = "fpl.trackedTeamNames";
+
+export function loadTrackedTeamNames(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const v = window.localStorage.getItem(TEAM_NAMES_KEY);
+    if (!v) return {};
+    const parsed = JSON.parse(v);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function storeTrackedTeamName(id: number, name: string): void {
+  try {
+    const next = { ...loadTrackedTeamNames(), [String(id)]: name };
+    window.localStorage.setItem(TEAM_NAMES_KEY, JSON.stringify(next));
+  } catch {
+    // Ignore.
+  }
+}
+
+/**
+ * Where a squad in the workspace came from, which decides what you can do to it.
+ *
+ * - `"fpl"` - a real entry pulled from the official game by public id. Its picks
+ *   are whatever FPL says they are, so it can be reloaded but not edited.
+ * - `"local"` - a squad built here and saved. Nothing upstream owns it, so it
+ *   can be edited and renamed but there's nothing to reload from.
+ *
+ * The distinction is worth carrying in the model rather than inferring it,
+ * because it's the thing that decides which controls a team gets.
+ */
+export type TeamSource = "fpl" | "local";
+
 export function formatRank(n: number | null): string {
   return n == null ? "—" : n.toLocaleString("en-GB");
 }

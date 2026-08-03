@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
-import { StatTile } from "@/shared/ui/Card";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { Select } from "@/shared/ui/Select";
@@ -15,10 +14,19 @@ import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
+import { PlayerPeek } from "@/shared/ui/PlayerPeek";
 import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
+import {
+  createLocalTeam,
+  getLocalTeam,
+  updateLocalTeam,
+  type LocalTeam,
+} from "@/shared/lib/localTeams";
 import { useFlash } from "@/shared/lib/useFlash";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 import { apiGet } from "@/shared/lib/api";
 import type {
+  BestSquadResult,
   PlayerAlternative,
   PoolPlayer,
   Position,
@@ -75,7 +83,19 @@ function BuildSquadSkeleton() {
   );
 }
 
-export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: () => void }) {
+/**
+ * The one squad-building workspace, for both the scratchpad draft and a saved
+ * squad. `localTeamId` decides only where edits are persisted - a saved squad
+ * *is* an editable squad, so giving it a separate surface would have meant two
+ * builders to keep in step.
+ */
+export function BuildSquadPanel({
+  localTeamId,
+  onSaved,
+}: {
+  localTeamId?: string;
+  onSaved?: (team: LocalTeam) => void;
+}) {
   const [players, setPlayers] = useState<PoolPlayer[] | null>(null);
   const [fixtures, setFixtures] = useState<SquadBuilderFixtureRow[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -87,24 +107,35 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
   const [positionFilter, setPositionFilter] = useState<Position | "All">("All");
   const [statsId, setStatsId] = useState<number | null>(null);
 
-  // Auto-save the draft to this device. Restore once on mount (in an effect, not
-  // a lazy initializer, so server and first client render match); only start
-  // persisting after that so the empty initial state can't clobber a saved draft.
+  // Auto-save to this device. Restore once on mount (in an effect, not a lazy
+  // initializer, so server and first client render match); only start persisting
+  // after that so the empty initial state can't clobber what was saved.
+  //
+  // Which store is used is the only thing `localTeamId` changes: a saved squad
+  // writes back to itself, the scratchpad writes to the draft.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     // Restore in an effect (not a lazy initializer) so the server/first-client
     // render stays empty and matches - reading localStorage during render would
     // hydration-mismatch.
-    const draft = loadSquadDraft();
+    const saved = localTeamId ? getLocalTeam(localTeamId) : null;
+    const source = saved
+      ? { ids: saved.playerIds, budget: saved.budget }
+      : localTeamId
+        ? // The id is stale (deleted in another tab); start empty rather than
+          // silently editing the unrelated scratchpad.
+          { ids: [], budget: 100 }
+        : loadSquadDraft();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSquadIdList(draft.ids);
-    setBudget(draft.budget);
+    setSquadIdList(source.ids);
+    setBudget(source.budget);
     setHydrated(true);
-  }, []);
+  }, [localTeamId]);
   useEffect(() => {
     if (!hydrated) return;
-    storeSquadDraft({ ids: squadIdList, budget });
-  }, [hydrated, squadIdList, budget]);
+    if (localTeamId) updateLocalTeam(localTeamId, { playerIds: squadIdList, budget });
+    else storeSquadDraft({ ids: squadIdList, budget });
+  }, [hydrated, squadIdList, budget, localTeamId]);
 
   useEffect(() => {
     async function load() {
@@ -206,6 +237,54 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
 
   const [finishWarning, setFinishWarning] = useState<string | null>(null);
 
+  // Auto-optimise is an action on this squad, not a separate mode. It used to be
+  // a sibling panel behind a Manual/Auto pill pair, which framed them as equal
+  // alternatives and threw away your manual work on switching - the solver
+  // *produces* a squad, so it belongs as a button that fills this one.
+  const season = useSeasonStatus();
+  const [optimising, setOptimising] = useState(false);
+  const [optimiseError, setOptimiseError] = useState<string | null>(null);
+  /** The squad as it was before the last solve, so a solve is undoable. */
+  const [preOptimise, setPreOptimise] = useState<number[] | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [saveName, setSaveName] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function autoOptimise() {
+    setOptimising(true);
+    setOptimiseError(null);
+    setFinishWarning(null);
+    try {
+      // `budget` is £m here; the endpoint takes tenths.
+      const nextEvent = season?.next_event ?? 1;
+      const referenceDate = (season?.next_deadline ?? new Date().toISOString()).slice(0, 10);
+      const result = await apiGet<BestSquadResult>(
+        `/api/optimizer/best-squad?reference_date=${referenceDate}&next_event=${nextEvent}&gw_count=5&budget=${Math.round(
+          budget * 10,
+        )}`,
+      );
+      setPreOptimise(squadIdList);
+      setSquadIdList(result.squad.map((r) => r.id));
+    } catch (e) {
+      setOptimiseError(e instanceof Error ? e.message : "Couldn't reach the optimizer");
+    } finally {
+      setOptimising(false);
+    }
+  }
+
+  function undoOptimise() {
+    if (preOptimise == null) return;
+    setSquadIdList(preOptimise);
+    setPreOptimise(null);
+  }
+
+  function saveAsTeam() {
+    const team = createLocalTeam(saveName, squadIdList, budget);
+    setSaveName("");
+    setSaving(false);
+    onSaved?.(team);
+  }
+
   function finishSquad() {
     if (!players) return;
     const { newIds, skippedPositions } = pickSquadCompletion(players, squad, squadIds, budget);
@@ -297,17 +376,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
 
   return (
     <div>
-      <p className="mb-6 text-sm text-text-secondary">
-        Draft within budget, get live diagnostics, and swap or click into any player.{" "}
-        {onSwitchToOptimize && (
-          <>
-            Or let the solver do it -{" "}
-            <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
-              Auto-optimize
-            </button>{" "}
-            builds a provably-optimal squad for your budget.
-          </>
-        )}
+      <p className="mb-5 text-sm text-text-secondary">
+        Draft your squad, get live diagnostics, and swap or click into any player.
       </p>
 
       {loading && <BuildSquadSkeleton />}
@@ -315,54 +385,136 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
 
       {players && fixtures && (
         <>
-          <div className="mb-6 flex flex-wrap items-end gap-6">
-            <TextField
-              label="Budget (£m)"
-              hint="budget"
-              type="number"
-              min={80}
-              max={120}
-              step={0.5}
-              value={budget}
-              onChange={(e) => {
-                setFinishWarning(null);
-                setBudget(Number(e.target.value));
-              }}
-              wrapperClassName="w-28"
-            />
+          {/* Progress and the two things you'd do to it. Budget is stated rather
+              than presented as a field: it's set once, so an always-visible input
+              spent prime space on a decision nobody revisits. It stays readable
+              and one click from editable, because it does change the result. */}
+          <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-3">
             <div className="text-sm text-text-secondary">
-              <span className="font-mono font-medium text-text-primary">
-                {squadIdList.length}/15
-              </span>{" "}
+              <span className="font-mono font-medium text-text-primary">{squadIdList.length}/15</span>{" "}
               players &middot; spent{" "}
-              <span className="font-mono font-medium text-text-primary">
-                £{totalCost.toFixed(1)}m
-              </span>{" "}
+              <span className="font-mono font-medium text-text-primary">£{totalCost.toFixed(1)}m</span>{" "}
               &middot; remaining{" "}
-              <span className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}>
+              <span
+                className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}
+              >
                 £{budgetRemaining.toFixed(1)}m
               </span>
             </div>
-            <div className="flex gap-3 text-sm text-text-secondary">
+
+            <div className="flex flex-wrap gap-3 text-sm text-text-secondary">
               {POSITION_ORDER.map((pos) => (
                 <span key={pos} className="font-mono">
                   {pos} {squad.filter((p) => p.position === pos).length}/{POSITION_LIMITS[pos]}
                 </span>
               ))}
             </div>
-            <Button
-              size="sm"
-              onClick={finishSquad}
-              disabled={squadIdList.length >= 15}
-              title={
-                squadIdList.length >= 15
-                  ? "Squad already full"
-                  : "Fill every empty slot with the best affordable available player"
-              }
-            >
-              Finish my squad
-            </Button>
+
+            <div className="ml-auto flex flex-wrap items-center gap-2">
+              {/* The headline action: the solver builds the whole thing. */}
+              <Button variant="accent" onClick={autoOptimise} disabled={optimising}>
+                {optimising ? "Optimising…" : "✦ Auto-optimise"}
+              </Button>
+              {preOptimise != null && (
+                <Button size="sm" variant="ghost" onClick={undoOptimise}>
+                  ↩ Undo
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={finishSquad}
+                disabled={squadIdList.length >= 15}
+                title={
+                  squadIdList.length >= 15
+                    ? "Squad already full"
+                    : "Fill every empty slot with the best affordable available player"
+                }
+              >
+                Fill the gaps
+              </Button>
+              <button
+                type="button"
+                onClick={() => setSettingsOpen((v) => !v)}
+                aria-expanded={settingsOpen}
+                className="rounded-md border border-border px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+                title="Change the assumed budget"
+              >
+                £{budget.toFixed(1)}m budget &middot; Change
+              </button>
+            </div>
           </div>
+
+          <AnimatePresence>
+            {settingsOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mb-5 flex flex-wrap items-end gap-4 rounded-lg border border-border bg-surface-sunken p-3">
+                  <TextField
+                    label="Budget (£m)"
+                    hint="budget"
+                    type="number"
+                    min={80}
+                    max={120}
+                    step={0.5}
+                    value={budget}
+                    onChange={(e) => {
+                      setFinishWarning(null);
+                      setBudget(Number(e.target.value));
+                    }}
+                    wrapperClassName="w-28"
+                  />
+                  <p className="max-w-sm text-xs text-text-muted">
+                    The standard game gives you £100.0m. Change it to plan a wildcard around a
+                    different bank, or to see what a cheaper squad looks like.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {optimiseError && (
+            <div className="mb-5">
+              <Alert kind="warning">
+                Couldn&apos;t build an optimal squad ({optimiseError}) - your draft is untouched.
+              </Alert>
+            </div>
+          )}
+
+          {/* Saving is what turns a draft into something you can come back to and
+              track next to your real team. A saved squad has nothing to save. */}
+          {!localTeamId && squadIdList.length > 0 && (
+            <div className="mb-5 flex flex-wrap items-end gap-2 rounded-lg border border-border bg-white p-3">
+              {saving ? (
+                <>
+                  <TextField
+                    label="Name this squad"
+                    value={saveName}
+                    onChange={(e) => setSaveName(e.target.value)}
+                    placeholder="e.g. Wildcard plan"
+                    wrapperClassName="min-w-[200px] flex-1"
+                  />
+                  <Button onClick={saveAsTeam}>Save</Button>
+                  <Button variant="ghost" onClick={() => setSaving(false)}>
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p className="flex-1 text-xs text-text-secondary">
+                    This is an unsaved draft. Save it to keep it alongside your tracked teams.
+                  </p>
+                  <Button size="sm" variant="secondary" onClick={() => setSaving(true)}>
+                    Save as a team
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
 
           {finishWarning && (
             <div className="mb-6 -mt-3">
@@ -570,67 +722,33 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
         </>
       )}
 
-      {/* Player stats - opened by tapping a player on the pitch. Hosts the
-          quick actions that used to live in the removed squad-list table:
-          full profile, swap, remove. */}
+      {/* Opened by tapping a player on the pitch. The shared peek carries the
+          identity (PlayerCard) and the read; the builder supplies the actions
+          only it can do - swap this slot, drop the player. */}
       {statsPlayer && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${statsPlayer.web_name} stats`}
-        >
-          <div className="absolute inset-0 bg-black/50" onClick={closeStats} aria-hidden="true" />
-          <div className="relative z-[1] w-full max-w-md rounded-t-2xl bg-white p-5 shadow-lg sm:rounded-2xl">
-            <div className="flex items-start gap-3">
-              <PlayerPhoto
-                src={statsPlayer.player_photo}
-                name={statsPlayer.web_name}
-                className="h-14 w-14 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-sm"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="truncate text-md font-bold text-pl-purple">{statsPlayer.web_name}</h3>
-                  <PositionBadge position={statsPlayer.position} />
-                </div>
-                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-secondary">
-                  <TeamBadge teamShort={statsPlayer.team_short} name={statsPlayer.team_short} badgeUrl={statsPlayer.team_badge} />
-                  <span className="font-mono">£{statsPlayer.cost.toFixed(1)}m</span>
-                  <span className="inline-flex items-center gap-1 font-mono">
-                    {statsPlayer.selected_by_percent.toFixed(1)}% owned <InfoTooltip term="ownership" />
-                  </span>
-                  <StatusBadge status={statsPlayer.status} news={statsPlayer.news} />
-                </div>
-              </div>
-              <button
-                onClick={closeStats}
-                aria-label="Close"
-                className="-mr-1 -mt-1 flex h-7 w-7 items-center justify-center rounded-full text-lg text-text-muted hover:bg-surface-sunken hover:text-text-primary"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              <StatTile label="xPts · 5GW" value={statsPlayer.predicted_points.toFixed(1)} tooltip="xPts" />
-              <StatTile label="Value" value={statsPlayer.value.toFixed(2)} tooltip="value" />
-              <StatTile label="Own %" value={`${statsPlayer.selected_by_percent.toFixed(1)}%`} tooltip="ownership" />
-            </div>
-            {statsPlayer.fixture_ticker && (
-              <p className="mt-3 flex items-center gap-1 text-xs text-text-muted">
-                Next {statsPlayer.fixture_count}:{" "}
-                <span className="font-mono text-text-secondary">{statsPlayer.fixture_ticker}</span>
-                <InfoTooltip term="fdr" />
-              </p>
-            )}
-
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <PlayerLink
-                id={statsPlayer.id}
-                className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-slate-50"
-              >
-                View full profile →
-              </PlayerLink>
+        <PlayerPeek
+          player={{
+            id: statsPlayer.id,
+            name: statsPlayer.web_name,
+            position: statsPlayer.position,
+            teamShort: statsPlayer.team_short,
+            teamBadge: statsPlayer.team_badge,
+            photo: statsPlayer.player_photo,
+            cost: statsPlayer.cost,
+            predictedPoints: statsPlayer.predicted_points,
+            fixtureCount: statsPlayer.fixture_count,
+            fixtureTicker: statsPlayer.fixture_ticker,
+            ownership: statsPlayer.selected_by_percent,
+            value: statsPlayer.value,
+            status: statsPlayer.status,
+            news: statsPlayer.news,
+            penaltiesOrder: statsPlayer.penalties_order,
+            freekicksOrder: statsPlayer.direct_freekicks_order,
+            cornersOrder: statsPlayer.corners_and_indirect_freekicks_order,
+          }}
+          onClose={closeStats}
+          actions={
+            <>
               <Button size="sm" variant="secondary" onClick={() => loadSwapOptions(statsPlayer)}>
                 {swapTargetId === statsPlayer.id ? "Hide replacements" : "Find replacements"}
               </Button>
@@ -644,39 +762,39 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
               >
                 Remove
               </Button>
-            </div>
-
-            {swapTargetId === statsPlayer.id && (
-              <div className="mt-3 border-t border-border pt-3">
-                {swapLoading ? (
-                  <p className="text-xs text-text-muted">Loading…</p>
-                ) : swapOptions && swapOptions.length > 0 ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                      Swap in
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {swapOptions.map((a) => (
-                        <button
-                          key={a.id}
-                          onClick={() => {
-                            swapPlayer(statsPlayer.id, a.id);
-                            closeStats();
-                          }}
-                          className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
-                        >
-                          {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
-                        </button>
-                      ))}
+              {swapTargetId === statsPlayer.id && (
+                <div className="w-full border-t border-border pt-3">
+                  {swapLoading ? (
+                    <p className="text-xs text-text-muted">Loading…</p>
+                  ) : swapOptions && swapOptions.length > 0 ? (
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-2xs font-semibold uppercase tracking-wide text-text-muted">
+                        Swap in
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {swapOptions.map((a) => (
+                          <button
+                            key={a.id}
+                            onClick={() => {
+                              swapPlayer(statsPlayer.id, a.id);
+                              closeStats();
+                            }}
+                            className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                          >
+                            {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m,{" "}
+                            {a.predicted_points.toFixed(1)} pts)
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <p className="text-xs text-text-muted">No affordable alternatives found.</p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+                  ) : (
+                    <p className="text-xs text-text-muted">No affordable alternatives found.</p>
+                  )}
+                </div>
+              )}
+            </>
+          }
+        />
       )}
     </div>
   );

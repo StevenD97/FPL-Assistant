@@ -5,24 +5,33 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { LoadTeamPanel } from "@/features/squad/LoadTeamPanel";
 import { BuildSquadPanel } from "@/features/squad/BuildSquadPanel";
-import { OptimizePanel } from "@/features/squad/OptimizePanel";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Button } from "@/shared/ui/Button";
-import { Pill } from "@/shared/ui/Pill";
 import { TextField } from "@/shared/ui/TextField";
 import { parseTeamId } from "@/shared/lib/team";
+import { deleteLocalTeam, useLocalTeams } from "@/shared/lib/localTeams";
+import { useSquadDraftCount } from "@/shared/lib/draft";
 
-// How many *other* teams a free account can track. Beyond this we show a
+// How many *other* FPL teams a free account can track. Beyond this we show a
 // premium seam rather than a hard error - upgrading later just raises the cap.
 const FREE_TRACKED_LIMIT = 3;
 
-// The workspace shows one thing at a time: a real team (yours or a tracked
-// rival), or a from-scratch draft. Optimization isn't a separate destination
-// any more - it lives inside whatever you're looking at.
-type Selection = { kind: "team"; id: number } | { kind: "build" };
+/**
+ * What the workspace is currently showing.
+ *
+ * `fpl` and `local` are both squads you keep and come back to; the difference is
+ * who owns the picks, which is what decides the controls each one gets (see
+ * TeamSource in lib/team.ts). `draft` is the single scratchpad - a tool rather
+ * than a team, which is why it isn't in the switcher unless it has something in
+ * it.
+ */
+type Selection =
+  | { kind: "fpl"; id: number }
+  | { kind: "local"; id: string }
+  | { kind: "draft" };
 
 function selectionKey(sel: Selection): string {
-  return sel.kind === "team" ? `team-${sel.id}` : "build";
+  return sel.kind === "draft" ? "draft" : `${sel.kind}-${sel.id}`;
 }
 
 export default function SquadPage() {
@@ -31,24 +40,29 @@ export default function SquadPage() {
     entry,
     promptConnect,
     trackedTeamIds,
+    trackedTeamNames,
     trackTeam,
     untrackTeam,
   } = useTeam();
+
+  const localTeams = useLocalTeams();
+  const draftCount = useSquadDraftCount();
 
   const [selection, setSelection] = useState<Selection | null>(null);
   const [adding, setAdding] = useState(false);
   const [addValue, setAddValue] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
-  const [buildMode, setBuildMode] = useState<"manual" | "auto">("manual");
 
-  // Default landing view: your team if one is connected (possibly restored
-  // from localStorage after mount), otherwise a fresh draft. Only until the
-  // user picks something themselves.
+  // Default landing view. Your own team wins, then anything you've saved here,
+  // and only with nothing at all do we open the draft - the page is for the team
+  // you already have, not for starting another one.
   const [chosen, setChosen] = useState(false);
   useEffect(() => {
     if (chosen) return;
-    setSelection(connectedId != null ? { kind: "team", id: connectedId } : { kind: "build" });
-  }, [connectedId, chosen]);
+    if (connectedId != null) setSelection({ kind: "fpl", id: connectedId });
+    else if (localTeams.length > 0) setSelection({ kind: "local", id: localTeams[0].id });
+    else setSelection({ kind: "draft" });
+  }, [connectedId, localTeams, chosen]);
 
   function choose(sel: Selection) {
     setChosen(true);
@@ -72,40 +86,47 @@ export default function SquadPage() {
     setAddValue("");
     setAddError(null);
     setAdding(false);
-    choose({ kind: "team", id });
+    choose({ kind: "fpl", id });
   }
 
   function handleUntrack(id: number) {
     untrackTeam(id);
-    // If we were looking at the team we just removed, fall back gracefully.
-    if (selection?.kind === "team" && selection.id === id) {
-      choose(connectedId != null ? { kind: "team", id: connectedId } : { kind: "build" });
-    }
+    if (selection?.kind === "fpl" && selection.id === id) fallBack();
   }
 
-  const isBuild = selection?.kind === "build";
-  const activeTeamId = selection?.kind === "team" ? selection.id : null;
+  function handleDeleteLocal(id: string) {
+    deleteLocalTeam(id);
+    if (selection?.kind === "local" && selection.id === id) fallBack();
+  }
 
-  const yourTeamLabel = useMemo(
-    () => entry?.team_name?.trim() || "Your team",
-    [entry?.team_name],
-  );
+  /** Land somewhere sensible after removing whatever was being shown. */
+  function fallBack() {
+    if (connectedId != null) choose({ kind: "fpl", id: connectedId });
+    else choose({ kind: "draft" });
+  }
+
+  const activeFplId = selection?.kind === "fpl" ? selection.id : null;
+  const activeLocalId = selection?.kind === "local" ? selection.id : null;
+  const isDraft = selection?.kind === "draft";
+
+  const yourTeamLabel = useMemo(() => entry?.team_name?.trim() || "Your team", [entry?.team_name]);
 
   return (
     <PageContainer>
       <PageHeader
         title="My Squad"
-        subtitle="One workspace for every team you follow - your side, your rivals, and drafts you're planning. Optimization lives right inside whichever you're looking at."
+        subtitle="Your team, the rivals you're watching, and any squads you've built here."
       />
 
-      {/* Team switcher */}
+      {/* Switcher: real squads only. The draft lives behind the + below, because
+          it's a tool rather than a team and listing it as a peer implied a parity
+          it doesn't have. */}
       <LayoutGroup id="squad-switcher">
         <div className="flex flex-wrap items-center gap-2">
-          {/* Your connected team (or a prompt to connect one) */}
           {connectedId != null ? (
             <TeamChip
-              active={activeTeamId === connectedId}
-              onClick={() => choose({ kind: "team", id: connectedId })}
+              active={activeFplId === connectedId}
+              onClick={() => choose({ kind: "fpl", id: connectedId })}
               badge="★"
               label={yourTeamLabel}
               sublabel="Your team"
@@ -120,85 +141,127 @@ export default function SquadPage() {
             </button>
           )}
 
-          {/* Tracked rivals / friends */}
-          {trackedTeamIds.map((id) => (
+          {/* Rivals pulled from the live game. Named from the cache in
+              TeamProvider, falling back to the id when we haven't seen it yet.
+
+              The connected team is filtered out rather than trusted to be absent:
+              `handleTrack` refuses to track it, but nothing stops someone
+              tracking a team and *then* connecting that same one, which would
+              otherwise show the same squad twice under two different labels. */}
+          {trackedTeamIds
+            .filter((id) => id !== connectedId)
+            .map((id) => (
+              <TeamChip
+                key={id}
+                active={activeFplId === id}
+                onClick={() => choose({ kind: "fpl", id })}
+                badge="◎"
+                label={trackedTeamNames[String(id)] || `Team ${id}`}
+                sublabel="Tracked"
+                onRemove={() => handleUntrack(id)}
+                removeLabel="Stop tracking"
+              />
+            ))}
+
+          {/* Squads built here. Same standing as an FPL team in the switcher -
+              the sublabel is what says where the picks came from. */}
+          {localTeams.map((t) => (
             <TeamChip
-              key={id}
-              active={activeTeamId === id}
-              onClick={() => choose({ kind: "team", id })}
-              badge="◎"
-              label={`Team ${id}`}
-              sublabel="Tracked"
-              onRemove={() => handleUntrack(id)}
+              key={t.id}
+              active={activeLocalId === t.id}
+              onClick={() => choose({ kind: "local", id: t.id })}
+              badge="✎"
+              label={t.name}
+              sublabel="Built here"
+              onRemove={() => handleDeleteLocal(t.id)}
+              removeLabel="Delete"
             />
           ))}
 
-          {/* From-scratch draft */}
-          <TeamChip
-            active={isBuild}
-            onClick={() => choose({ kind: "build" })}
-            badge="✎"
-            label="Build a draft"
-            sublabel="From scratch"
-          />
-
-          {/* Track another team */}
-          {atTrackLimit ? (
-            <span
-              className="shrink-0 rounded-xl border border-border bg-surface-sunken px-3.5 py-2 text-xs font-semibold text-text-muted"
-              title={`Free accounts track up to ${FREE_TRACKED_LIMIT} other teams. Premium lifts the cap.`}
-            >
-              🔒 Track more · Premium
-            </span>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setAdding((a) => !a);
-                setAddError(null);
-              }}
-              className="shrink-0 rounded-xl border border-border bg-white px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
-            >
-              ＋ Track a team
-            </button>
+          {/* The scratchpad only appears once it holds something, so work in
+              progress is never stranded behind a menu. */}
+          {draftCount > 0 && (
+            <TeamChip
+              active={isDraft}
+              onClick={() => choose({ kind: "draft" })}
+              badge="✎"
+              label={`Draft · ${draftCount}/15`}
+              sublabel="Unsaved"
+            />
           )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setAdding((a) => !a);
+              setAddError(null);
+            }}
+            aria-expanded={adding}
+            className="shrink-0 rounded-xl border border-border bg-white px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+          >
+            ＋ Add
+          </button>
         </div>
       </LayoutGroup>
 
-      {/* Inline "track a team" form */}
+      {/* Both ways of adding a squad, together, so the choice reads as one
+          decision: follow someone else's team, or build your own. */}
       <AnimatePresence>
         {adding && (
-          <motion.form
-            onSubmit={handleTrack}
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-white p-3 shadow-sm">
-              <TextField
-                label="Team ID or FPL URL"
-                value={addValue}
-                onChange={(e) => setAddValue(e.target.value)}
-                placeholder="e.g. 1178869"
-                wrapperClassName="min-w-[220px] flex-1"
-              />
-              <Button type="submit" disabled={!addValue.trim()}>
-                Track
-              </Button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAdding(false);
-                  setAddError(null);
-                }}
-                className="px-2 py-2 text-sm font-medium text-text-muted hover:text-text-primary"
-              >
-                Cancel
-              </button>
+            <div className="grid gap-4 rounded-xl border border-border bg-white p-3 shadow-sm md:grid-cols-2">
+              <form onSubmit={handleTrack}>
+                <p className="mb-2 text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                  Track a team from FPL
+                </p>
+                {atTrackLimit ? (
+                  <p
+                    className="rounded-lg border border-border bg-surface-sunken px-3 py-2 text-xs font-semibold text-text-muted"
+                    title={`Free accounts track up to ${FREE_TRACKED_LIMIT} other teams. Premium lifts the cap.`}
+                  >
+                    🔒 You&apos;re tracking {FREE_TRACKED_LIMIT} teams - Premium lifts the cap.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap items-end gap-2">
+                    <TextField
+                      label="Team ID or FPL URL"
+                      value={addValue}
+                      onChange={(e) => setAddValue(e.target.value)}
+                      placeholder="e.g. 1178869"
+                      wrapperClassName="min-w-[180px] flex-1"
+                    />
+                    <Button type="submit" disabled={!addValue.trim()}>
+                      Track
+                    </Button>
+                  </div>
+                )}
+                {addError && <p className="mt-2 text-sm font-medium text-danger">{addError}</p>}
+              </form>
+
+              <div className="md:border-l md:border-border md:pl-4">
+                <p className="mb-2 text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                  Build one yourself
+                </p>
+                <p className="mb-2 text-xs text-text-secondary">
+                  Draft a squad from scratch, then save it to keep it alongside your tracked teams.
+                </p>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setAdding(false);
+                    choose({ kind: "draft" });
+                  }}
+                >
+                  {draftCount > 0 ? `Open draft (${draftCount}/15)` : "Start a draft"}
+                </Button>
+              </div>
             </div>
-            {addError && <p className="mt-2 text-sm font-medium text-danger">{addError}</p>}
-          </motion.form>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -212,24 +275,16 @@ export default function SquadPage() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
-            {selection.kind === "team" ? (
+            {selection.kind === "fpl" ? (
               <LoadTeamPanel key={selection.id} initialTeamId={selection.id} embedded />
             ) : (
-              <div>
-                <div className="mb-5 flex gap-1.5">
-                  <Pill active={buildMode === "manual"} onClick={() => setBuildMode("manual")}>
-                    Build manually
-                  </Pill>
-                  <Pill active={buildMode === "auto"} onClick={() => setBuildMode("auto")}>
-                    Auto-optimize
-                  </Pill>
-                </div>
-                {buildMode === "manual" ? (
-                  <BuildSquadPanel onSwitchToOptimize={() => setBuildMode("auto")} />
-                ) : (
-                  <OptimizePanel />
-                )}
-              </div>
+              // A saved squad and the draft are the same workspace; the only
+              // difference is where edits are persisted.
+              <BuildSquadPanel
+                key={selectionKey(selection)}
+                localTeamId={selection.kind === "local" ? selection.id : undefined}
+                onSaved={(t) => choose({ kind: "local", id: t.id })}
+              />
             )}
           </motion.div>
         )}
@@ -238,8 +293,8 @@ export default function SquadPage() {
   );
 }
 
-// A team in the switcher: badge glyph + name + role, with a sliding active
-// highlight (shared layoutId) and an optional remove affordance.
+// A squad in the switcher: badge glyph + name + where it came from, with a
+// sliding active highlight (shared layoutId) and an optional remove affordance.
 function TeamChip({
   active,
   onClick,
@@ -247,6 +302,7 @@ function TeamChip({
   label,
   sublabel,
   onRemove,
+  removeLabel = "Remove",
 }: {
   active: boolean;
   onClick: () => void;
@@ -254,6 +310,7 @@ function TeamChip({
   label: string;
   sublabel: string;
   onRemove?: () => void;
+  removeLabel?: string;
 }) {
   return (
     <div className="relative">
@@ -283,7 +340,9 @@ function TeamChip({
         </span>
         <span className="flex flex-col leading-tight">
           <span className="max-w-[160px] truncate text-sm font-semibold">{label}</span>
-          <span className={`text-[10px] font-bold uppercase tracking-wide ${active ? "text-white/60" : "text-text-muted"}`}>
+          <span
+            className={`text-3xs font-bold uppercase tracking-wide ${active ? "text-white/60" : "text-text-muted"}`}
+          >
             {sublabel}
           </span>
         </span>
@@ -292,9 +351,11 @@ function TeamChip({
         <button
           type="button"
           onClick={onRemove}
-          aria-label={`Stop tracking ${label}`}
+          aria-label={`${removeLabel} ${label}`}
           className={`absolute right-1.5 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full text-xs transition-colors ${
-            active ? "text-white/70 hover:bg-white/20 hover:text-white" : "text-text-muted hover:bg-surface-sunken hover:text-danger"
+            active
+              ? "text-white/70 hover:bg-white/20 hover:text-white"
+              : "text-text-muted hover:bg-surface-sunken hover:text-danger"
           }`}
         >
           ×

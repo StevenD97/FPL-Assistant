@@ -24,7 +24,6 @@ export function SuggestedTransfers({
   error,
   teamId,
   freeTransfers,
-  onSwitchToOptimize,
   compact = false,
 }: {
   optimizer: TransferResult | null;
@@ -32,7 +31,6 @@ export function SuggestedTransfers({
   error: string | null;
   teamId: string;
   freeTransfers: number;
-  onSwitchToOptimize?: () => void;
   /**
    * Dashboard variant: just the out/in pairs and the cost line, with no Card,
    * heading or explanation - the surrounding Panel supplies those, and the full
@@ -143,16 +141,7 @@ export function SuggestedTransfers({
       <p className="mb-3 text-xs text-text-muted">
         {isOverride
           ? "Forced to this many transfers - not necessarily the optimizer's own free choice."
-          : "The optimal transfers for your squad and bank, weighing predicted points against the -4 hit per transfer beyond your free ones."}{" "}
-        {onSwitchToOptimize && (
-          <>
-            See the{" "}
-            <button type="button" onClick={onSwitchToOptimize} className="text-pl-purple underline">
-              Optimizer
-            </button>{" "}
-            tab for a from-scratch solve, or full control over the prediction window.
-          </>
-        )}
+          : "The optimal transfers for your squad and bank, weighing predicted points against the -4 hit per transfer beyond your free ones."}
       </p>
 
       {shownLoading && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
@@ -65,11 +66,9 @@ function SquadViewSkeleton() {
 }
 
 export function LoadTeamPanel({
-  onSwitchToOptimize,
   initialTeamId,
   embedded = false,
 }: {
-  onSwitchToOptimize?: () => void;
   /** When set (workspace mode), load this exact team instead of the connected one. */
   initialTeamId?: number;
   /** Workspace mode: the switcher labels the team, so hide the intro + team-ID input. */
@@ -78,6 +77,7 @@ export function LoadTeamPanel({
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [read, setRead] = useState<SquadRead | null>(null);
+  const [assumptionsOpen, setAssumptionsOpen] = useState(false);
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -243,36 +243,79 @@ export function LoadTeamPanel({
 
   return (
     <div>
-      {!embedded && (
+      {/* Embedded, the only thing here is an assumption and a way to change it.
+          Free transfers used to be a permanent input above the dashboard, which
+          gave a set-once value the same standing as the squad itself. It's stated
+          rather than hidden, because it changes what the optimizer recommends -
+          a silent input that moves the answer is worse than a visible one. */}
+      {embedded ? (
+        <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-text-secondary">
+          <span>
+            Assuming{" "}
+            <span className="font-mono font-semibold text-text-primary">{freeTransfers}</span> free
+            transfer{freeTransfers === 1 ? "" : "s"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setAssumptionsOpen((v) => !v)}
+            aria-expanded={assumptionsOpen}
+            className="font-semibold text-pl-purple underline"
+          >
+            {assumptionsOpen ? "Done" : "Change"}
+          </button>
+          {loading && <span className="text-text-muted">· reloading…</span>}
+        </div>
+      ) : (
         <p className="mb-6 text-sm text-text-secondary">
           Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
           <SeasonDataNote mode="archived" />
         </p>
       )}
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
-        {!embedded && (
-          <TextField
-            label="Team ID"
-            hint="teamId"
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}
-            placeholder="e.g. 1178869"
-          />
+
+      <AnimatePresence>
+        {(assumptionsOpen || !embedded) && (
+          <motion.div
+            initial={embedded ? { opacity: 0, height: 0 } : false}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <form
+              onSubmit={handleSubmit}
+              className="mb-5 flex flex-wrap items-end gap-3 rounded-lg border border-border bg-surface-sunken p-3"
+            >
+              {!embedded && (
+                <TextField
+                  label="Team ID"
+                  hint="teamId"
+                  value={teamId}
+                  onChange={(e) => setTeamId(e.target.value)}
+                  placeholder="e.g. 1178869"
+                />
+              )}
+              <TextField
+                label="Free transfers"
+                hint="freeTransfers"
+                type="number"
+                min={0}
+                max={5}
+                value={freeTransfers}
+                onChange={(e) => setFreeTransfers(Number(e.target.value))}
+                wrapperClassName="w-28"
+              />
+              <Button type="submit" disabled={loading || !teamId}>
+                {loading ? "Loading..." : embedded ? "Reload" : "Load squad"}
+              </Button>
+              {embedded && (
+                <p className="max-w-xs text-xs text-text-muted">
+                  FPL gives you one a week, up to five banked. Set it to match your real bank so the
+                  suggested transfers weigh the -4 hit correctly.
+                </p>
+              )}
+            </form>
+          </motion.div>
         )}
-        <TextField
-          label="Free transfers"
-          hint="freeTransfers"
-          type="number"
-          min={0}
-          max={5}
-          value={freeTransfers}
-          onChange={(e) => setFreeTransfers(Number(e.target.value))}
-          wrapperClassName="w-28"
-        />
-        <Button type="submit" disabled={loading || !teamId}>
-          {loading ? "Loading..." : embedded ? "Reload" : "Load squad"}
-        </Button>
-      </form>
+      </AnimatePresence>
 
       {error && (
         <p className="mb-4 text-sm font-medium text-danger">
@@ -359,7 +402,6 @@ export function LoadTeamPanel({
                 error={optimizerError}
                 teamId={teamId}
                 freeTransfers={freeTransfers}
-                onSwitchToOptimize={onSwitchToOptimize}
               />
             )}
 

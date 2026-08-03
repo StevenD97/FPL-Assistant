@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
+import { PlayerPeek } from "@/shared/ui/PlayerPeek";
 import { TransferSuggestions } from "./TransferSuggestions";
 import { useFormationEditor } from "../hooks/useFormationEditor";
 import type { SquadPlayer } from "@/shared/types/api";
@@ -19,10 +19,25 @@ function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean):
     isCaptain: p.captain_flag === "(C)",
     isViceCaptain: p.captain_flag === "(VC)",
     subtitle: p.next_opponent,
-    href: p.live_id != null ? `/players/${p.live_id}` : undefined,
     selected,
     burst: justSwapped ? "ring" : undefined,
   };
+}
+
+/**
+ * What a loaded squad knows that the builder's player pool doesn't. Set-piece
+ * duty arrives here as one composite score rather than an order per type, so it
+ * reads as a stat instead of the duty chips the builder can show.
+ */
+function peekStats(p: SquadPlayer) {
+  return [
+    { label: "EP next", value: p.ep_next.toFixed(1), tooltip: "epNext" as const },
+    { label: "Form", value: p.form.toFixed(1) },
+    { label: "xGI", value: p.expected_goal_involvements.toFixed(2) },
+    { label: "Exp mins", value: Math.round(p.expected_minutes).toString() },
+    { label: "Set pieces", value: p.set_piece_duty_score.toFixed(2) },
+    { label: "Rotation risk", value: p.rotation_risk.toFixed(2) },
+  ];
 }
 
 /** The starting XI laid out on the pitch, with the four-man bench beneath it. */
@@ -37,10 +52,15 @@ export function SquadPitch({
   onReplace: (originalPlayerId: number, candidateId: number) => void;
 }) {
   const [editingFormation, setEditingFormation] = useState(false);
+  // Tapping a player used to follow a link to /players/[id], which abandoned the
+  // workspace one click from the panel built to keep you in it. It peeks instead,
+  // and the full profile is a deliberate step out from there.
+  const [peekId, setPeekId] = useState<number | null>(null);
   const { effectiveSquad, formation, isDirty, selectedId, select, reset, error, justSwappedIds } =
     useFormationEditor(squad);
 
   const squadById = new Map(squad.map((p) => [p.id, p]));
+  const peekPlayer = peekId != null ? squadById.get(peekId) ?? null : null;
   // What's already owned can't also be a "replacement" - excluded by live id
   // (the id-space player_alternatives itself works in).
   const excludeIds = squad.map((p) => p.live_id).filter((id): id is number => id != null);
@@ -110,8 +130,12 @@ export function SquadPitch({
         players={effectiveSquad
           .filter((p) => p.role === "Starting XI")
           .map((p) => toPitchPlayer(p, selectedId === p.id, justSwappedIds.includes(p.id)))}
-        onPlayerClick={editingFormation ? select : undefined}
-        playerClickLabel={(name) => `Select ${name} to substitute`}
+        onPlayerClick={editingFormation ? select : (id) => setPeekId(id)}
+        playerClickLabel={
+          editingFormation
+            ? (name) => `Select ${name} to substitute`
+            : (name) => `View ${name}'s stats`
+        }
         renderTransfer={
           editingFormation
             ? undefined
@@ -157,18 +181,60 @@ export function SquadPitch({
                   <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
                 </button>
               ) : (
-                <PlayerLink id={p.live_id} className="flex flex-col items-center gap-1 text-center">
+                // Bench players peek too - the same tap doing two different
+                // things depending on where the player is sitting would be the
+                // odd choice.
+                <button
+                  type="button"
+                  onClick={() => setPeekId(p.id)}
+                  aria-label={`View ${p.web_name}'s stats`}
+                  className="flex flex-col items-center gap-1 text-center"
+                >
                   <PlayerPhoto
                     src={p.player_photo}
                     name={p.web_name}
                     className="size-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-3xs"
                   />
                   <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
-                </PlayerLink>
+                </button>
               )}
             </div>
           ))}
       </div>
+
+      {peekPlayer && (
+        <PlayerPeek
+          player={{
+            id: peekPlayer.live_id ?? peekPlayer.id,
+            name: peekPlayer.web_name,
+            position: peekPlayer.pos,
+            teamShort: peekPlayer.team_short,
+            teamBadge: peekPlayer.team_badge,
+            photo: peekPlayer.player_photo,
+            cost: peekPlayer.cost,
+            predictedPoints: peekPlayer.ep_next,
+            fixtureTicker: peekPlayer.next_opponent,
+            status: peekPlayer.status,
+            news: peekPlayer.news,
+            extraStats: peekStats(peekPlayer),
+          }}
+          onClose={() => setPeekId(null)}
+          actions={
+            peekPlayer.live_id != null ? (
+              <TransferSuggestions
+                playerId={peekPlayer.live_id}
+                playerName={peekPlayer.web_name}
+                maxCost={bank + peekPlayer.cost}
+                excludeIds={excludeIds}
+                onSelect={(candidateId) => {
+                  onReplace(peekPlayer.live_id!, candidateId);
+                  setPeekId(null);
+                }}
+              />
+            ) : null
+          }
+        />
+      )}
     </div>
   );
 }
