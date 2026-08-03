@@ -389,30 +389,40 @@ export function BuildSquadPanel({
               than presented as a field: it's set once, so an always-visible input
               spent prime space on a decision nobody revisits. It stays readable
               and one click from editable, because it does change the result. */}
-          <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <div className="text-sm text-text-secondary">
-              <span className="font-mono font-medium text-text-primary">{squadIdList.length}/15</span>{" "}
-              players &middot; spent{" "}
-              <span className="font-mono font-medium text-text-primary">£{totalCost.toFixed(1)}m</span>{" "}
-              &middot; remaining{" "}
-              <span
-                className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}
-              >
-                £{budgetRemaining.toFixed(1)}m
+          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+            {/* Spend and shape are one readout, split by a rule rather than run
+                together - "remaining £31.0m GKP 1/2" read as one sentence. */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-text-secondary">
+              <span>
+                <span className="font-mono font-medium text-text-primary">{squadIdList.length}/15</span>{" "}
+                players &middot; spent{" "}
+                <span className="font-mono font-medium text-text-primary">£{totalCost.toFixed(1)}m</span>{" "}
+                &middot; left{" "}
+                <span
+                  className={`font-mono font-medium ${budgetRemaining < 0 ? "text-danger" : "text-text-primary"}`}
+                >
+                  £{budgetRemaining.toFixed(1)}m
+                </span>
+              </span>
+              <span aria-hidden="true" className="hidden h-4 w-px bg-border sm:block" />
+              <span className="flex flex-wrap gap-2.5 font-mono">
+                {POSITION_ORDER.map((pos) => {
+                  const have = squad.filter((p) => p.position === pos).length;
+                  const full = have >= POSITION_LIMITS[pos];
+                  return (
+                    <span key={pos} className={full ? "text-text-primary" : undefined}>
+                      {pos} {have}/{POSITION_LIMITS[pos]}
+                    </span>
+                  );
+                })}
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-3 text-sm text-text-secondary">
-              {POSITION_ORDER.map((pos) => (
-                <span key={pos} className="font-mono">
-                  {pos} {squad.filter((p) => p.position === pos).length}/{POSITION_LIMITS[pos]}
-                </span>
-              ))}
-            </div>
-
+            {/* Actions share one height so the cluster reads as a set. The solver
+                stays the brightest thing here - it's the shortcut worth finding -
+                but at the same size as its neighbours rather than a size up. */}
             <div className="ml-auto flex flex-wrap items-center gap-2">
-              {/* The headline action: the solver builds the whole thing. */}
-              <Button variant="accent" onClick={autoOptimise} disabled={optimising}>
+              <Button size="sm" variant="accent" onClick={autoOptimise} disabled={optimising}>
                 {optimising ? "Optimising…" : "✦ Auto-optimise"}
               </Button>
               {preOptimise != null && (
@@ -433,14 +443,20 @@ export function BuildSquadPanel({
               >
                 Fill the gaps
               </Button>
+
+              {/* A setting, not an action - so it sits past a divider and reads as
+                  text. Bordering it made a third peer button competing with two
+                  things you actually do. */}
+              <span aria-hidden="true" className="mx-0.5 hidden h-4 w-px bg-border sm:block" />
               <button
                 type="button"
                 onClick={() => setSettingsOpen((v) => !v)}
                 aria-expanded={settingsOpen}
-                className="rounded-md border border-border px-2.5 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+                className="rounded text-xs text-text-muted transition-colors hover:text-pl-purple"
                 title="Change the assumed budget"
               >
-                £{budget.toFixed(1)}m budget &middot; Change
+                <span className="font-mono">£{budget.toFixed(1)}m</span> budget &middot;{" "}
+                <span className="font-semibold underline">{settingsOpen ? "Done" : "Change"}</span>
               </button>
             </div>
           </div>
@@ -488,7 +504,11 @@ export function BuildSquadPanel({
           {/* Saving is what turns a draft into something you can come back to and
               track next to your real team. A saved squad has nothing to save. */}
           {!localTeamId && squadIdList.length > 0 && (
-            <div className="mb-5 flex flex-wrap items-end gap-2 rounded-lg border border-border bg-white p-3">
+            <div
+              className={`mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-dashed border-border-strong bg-surface-sunken px-3 ${
+                saving ? "py-3" : "py-2"
+              }`}
+            >
               {saving ? (
                 <>
                   <TextField
@@ -496,17 +516,19 @@ export function BuildSquadPanel({
                     value={saveName}
                     onChange={(e) => setSaveName(e.target.value)}
                     placeholder="e.g. Wildcard plan"
-                    wrapperClassName="min-w-[200px] flex-1"
+                    wrapperClassName="min-w-[180px] flex-1"
                   />
-                  <Button onClick={saveAsTeam}>Save</Button>
-                  <Button variant="ghost" onClick={() => setSaving(false)}>
+                  <Button size="sm" onClick={saveAsTeam}>
+                    Save
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setSaving(false)}>
                     Cancel
                   </Button>
                 </>
               ) : (
                 <>
                   <p className="flex-1 text-xs text-text-secondary">
-                    This is an unsaved draft. Save it to keep it alongside your tracked teams.
+                    Unsaved draft &mdash; save it to keep it alongside your tracked teams.
                   </p>
                   <Button size="sm" variant="secondary" onClick={() => setSaving(true)}>
                     Save as a team
