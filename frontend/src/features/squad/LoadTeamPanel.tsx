@@ -137,54 +137,90 @@ export function LoadTeamPanel({
     {
       id: "transfers",
       label: "Suggested transfers",
-      summary: optimizerLoading
-        ? "Solving…"
-        : optimizer && optimizer.transferred_out.length > 0
-          ? `↓ ${optimizer.transferred_out[0]?.web_name} ↑ ${optimizer.transferred_in[0]?.web_name}${
-              optimizer.transfers_made > 1 ? ` +${optimizer.transfers_made - 1} more` : ""
-            }`
-          : optimizer
-            ? "Already optimal - no changes"
-            : "Not available",
+      summary: optimizerLoading ? (
+        "Solving…"
+      ) : optimizer && optimizer.transferred_out.length > 0 ? (
+        <>
+          <span className="font-medium text-danger">↓ {optimizer.transferred_out[0]?.web_name}</span>
+          <span className="mx-1 text-text-muted">→</span>
+          <span className="font-medium text-success">↑ {optimizer.transferred_in[0]?.web_name}</span>
+          {optimizer.transfers_made > 1 && (
+            <span className="text-text-muted"> +{optimizer.transfers_made - 1} more</span>
+          )}
+        </>
+      ) : optimizer ? (
+        "Already optimal - no changes"
+      ) : (
+        "Not available"
+      ),
     },
     {
       id: "captaincy",
       label: "Captaincy",
-      summary: topCaptain
-        ? `${topCaptain.web_name} · ${topCaptain.ep_next.toFixed(1)} xP${
-            currentCaptain && currentCaptain.web_name !== topCaptain.web_name
-              ? ` · you have ${currentCaptain.web_name}`
-              : " · matches your armband"
-          }`
-        : "No read yet",
+      summary: topCaptain ? (
+        <>
+          <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
+          <span className="font-mono font-medium text-text-primary">{topCaptain.ep_next.toFixed(1)}</span>{" "}
+          xP ·{" "}
+          {currentCaptain && currentCaptain.web_name !== topCaptain.web_name ? (
+            <span className="text-warning">you have {currentCaptain.web_name}</span>
+          ) : (
+            <span className="text-success">matches your armband</span>
+          )}
+        </>
+      ) : (
+        "No read yet"
+      ),
     },
     {
       id: "chips",
       label: "Chip timing",
-      summary: chipsLoading
-        ? "Scanning…"
-        : chip
-          ? `${chip.name} · GW${chip.event}`
-          : "Nothing worth playing yet",
+      summary: chipsLoading ? (
+        "Scanning…"
+      ) : chip ? (
+        <>
+          <span className="font-medium text-text-primary">{chip.name}</span> ·{" "}
+          <span className="font-mono font-medium text-text-primary">GW{chip.event}</span>
+        </>
+      ) : (
+        "Nothing worth playing yet"
+      ),
     },
     {
       id: "strength",
       label: "Squad strength",
-      summary: bestLine ? `${bestLine[0]} strongest at ${bestLine[1].toFixed(3)}` : "—",
+      summary: bestLine ? (
+        <>
+          <span className="font-medium text-text-primary">{bestLine[0]}</span> strongest at{" "}
+          <span className="font-mono font-medium text-text-primary">{bestLine[1].toFixed(3)}</span>
+        </>
+      ) : (
+        "—"
+      ),
     },
     {
       id: "detail",
       label: "Squad detail",
-      summary: `${data?.squad.length ?? 0} players · xGI, ICT, Def/90, set pieces`,
+      summary: (
+        <>
+          <span className="font-mono font-medium text-text-primary">{data?.squad.length ?? 0}</span>{" "}
+          players · xGI, ICT, Def/90, set pieces
+        </>
+      ),
     },
     {
       id: "planner",
       label: "Transfer planner",
-      summary: plannerLoading
-        ? "Building outlook…"
-        : previewCount > 0
-          ? `${previewCount} swap${previewCount === 1 ? "" : "s"} previewed`
-          : "Points outlook per gameweek",
+      summary: plannerLoading ? (
+        "Building outlook…"
+      ) : previewCount > 0 ? (
+        <>
+          <span className="font-mono font-medium text-pl-pink">{previewCount}</span> swap
+          {previewCount === 1 ? "" : "s"} previewed
+        </>
+      ) : (
+        "Points outlook per gameweek"
+      ),
     },
   ];
 
@@ -316,7 +352,12 @@ export function LoadTeamPanel({
                 <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
               </div>
 
-              <div className="col-start-1 row-start-1">
+              {/* pointer-events-none is load-bearing: a grid item stretches to
+                  fill its cell by default, so this wrapper covers the whole
+                  rail even with nothing open and - being later in DOM order -
+                  swallows every click on it. The panel itself takes pointer
+                  events back. self-start keeps the empty wrapper zero-height. */}
+              <div className="pointer-events-none col-start-1 row-start-1 self-start">
                 <Inspector
                   open={read != null}
                   title={read ? READ_TITLES[read] : ""}
