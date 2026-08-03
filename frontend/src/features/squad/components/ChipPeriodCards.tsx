@@ -18,13 +18,21 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
         </span>
       </p>
       {/* Column count follows this block's own width, not the window's.
-          These cards render inside the Inspector, which is a ~420px side column
-          on desktop - so `lg:grid-cols-4` was reading "1280px window, go wide"
-          and packing four 86px columns into it. Two of these cards hold a full
-          sentence of reasoning, which at 86px wraps to one word per line.
-          Thresholds are set on what the content needs: ~190px minimum for a card
-          with prose in it, so 2 columns from 26rem and 4 only past 52rem. */}
-      <div className="grid gap-3 @[26rem]/chips:grid-cols-2 @[52rem]/chips:grid-cols-4">
+          These cards render inside the Inspector, which is a 380-480px side
+          column on desktop - so `lg:grid-cols-4` was reading "1280px window, go
+          wide" and packing four 86px columns into it, wrapping the two cards
+          that hold a sentence of reasoning to about one word per line.
+
+          Thresholds are set on what the content needs rather than on round
+          numbers. Two of these four cards are prose, and prose wants ~300px to
+          read properly, so the side-panel case stays single-column at every
+          desktop width and only splits once the panel is full width (the
+          single-column page layout below `lg`, ~830px).
+
+          Two columns is the maximum deliberately. This block only ever renders
+          in the Inspector, so its container tops out around 960px - four across
+          would mean 200px a card, which is the cramped layout this replaced. */}
+      <div className="grid gap-3 @[40rem]/chips:grid-cols-2">
         <Card>
           <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
             Bench Boost <InfoTooltip term="benchBoost" />
