@@ -14,8 +14,9 @@ import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { PitchFormation } from "@/shared/pitch/PitchFormation";
+import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { loadSquadDraft, storeSquadDraft } from "@/shared/lib/draft";
+import { useFlash } from "@/shared/lib/useFlash";
 import { apiGet } from "@/shared/lib/api";
 import type {
   PlayerAlternative,
@@ -145,6 +146,8 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     [squad, squadIds, fixtures, players, budgetRemaining]
   );
 
+  const { flash: flashAdded, isFlashed: isJustAdded } = useFlash();
+
   // Split the squad into a starting XI (pitch) and a 4-man bench by add order:
   // the first PITCH_BUCKET[pos] of each position start, the overflow benches.
   // Empty counts drive the placeholder-slot templates in both zones.
@@ -152,7 +155,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
     const byPos: Record<Position, PoolPlayer[]> = { GKP: [], DEF: [], MID: [], FWD: [] };
     for (const p of squad) byPos[p.position].push(p);
 
-    const toPitchPlayer = (p: PoolPlayer) => ({
+    const toPitchPlayer = (p: PoolPlayer): PitchPlayer => ({
       id: p.id,
       name: p.web_name,
       position: p.position,
@@ -160,6 +163,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
       photo: p.player_photo,
       teamKit: p.team_kit,
       subtitle: `${p.predicted_points.toFixed(1)} xPts`,
+      burst: isJustAdded(p.id) ? "pop" : undefined,
     });
 
     const pitch = POSITION_ORDER.flatMap((pos) => byPos[pos].slice(0, PITCH_BUCKET[pos]).map(toPitchPlayer));
@@ -171,7 +175,7 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
       pitchEmpty[pos] = PITCH_BUCKET[pos] - onPitch;
     }
     return { pitchPlayers: pitch, pitchEmptyByPosition: pitchEmpty, benchByPosition: bench };
-  }, [squad]);
+  }, [squad, isJustAdded]);
 
   const statsPlayer = statsId != null ? playersById.get(statsId) ?? null : null;
 
@@ -189,6 +193,10 @@ export function BuildSquadPanel({ onSwitchToOptimize }: { onSwitchToOptimize?: (
   function addPlayer(id: number) {
     setFinishWarning(null);
     setSquadIdList((prev) => [...prev, id]);
+    // A player added from the browser list lands somewhere on the pitch above,
+    // which on a narrow screen may be scrolled out of view. Popping the new card
+    // is the only signal that the tap did what it said.
+    flashAdded(id);
   }
 
   function removePlayer(id: number) {

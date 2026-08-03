@@ -2,6 +2,7 @@ import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { GameweekStrip } from "./GameweekStrip";
 import type { PlannerResponse, PlayerTrajectory } from "@/shared/types/api";
 
 /**
@@ -49,9 +50,21 @@ export function PlannerTable({
           <Alert kind="warning">Couldn&apos;t build the planner ({error}).</Alert>
         </div>
       )}
+      {/* The shape of the window before the detail of it: which weeks are thin or
+          doubled is a chip-timing question, and answering it from the matrix below
+          means reading 15 rows of numbers. The strip answers it at a glance and
+          the table stays the place you go for why. */}
+      {planner && (
+        <div className="border-b border-border px-4 py-3">
+          <GameweekStrip planner={planner} />
+        </div>
+      )}
       {planner && (
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          {/* A matrix: the read is "which gameweek is thin for this player", i.e.
+              scanning across a row and down a column. `table-dense` shrinks the
+              grid to fit a phone rather than collapsing or clipping it. */}
+          <table className="table-dense w-full text-left text-sm">
             <thead className="bg-surface-sunken">
               <tr>
                 <th className="sticky left-0 bg-surface-sunken px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">

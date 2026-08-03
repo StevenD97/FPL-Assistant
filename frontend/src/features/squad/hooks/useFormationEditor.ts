@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useFlash } from "@/shared/lib/useFlash";
 import type { Position, SquadPlayer } from "@/shared/types/api";
 
 type Role = "Starting XI" | "Bench";
@@ -28,6 +29,14 @@ export function useFormationEditor(squad: SquadPlayer[] | undefined) {
   const [error, setError] = useState<string | null>(null);
   const signatureRef = useRef<string>("");
 
+  /**
+   * A substitution moves two players between the pitch and the bench, and until
+   * now it did so silently - the only feedback was the layout changing, which is
+   * easy to miss on a phone where one of the two ends up off-screen. Flagging
+   * both ends lets the pitch and bench ring them so the swap acknowledges itself.
+   */
+  const { flash: flashSwap, clear: clearSwapFlash, ids: justSwappedIds } = useFlash();
+
   const signature = useMemo(
     () =>
       (squad ?? [])
@@ -43,8 +52,9 @@ export function useFormationEditor(squad: SquadPlayer[] | undefined) {
       setRoleOverrides({});
       setSelectedId(null);
       setError(null);
+      clearSwapFlash();
     }
-  }, [signature]);
+  }, [signature, clearSwapFlash]);
 
   const effectiveSquad = useMemo(
     () => (squad ?? []).map((p) => ({ ...p, role: roleOverrides[p.id] ?? p.role })),
@@ -60,6 +70,7 @@ export function useFormationEditor(squad: SquadPlayer[] | undefined) {
     setRoleOverrides({});
     setSelectedId(null);
     setError(null);
+    clearSwapFlash();
   }
 
   function trySwap(aId: number, bId: number) {
@@ -111,6 +122,7 @@ export function useFormationEditor(squad: SquadPlayer[] | undefined) {
       return next;
     });
     setError(null);
+    flashSwap(aId, bId);
   }
 
   function select(id: number) {
@@ -136,5 +148,5 @@ export function useFormationEditor(squad: SquadPlayer[] | undefined) {
     setSelectedId(null);
   }
 
-  return { effectiveSquad, formation, isDirty, selectedId, select, reset, error };
+  return { effectiveSquad, formation, isDirty, selectedId, select, reset, error, justSwappedIds };
 }

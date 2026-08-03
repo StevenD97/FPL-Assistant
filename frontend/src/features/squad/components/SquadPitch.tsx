@@ -8,7 +8,7 @@ import { TransferSuggestions } from "./TransferSuggestions";
 import { useFormationEditor } from "../hooks/useFormationEditor";
 import type { SquadPlayer } from "@/shared/types/api";
 
-function toPitchPlayer(p: SquadPlayer, selected: boolean): PitchPlayer {
+function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean): PitchPlayer {
   return {
     id: p.id,
     name: p.web_name,
@@ -21,6 +21,7 @@ function toPitchPlayer(p: SquadPlayer, selected: boolean): PitchPlayer {
     subtitle: p.next_opponent,
     href: p.live_id != null ? `/players/${p.live_id}` : undefined,
     selected,
+    burst: justSwapped ? "ring" : undefined,
   };
 }
 
@@ -36,7 +37,8 @@ export function SquadPitch({
   onReplace: (originalPlayerId: number, candidateId: number) => void;
 }) {
   const [editingFormation, setEditingFormation] = useState(false);
-  const { effectiveSquad, formation, isDirty, selectedId, select, reset, error } = useFormationEditor(squad);
+  const { effectiveSquad, formation, isDirty, selectedId, select, reset, error, justSwappedIds } =
+    useFormationEditor(squad);
 
   const squadById = new Map(squad.map((p) => [p.id, p]));
   // What's already owned can't also be a "replacement" - excluded by live id
@@ -107,7 +109,7 @@ export function SquadPitch({
       <PitchFormation
         players={effectiveSquad
           .filter((p) => p.role === "Starting XI")
-          .map((p) => toPitchPlayer(p, selectedId === p.id))}
+          .map((p) => toPitchPlayer(p, selectedId === p.id, justSwappedIds.includes(p.id)))}
         onPlayerClick={editingFormation ? select : undefined}
         playerClickLabel={(name) => `Select ${name} to substitute`}
         renderTransfer={
@@ -126,7 +128,15 @@ export function SquadPitch({
         {effectiveSquad
           .filter((p) => p.role !== "Starting XI")
           .map((p) => (
-            <div key={p.id} className="relative flex flex-col items-center gap-1">
+            // A substitution moves one player each way, so the bench end of the
+            // swap gets the same confirmation ring as the pitch end - otherwise
+            // only half of what just happened is acknowledged.
+            <div
+              key={p.id}
+              className={`relative flex flex-col items-center gap-1 ${
+                justSwappedIds.includes(p.id) ? "animate-fpl-ring rounded-full" : ""
+              }`}
+            >
               {!editingFormation && <div className="absolute -right-1 -top-1 z-[2]">{transferIcon(p)}</div>}
               {editingFormation ? (
                 <button
@@ -138,22 +148,22 @@ export function SquadPitch({
                   <PlayerPhoto
                     src={p.player_photo}
                     name={p.web_name}
-                    className={`h-10 w-10 rounded-full border-2 bg-white object-cover object-top text-[10px] ${
+                    className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
                       selectedId === p.id
                         ? "border-pl-green ring-4 ring-pl-green ring-offset-2"
                         : "border-border-strong"
                     }`}
                   />
-                  <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+                  <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
                 </button>
               ) : (
                 <PlayerLink id={p.live_id} className="flex flex-col items-center gap-1 text-center">
                   <PlayerPhoto
                     src={p.player_photo}
                     name={p.web_name}
-                    className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
+                    className="size-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-3xs"
                   />
-                  <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+                  <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
                 </PlayerLink>
               )}
             </div>
