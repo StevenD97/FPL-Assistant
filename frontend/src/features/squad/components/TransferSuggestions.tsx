@@ -167,7 +167,7 @@ export function TransferSuggestions({
               )}
               {!loading && !error && candidates && candidates.length > 0 && (
                 <p className="mt-3 text-[11px] text-text-muted">
-                  Picking one previews the swap in your Transfer planner below.
+                  Swaps them in here as a preview - not submitted to FPL.
                 </p>
               )}
             </div>

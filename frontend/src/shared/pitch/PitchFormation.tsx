@@ -41,6 +41,9 @@ export type PitchPlayer = {
    * See `useFormationEditor.justSwappedIds`.
    */
   burst?: PitchBurst;
+  // Highlight ring (a different color from `selected`) - this slot holds a
+  // previewed transfer candidate rather than the manager's real player.
+  swapped?: boolean;
 };
 
 /**
@@ -219,9 +222,9 @@ function PitchPlayerCard({
 }) {
   const badge = (
     <div
-      className={`relative rounded-full ${p.selected ? "ring-4 ring-pl-green ring-offset-2" : ""} ${
-        p.burst ? BURST_CLASS[p.burst] : ""
-      }`}
+      className={`relative rounded-full ${
+        p.selected ? "ring-4 ring-pl-green ring-offset-2" : p.swapped ? "ring-4 ring-pl-purple ring-offset-2" : ""
+      } ${p.burst ? BURST_CLASS[p.burst] : ""}`}
     >
       <PlayerPhoto
         src={p.photo}

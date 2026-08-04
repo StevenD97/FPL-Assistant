@@ -6,12 +6,14 @@ import { getTrajectory } from "@/shared/api/squad";
 
 /**
  * "What would this player's next few gameweeks look like in that slot?" -
- * pick a replacement (via TransferSuggestions' modal, or by dragging a
- * candidate chip onto a planner row) and that row re-renders with the
- * candidate's trajectory, without making a real transfer.
+ * pick a replacement (via TransferSuggestions' modal on the pitch, bench, or
+ * detail table, or by dragging a candidate chip onto a planner row) and the
+ * candidate takes that slot everywhere it's shown - pitch, bench, detail
+ * table, planner row - without making a real transfer. Nothing here reaches
+ * the FPL API; it's a local, unsaved preview, same as the formation editor.
  *
- * Keyed by the original squad player's id, i.e. the slot being previewed, so a
- * row can be reverted independently of the others.
+ * Keyed by the original squad player's live id, i.e. the slot being
+ * previewed, so a slot can be reverted independently of the others.
  */
 export function useSwapPreview(planner: PlannerResponse | null) {
   const [previews, setPreviews] = useState<Record<number, PlayerTrajectory>>({});
@@ -55,5 +57,9 @@ export function useSwapPreview(planner: PlannerResponse | null) {
     });
   }, []);
 
-  return { previews, loading, dragOverRow, setDragOverRow, drop, selectCandidate, undo };
+  const resetAll = useCallback(() => {
+    setPreviews({});
+  }, []);
+
+  return { previews, loading, dragOverRow, setDragOverRow, drop, selectCandidate, undo, resetAll };
 }

@@ -9,9 +9,10 @@ import { domainRating, hasSignal, makeScale, percentileRating } from "@/shared/l
 import { TransferSuggestions } from "./TransferSuggestions";
 import { getAlternatives } from "@/shared/api/squad";
 import { useFormationEditor } from "../hooks/useFormationEditor";
-import type { SquadPlayer } from "@/shared/types/api";
+import { applySwapPreview } from "../lib/applySwapPreview";
+import type { PlayerTrajectory, SquadPlayer } from "@/shared/types/api";
 
-function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean): PitchPlayer {
+function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean, swapped: boolean): PitchPlayer {
   return {
     id: p.id,
     name: p.web_name,
@@ -24,6 +25,7 @@ function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean):
     subtitle: p.next_opponent,
     selected,
     burst: justSwapped ? "ring" : undefined,
+    swapped,
   };
 }
 
@@ -88,13 +90,22 @@ function peekStats(p: SquadPlayer, squad: SquadPlayer[]): CardStat[] {
 export function SquadPitch({
   squad,
   bank,
+  swapPreviews,
+  swapLoading,
   onReplace,
+  onUndoSwap,
+  onResetSwaps,
   nextFixtures,
 }: {
   squad: SquadPlayer[];
   bank: number;
-  /** Previews swapping `candidateId` into `originalPlayerId`'s slot (see useSwapPreview). */
-  onReplace: (originalPlayerId: number, candidateId: number) => void;
+  /** Live-id-keyed replacement previews - shared with the planner table (see useSwapPreview). */
+  swapPreviews: Record<number, PlayerTrajectory>;
+  swapLoading: Record<number, boolean>;
+  /** Applies swapping `candidateId` into `originalLiveId`'s slot everywhere it's shown. */
+  onReplace: (originalLiveId: number, candidateId: number) => void;
+  onUndoSwap: (originalLiveId: number) => void;
+  onResetSwaps: () => void;
   /**
    * Upcoming fixtures with difficulty, keyed by **live** player id.
    * `next_opponent` on a SquadPlayer is only a string, so difficulty comes from
@@ -115,22 +126,65 @@ export function SquadPitch({
   const { effectiveSquad, formation, isDirty, selectedId, select, reset, error, justSwappedIds } =
     useFormationEditor(squad);
 
-  const squadById = new Map(squad.map((p) => [p.id, p]));
-  const peekPlayer = peekId != null ? squadById.get(peekId) ?? null : null;
-  // What's already owned can't also be a "replacement" - excluded by live id
-  // (the id-space player_alternatives itself works in).
-  const excludeIds = squad.map((p) => p.live_id).filter((id): id is number => id != null);
+  // Formation edits (role only) come from useFormationEditor; layered on top,
+  // a swapped-in candidate's own details replace the slot's display fields -
+  // the two are independent axes and compose without either knowing about
+  // the other.
+  const originalById = new Map(squad.map((p) => [p.id, p]));
+  const displaySquad = effectiveSquad.map((p) => {
+    const preview = p.live_id != null ? swapPreviews[p.live_id] : undefined;
+    return preview ? applySwapPreview(p, preview) : p;
+  });
+  const displayById = new Map(displaySquad.map((p) => [p.id, p]));
+  const pendingCount = Object.keys(swapPreviews).length;
 
-  function transferIcon(p: SquadPlayer) {
-    if (p.live_id == null) return null;
-    const liveId = p.live_id;
+  function isSwapped(slotId: number): boolean {
+    const original = originalById.get(slotId);
+    return Boolean(original?.live_id != null && swapPreviews[original.live_id]);
+  }
+
+  // What's already owned (including anyone already previewed in) can't also
+  // be offered as a replacement - excluded by live id.
+  const excludeIds = displaySquad.map((p) => p.live_id).filter((id): id is number => id != null);
+
+  const peekOriginal = peekId != null ? (originalById.get(peekId) ?? null) : null;
+  const peekPlayer = peekId != null ? (displayById.get(peekId) ?? null) : null;
+  const peekIsSwapped = peekId != null && isSwapped(peekId);
+
+  function cornerControl(displayed: SquadPlayer) {
+    const original = originalById.get(displayed.id);
+    if (!original || original.live_id == null) return null;
+    const originalLiveId = original.live_id;
+
+    if (swapPreviews[originalLiveId]) {
+      return (
+        <button
+          type="button"
+          onClick={() => onUndoSwap(originalLiveId)}
+          aria-label={`Undo swap - restore ${original.web_name}`}
+          title={`Undo - restore ${original.web_name}`}
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-pl-purple shadow ring-2 ring-pl-purple transition-transform hover:scale-110"
+        >
+          <span aria-hidden="true" className="text-xs leading-none">
+            ↺
+          </span>
+        </button>
+      );
+    }
+    if (swapLoading[originalLiveId]) {
+      return (
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[9px] text-text-muted shadow ring-2 ring-border">
+          …
+        </span>
+      );
+    }
     return (
       <TransferSuggestions
-        playerId={liveId}
-        playerName={p.web_name}
-        maxCost={bank + p.cost}
+        playerId={originalLiveId}
+        playerName={original.web_name}
+        maxCost={bank + original.cost}
         excludeIds={excludeIds}
-        onSelect={(candidateId) => onReplace(liveId, candidateId)}
+        onSelect={(candidateId) => onReplace(originalLiveId, candidateId)}
         triggerClassName="h-5 w-5"
       />
     );
@@ -157,7 +211,7 @@ export function SquadPitch({
         <div className="flex items-center gap-3 text-xs">
           {isDirty && (
             <button type="button" onClick={reset} className="text-pl-purple underline">
-              Reset
+              Reset formation
             </button>
           )}
           <button
@@ -181,23 +235,32 @@ export function SquadPitch({
         </p>
       )}
       {error && <p className="mb-2 text-xs font-medium text-danger">{error}</p>}
+      {pendingCount > 0 && (
+        <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-text-muted">
+          <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 font-medium text-pl-purple">
+            {pendingCount} transfer{pendingCount === 1 ? "" : "s"} previewed
+          </span>
+          not submitted to FPL - make the real change on the official app before your deadline.
+          <button type="button" onClick={onResetSwaps} className="text-pl-purple underline">
+            Reset all
+          </button>
+        </p>
+      )}
 
       <PitchFormation
-        players={effectiveSquad
+        players={displaySquad
           .filter((p) => p.role === "Starting XI")
-          .map((p) => toPitchPlayer(p, selectedId === p.id, justSwappedIds.includes(p.id)))}
+          .map((p) => toPitchPlayer(p, selectedId === p.id, justSwappedIds.includes(p.id), isSwapped(p.id)))}
         onPlayerClick={editingFormation ? select : (id) => setPeekId(id)}
         playerClickLabel={
-          editingFormation
-            ? (name) => `Select ${name} to substitute`
-            : (name) => `View ${name}'s stats`
+          editingFormation ? (name) => `Select ${name} to substitute` : (name) => `View ${name}'s stats`
         }
         renderTransfer={
           editingFormation
             ? undefined
             : (p) => {
-                const sp = squadById.get(p.id);
-                return sp ? transferIcon(sp) : null;
+                const displayed = displayById.get(p.id);
+                return displayed ? cornerControl(displayed) : null;
               }
         }
       />
@@ -205,57 +268,62 @@ export function SquadPitch({
         <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
           Bench
         </span>
-        {effectiveSquad
+        {displaySquad
           .filter((p) => p.role !== "Starting XI")
-          .map((p) => (
-            // A substitution moves one player each way, so the bench end of the
-            // swap gets the same confirmation ring as the pitch end - otherwise
-            // only half of what just happened is acknowledged.
-            <div
-              key={p.id}
-              className={`relative flex flex-col items-center gap-1 ${
-                justSwappedIds.includes(p.id) ? "animate-fpl-ring rounded-full" : ""
-              }`}
-            >
-              {!editingFormation && <div className="absolute -right-1 -top-1 z-[2]">{transferIcon(p)}</div>}
-              {editingFormation ? (
-                <button
-                  type="button"
-                  onClick={() => select(p.id)}
-                  aria-label={`Select ${p.web_name} to substitute`}
-                  className="flex flex-col items-center gap-1 text-center"
-                >
-                  <PlayerPhoto
-                    src={p.player_photo}
-                    name={p.web_name}
-                    className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
-                      selectedId === p.id
-                        ? "border-pl-green ring-4 ring-pl-green ring-offset-2"
-                        : "border-border-strong"
-                    }`}
-                  />
-                  <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
-                </button>
-              ) : (
-                // Bench players peek too - the same tap doing two different
-                // things depending on where the player is sitting would be the
-                // odd choice.
-                <button
-                  type="button"
-                  onClick={() => setPeekId(p.id)}
-                  aria-label={`View ${p.web_name}'s stats`}
-                  className="flex flex-col items-center gap-1 text-center"
-                >
-                  <PlayerPhoto
-                    src={p.player_photo}
-                    name={p.web_name}
-                    className="size-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-3xs"
-                  />
-                  <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
-                </button>
-              )}
-            </div>
-          ))}
+          .map((p) => {
+            const swapped = isSwapped(p.id);
+            return (
+              // A substitution moves one player each way, so the bench end of the
+              // swap gets the same confirmation ring as the pitch end - otherwise
+              // only half of what just happened is acknowledged.
+              <div
+                key={p.id}
+                className={`relative flex flex-col items-center gap-1 ${
+                  justSwappedIds.includes(p.id) ? "animate-fpl-ring rounded-full" : ""
+                }`}
+              >
+                {!editingFormation && <div className="absolute -right-1 -top-1 z-[2]">{cornerControl(p)}</div>}
+                {editingFormation ? (
+                  <button
+                    type="button"
+                    onClick={() => select(p.id)}
+                    aria-label={`Select ${p.web_name} to substitute`}
+                    className="flex flex-col items-center gap-1 text-center"
+                  >
+                    <PlayerPhoto
+                      src={p.player_photo}
+                      name={p.web_name}
+                      className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
+                        selectedId === p.id
+                          ? "border-pl-green ring-4 ring-pl-green ring-offset-2"
+                          : "border-border-strong"
+                      }`}
+                    />
+                    <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
+                  </button>
+                ) : (
+                  // Bench players peek too - the same tap doing two different
+                  // things depending on where the player is sitting would be the
+                  // odd choice.
+                  <button
+                    type="button"
+                    onClick={() => setPeekId(p.id)}
+                    aria-label={`View ${p.web_name}'s stats`}
+                    className="flex flex-col items-center gap-1 text-center"
+                  >
+                    <PlayerPhoto
+                      src={p.player_photo}
+                      name={p.web_name}
+                      className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
+                        swapped ? "border-pl-purple ring-4 ring-pl-purple ring-offset-2" : "border-border-strong"
+                      }`}
+                    />
+                    <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
+                  </button>
+                )}
+              </div>
+            );
+          })}
       </div>
 
       {peekPlayer && (
@@ -270,23 +338,29 @@ export function SquadPitch({
             cost: peekPlayer.cost,
             predictedPoints: peekPlayer.ep_next,
             fixtureTicker: peekPlayer.next_opponent,
-            fixtures:
-              peekPlayer.live_id != null ? nextFixtures?.get(peekPlayer.live_id) : undefined,
+            fixtures: peekPlayer.live_id != null ? nextFixtures?.get(peekPlayer.live_id) : undefined,
             status: peekPlayer.status,
             news: peekPlayer.news,
-            ratedStats: peekStats(peekPlayer, squad),
+            // A swapped-in candidate only carries what TransferSuggestions'
+            // picker returned (name, team, cost) - the deeper stats these dials
+            // need (xGI, ICT, minutes...) aren't fetched for a preview, so rating
+            // them would show the outgoing player's numbers under the wrong name.
+            ratedStats: peekIsSwapped ? [] : peekStats(peekPlayer, squad),
           }}
           onClose={() => setPeekId(null)}
           replace={
-            peekPlayer.live_id != null
+            // Re-replacing an already-swapped slot isn't offered - see the
+            // corner control's undo/suggest switch above for why (the budget
+            // math doesn't yet account for a swap already banked).
+            peekOriginal?.live_id != null && !peekIsSwapped
               ? {
                   load: () =>
-                    getAlternatives(peekPlayer.live_id!, {
+                    getAlternatives(peekOriginal.live_id!, {
                       limit: 3,
                       exclude: excludeIds,
-                      maxCost: bank + peekPlayer.cost,
+                      maxCost: bank + peekOriginal.cost,
                     }),
-                  onSelect: (candidateId) => onReplace(peekPlayer.live_id!, candidateId),
+                  onSelect: (candidateId) => onReplace(peekOriginal.live_id!, candidateId),
                 }
               : undefined
           }

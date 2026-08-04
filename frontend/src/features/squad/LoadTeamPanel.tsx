@@ -94,15 +94,14 @@ export function LoadTeamPanel({
     drop: handleSwapDrop,
     selectCandidate,
     undo: undoSwap,
+    resetAll: resetSwaps,
   } = useSwapPreview(plannerRes.data);
-  // A picked replacement previews in the planner, so open that read - the
-  // effect is immediately visible instead of something to go hunting for. This
-  // used to be a scrollIntoView down a long page; with the planner in the
-  // Inspector it just phases in beside the pitch you picked from.
-  function handleReplace(originalPlayerId: number, candidateId: number) {
-    selectCandidate(originalPlayerId, candidateId);
-    setRead("planner");
-  }
+  // Picking a replacement (pitch icon, detail table, peek, or a planner-row
+  // drop) applies straight to that slot everywhere it's shown - pitch, bench,
+  // detail table, planner row - rather than sending the reader off to a read
+  // they didn't ask to open. It used to switch the Inspector to "planner" to
+  // make the effect visible; the pitch showing it directly replaced that.
+  const handleReplace = selectCandidate;
 
   // Flattened so the markup below reads the same as it did when all of this was
   // local state - the render output is unchanged, only where the values come
@@ -111,9 +110,6 @@ export function LoadTeamPanel({
   const { data: optimizer, loading: optimizerLoading, error: optimizerError } = optimizerRes;
   const { data: planner, loading: plannerLoading, error: plannerError } = plannerRes;
   const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
-  // What's already owned can't also be a "replacement" - excluded by live id
-  // (the id-space player_alternatives itself works in).
-  const squadLiveIds = data?.squad.map((p) => p.live_id).filter((id): id is number => id != null) ?? [];
 
   // Dashboard summaries: one captaincy call and one chip, rather than the full
   // lists behind their reads.
@@ -377,7 +373,11 @@ export function LoadTeamPanel({
             <SquadPitch
               squad={data.squad}
               bank={data.bank}
+              swapPreviews={swapPreviews}
+              swapLoading={swapLoading}
               onReplace={handleReplace}
+              onUndoSwap={undoSwap}
+              onResetSwaps={resetSwaps}
               nextFixtures={nextFixtures}
             />
             <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
@@ -453,8 +453,10 @@ export function LoadTeamPanel({
               <SquadDetailTable
                 squad={data.squad}
                 bank={data.bank}
-                excludeIds={squadLiveIds}
+                swapPreviews={swapPreviews}
+                swapLoading={swapLoading}
                 onReplace={handleReplace}
+                onUndoSwap={undoSwap}
               />
             )}
 
@@ -469,6 +471,7 @@ export function LoadTeamPanel({
                 setDragOverRow={setDragOverRow}
                 onSwapDrop={handleSwapDrop}
                 onUndoSwap={undoSwap}
+                onResetSwaps={resetSwaps}
               />
             )}
 

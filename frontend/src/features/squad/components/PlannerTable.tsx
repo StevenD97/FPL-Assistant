@@ -8,10 +8,11 @@ import type { PlannerResponse, PlayerTrajectory } from "@/shared/types/api";
 /**
  * Predicted points per gameweek for the whole squad, one row per player.
  *
- * Rows are a drop target: dragging a replacement chip onto one swaps in that
- * candidate's trajectory so you can compare without making a transfer. The
- * previewed row is keyed by the original player's id, so each can be reverted
- * on its own.
+ * Rows are a drop target: dragging a replacement chip onto one swaps that
+ * player in - on this row's trajectory, and everywhere else this squad is
+ * shown (pitch, bench, detail table), via the shared swapPreviews state (see
+ * useSwapPreview). Nothing here reaches the FPL API; it's a local, unsaved
+ * preview. Each row can be reverted on its own, or all at once.
  */
 export function PlannerTable({
   planner,
@@ -23,6 +24,7 @@ export function PlannerTable({
   setDragOverRow,
   onSwapDrop,
   onUndoSwap,
+  onResetSwaps,
 }: {
   planner: PlannerResponse | null;
   loading: boolean;
@@ -33,16 +35,30 @@ export function PlannerTable({
   setDragOverRow: React.Dispatch<React.SetStateAction<number | null>>;
   onSwapDrop: (originalPlayerId: number, e: React.DragEvent) => void;
   onUndoSwap: (originalPlayerId: number) => void;
+  onResetSwaps: () => void;
 }) {
+  const pendingCount = Object.keys(swapPreviews).length;
   return (
     <Card padded={false} className="overflow-hidden">
-      <div className="border-b border-border p-4">
-        <h3 className="font-semibold text-text-primary">Transfer planner</h3>
-        <p className="mt-1 text-xs text-text-muted">
-          Predicted points per gameweek for your squad, with risky weeks flagged - tough fixtures, blanks,
-          or rotation risk. Hover a flagged cell for why, or drag a replacement chip onto a row to preview
-          a swap.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border p-4">
+        <div>
+          <h3 className="font-semibold text-text-primary">Transfer planner</h3>
+          <p className="mt-1 text-xs text-text-muted">
+            Predicted points per gameweek for your squad, with risky weeks flagged - tough fixtures, blanks,
+            or rotation risk. Hover a flagged cell for why, or drag a replacement chip onto a row to swap
+            them in - it isn&apos;t submitted to FPL, just previewed here and everywhere else this squad is
+            shown.
+          </p>
+        </div>
+        {pendingCount > 0 && (
+          <button
+            type="button"
+            onClick={onResetSwaps}
+            className="shrink-0 whitespace-nowrap text-xs font-semibold text-pl-purple hover:underline"
+          >
+            Reset all ({pendingCount})
+          </button>
+        )}
       </div>
       {loading && <p className="p-4 text-sm text-text-muted">Building planner...</p>}
       {error && (
