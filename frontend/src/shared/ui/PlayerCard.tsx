@@ -57,12 +57,14 @@ export function PlayerCard({
 }) {
   const posColor = POS_COLOR[position] ?? "#ffffff";
   const hero = size === "hero";
+  // 248px left the dial labels truncating ("SET PIECES" lost its end); at 300px a
+  // cell is ~118px, which spells them out at 9px. See the max-w below.
   const ratedStats = stats.filter((s) => s.rating != null);
   const plainStats = stats.filter((s) => s.rating == null);
   return (
     <div
       className={`group relative w-full shrink-0 overflow-hidden rounded-2xl border border-white/15 text-white shadow-lg ${
-        hero ? "max-w-[320px]" : "max-w-[248px]"
+        hero ? "max-w-[340px]" : "max-w-[300px]"
       }`}
       style={{ background: "linear-gradient(158deg,#5a1a63 0%,#37003c 42%,#0f7a3d 155%)" }}
     >
@@ -82,9 +84,13 @@ export function PlayerCard({
           </span>
           {teamBadge ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={teamBadge} alt={teamShort} className={`mt-1 object-contain ${hero ? "h-8 w-8" : "h-6 w-6"}`} />
+            <img
+              src={teamBadge}
+              alt={teamShort}
+              className={`mt-1.5 object-contain ${hero ? "h-12 w-12" : "h-10 w-10"}`}
+            />
           ) : (
-            <span className="mt-1 text-[10px] font-bold text-[#c9a9d1]">{teamShort}</span>
+            <span className="mt-1.5 text-xs font-bold text-[#c9a9d1]">{teamShort}</span>
           )}
         </div>
         <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#c9a9d1]">

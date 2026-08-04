@@ -91,6 +91,10 @@ export function PlayerPeek({
     { label: "Corners", order: player.cornersOrder },
   ];
   const shownDuties = duties.filter((d) => dutyLabel(d.order));
+  // Whether there's a second column at all. It drives the panel width too: a
+  // 512px panel around a 300px card left 200px of nothing beside it, which is the
+  // same imbalance the old side column caused, just quieter.
+  const hasAside = shownDuties.length > 0 || !!player.news;
 
   // Cost leads and stays a figure, not a dial: a high price isn't a good score,
   // and rating it 0-99 would dress a number the reader must judge in context as
@@ -111,7 +115,9 @@ export function PlayerPeek({
       <div
         ref={panelRef}
         tabIndex={-1}
-        className="relative z-[1] max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl bg-white p-4 shadow-lg outline-none sm:rounded-2xl sm:p-5"
+        className={`relative z-[1] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 shadow-lg outline-none sm:rounded-2xl sm:p-5 ${
+          hasAside ? "max-w-lg" : "max-w-[22rem]"
+        }`}
       >
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -127,9 +133,14 @@ export function PlayerPeek({
           </button>
         </div>
 
-        {/* Card left, the numbers you'd act on right. Stacks on a phone. */}
+        {/* The card is the panel, with its context stacked under it. It used to sit
+            beside a right-hand column, which only held enough to justify itself on
+            the builder's peek - on a loaded squad that column was one fixture line
+            and a paragraph, so the card was squeezed narrow next to mostly empty
+            space. Anything that still has a right column gets one; otherwise the
+            card takes the width. */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <div className="mx-auto w-full max-w-[248px] shrink-0 sm:mx-0">
+          <div className="mx-auto flex w-full max-w-[300px] shrink-0 flex-col gap-3 sm:mx-0">
             <PlayerCard
               name={player.name}
               position={player.position}
@@ -140,58 +151,53 @@ export function PlayerPeek({
               windowLabel={player.fixtureCount != null ? `${player.fixtureCount} GW` : undefined}
               stats={stats}
             />
-          </div>
 
-          <div className="min-w-0 flex-1 space-y-3">
+            {/* Directly under the card, where it reads as this player's next
+                fixture rather than a separate panel of its own. */}
             {player.fixtureTicker && (
-              <div>
-                <p className="mb-1 flex items-center gap-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
+              <div className="rounded-lg border border-border bg-surface-sunken px-3 py-2">
+                <p className="mb-0.5 flex items-center gap-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
                   Next {player.fixtureCount ?? ""} <InfoTooltip term="fdr" />
                 </p>
                 <p className="font-mono text-sm text-text-secondary">{player.fixtureTicker}</p>
               </div>
             )}
-
-            {/* Set-piece duties: high signal, previously discarded. Only the
-                duties he actually has are listed - a row of "not a taker" is
-                noise. */}
-            {shownDuties.length > 0 && (
-              <div>
-                <p className="mb-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
-                  Set pieces
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {shownDuties.map((d) => (
-                    <span
-                      key={d.label}
-                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-2xs font-semibold ${
-                        d.order === 1
-                          ? "border-success/40 bg-success-bg text-success"
-                          : "border-border bg-surface-sunken text-text-secondary"
-                      }`}
-                    >
-                      {d.label} · {dutyLabel(d.order)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* What the dials mean, once, rather than a tooltip per ring. Without
-                it "72" is a number with no scale attached. */}
-            {(player.ratedStats?.length ?? 0) > 0 && (
-              <p className="text-xs leading-snug text-text-muted">
-                Dials are 0&ndash;99, each stat&apos;s standing against every other
-                player &mdash; 50 is mid-table, not a target.
-              </p>
-            )}
-
-            {player.news && (
-              <p className="rounded-lg border border-warning/30 bg-warning-bg px-2.5 py-2 text-xs text-text-secondary">
-                {player.news}
-              </p>
-            )}
           </div>
+
+          {hasAside && (
+            <div className="min-w-0 flex-1 space-y-3">
+              {/* Set-piece duties: high signal, previously discarded. Only the
+                  duties he actually has are listed - a row of "not a taker" is
+                  noise. */}
+              {shownDuties.length > 0 && (
+                <div>
+                  <p className="mb-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                    Set pieces
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {shownDuties.map((d) => (
+                      <span
+                        key={d.label}
+                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-2xs font-semibold ${
+                          d.order === 1
+                            ? "border-success/40 bg-success-bg text-success"
+                            : "border-border bg-surface-sunken text-text-secondary"
+                        }`}
+                      >
+                        {d.label} · {dutyLabel(d.order)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {player.news && (
+                <p className="rounded-lg border border-warning/30 bg-warning-bg px-2.5 py-2 text-xs text-text-secondary">
+                  {player.news}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
