@@ -29,6 +29,7 @@ export function TransferPlanPicker({
   gwEvent,
   maxCost,
   excludeIds,
+  replacingPlanned,
   onSelect,
   onClose,
 }: {
@@ -38,6 +39,12 @@ export function TransferPlanPicker({
   gwEvent: number;
   maxCost: number;
   excludeIds: number[];
+  /**
+   * Name of the player already planned into this slot for this gameweek, if
+   * any. The outgoing player is still whoever leaves the squad, so without
+   * this the header would name someone the pitch isn't currently showing.
+   */
+  replacingPlanned?: string;
   onSelect: (candidate: PoolPlayer) => void;
   onClose: () => void;
 }) {
@@ -88,6 +95,11 @@ export function TransferPlanPicker({
               <span className="font-mono font-medium text-text-secondary">£{maxCost.toFixed(1)}m</span> available ·{" "}
               {outgoing.position} only
             </p>
+            {replacingPlanned && (
+              <p className="text-xs text-pl-purple">
+                Changes your planned {replacingPlanned} for this week
+              </p>
+            )}
           </div>
           <button
             type="button"

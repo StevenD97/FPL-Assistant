@@ -1,4 +1,10 @@
-import type { PlannerResponse, Position, SquadPlayer, TrajectoryRow } from "@/shared/types/api";
+import type {
+  PlannerOpponent,
+  PlannerResponse,
+  Position,
+  SquadPlayer,
+  TrajectoryRow,
+} from "@/shared/types/api";
 
 /**
  * FPL banks unused free transfers, gaining one more each gameweek you don't
@@ -79,6 +85,8 @@ export type PlanCell = {
   predictedPoints: number | null;
   flags: string[];
   fixtureCount: number;
+  /** Who this slot's occupant actually plays that week - empty on a blank. */
+  opponents: PlannerOpponent[];
   /** True on the first gameweek a planned transfer takes effect - the boundary worth marking in the UI. */
   transferStartsHere: boolean;
 };
@@ -86,6 +94,8 @@ export type PlanCell = {
 export type SlotRow = {
   outLiveId: number;
   original: SquadPlayer;
+  /** Which slot this is - transfers swap the occupant, never the slot's place in the XI. */
+  role: SquadPlayer["role"];
   cells: PlanCell[];
 };
 
@@ -117,10 +127,11 @@ export function buildSlotRows(squad: SquadPlayer[], planner: PlannerResponse, en
           predictedPoints: row?.predicted_points ?? null,
           flags: row?.flags ?? [],
           fixtureCount: row?.fixture_count ?? 0,
+          opponents: row?.opponents ?? [],
           transferStartsHere: active != null && active.gwEvent === event,
         };
       });
-      return { outLiveId, original, cells };
+      return { outLiveId, original, role: original.role, cells };
     });
 }
 

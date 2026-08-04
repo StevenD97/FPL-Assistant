@@ -30,6 +30,13 @@ export type PitchPlayer = {
   isViceCaptain?: boolean;
   // Small line under the name - e.g. predicted points or next opponent.
   subtitle?: string;
+  /**
+   * Replaces the subtitle pill's default dark tint. For a subtitle that
+   * carries meaning in its colour rather than just its text - the transfer
+   * plan tints it by fixture difficulty, so a hard week reads off the pitch
+   * without being read.
+   */
+  subtitleClassName?: string;
   // If set, the player's badge/photo becomes a link (e.g. to their detail page).
   href?: string;
   // Highlight ring - e.g. picked as the subject of a pending substitution.
@@ -255,7 +262,11 @@ function PitchPlayerCard({
         {p.name}
       </span>
       {p.subtitle && (
-        <span className="whitespace-nowrap rounded-sm bg-black/20 px-1.5 py-0.5 font-mono text-3xs text-white">
+        <span
+          className={`whitespace-nowrap rounded-sm px-1.5 py-0.5 font-mono text-3xs ${
+            p.subtitleClassName ?? "bg-black/20 text-white"
+          }`}
+        >
           {p.subtitle}
         </span>
       )}
