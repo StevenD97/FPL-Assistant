@@ -9,7 +9,6 @@ import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { getPlayerPool } from "@/shared/api/squad";
 import { GameweekStrip } from "./GameweekStrip";
 import { TransferPlanPicker } from "./TransferPlanPicker";
 import { BlankGameweekAdvisor, BLANK_THRESHOLD, findFlaggedWeeks } from "./BlankGameweekAdvisor";
@@ -140,6 +139,10 @@ export function TransferPlanBoard({
   onAdd,
   onRemove,
   onClearAll,
+  pool,
+  poolLoading,
+  openPickerFor,
+  onOpenPickerHandled,
 }: {
   planner: PlannerResponse | null;
   loading: boolean;
@@ -158,27 +161,40 @@ export function TransferPlanBoard({
   onAdd: (outLiveId: number, gwEvent: number, candidate: PoolPlayer) => void;
   onRemove: (outLiveId: number, gwEvent: number) => void;
   onClearAll: () => void;
+  /** Shared with the workspace around this board - one fetch of the whole
+   * player pool serves the candidate picker here as well as the
+   * recommendation and squad-radar cost lookups above it. */
+  pool: PoolPlayer[] | null;
+  poolLoading: boolean;
+  /** Set by a caller outside this board (a recommendation, a flagged-gameweek
+   * radar item) to jump straight to the candidate picker for that slot and
+   * gameweek, skipping the "who's leaving" step since the caller already
+   * knows. Cleared via onOpenPickerHandled once consumed. */
+  openPickerFor?: { gwEvent: number; outLiveId: number } | null;
+  onOpenPickerHandled?: () => void;
 }) {
-  const [pool, setPool] = useState<PoolPlayer[] | null>(null);
-  const [poolLoading, setPoolLoading] = useState(true);
-  useEffect(() => {
-    let cancelled = false;
-    getPlayerPool()
-      .then((rows) => {
-        if (!cancelled) setPool(rows);
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setPoolLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const [choosingSlotFor, setChoosingSlotFor] = useState<number | null>(null);
-  const [pickingFor, setPickingFor] = useState<{ gwEvent: number; original: SquadPlayer } | null>(null);
+  const [internalPickingFor, setInternalPickingFor] = useState<{ gwEvent: number; original: SquadPlayer } | null>(
+    null,
+  );
   const [showMatrix, setShowMatrix] = useState(false);
+
+  // openPickerFor is a request from outside this board (a recommendation, a
+  // radar item) - derived rather than mirrored into state, so there's
+  // nothing to synchronise: the picker is open exactly when the request
+  // resolves to a real slot, and closing it clears the request itself
+  // (below) rather than a local copy of it.
+  const externalPickingFor = useMemo(() => {
+    if (!openPickerFor) return null;
+    const original = squad.find((p) => p.live_id === openPickerFor.outLiveId);
+    return original ? { gwEvent: openPickerFor.gwEvent, original } : null;
+  }, [openPickerFor, squad]);
+  const pickingFor = internalPickingFor ?? externalPickingFor;
+
+  function closePicker() {
+    setInternalPickingFor(null);
+    if (externalPickingFor) onOpenPickerHandled?.();
+  }
 
   const slotRows = useMemo(() => (planner ? buildSlotRows(squad, planner, entries) : []), [planner, squad, entries]);
   const projection = useMemo(
@@ -226,21 +242,12 @@ export function TransferPlanBoard({
     if (!pickingFor) return;
     const outLiveId = pickingFor.original.live_id as number;
     const gwEvent = pickingFor.gwEvent;
-    setPickingFor(null);
+    closePicker();
     onAdd(outLiveId, gwEvent, candidate);
   }
 
   return (
     <div className="space-y-4">
-      <Card>
-        <h3 className="font-semibold text-text-primary">Transfer plan</h3>
-        <p className="mt-1 text-xs text-text-muted">
-          Plan transfers for specific future gameweeks, not just now - add a swap to any week ahead and see
-          predicted points, free transfers, and your bank update across the whole window. Nothing here is
-          submitted to FPL until you actually make the transfer.
-        </p>
-      </Card>
-
       {loading && <p className="text-sm text-text-muted">Building your outlook…</p>}
       {error && (
         <Alert kind="warning">Couldn&apos;t build the planner ({error}).</Alert>
@@ -254,7 +261,13 @@ export function TransferPlanBoard({
 
           <Card padded={false}>
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border p-4">
-              <h4 className="text-sm font-semibold text-text-primary">Your plan</h4>
+              <div>
+                <h4 className="text-sm font-semibold text-text-primary">Your plan</h4>
+                <p className="mt-0.5 text-xs text-text-muted">
+                  Add a swap to any week ahead and see points, free transfers, and bank update across the
+                  whole window - nothing here is submitted to FPL until you actually make the transfer.
+                </p>
+              </div>
               {entries.length > 0 && (
                 <button
                   type="button"
@@ -495,7 +508,7 @@ export function TransferPlanBoard({
           onPick={(original) => {
             const gwEvent = choosingSlotFor;
             setChoosingSlotFor(null);
-            setPickingFor({ gwEvent, original });
+            setInternalPickingFor({ gwEvent, original });
           }}
           onClose={() => setChoosingSlotFor(null)}
         />
@@ -520,7 +533,7 @@ export function TransferPlanBoard({
             .filter((p) => p.live_id != null)
             .map((p) => currentOccupantForGw(p, entries, pickingFor.gwEvent).id)}
           onSelect={handlePick}
-          onClose={() => setPickingFor(null)}
+          onClose={closePicker}
         />
       )}
     </div>

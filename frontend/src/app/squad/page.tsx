@@ -5,6 +5,7 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { LoadTeamPanel } from "@/features/squad/LoadTeamPanel";
 import { BuildSquadPanel } from "@/features/squad/BuildSquadPanel";
+import { TransferPlanWorkspace } from "@/features/squad/TransferPlanWorkspace";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Button } from "@/shared/ui/Button";
 import { TextField } from "@/shared/ui/TextField";
@@ -28,10 +29,12 @@ const FREE_TRACKED_LIMIT = 3;
 type Selection =
   | { kind: "fpl"; id: number }
   | { kind: "local"; id: string }
-  | { kind: "draft" };
+  | { kind: "draft" }
+  | { kind: "planner" };
 
 function selectionKey(sel: Selection): string {
-  return sel.kind === "draft" ? "draft" : `${sel.kind}-${sel.id}`;
+  if (sel.kind === "draft" || sel.kind === "planner") return sel.kind;
+  return `${sel.kind}-${sel.id}`;
 }
 
 export default function SquadPage() {
@@ -120,6 +123,7 @@ export default function SquadPage() {
   const activeFplId = selection?.kind === "fpl" ? selection.id : null;
   const activeLocalId = selection?.kind === "local" ? selection.id : null;
   const isDraft = selection?.kind === "draft";
+  const isPlanner = selection?.kind === "planner";
 
   const yourTeamLabel = useMemo(() => entry?.team_name?.trim() || "Your team", [entry?.team_name]);
 
@@ -151,6 +155,20 @@ export default function SquadPage() {
             >
               ＋ Connect your team
             </button>
+          )}
+
+          {/* Planning ahead only means anything for the team you actually
+              manage, so this sits right next to it rather than among the
+              squads you're just watching or built - a tool for your team,
+              not another team. */}
+          {connectedId != null && (
+            <TeamChip
+              active={isPlanner}
+              onClick={() => choose({ kind: "planner" })}
+              badge="⇄"
+              label="Transfer Plan"
+              sublabel="Plan ahead"
+            />
           )}
 
           {/* Rivals pulled from the live game. Named from the cache in
@@ -289,6 +307,10 @@ export default function SquadPage() {
           >
             {selection.kind === "fpl" ? (
               <LoadTeamPanel key={selection.id} initialTeamId={selection.id} embedded />
+            ) : selection.kind === "planner" ? (
+              connectedId != null && (
+                <TransferPlanWorkspace teamId={connectedId} teamName={yourTeamLabel} />
+              )
             ) : (
               // A saved squad and the draft are the same workspace; the only
               // difference is where edits are persisted.

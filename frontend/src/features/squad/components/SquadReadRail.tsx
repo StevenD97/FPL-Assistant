@@ -8,7 +8,6 @@ export type SquadRead =
   | "chips"
   | "strength"
   | "detail"
-  | "planner"
   | "setup";
 
 /**
@@ -28,7 +27,6 @@ const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: 
   chips: { icon: "text-warning", text: "text-warning", tint: "bg-warning-bg", bar: "bg-warning" },
   strength: { icon: "text-info", text: "text-info", tint: "bg-info-bg", bar: "bg-info" },
   detail: { icon: "text-slate-600", text: "text-slate-600", tint: "bg-slate-100", bar: "bg-slate-600" },
-  planner: { icon: "text-pl-pink", text: "text-pl-pink", tint: "bg-danger-bg", bar: "bg-pl-pink" },
   setup: { icon: "text-slate-500", text: "text-slate-500", tint: "bg-slate-100", bar: "bg-slate-400" },
 };
 
@@ -198,14 +196,6 @@ function ReadIcon({ id }: { id: SquadRead }) {
         <svg {...common}>
           <path d="M4 6h16M4 12h16M4 18h16" />
           <path d="M9 6v12" />
-        </svg>
-      );
-    case "planner":
-      // A calendar of gameweeks.
-      return (
-        <svg {...common}>
-          <rect x="3" y="5" width="18" height="16" rx="2" />
-          <path d="M3 10h18M8 3v4M16 3v4" />
         </svg>
       );
     case "setup":

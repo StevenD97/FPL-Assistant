@@ -4,8 +4,19 @@ import { Card } from "@/shared/ui/Card";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import type { FixtureDifficultyRow } from "@/shared/types/api";
 
-/** Presentational: rows are fetched on the server and passed in. */
-export function DifficultyView({ rows }: { rows: FixtureDifficultyRow[] }) {
+/**
+ * Every club's run of fixtures, kindest first - shared between /matches
+ * (whole-league view) and the squad transfer plan (scoped to the plan
+ * window), which is why this lives in shared/ui rather than either feature.
+ */
+export function FixtureDifficultyTable({
+  rows,
+  windowSize = 5,
+}: {
+  rows: FixtureDifficultyRow[];
+  /** How many gameweeks `fixtures` covers - just the column header, the caller decides the actual window. */
+  windowSize?: number;
+}) {
   const sorted = [...rows].sort((a, b) => (a.avg_difficulty ?? 6) - (b.avg_difficulty ?? 6));
 
   return (
@@ -22,7 +33,7 @@ export function DifficultyView({ rows }: { rows: FixtureDifficultyRow[] }) {
               </th>
               <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
                 <span className="inline-flex items-center gap-1">
-                  Next 5 <InfoTooltip term="fdr" />
+                  Next {windowSize} <InfoTooltip term="fdr" />
                 </span>
               </th>
             </tr>

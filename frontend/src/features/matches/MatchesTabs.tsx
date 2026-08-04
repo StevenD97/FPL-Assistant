@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Tabs, TabPanel, type TabItem } from "@/shared/ui/Tabs";
+import { FixtureDifficultyTable } from "@/shared/ui/FixtureDifficultyTable";
 import type { FixtureDifficultyRow, ScheduleFixture } from "@/shared/types/api";
 import { ScheduleView } from "./ScheduleView";
-import { DifficultyView } from "./DifficultyView";
 
 type View = "schedule" | "difficulty";
 
@@ -32,7 +32,7 @@ export function MatchesTabs({
         <ScheduleView fixtures={fixtures} />
       </TabPanel>
       <TabPanel id="difficulty" active={view === "difficulty"}>
-        <DifficultyView rows={difficulty} />
+        <FixtureDifficultyTable rows={difficulty} />
       </TabPanel>
     </>
   );
