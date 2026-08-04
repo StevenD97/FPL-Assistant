@@ -96,7 +96,8 @@ export function PlayerPeek({
   replace?: {
     /** Fetched lazily on first open - candidates aren't needed until asked for. */
     load: () => Promise<PlayerAlternative[]>;
-    onSelect: (candidateId: number) => void;
+    /** The full candidate rides along too, so a caller can track its cost. */
+    onSelect: (candidateId: number, candidate: PlayerAlternative) => void;
   };
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -316,7 +317,7 @@ export function PlayerPeek({
                       key={c.id}
                       size="compact"
                       onClick={() => {
-                        replace.onSelect(c.id);
+                        replace.onSelect(c.id, c);
                         onClose();
                       }}
                       name={c.web_name}
@@ -333,7 +334,7 @@ export function PlayerPeek({
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-text-muted">
-                  Picking one previews the swap in your Transfer planner below.
+                  Swaps them in as a preview, wherever this squad is shown - not submitted to FPL.
                 </p>
               </>
             )}

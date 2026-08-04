@@ -4,7 +4,8 @@ import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { GameweekStrip } from "./GameweekStrip";
-import type { PlannerResponse, PlayerTrajectory, Position } from "@/shared/types/api";
+import { TransferSuggestions } from "./TransferSuggestions";
+import type { PlannerResponse, PlayerTrajectory, Position, SquadPlayer } from "@/shared/types/api";
 
 // Same hues as the position badge elsewhere on the page, as a left-border
 // accent - the matrix is dense enough that a plain grey rule per row reads
@@ -19,36 +20,45 @@ const POSITION_BORDER: Record<Position, string> = {
 /**
  * Predicted points per gameweek for the whole squad, one row per player.
  *
- * Rows are a drop target: dragging a replacement chip onto one swaps that
- * player in - on this row's trajectory, and everywhere else this squad is
- * shown (pitch, bench, detail table), via the shared swapPreviews state (see
- * useSwapPreview). Nothing here reaches the FPL API; it's a local, unsaved
- * preview. Each row can be reverted on its own, or all at once.
+ * Swapping a player here uses the same picker as everywhere else (the
+ * pitch icon, Squad detail's "Swap") - previewed on this row's trajectory,
+ * and everywhere else this squad is shown, via the shared swapPreviews
+ * state (see useSwapPreview). Nothing here reaches the FPL API; it's a
+ * local, unsaved preview. Each row can be reverted on its own, or all at
+ * once.
  */
 export function PlannerTable({
   planner,
   loading,
   error,
+  squad,
+  bank,
   swapPreviews,
   swapLoading,
-  dragOverRow,
-  setDragOverRow,
-  onSwapDrop,
+  onReplace,
   onUndoSwap,
   onResetSwaps,
 }: {
   planner: PlannerResponse | null;
   loading: boolean;
   error: string | null;
+  squad: SquadPlayer[];
+  /** Already net of any active swap previews - see SquadPitch's `bank` doc. */
+  bank: number;
   swapPreviews: Record<number, PlayerTrajectory>;
   swapLoading: Record<number, boolean>;
-  dragOverRow: number | null;
-  setDragOverRow: React.Dispatch<React.SetStateAction<number | null>>;
-  onSwapDrop: (originalPlayerId: number, e: React.DragEvent) => void;
+  onReplace: (originalLiveId: number, candidateId: number, candidateCost: number) => void;
   onUndoSwap: (originalPlayerId: number) => void;
   onResetSwaps: () => void;
 }) {
   const pendingCount = Object.keys(swapPreviews).length;
+  // What's already owned (including anyone already previewed in elsewhere)
+  // can't also be offered as a replacement - excluded by live id.
+  const excludeIds = squad
+    .map((p) => (p.live_id != null ? (swapPreviews[p.live_id]?.id ?? p.live_id) : null))
+    .filter((id): id is number => id != null);
+  const costByLiveId = new Map(squad.filter((p) => p.live_id != null).map((p) => [p.live_id as number, p.cost]));
+
   return (
     <Card padded={false} className="overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-2 border-b border-border p-4">
@@ -56,9 +66,9 @@ export function PlannerTable({
           <h3 className="font-semibold text-text-primary">Transfer planner</h3>
           <p className="mt-1 text-xs text-text-muted">
             Predicted points per gameweek for your squad, with risky weeks flagged - tough fixtures, blanks,
-            or rotation risk. Hover a flagged cell for why, or drag a replacement chip onto a row to swap
-            them in - it isn&apos;t submitted to FPL, just previewed here and everywhere else this squad is
-            shown.
+            or rotation risk. Hover a flagged cell for why, or swap a player from a row to preview the effect
+            across the whole window - it isn&apos;t submitted to FPL, just previewed here and everywhere else
+            this squad is shown.
           </p>
         </div>
         {pendingCount > 0 && (
@@ -115,15 +125,9 @@ export function PlannerTable({
                 return (
                   <tr
                     key={original.id}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      setDragOverRow(original.id);
-                    }}
-                    onDragLeave={() => setDragOverRow((cur) => (cur === original.id ? null : cur))}
-                    onDrop={(e) => onSwapDrop(original.id, e)}
                     className={`border-t border-border transition-colors duration-fast ease-standard ${
                       isPreviewing ? "bg-pl-purple/5" : ""
-                    } ${dragOverRow === original.id ? "outline outline-2 -outline-offset-2 outline-pl-purple" : ""}`}
+                    }`}
                   >
                     <td
                       className={`sticky left-0 whitespace-nowrap border-l-4 bg-white px-3 py-2 font-medium ${POSITION_BORDER[display.position]}`}
@@ -143,7 +147,7 @@ export function PlannerTable({
                         {swapLoading[original.id] && (
                           <span className="text-xs text-text-muted">loading...</span>
                         )}
-                        {isPreviewing && (
+                        {isPreviewing ? (
                           <button
                             onClick={() => onUndoSwap(original.id)}
                             className="rounded-sm border border-pl-purple/40 px-1.5 py-0.5 text-[10px] font-semibold text-pl-purple hover:bg-pl-purple/10"
@@ -151,6 +155,18 @@ export function PlannerTable({
                           >
                             ↩ was {original.web_name}
                           </button>
+                        ) : (
+                          <TransferSuggestions
+                            playerId={original.id}
+                            playerName={original.web_name}
+                            maxCost={bank + (costByLiveId.get(original.id) ?? 0)}
+                            excludeIds={excludeIds}
+                            onSelect={(candidateId, candidate) =>
+                              onReplace(original.id, candidateId, candidate.cost)
+                            }
+                            trigger="Swap"
+                            triggerClassName="shrink-0 text-[10px] font-semibold text-pl-purple hover:underline"
+                          />
                         )}
                       </div>
                     </td>
@@ -161,7 +177,7 @@ export function PlannerTable({
                       return (
                         <td
                           key={gw.event}
-                          className={`px-3 py-2 text-center font-mono ${bg}`}
+                          className={`px-3 py-2 text-center font-mono ${bg} ${hasFlag ? "cursor-help" : ""}`}
                           title={gw.flags.length > 0 ? gw.flags.join(" · ") : undefined}
                         >
                           {gw.predicted_points.toFixed(1)}

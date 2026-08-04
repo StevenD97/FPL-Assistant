@@ -36,16 +36,19 @@ export function SquadDetailTable({
   squad,
   bank,
   swapPreviews,
+  swapCosts,
   swapLoading,
   onReplace,
   onUndoSwap,
 }: {
   squad: SquadPlayer[];
-  /** Bank, so a replacement's budget is bank + the sold player's own price. */
+  /** Already net of any active swap previews - see SquadPitch's `bank` doc. */
   bank: number;
   swapPreviews: Record<number, PlayerTrajectory>;
+  /** Live-id-keyed candidate cost - the trajectory endpoint doesn't return a price. */
+  swapCosts: Record<number, number>;
   swapLoading: Record<number, boolean>;
-  onReplace: (originalLiveId: number, candidateId: number) => void;
+  onReplace: (originalLiveId: number, candidateId: number, candidateCost: number) => void;
   onUndoSwap: (originalLiveId: number) => void;
 }) {
   const [openRow, setOpenRow] = useState<number | null>(null);
@@ -90,7 +93,9 @@ export function SquadDetailTable({
         <tbody>
           {squad.map((original) => {
             const preview = original.live_id != null ? swapPreviews[original.live_id] : undefined;
-            const p = preview ? applySwapPreview(original, preview) : original;
+            const p = preview
+              ? applySwapPreview(original, preview, original.live_id != null ? swapCosts[original.live_id] : undefined)
+              : original;
             const expanded = openRow === original.position;
             return (
               <Fragment key={original.position}>
@@ -150,7 +155,9 @@ export function SquadDetailTable({
                             playerName={original.web_name}
                             maxCost={bank + original.cost}
                             excludeIds={excludeIds}
-                            onSelect={(candidateId) => onReplace(original.live_id!, candidateId)}
+                            onSelect={(candidateId, candidate) =>
+                              onReplace(original.live_id!, candidateId, candidate.cost)
+                            }
                             trigger="Swap"
                             triggerClassName="text-xs text-pl-purple hover:underline"
                           />

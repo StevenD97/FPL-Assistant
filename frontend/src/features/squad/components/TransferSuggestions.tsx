@@ -52,8 +52,13 @@ export function TransferSuggestions({
   playerName: string;
   maxCost: number;
   excludeIds: number[];
-  /** Performs the swap in place - always provided; there's no read-only mode. */
-  onSelect: (candidateId: number) => void;
+  /**
+   * Performs the swap in place - always provided; there's no read-only mode.
+   * The full candidate rides along too, so a caller can track its cost (the
+   * alternatives list is the only place that price is fetched) without a
+   * second round trip.
+   */
+  onSelect: (candidateId: number, candidate: PlayerAlternative) => void;
   /** Custom trigger content (e.g. a "Suggest" text link) - defaults to the icon glyph. */
   trigger?: React.ReactNode;
   triggerClassName?: string;
@@ -150,7 +155,7 @@ export function TransferSuggestions({
                       <button
                         type="button"
                         onClick={() => {
-                          onSelect(c.id);
+                          onSelect(c.id, c);
                           setOpen(false);
                         }}
                         className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-2 text-sm hover:border-pl-purple/40 hover:bg-pl-purple/5"

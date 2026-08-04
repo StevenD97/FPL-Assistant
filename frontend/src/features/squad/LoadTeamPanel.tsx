@@ -12,6 +12,7 @@ import { StatBar } from "@/shared/ui/StatBar";
 import { Inspector } from "@/shared/ui/Inspector";
 import { nextChip } from "@/shared/lib/chips";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
+import { BlankGameweekAdvisor } from "./components/BlankGameweekAdvisor";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { PlannerTable } from "./components/PlannerTable";
 import { SquadDetailTable } from "./components/SquadDetailTable";
@@ -81,7 +82,11 @@ export function LoadTeamPanel({
   // that needs them), so its net effect on the predicted score - and whether
   // the preview leaves the real captain out of the XI - comes back up through
   // this rather than being recomputed here from state this panel doesn't have.
-  const [previewEffect, setPreviewEffect] = useState({ pointsDelta: 0, captainAffected: false });
+  const [previewEffect, setPreviewEffect] = useState<{
+    pointsDelta: number;
+    captainAffected: boolean;
+    previewCaptainName: string | null;
+  }>({ pointsDelta: 0, captainAffected: false, previewCaptainName: null });
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -93,10 +98,8 @@ export function LoadTeamPanel({
   } = useLoadedSquad();
   const {
     previews: swapPreviews,
+    costs: swapCosts,
     loading: swapLoading,
-    dragOverRow,
-    setDragOverRow,
-    drop: handleSwapDrop,
     selectCandidate,
     undo: undoSwap,
     resetAll: resetSwaps,
@@ -130,6 +133,17 @@ export function LoadTeamPanel({
     : null;
   // Keyed by player id, not a list - count the keys.
   const previewCount = Object.keys(swapPreviews).length;
+  // What a preview actually costs: each swap's candidate price less the
+  // player it replaces, summed. Passed to the pitch/detail table as the
+  // *effective* bank so a second swap's affordability reflects money the
+  // first one freed up, not just the real, un-previewed balance.
+  const swapCostDelta = data
+    ? Object.entries(swapCosts).reduce((sum, [liveIdStr, candidateCost]) => {
+        const original = data.squad.find((p) => p.live_id === Number(liveIdStr));
+        return original ? sum + (candidateCost - original.cost) : sum;
+      }, 0)
+    : 0;
+  const effectiveBank = data ? Math.round((data.bank - swapCostDelta) * 10) / 10 : 0;
 
   // The peek's Next section shows difficulty, and SquadPlayer.next_opponent is
   // only a string - so take the structured opponents from the planner, which is
@@ -175,6 +189,14 @@ export function LoadTeamPanel({
         <span className="font-medium text-warning">
           Your captain isn&apos;t in the previewed XI - reassign the armband
         </span>
+      ) : previewEffect.previewCaptainName ? (
+        // A reassignment on the pitch overrides the real armband this read
+        // would otherwise describe - say whose it is now, not compare a
+        // pick that's no longer current against the model's own favourite.
+        <>
+          <span className="font-medium text-text-primary">{previewEffect.previewCaptainName}</span>{" "}
+          <span className="text-pl-purple">· your pick, previewed</span>
+        </>
       ) : topCaptain ? (
         <>
           <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
@@ -361,8 +383,25 @@ export function LoadTeamPanel({
               },
               {
                 label: "In the bank",
-                value: `£${data.bank}m`,
-                hint: data.bank > 0 ? "free to spend" : "nothing spare",
+                value: (
+                  <span className={swapCostDelta !== 0 ? (effectiveBank < 0 ? "text-danger" : "text-pl-purple") : ""}>
+                    £{effectiveBank}m
+                  </span>
+                ),
+                hint:
+                  swapCostDelta !== 0 ? (
+                    effectiveBank < 0 ? (
+                      <span className="text-danger">
+                        £{Math.abs(swapCostDelta).toFixed(1)}m over budget with this preview
+                      </span>
+                    ) : (
+                      `was £${data.bank}m, before this preview`
+                    )
+                  ) : effectiveBank > 0 ? (
+                    "free to spend"
+                  ) : (
+                    "nothing spare"
+                  ),
                 tooltip: "bankLeft",
               },
               {
@@ -392,8 +431,9 @@ export function LoadTeamPanel({
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
             <SquadPitch
               squad={data.squad}
-              bank={data.bank}
+              bank={effectiveBank}
               swapPreviews={swapPreviews}
+              swapCosts={swapCosts}
               swapLoading={swapLoading}
               onReplace={handleReplace}
               onUndoSwap={undoSwap}
@@ -473,8 +513,9 @@ export function LoadTeamPanel({
             {read === "detail" && (
               <SquadDetailTable
                 squad={data.squad}
-                bank={data.bank}
+                bank={effectiveBank}
                 swapPreviews={swapPreviews}
+                swapCosts={swapCosts}
                 swapLoading={swapLoading}
                 onReplace={handleReplace}
                 onUndoSwap={undoSwap}
@@ -482,18 +523,26 @@ export function LoadTeamPanel({
             )}
 
             {read === "planner" && (
-              <PlannerTable
-                planner={planner}
-                loading={plannerLoading}
-                error={plannerError}
-                swapPreviews={swapPreviews}
-                swapLoading={swapLoading}
-                dragOverRow={dragOverRow}
-                setDragOverRow={setDragOverRow}
-                onSwapDrop={handleSwapDrop}
-                onUndoSwap={undoSwap}
-                onResetSwaps={resetSwaps}
-              />
+              <>
+                <BlankGameweekAdvisor
+                  chips={chips}
+                  chipsLoading={chipsLoading}
+                  teamId={teamId}
+                  freeTransfers={freeTransfers}
+                />
+                <PlannerTable
+                  planner={planner}
+                  loading={plannerLoading}
+                  error={plannerError}
+                  squad={data.squad}
+                  bank={effectiveBank}
+                  swapPreviews={swapPreviews}
+                  swapLoading={swapLoading}
+                  onReplace={handleReplace}
+                  onUndoSwap={undoSwap}
+                  onResetSwaps={resetSwaps}
+                />
+              </>
             )}
 
             {read === "setup" && (

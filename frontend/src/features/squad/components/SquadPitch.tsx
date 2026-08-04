@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { PlayerPeek } from "@/shared/ui/PlayerPeek";
+import { Button } from "@/shared/ui/Button";
 import type { CardStat } from "@/shared/ui/PlayerCard";
 import { domainRating, hasSignal, makeScale, percentileRating } from "@/shared/lib/rating";
 import { TransferSuggestions } from "./TransferSuggestions";
 import { getAlternatives } from "@/shared/api/squad";
 import { useFormationEditor } from "../hooks/useFormationEditor";
+import { useCaptainEditor } from "../hooks/useCaptainEditor";
 import { applySwapPreview } from "../lib/applySwapPreview";
 import type { PlayerTrajectory, SquadPlayer } from "@/shared/types/api";
 
@@ -103,6 +105,7 @@ export function SquadPitch({
   squad,
   bank,
   swapPreviews,
+  swapCosts,
   swapLoading,
   onReplace,
   onUndoSwap,
@@ -111,21 +114,34 @@ export function SquadPitch({
   nextFixtures,
 }: {
   squad: SquadPlayer[];
+  /**
+   * Already net of any active swap previews (see LoadTeamPanel) - a second
+   * slot's "what can I afford" reflects money a previous swap freed up, not
+   * just the real, unpreviewed bank.
+   */
   bank: number;
   /** Live-id-keyed replacement previews - shared with the planner table (see useSwapPreview). */
   swapPreviews: Record<number, PlayerTrajectory>;
+  /** Live-id-keyed candidate cost - the trajectory endpoint doesn't return a price. */
+  swapCosts: Record<number, number>;
   swapLoading: Record<number, boolean>;
-  /** Applies swapping `candidateId` into `originalLiveId`'s slot everywhere it's shown. */
-  onReplace: (originalLiveId: number, candidateId: number) => void;
+  /** Applies swapping `candidateId` (priced at `candidateCost`) into `originalLiveId`'s slot everywhere it's shown. */
+  onReplace: (originalLiveId: number, candidateId: number, candidateCost: number) => void;
   onUndoSwap: (originalLiveId: number) => void;
   onResetSwaps: () => void;
   /**
-   * Reports the preview's net effect (formation edit and/or transfer swaps
-   * combined) each time it changes, so reads elsewhere on the page - the
-   * planner and captaincy summaries - can echo it without recomputing it
-   * themselves from state they don't have (formation edits are local here).
+   * Reports the preview's net effect (formation edit, transfer swaps, and/or
+   * a captain reassignment, combined) each time it changes, so reads
+   * elsewhere on the page - the planner and captaincy summaries - can echo
+   * it without recomputing it themselves from state they don't have (all
+   * three edits are local to this component).
    */
-  onPreviewEffect?: (effect: { pointsDelta: number; captainAffected: boolean }) => void;
+  onPreviewEffect?: (effect: {
+    pointsDelta: number;
+    captainAffected: boolean;
+    /** Who's captain in the preview right now, if it differs from the real armband. */
+    previewCaptainName: string | null;
+  }) => void;
   /**
    * Upcoming fixtures with difficulty, keyed by **live** player id.
    * `next_opponent` on a SquadPlayer is only a string, so difficulty comes from
@@ -145,15 +161,22 @@ export function SquadPitch({
   const [peekId, setPeekId] = useState<number | null>(null);
   const { effectiveSquad, formation, isDirty, selectedId, select, reset, error, justSwappedIds } =
     useFormationEditor(squad);
+  const captainEditor = useCaptainEditor(squad);
 
-  // Formation edits (role only) come from useFormationEditor; layered on top,
-  // a swapped-in candidate's own details replace the slot's display fields -
-  // the two are independent axes and compose without either knowing about
-  // the other.
+  // Formation edits (role only) and a swap preview's own details are layered
+  // first; the captain/vice reassignment is applied last and always wins,
+  // since it's the one axis with no upstream idea of the armband at all (a
+  // swap clears it rather than guessing who should inherit it - see
+  // applySwapPreview). All three are independent and compose freely.
   const originalById = new Map(squad.map((p) => [p.id, p]));
   const displaySquad = effectiveSquad.map((p) => {
     const preview = p.live_id != null ? swapPreviews[p.live_id] : undefined;
-    return preview ? applySwapPreview(p, preview) : p;
+    const withPreview = preview
+      ? applySwapPreview(p, preview, p.live_id != null ? swapCosts[p.live_id] : undefined)
+      : p;
+    const captain_flag =
+      p.id === captainEditor.captainId ? "(C)" : p.id === captainEditor.viceId ? "(VC)" : "";
+    return captain_flag === withPreview.captain_flag ? withPreview : { ...withPreview, captain_flag };
   });
   const displayById = new Map(displaySquad.map((p) => [p.id, p]));
   const pendingCount = Object.keys(swapPreviews).length;
@@ -167,22 +190,20 @@ export function SquadPitch({
   // be offered as a replacement - excluded by live id.
   const excludeIds = displaySquad.map((p) => p.live_id).filter((id): id is number => id != null);
 
-  const previewActive = isDirty || pendingCount > 0;
+  const previewActive = isDirty || pendingCount > 0 || captainEditor.isDirty;
   const pointsDelta = previewActive ? xiPoints(displaySquad) - xiPoints(squad) : 0;
-  // The armband doesn't follow a player who's left the XI (see
-  // applySwapPreview), so losing the real captain's slot - benched by a
-  // formation edit, or transferred out - silently halves what would have been
-  // their doubled points unless it's called out.
-  const captainSlot = squad.find((p) => p.captain_flag === "(C)");
-  const captainAffected =
-    previewActive && captainSlot != null
-      ? displayById.get(captainSlot.id)?.role !== "Starting XI" || isSwapped(captainSlot.id)
-      : false;
+  const previewCaptain = displaySquad.find((p) => p.role === "Starting XI" && p.captain_flag === "(C)");
+  // Whoever holds the armband now, not whoever held it originally - a
+  // reassignment (or, before one, a captain benched or transferred out) both
+  // land here as "nobody with (C) is actually in the previewed XI".
+  const captainAffected = previewActive && previewCaptain == null;
+
+  const previewCaptainName = captainEditor.isDirty && previewCaptain ? previewCaptain.web_name : null;
 
   useEffect(() => {
-    onPreviewEffect?.({ pointsDelta, captainAffected });
+    onPreviewEffect?.({ pointsDelta, captainAffected, previewCaptainName });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pointsDelta, captainAffected]);
+  }, [pointsDelta, captainAffected, previewCaptainName]);
 
   const peekOriginal = peekId != null ? (originalById.get(peekId) ?? null) : null;
   const peekPlayer = peekId != null ? (displayById.get(peekId) ?? null) : null;
@@ -221,14 +242,16 @@ export function SquadPitch({
         playerName={original.web_name}
         maxCost={bank + original.cost}
         excludeIds={excludeIds}
-        onSelect={(candidateId) => onReplace(originalLiveId, candidateId)}
+        onSelect={(candidateId, candidate) => onReplace(originalLiveId, candidateId, candidate.cost)}
         triggerClassName="h-5 w-5"
       />
     );
   }
 
+  // "Done" closes edit mode without touching the preview - it's not a cancel
+  // button. Discarding it is what the separate "Reset formation" link (next
+  // to it whenever isDirty) is for.
   function toggleEdit() {
-    if (editingFormation) reset();
     setEditingFormation((v) => !v);
   }
 
@@ -249,6 +272,11 @@ export function SquadPitch({
           {isDirty && (
             <button type="button" onClick={reset} className="text-pl-purple underline">
               Reset formation
+            </button>
+          )}
+          {captainEditor.isDirty && (
+            <button type="button" onClick={captainEditor.reset} className="text-pl-purple underline">
+              Reset captain
             </button>
           )}
           <button
@@ -412,9 +440,8 @@ export function SquadPitch({
           }}
           onClose={() => setPeekId(null)}
           replace={
-            // Re-replacing an already-swapped slot isn't offered - see the
-            // corner control's undo/suggest switch above for why (the budget
-            // math doesn't yet account for a swap already banked).
+            // Re-replacing an already-swapped slot isn't offered - same
+            // undo-first UX as the corner control above (see cornerControl).
             peekOriginal?.live_id != null && !peekIsSwapped
               ? {
                   load: () =>
@@ -423,9 +450,28 @@ export function SquadPitch({
                       exclude: excludeIds,
                       maxCost: bank + peekOriginal.cost,
                     }),
-                  onSelect: (candidateId) => onReplace(peekOriginal.live_id!, candidateId),
+                  onSelect: (candidateId, candidate) =>
+                    onReplace(peekOriginal.live_id!, candidateId, candidate.cost),
                 }
               : undefined
+          }
+          // Captaining only makes sense for someone actually in the previewed
+          // XI - the bench doesn't score, so there's nothing to double.
+          actions={
+            peekId != null && peekPlayer.role === "Starting XI" ? (
+              <>
+                {peekId !== captainEditor.captainId && (
+                  <Button size="sm" variant="secondary" onClick={() => captainEditor.makeCaptain(peekId)}>
+                    Make captain
+                  </Button>
+                )}
+                {peekId !== captainEditor.viceId && (
+                  <Button size="sm" variant="secondary" onClick={() => captainEditor.makeVice(peekId)}>
+                    Make vice-captain
+                  </Button>
+                )}
+              </>
+            ) : undefined
           }
         />
       )}
