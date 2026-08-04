@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
-import { PlayerCard } from "@/shared/ui/PlayerCard";
+import { PlayerCard, type CardStat } from "@/shared/ui/PlayerCard";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
-import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 /**
  * Set-piece duty. FPL publishes an order per team per set-piece type, where 1 is
@@ -40,12 +39,14 @@ export type PeekPlayer = {
   freekicksOrder?: number;
   cornersOrder?: number;
   /**
-   * Context-specific numbers, because the two pitches don't know the same things.
-   * The builder's player pool carries per-type set-piece orders and a value
-   * score; a loaded squad carries form, ICT, expected minutes and rotation risk.
-   * Rather than pick a lowest common denominator, each caller passes what it has.
+   * The rated stats for the card's dials, supplied by the caller because only it
+   * can derive them honestly: the builder holds the 560-player pool to take a
+   * percentile against, a loaded squad holds richer per-player figures but no
+   * pool. Rather than pick a lowest common denominator, each passes what it has -
+   * and each is responsible for omitting a stat it has no data for, so a dial
+   * never sits at zero meaning "unknown". See lib/rating.ts.
    */
-  extraStats?: { label: string; value: string; tooltip?: StatGlossaryKey }[];
+  ratedStats?: CardStat[];
 };
 
 /**
@@ -91,14 +92,12 @@ export function PlayerPeek({
   ];
   const shownDuties = duties.filter((d) => dutyLabel(d.order));
 
-  const stats: { k: string; v: string; tooltip?: StatGlossaryKey }[] = [
+  // Cost leads and stays a figure, not a dial: a high price isn't a good score,
+  // and rating it 0-99 would dress a number the reader must judge in context as
+  // praise. The dials after it are the caller's derived ratings.
+  const stats: CardStat[] = [
     { k: "COST", v: `£${player.cost.toFixed(1)}m` },
-    ...(player.ownership != null
-      ? [{ k: "OWN", v: `${player.ownership.toFixed(1)}%`, tooltip: "ownership" as StatGlossaryKey }]
-      : []),
-    ...(player.value != null
-      ? [{ k: "VALUE", v: player.value.toFixed(2), tooltip: "value" as StatGlossaryKey }]
-      : []),
+    ...(player.ratedStats ?? []),
   ];
 
   return (
@@ -178,18 +177,13 @@ export function PlayerPeek({
               </div>
             )}
 
-            {player.extraStats && player.extraStats.length > 0 && (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                {player.extraStats.map((s) => (
-                  <div key={s.label} className="min-w-0">
-                    <p className="flex items-center gap-1 text-3xs font-bold uppercase tracking-[0.08em] text-text-muted">
-                      {s.label}
-                      {s.tooltip && <InfoTooltip term={s.tooltip} />}
-                    </p>
-                    <p className="truncate font-mono text-sm font-semibold text-text-primary">{s.value}</p>
-                  </div>
-                ))}
-              </div>
+            {/* What the dials mean, once, rather than a tooltip per ring. Without
+                it "72" is a number with no scale attached. */}
+            {(player.ratedStats?.length ?? 0) > 0 && (
+              <p className="text-xs leading-snug text-text-muted">
+                Dials are 0&ndash;99, each stat&apos;s standing against every other
+                player &mdash; 50 is mid-table, not a target.
+              </p>
             )}
 
             {player.news && (

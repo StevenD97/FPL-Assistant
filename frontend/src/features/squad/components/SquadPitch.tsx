@@ -4,6 +4,8 @@ import { useState } from "react";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { PlayerPeek } from "@/shared/ui/PlayerPeek";
+import type { CardStat } from "@/shared/ui/PlayerCard";
+import { domainRating, hasSignal, makeScale, percentileRating } from "@/shared/lib/rating";
 import { TransferSuggestions } from "./TransferSuggestions";
 import { useFormationEditor } from "../hooks/useFormationEditor";
 import type { SquadPlayer } from "@/shared/types/api";
@@ -25,19 +27,60 @@ function toPitchPlayer(p: SquadPlayer, selected: boolean, justSwapped: boolean):
 }
 
 /**
- * What a loaded squad knows that the builder's player pool doesn't. Set-piece
- * duty arrives here as one composite score rather than an order per type, so it
- * reads as a stat instead of the duty chips the builder can show.
+ * Dials for a loaded squad.
+ *
+ * No player pool here, so a percentile isn't available - these rate against the
+ * squad itself for the open-ended stats, and against a real ceiling where one
+ * exists (minutes can only reach 90, the duty score only 1). Rating within the
+ * squad is a narrower claim than the builder's percentile, which is why the label
+ * says "in squad".
+ *
+ * Every stat is gated on `hasSignal`. The demo squad has no form and no
+ * rotation-risk values at all - zero for all fifteen - and three flat dials out of
+ * six would read as "this player has none of it" rather than "we don't hold this".
+ * A suppressed stat loses the reader nothing that was there.
  */
-function peekStats(p: SquadPlayer) {
-  return [
-    { label: "EP next", value: p.ep_next.toFixed(1), tooltip: "epNext" as const },
-    { label: "Form", value: p.form.toFixed(1) },
-    { label: "xGI", value: p.expected_goal_involvements.toFixed(2) },
-    { label: "Exp mins", value: Math.round(p.expected_minutes).toString() },
-    { label: "Set pieces", value: p.set_piece_duty_score.toFixed(2) },
-    { label: "Rotation risk", value: p.rotation_risk.toFixed(2) },
+function peekStats(p: SquadPlayer, squad: SquadPlayer[]): CardStat[] {
+  const col = (get: (x: SquadPlayer) => number) => squad.map(get);
+  const withinSquad = (get: (x: SquadPlayer) => number) =>
+    hasSignal(col(get)) ? percentileRating(get(p), makeScale(col(get))) ?? undefined : undefined;
+
+  const candidates: (CardStat | null)[] = [
+    {
+      k: "EP next",
+      v: p.ep_next.toFixed(1),
+      tooltip: "epNext",
+      rating: withinSquad((x) => x.ep_next),
+    },
+    { k: "xGI", v: p.expected_goal_involvements.toFixed(2), rating: withinSquad((x) => x.expected_goal_involvements) },
+    { k: "ICT", v: p.ict_index.toFixed(0), rating: withinSquad((x) => x.ict_index) },
+    // Minutes and duty have real ceilings, so a proportion beats a rank.
+    hasSignal(col((x) => x.expected_minutes))
+      ? {
+          k: "Minutes",
+          v: Math.round(p.expected_minutes).toString(),
+          rating: domainRating(p.expected_minutes, { max: 90 }) ?? undefined,
+        }
+      : null,
+    hasSignal(col((x) => x.set_piece_duty_score))
+      ? {
+          k: "Set pieces",
+          v: p.set_piece_duty_score.toFixed(2),
+          rating: domainRating(p.set_piece_duty_score, { max: 1 }) ?? undefined,
+        }
+      : null,
+    // Inverted: low rotation risk is the good end, so a raw dial would award 99
+    // to the player most likely to be benched.
+    hasSignal(col((x) => x.rotation_risk))
+      ? {
+          k: "Nailed",
+          v: p.rotation_risk.toFixed(2),
+          rating: domainRating(p.rotation_risk, { max: 1, invert: true }) ?? undefined,
+        }
+      : null,
   ];
+
+  return candidates.filter((s): s is CardStat => s != null && s.rating != null);
 }
 
 /** The starting XI laid out on the pitch, with the four-man bench beneath it. */
@@ -216,7 +259,7 @@ export function SquadPitch({
             fixtureTicker: peekPlayer.next_opponent,
             status: peekPlayer.status,
             news: peekPlayer.news,
-            extraStats: peekStats(peekPlayer),
+            ratedStats: peekStats(peekPlayer, squad),
           }}
           onClose={() => setPeekId(null)}
           actions={

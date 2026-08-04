@@ -23,6 +23,7 @@ import {
   type LocalTeam,
 } from "@/shared/lib/localTeams";
 import { useFlash } from "@/shared/lib/useFlash";
+import { makeScale, percentileRating } from "@/shared/lib/rating";
 import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 import { apiGet } from "@/shared/lib/api";
 import type {
@@ -178,6 +179,21 @@ export function BuildSquadPanel({
   );
 
   const { flash: flashAdded, isFlashed: isJustAdded } = useFlash();
+
+  // Scales for the peek's dials, built once from the whole pool rather than from
+  // the squad - a percentile is only meaningful against everyone available, and 15
+  // players wouldn't be a distribution. Only stats where "higher" plainly means
+  // "better" get one; cost is judged in context and set-piece orders are already
+  // shown as duty chips, which say more than a rank over 500 non-takers would.
+  const ratingScales = useMemo(() => {
+    const pool = players ?? [];
+    return {
+      xpts: makeScale(pool.map((p) => p.predicted_points)),
+      value: makeScale(pool.map((p) => p.value)),
+      ownership: makeScale(pool.map((p) => p.selected_by_percent)),
+      minutes: makeScale(pool.map((p) => p.appearance_points)),
+    };
+  }, [players]);
 
   // Split the squad into a starting XI (pitch) and a 4-man bench by add order:
   // the first PITCH_BUCKET[pos] of each position start, the overflow benches.
@@ -767,6 +783,31 @@ export function BuildSquadPanel({
             penaltiesOrder: statsPlayer.penalties_order,
             freekicksOrder: statsPlayer.direct_freekicks_order,
             cornersOrder: statsPlayer.corners_and_indirect_freekicks_order,
+            ratedStats: [
+              {
+                k: "xPts",
+                v: statsPlayer.predicted_points.toFixed(1),
+                tooltip: "xPts",
+                rating: percentileRating(statsPlayer.predicted_points, ratingScales.xpts) ?? undefined,
+              },
+              {
+                k: "Value",
+                v: statsPlayer.value.toFixed(2),
+                tooltip: "value",
+                rating: percentileRating(statsPlayer.value, ratingScales.value) ?? undefined,
+              },
+              {
+                k: "Owned",
+                v: `${statsPlayer.selected_by_percent.toFixed(1)}%`,
+                tooltip: "ownership",
+                rating: percentileRating(statsPlayer.selected_by_percent, ratingScales.ownership) ?? undefined,
+              },
+              {
+                k: "Minutes",
+                v: statsPlayer.appearance_points.toFixed(1),
+                rating: percentileRating(statsPlayer.appearance_points, ratingScales.minutes) ?? undefined,
+              },
+            ],
           }}
           onClose={closeStats}
           actions={
