@@ -10,12 +10,14 @@ import type { ChipResponse, TransferResult } from "@/shared/types/api";
 // Below this, a blank/double isn't worth rebuilding a squad around - the
 // same order of magnitude Free Hit's own "worth playing" cutoff uses
 // (fpl.services.chips), so the two reads agree on what "several" means.
-const BLANK_THRESHOLD = 3;
-const DOUBLE_THRESHOLD = 3;
+// Exported so the plan board can flag the same gameweeks in its own timeline
+// without re-deriving the cutoff.
+export const BLANK_THRESHOLD = 3;
+export const DOUBLE_THRESHOLD = 3;
 
-type FlaggedWeek = { event: number; blankCount: number; doubleCount: number };
+export type FlaggedWeek = { event: number; blankCount: number; doubleCount: number };
 
-function findFlaggedWeeks(chips: ChipResponse): FlaggedWeek[] {
+export function findFlaggedWeeks(chips: ChipResponse): FlaggedWeek[] {
   return chips.table
     .filter((row) => row.blank_count >= BLANK_THRESHOLD || row.double_count >= DOUBLE_THRESHOLD)
     .map((row) => ({ event: row.event, blankCount: row.blank_count, doubleCount: row.double_count }))
@@ -80,11 +82,12 @@ export function BlankGameweekAdvisor({
 
   return (
     <Card className="mb-4">
-      <h3 className="font-semibold text-text-primary">Blank &amp; double gameweeks ahead</h3>
+      <h3 className="font-semibold text-text-primary">Need a starting point? Blank &amp; double gameweeks ahead</h3>
       <p className="mt-1 text-xs text-text-muted">
-        Scanned GW{chips.scan_start_event}-{chips.scan_end_event - 1} for gameweeks where several of your
-        squad have no fixture (blank) or two (double). Plan transfers now to be ready for one, rather than
-        finding out the week it happens.
+        Scanned GW{chips.scan_start_event}-{chips.scan_end_event - 1}{" "}
+        for gameweeks where several of your squad have no fixture (blank) or two (double) - further out than
+        the plan above goes. The model&apos;s own transfer picks for reaching one, as a starting point for your
+        own version above.
       </p>
 
       {flagged.length === 0 ? (

@@ -12,15 +12,15 @@ import { StatBar } from "@/shared/ui/StatBar";
 import { Inspector } from "@/shared/ui/Inspector";
 import { nextChip } from "@/shared/lib/chips";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
-import { BlankGameweekAdvisor } from "./components/BlankGameweekAdvisor";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
-import { PlannerTable } from "./components/PlannerTable";
+import { TransferPlanBoard } from "./components/TransferPlanBoard";
 import { SquadDetailTable } from "./components/SquadDetailTable";
 import { SquadPitch } from "./components/SquadPitch";
 import { SquadReadRail, type ReadRow, type SquadRead } from "./components/SquadReadRail";
 import { SuggestedTransfers } from "./components/SuggestedTransfers";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
+import { useTransferPlan } from "./hooks/useTransferPlan";
 
 // The team sheet is the one thing always on screen here; everything else is a
 // "read" you summon beside it and dismiss.
@@ -36,7 +36,7 @@ const READ_TITLES: Record<SquadRead, string> = {
   chips: "Chip strategy",
   strength: "Squad strength",
   detail: "Squad detail",
-  planner: "Transfer planner",
+  planner: "Transfer plan",
   setup: "Team setup",
 };
 
@@ -119,6 +119,18 @@ export function LoadTeamPanel({
   const { data: planner, loading: plannerLoading, error: plannerError } = plannerRes;
   const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
 
+  // The multi-gameweek transfer plan - its own sandbox, independent of the
+  // swap preview above (that's "right now"; this is "in a few weeks").
+  const planWindowEnd = planner ? planner.next_events[planner.next_events.length - 1] : null;
+  const {
+    entries: planEntries,
+    addingKey: planAddingKey,
+    error: planError,
+    addEntry: addPlanEntry,
+    removeEntry: removePlanEntry,
+    clearAll: clearPlan,
+  } = useTransferPlan(planWindowEnd);
+
   // Dashboard summaries: one captaincy call and one chip, rather than the full
   // lists behind their reads.
   const topCaptain = data?.captaincy_options?.[0] ?? null;
@@ -131,8 +143,6 @@ export function LoadTeamPanel({
   const bestLine = data
     ? Object.entries(data.category_scores).sort(([, a], [, b]) => b - a)[0]
     : null;
-  // Keyed by player id, not a list - count the keys.
-  const previewCount = Object.keys(swapPreviews).length;
   // What a preview actually costs: each swap's candidate price less the
   // player it replaces, summed. Passed to the pitch/detail table as the
   // *effective* bank so a second swap's affordability reflects money the
@@ -250,27 +260,22 @@ export function LoadTeamPanel({
     },
     {
       id: "planner",
-      label: "Transfer planner",
+      label: "Transfer plan",
       summary: plannerLoading ? (
         "Building outlook…"
-      ) : previewCount > 0 || previewEffect.pointsDelta !== 0 ? (
+      ) : planEntries.length > 0 ? (
         <>
-          {previewCount > 0 && (
-            <>
-              <span className="font-mono font-medium text-pl-pink">{previewCount}</span> swap
-              {previewCount === 1 ? "" : "s"} previewed
-            </>
-          )}
-          {previewEffect.pointsDelta !== 0 && (
-            <span className={previewEffect.pointsDelta > 0 ? "text-success" : "text-danger"}>
-              {previewCount > 0 ? " · " : ""}
-              {previewEffect.pointsDelta > 0 ? "+" : ""}
-              {previewEffect.pointsDelta.toFixed(1)} pts next GW
-            </span>
-          )}
+          <span className="font-mono font-medium text-pl-pink">{planEntries.length}</span> transfer
+          {planEntries.length === 1 ? "" : "s"} planned · GW
+          {Math.min(...planEntries.map((e) => e.gwEvent))}
+          {(() => {
+            const max = Math.max(...planEntries.map((e) => e.gwEvent));
+            const min = Math.min(...planEntries.map((e) => e.gwEvent));
+            return max > min ? `-${max}` : "";
+          })()}
         </>
       ) : (
-        "Points outlook per gameweek"
+        "Plan transfers for future gameweeks"
       ),
     },
     {
@@ -523,26 +528,23 @@ export function LoadTeamPanel({
             )}
 
             {read === "planner" && (
-              <>
-                <BlankGameweekAdvisor
-                  chips={chips}
-                  chipsLoading={chipsLoading}
-                  teamId={teamId}
-                  freeTransfers={freeTransfers}
-                />
-                <PlannerTable
-                  planner={planner}
-                  loading={plannerLoading}
-                  error={plannerError}
-                  squad={data.squad}
-                  bank={effectiveBank}
-                  swapPreviews={swapPreviews}
-                  swapLoading={swapLoading}
-                  onReplace={handleReplace}
-                  onUndoSwap={undoSwap}
-                  onResetSwaps={resetSwaps}
-                />
-              </>
+              <TransferPlanBoard
+                planner={planner}
+                loading={plannerLoading}
+                error={plannerError}
+                squad={data.squad}
+                bank={data.bank}
+                freeTransfers={freeTransfers}
+                chips={chips}
+                chipsLoading={chipsLoading}
+                teamId={teamId}
+                entries={planEntries}
+                addingKey={planAddingKey}
+                addError={planError}
+                onAdd={addPlanEntry}
+                onRemove={removePlanEntry}
+                onClearAll={clearPlan}
+              />
             )}
 
             {read === "setup" && (
