@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { PlayerPeek } from "@/shared/ui/PlayerPeek";
@@ -86,6 +86,18 @@ function peekStats(p: SquadPlayer, squad: SquadPlayer[]): CardStat[] {
   return candidates.filter((s): s is CardStat => s != null && s.rating != null);
 }
 
+/**
+ * Predicted next-gameweek points for a starting XI - captain's counts twice,
+ * same as the real scoring. Used to diff the real lineup against a preview
+ * (formation edit, transfer swap, or both) so the effect has a number, not
+ * just a changed layout to notice on your own.
+ */
+function xiPoints(list: SquadPlayer[]): number {
+  return list
+    .filter((p) => p.role === "Starting XI")
+    .reduce((sum, p) => sum + p.ep_next * (p.captain_flag === "(C)" ? 2 : 1), 0);
+}
+
 /** The starting XI laid out on the pitch, with the four-man bench beneath it. */
 export function SquadPitch({
   squad,
@@ -95,6 +107,7 @@ export function SquadPitch({
   onReplace,
   onUndoSwap,
   onResetSwaps,
+  onPreviewEffect,
   nextFixtures,
 }: {
   squad: SquadPlayer[];
@@ -106,6 +119,13 @@ export function SquadPitch({
   onReplace: (originalLiveId: number, candidateId: number) => void;
   onUndoSwap: (originalLiveId: number) => void;
   onResetSwaps: () => void;
+  /**
+   * Reports the preview's net effect (formation edit and/or transfer swaps
+   * combined) each time it changes, so reads elsewhere on the page - the
+   * planner and captaincy summaries - can echo it without recomputing it
+   * themselves from state they don't have (formation edits are local here).
+   */
+  onPreviewEffect?: (effect: { pointsDelta: number; captainAffected: boolean }) => void;
   /**
    * Upcoming fixtures with difficulty, keyed by **live** player id.
    * `next_opponent` on a SquadPlayer is only a string, so difficulty comes from
@@ -146,6 +166,23 @@ export function SquadPitch({
   // What's already owned (including anyone already previewed in) can't also
   // be offered as a replacement - excluded by live id.
   const excludeIds = displaySquad.map((p) => p.live_id).filter((id): id is number => id != null);
+
+  const previewActive = isDirty || pendingCount > 0;
+  const pointsDelta = previewActive ? xiPoints(displaySquad) - xiPoints(squad) : 0;
+  // The armband doesn't follow a player who's left the XI (see
+  // applySwapPreview), so losing the real captain's slot - benched by a
+  // formation edit, or transferred out - silently halves what would have been
+  // their doubled points unless it's called out.
+  const captainSlot = squad.find((p) => p.captain_flag === "(C)");
+  const captainAffected =
+    previewActive && captainSlot != null
+      ? displayById.get(captainSlot.id)?.role !== "Starting XI" || isSwapped(captainSlot.id)
+      : false;
+
+  useEffect(() => {
+    onPreviewEffect?.({ pointsDelta, captainAffected });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pointsDelta, captainAffected]);
 
   const peekOriginal = peekId != null ? (originalById.get(peekId) ?? null) : null;
   const peekPlayer = peekId != null ? (displayById.get(peekId) ?? null) : null;
@@ -235,16 +272,42 @@ export function SquadPitch({
         </p>
       )}
       {error && <p className="mb-2 text-xs font-medium text-danger">{error}</p>}
-      {pendingCount > 0 && (
-        <p className="mb-2 flex flex-wrap items-center gap-2 text-xs text-text-muted">
-          <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 font-medium text-pl-purple">
-            {pendingCount} transfer{pendingCount === 1 ? "" : "s"} previewed
-          </span>
-          not submitted to FPL - make the real change on the official app before your deadline.
-          <button type="button" onClick={onResetSwaps} className="text-pl-purple underline">
-            Reset all
-          </button>
-        </p>
+      {previewActive && (
+        <div className="mb-2 flex flex-col gap-1 text-xs text-text-muted">
+          <p className="flex flex-wrap items-center gap-2">
+            {pendingCount > 0 && (
+              <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 font-medium text-pl-purple">
+                {pendingCount} transfer{pendingCount === 1 ? "" : "s"} previewed
+              </span>
+            )}
+            {/* The number this whole preview is for - a swap or a formation
+                change only matters if it moves the predicted score, so that's
+                the one figure worth putting in front of the reader rather than
+                leaving them to infer it from who moved where. */}
+            {pointsDelta !== 0 && (
+              <span
+                className={`rounded-sm px-1.5 py-0.5 font-mono font-semibold ${
+                  pointsDelta > 0 ? "bg-success-bg text-success" : "bg-danger-bg text-danger"
+                }`}
+              >
+                {pointsDelta > 0 ? "+" : ""}
+                {pointsDelta.toFixed(1)} pts next GW
+              </span>
+            )}
+            not submitted to FPL - make the real change on the official app before your deadline.
+            {pendingCount > 0 && (
+              <button type="button" onClick={onResetSwaps} className="text-pl-purple underline">
+                Reset all
+              </button>
+            )}
+          </p>
+          {captainAffected && (
+            <p className="font-medium text-warning">
+              Your captain isn&apos;t in this preview&apos;s XI - reassign the armband, or their double points
+              aren&apos;t counted above.
+            </p>
+          )}
+        </div>
       )}
 
       <PitchFormation

@@ -77,6 +77,11 @@ export function LoadTeamPanel({
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [read, setRead] = useState<SquadRead | null>(null);
+  // Formation edits are local state inside SquadPitch (it's the only place
+  // that needs them), so its net effect on the predicted score - and whether
+  // the preview leaves the real captain out of the XI - comes back up through
+  // this rather than being recomputed here from state this panel doesn't have.
+  const [previewEffect, setPreviewEffect] = useState({ pointsDelta: 0, captainAffected: false });
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -166,7 +171,11 @@ export function LoadTeamPanel({
     {
       id: "captaincy",
       label: "Captaincy",
-      summary: topCaptain ? (
+      summary: previewEffect.captainAffected ? (
+        <span className="font-medium text-warning">
+          Your captain isn&apos;t in the previewed XI - reassign the armband
+        </span>
+      ) : topCaptain ? (
         <>
           <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
           <span className="font-mono font-medium text-text-primary">{topCaptain.ep_next.toFixed(1)}</span>{" "}
@@ -222,10 +231,21 @@ export function LoadTeamPanel({
       label: "Transfer planner",
       summary: plannerLoading ? (
         "Building outlook…"
-      ) : previewCount > 0 ? (
+      ) : previewCount > 0 || previewEffect.pointsDelta !== 0 ? (
         <>
-          <span className="font-mono font-medium text-pl-pink">{previewCount}</span> swap
-          {previewCount === 1 ? "" : "s"} previewed
+          {previewCount > 0 && (
+            <>
+              <span className="font-mono font-medium text-pl-pink">{previewCount}</span> swap
+              {previewCount === 1 ? "" : "s"} previewed
+            </>
+          )}
+          {previewEffect.pointsDelta !== 0 && (
+            <span className={previewEffect.pointsDelta > 0 ? "text-success" : "text-danger"}>
+              {previewCount > 0 ? " · " : ""}
+              {previewEffect.pointsDelta > 0 ? "+" : ""}
+              {previewEffect.pointsDelta.toFixed(1)} pts next GW
+            </span>
+          )}
         </>
       ) : (
         "Points outlook per gameweek"
@@ -378,6 +398,7 @@ export function LoadTeamPanel({
               onReplace={handleReplace}
               onUndoSwap={undoSwap}
               onResetSwaps={resetSwaps}
+              onPreviewEffect={setPreviewEffect}
               nextFixtures={nextFixtures}
             />
             <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
