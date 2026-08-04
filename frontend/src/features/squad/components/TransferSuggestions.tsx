@@ -3,6 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getAlternatives } from "@/shared/api/squad";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import type { PlayerAlternative } from "@/shared/types/api";
 
 // Two opposing arrows - the universal "swap" glyph, drawn in the same 24x24
@@ -120,7 +122,7 @@ export function TransferSuggestions({
               role="dialog"
               aria-modal="true"
               aria-labelledby={titleId}
-              className="animate-fpl-fade relative w-full max-w-xs rounded-lg border border-border bg-white p-4 shadow-lg"
+              className="animate-fpl-fade relative w-full max-w-sm rounded-lg border border-border bg-white p-4 shadow-lg"
             >
               <div className="mb-3 flex items-center justify-between gap-2">
                 <span id={titleId} className="text-sm font-semibold text-text-primary">
@@ -142,7 +144,7 @@ export function TransferSuggestions({
                 <p className="text-sm text-text-muted">No affordable replacements found.</p>
               )}
               {!loading && !error && candidates && candidates.length > 0 && (
-                <ul className="flex flex-col gap-1">
+                <ul className="flex flex-col gap-1.5">
                   {candidates.map((c) => (
                     <li key={c.id}>
                       <button
@@ -151,14 +153,22 @@ export function TransferSuggestions({
                           onSelect(c.id);
                           setOpen(false);
                         }}
-                        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm hover:bg-surface-sunken"
+                        className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-2 text-sm hover:border-pl-purple/40 hover:bg-pl-purple/5"
                       >
-                        <span className="min-w-0 flex-1 truncate text-left font-medium text-text-primary">
-                          {c.web_name} <span className="text-text-muted">({c.team_short})</span>
+                        <PlayerPhoto
+                          src={c.player_photo}
+                          name={c.web_name}
+                          className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+                        />
+                        <span className="min-w-0 flex-1 text-left">
+                          <span className="block truncate font-medium text-text-primary">{c.web_name}</span>
+                          <TeamBadge teamShort={c.team_short} name={c.team_short} badgeUrl={c.team_badge} />
                         </span>
-                        <span className="shrink-0 font-mono text-text-secondary">£{c.cost.toFixed(1)}m</span>
-                        <span className="shrink-0 font-mono font-semibold text-pl-purple">
-                          {c.predicted_points.toFixed(1)}
+                        <span className="shrink-0 text-right">
+                          <span className="block font-mono text-text-secondary">£{c.cost.toFixed(1)}m</span>
+                          <span className="block font-mono font-semibold text-pl-purple">
+                            {c.predicted_points.toFixed(1)}
+                          </span>
                         </span>
                       </button>
                     </li>

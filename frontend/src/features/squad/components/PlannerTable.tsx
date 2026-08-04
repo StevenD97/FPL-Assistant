@@ -2,8 +2,19 @@ import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { GameweekStrip } from "./GameweekStrip";
-import type { PlannerResponse, PlayerTrajectory } from "@/shared/types/api";
+import type { PlannerResponse, PlayerTrajectory, Position } from "@/shared/types/api";
+
+// Same hues as the position badge elsewhere on the page, as a left-border
+// accent - the matrix is dense enough that a plain grey rule per row reads
+// as noise; this at least separates a defender's row from a forward's.
+const POSITION_BORDER: Record<Position, string> = {
+  GKP: "border-l-pos-gkp",
+  DEF: "border-l-pos-def",
+  MID: "border-l-pos-mid",
+  FWD: "border-l-pos-fwd",
+};
 
 /**
  * Predicted points per gameweek for the whole squad, one row per player.
@@ -114,7 +125,9 @@ export function PlannerTable({
                       isPreviewing ? "bg-pl-purple/5" : ""
                     } ${dragOverRow === original.id ? "outline outline-2 -outline-offset-2 outline-pl-purple" : ""}`}
                   >
-                    <td className="sticky left-0 whitespace-nowrap bg-white px-3 py-2 font-medium">
+                    <td
+                      className={`sticky left-0 whitespace-nowrap border-l-4 bg-white px-3 py-2 font-medium ${POSITION_BORDER[display.position]}`}
+                    >
                       <div className="flex items-center gap-2">
                         <PlayerLink id={display.id} className="flex items-center gap-2">
                           <PlayerPhoto
@@ -123,7 +136,8 @@ export function PlannerTable({
                             className="h-7 w-7 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-[8px]"
                           />
                           <span>
-                            {display.web_name} <span className="text-text-muted">({display.team_short})</span>
+                            <span className="block">{display.web_name}</span>
+                            <TeamBadge teamShort={display.team_short} name={display.team_short} badgeUrl={display.team_badge} />
                           </span>
                         </PlayerLink>
                         {swapLoading[original.id] && (

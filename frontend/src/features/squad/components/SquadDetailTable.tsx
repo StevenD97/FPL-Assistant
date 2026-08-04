@@ -3,12 +3,23 @@
 import { Fragment, useState } from "react";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { TableFrame, Th } from "@/shared/ui/Table";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { TransferSuggestions } from "./TransferSuggestions";
 import { applySwapPreview } from "../lib/applySwapPreview";
-import type { PlayerTrajectory, SquadPlayer } from "@/shared/types/api";
+import type { PlayerTrajectory, Position, SquadPlayer } from "@/shared/types/api";
+
+// Same hues as the position badge, as a left-border accent - a column of
+// them turns the table into a shape you can scan (four bands of colour) as
+// well as a list of rows you read one at a time.
+const POSITION_BORDER: Record<Position, string> = {
+  GKP: "border-l-pos-gkp",
+  DEF: "border-l-pos-def",
+  MID: "border-l-pos-mid",
+  FWD: "border-l-pos-fwd",
+};
 
 /**
  * The squad's per-player numbers, replacing the 12-column table this panel used
@@ -84,8 +95,13 @@ export function SquadDetailTable({
             return (
               <Fragment key={original.position}>
                 <tr className={`border-t border-border ${preview ? "bg-pl-purple/5" : ""}`}>
-                  <td className="cell-primary px-3 py-2.5">
+                  <td className={`cell-primary border-l-4 px-3 py-2.5 ${POSITION_BORDER[p.pos]}`}>
                     <span className="flex flex-wrap items-center gap-2">
+                      <PlayerPhoto
+                        src={p.player_photo}
+                        name={p.web_name}
+                        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+                      />
                       <span className="font-medium">
                         <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
                       </span>

@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 import { Card } from "@/shared/ui/Card";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
-import type { ChipResponsePeriod } from "@/shared/types/api";
+import type { ChipResponsePeriod, SquadPlayer } from "@/shared/types/api";
 
 /**
  * One chip's recommendation, as a verdict you can scan and a reason you can ask
@@ -22,6 +24,7 @@ function ChipCard({
   detail,
   why,
   tone = "hold",
+  accentClass,
 }: {
   label: string;
   tooltip: StatGlossaryKey;
@@ -32,9 +35,13 @@ function ChipCard({
   /** The full reasoning, behind a disclosure. */
   why?: string;
   tone?: "play" | "hold";
+  /** Top-bar colour, one per chip so the row reads as four distinct chips
+   * rather than four grey boxes that happen to hold different words. */
+  accentClass: string;
 }) {
   return (
-    <Card>
+    <Card className="relative overflow-hidden">
+      <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1 ${accentClass}`} />
       <p className="flex items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
         {label} <InfoTooltip term={tooltip} />
       </p>
@@ -56,14 +63,25 @@ function ChipCard({
   );
 }
 
+const CHIP_ACCENT = {
+  benchBoost: "bg-success",
+  tripleCaptain: "bg-pl-purple",
+  freeHit: "bg-warning",
+  wildcard: "bg-info",
+} as const;
+
 /**
  * One half's chip recommendation (Bench Boost/Triple Captain/Free Hit/
  * Wildcard) - each half of the season gets an entirely independent set of
  * chips (see fpl.model.rules.CHIP_RESET_EVENT), so these are never averaged
  * together across the reset.
  */
-export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
+export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod; squad: SquadPlayer[] }) {
   const { bench_boost: bb, triple_captain: tc, free_hit: fh, wildcard: wc } = period;
+  // The chip response only names the Triple Captain pick - the badge/position
+  // it's shown with here comes from matching that name against the squad
+  // already loaded for the pitch, rather than a second trip to the backend.
+  const tcPlayer = squad.find((p) => p.web_name === tc.player);
 
   return (
     <div className="@container/chips">
@@ -83,6 +101,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
           label="Bench Boost"
           tooltip="benchBoost"
           tone="play"
+          accentClass={CHIP_ACCENT.benchBoost}
           verdict={`GW${bb.event}`}
           detail={
             <>
@@ -96,11 +115,17 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
           label="Triple Captain"
           tooltip="tripleCaptain"
           tone="play"
+          accentClass={CHIP_ACCENT.tripleCaptain}
           verdict={`GW${tc.event}`}
           detail={
-            <>
-              {tc.player} · <span className="font-mono">{tc.score.toFixed(2)}</span>
-            </>
+            <span className="flex flex-wrap items-center gap-1">
+              {tcPlayer && <PositionBadge position={tcPlayer.pos} />}
+              {tc.player}
+              {tcPlayer && (
+                <TeamBadge teamShort={tcPlayer.team_short} name={tcPlayer.team_short} badgeUrl={tcPlayer.team_badge} />
+              )}
+              <span className="font-mono">· {tc.score.toFixed(2)}</span>
+            </span>
           }
         />
 
@@ -109,6 +134,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
             label="Free Hit"
             tooltip="freeHit"
             tone="play"
+            accentClass={CHIP_ACCENT.freeHit}
             verdict={`GW${fh.event}`}
             detail={`${fh.blank_count} of 15 blank`}
           />
@@ -116,6 +142,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
           <ChipCard
             label="Free Hit"
             tooltip="freeHit"
+            accentClass={CHIP_ACCENT.freeHit}
             verdict="Hold"
             detail={`only ${fh.blank_count} of 15 blank`}
             why="Not enough of your squad blanks in this window to be worth the chip. Save it for a run of injuries and suspensions, or a bigger blank gameweek later."
@@ -127,6 +154,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
             label="Wildcard"
             tooltip="wildcard"
             tone="play"
+            accentClass={CHIP_ACCENT.wildcard}
             verdict={`~GW${wc.suggested_event}`}
             why={wc.reason}
           />
@@ -134,6 +162,7 @@ export function ChipPeriodCards({ period }: { period: ChipResponsePeriod }) {
           <ChipCard
             label="Wildcard"
             tooltip="wildcard"
+            accentClass={CHIP_ACCENT.wildcard}
             verdict="Hold"
             detail="no cluster worth it"
             why="No run of blank or double gameweeks in this window is worth rebuilding around yet. Wait for fixtures to congest, or for your squad to need a bigger overhaul than a couple of transfers."

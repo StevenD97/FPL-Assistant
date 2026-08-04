@@ -445,7 +445,7 @@ export function LoadTeamPanel({
                 {chips && (
                   <div className="space-y-5">
                     {chips.periods.map((period) => (
-                      <ChipPeriodCards key={period.label} period={period} />
+                      <ChipPeriodCards key={period.label} period={period} squad={data.squad} />
                     ))}
                   </div>
                 )}

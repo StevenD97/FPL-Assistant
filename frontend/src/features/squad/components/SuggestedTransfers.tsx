@@ -4,8 +4,37 @@ import { useState } from "react";
 import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
+import { PositionBadge } from "@/shared/ui/PositionBadge";
+import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { optimizeTransfers } from "@/shared/api/squad";
-import type { TransferResult } from "@/shared/types/api";
+import type { TransferPlayer, TransferResult } from "@/shared/types/api";
+
+/** One side of an out/in pair - a photo'd, badged row rather than a name in
+ * parentheses, and a colour block (danger for the player leaving, success
+ * for the one arriving) so a glance at the pair reads as a swap, not a list. */
+function TransferPlayerRow({ p, tone }: { p: TransferPlayer; tone: "out" | "in" }) {
+  return (
+    <li
+      className={`flex items-center gap-2 rounded-md border px-2 py-1.5 ${
+        tone === "out" ? "border-danger/20 bg-danger-bg" : "border-success/20 bg-success-bg"
+      }`}
+    >
+      <PlayerPhoto
+        src={p.player_photo}
+        name={p.web_name}
+        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+      />
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-1">
+          <span className="truncate text-sm font-medium text-text-primary">{p.web_name}</span>
+          <PositionBadge position={p.position} />
+        </span>
+        <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
+      </span>
+    </li>
+  );
+}
 
 /**
  * The optimizer's recommendation for an already-loaded squad. Errors render
@@ -24,19 +53,12 @@ export function SuggestedTransfers({
   error,
   teamId,
   freeTransfers,
-  compact = false,
 }: {
   optimizer: TransferResult | null;
   loading: boolean;
   error: string | null;
   teamId: string;
   freeTransfers: number;
-  /**
-   * Dashboard variant: just the out/in pairs and the cost line, with no Card,
-   * heading or explanation - the surrounding Panel supplies those, and the full
-   * version is one tap away on the Planner tab.
-   */
-  compact?: boolean;
 }) {
   const [transferCount, setTransferCount] = useState<number | "">("");
   const [override, setOverride] = useState<TransferResult | null>(null);
@@ -70,47 +92,6 @@ export function SuggestedTransfers({
   const shown = isOverride ? override : optimizer;
   const shownLoading = isOverride ? overrideLoading : loading;
   const shownError = isOverride ? overrideError : error;
-
-  if (compact) {
-    return (
-      <>
-        {loading && <p className="text-sm text-text-muted">Solving…</p>}
-        {error && <p className="text-xs text-text-secondary">Couldn&apos;t compute suggestions.</p>}
-        {optimizer &&
-          (optimizer.transferred_out.length > 0 ? (
-            <>
-              <ul className="flex flex-col">
-                {optimizer.transferred_out.map((out, i) => {
-                  const incoming = optimizer.transferred_in[i];
-                  return (
-                    <li
-                      key={out.id}
-                      className="flex items-center gap-2 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
-                    >
-                      <span className="min-w-0 flex-1 truncate text-danger">↓ {out.web_name}</span>
-                      {incoming && (
-                        <span className="min-w-0 flex-1 truncate text-right font-semibold text-success">
-                          ↑ {incoming.web_name}
-                        </span>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-              <p className="mt-1 text-[11px] text-text-secondary">
-                {optimizer.transfers_made} transfer{optimizer.transfers_made === 1 ? "" : "s"}
-                {optimizer.points_hit > 0 ? ` · -${optimizer.points_hit} hit` : " · no hit"} ·{" "}
-                <span className="font-mono">{optimizer.predicted_points.toFixed(1)}</span> pts
-              </p>
-            </>
-          ) : (
-            <p className="text-sm text-text-secondary">
-              No changes recommended - your squad is already optimal.
-            </p>
-          ))}
-      </>
-    );
-  }
 
   return (
     <Card>
@@ -183,14 +164,9 @@ export function SuggestedTransfers({
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
                   Out
                 </p>
-                <ul className="text-sm">
+                <ul className="flex flex-col gap-1.5">
                   {shown.transferred_out.map((p) => (
-                    <li key={p.id} className="border-t border-border py-1">
-                      {p.web_name}{" "}
-                      <span className="text-text-muted">
-                        ({p.team_short}, {p.position})
-                      </span>
-                    </li>
+                    <TransferPlayerRow key={p.id} p={p} tone="out" />
                   ))}
                 </ul>
               </div>
@@ -198,14 +174,9 @@ export function SuggestedTransfers({
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
                   In
                 </p>
-                <ul className="text-sm">
+                <ul className="flex flex-col gap-1.5">
                   {shown.transferred_in.map((p) => (
-                    <li key={p.id} className="border-t border-border py-1">
-                      {p.web_name}{" "}
-                      <span className="text-text-muted">
-                        ({p.team_short}, {p.position})
-                      </span>
-                    </li>
+                    <TransferPlayerRow key={p.id} p={p} tone="in" />
                   ))}
                 </ul>
               </div>
