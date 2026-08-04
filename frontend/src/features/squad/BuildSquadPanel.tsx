@@ -331,6 +331,7 @@ export function BuildSquadPanel({
       <TransferSuggestions
         playerId={p.id}
         playerName={p.web_name}
+        position={p.position}
         maxCost={budgetRemaining + p.cost}
         excludeIds={squadIdList}
         onSelect={(newId) => swapPlayer(p.id, newId)}

@@ -153,6 +153,7 @@ export function SquadDetailTable({
                           <TransferSuggestions
                             playerId={original.live_id}
                             playerName={original.web_name}
+                            position={original.pos}
                             maxCost={bank + original.cost}
                             excludeIds={excludeIds}
                             onSelect={(candidateId, candidate) =>

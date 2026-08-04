@@ -240,6 +240,7 @@ export function SquadPitch({
       <TransferSuggestions
         playerId={originalLiveId}
         playerName={original.web_name}
+        position={original.pos}
         maxCost={bank + original.cost}
         excludeIds={excludeIds}
         onSelect={(candidateId, candidate) => onReplace(originalLiveId, candidateId, candidate.cost)}
