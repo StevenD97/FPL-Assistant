@@ -329,9 +329,11 @@ export type PlannerResponse = {
 export type PlayerAlternative = {
   cost: number;
   id: number;
+  player_photo: string;
   position: Position;
   predicted_points: number;
   selected_by_percent: number;
+  team_badge: string;
   team_short: string;
   value: number;
   web_name: string;

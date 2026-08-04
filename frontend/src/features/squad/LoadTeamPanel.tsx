@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
@@ -129,6 +129,20 @@ export function LoadTeamPanel({
     : null;
   // Keyed by player id, not a list - count the keys.
   const previewCount = Object.keys(swapPreviews).length;
+
+  // The peek's Next section shows difficulty, and SquadPlayer.next_opponent is
+  // only a string - so take the structured opponents from the planner, which is
+  // already loaded for its own read. Keyed by squad id, first gameweek onward.
+  const nextFixtures = useMemo(() => {
+    const map = new Map<number, { opponent: string; isHome: boolean; difficulty: number }[]>();
+    for (const p of planner?.players ?? []) {
+      const upcoming = p.trajectory
+        .flatMap((row) => row.opponents)
+        .map((o) => ({ opponent: o.team, isHome: o.is_home, difficulty: o.difficulty }));
+      if (upcoming.length > 0) map.set(p.id, upcoming.slice(0, 5));
+    }
+    return map;
+  }, [planner]);
 
   // The rail is the menu and the overview at once, so each row carries the
   // readout its summary card used to.
@@ -360,7 +374,12 @@ export function LoadTeamPanel({
               `pointer-events-none` to avoid swallowing clicks on the rail it was
               invisibly covering. */}
           <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
-            <SquadPitch squad={data.squad} bank={data.bank} onReplace={handleReplace} />
+            <SquadPitch
+              squad={data.squad}
+              bank={data.bank}
+              onReplace={handleReplace}
+              nextFixtures={nextFixtures}
+            />
             <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
           </div>
 

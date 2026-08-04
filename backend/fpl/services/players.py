@@ -306,8 +306,19 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     if exclude:
         excluded_ids |= {int(x) for x in exclude.split(",") if x.strip()}
 
-    candidates = pool[(pool["position"] == position) & (~pool["id"].isin(excluded_ids))]
-    cols = ["id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value", "selected_by_percent"]
+    candidates = pool[(pool["position"] == position) & (~pool["id"].isin(excluded_ids))].copy()
+
+    # Photo + badge so the UI can show a replacement as the same player card it
+    # shows everywhere else, rather than a name and two numbers. Same derivation
+    # as the player pool and squad endpoints (see build_player_pool for `code`).
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    candidates["team_badge"] = candidates["team"].map(team_code_by_id).apply(team_badge_url)
+    candidates["player_photo"] = candidates["code"].apply(player_photo_url)
+
+    cols = [
+        "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
+        "selected_by_percent", "team_badge", "player_photo",
+    ]
     df = candidates[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
     if max_cost is not None:

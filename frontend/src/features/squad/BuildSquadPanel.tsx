@@ -26,9 +26,9 @@ import { useFlash } from "@/shared/lib/useFlash";
 import { makeScale, percentileRating } from "@/shared/lib/rating";
 import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 import { apiGet } from "@/shared/lib/api";
+import { getAlternatives } from "@/shared/api/squad";
 import type {
   BestSquadResult,
-  PlayerAlternative,
   PoolPlayer,
   Position,
   SquadBuilderFixtureRow,
@@ -180,6 +180,14 @@ export function BuildSquadPanel({
 
   const { flash: flashAdded, isFlashed: isJustAdded } = useFlash();
 
+  // Already fetched for the diagnostics - indexing it by team costs nothing and
+  // lets the peek colour each fixture by difficulty.
+  const fixturesByTeam = useMemo(() => {
+    const map = new Map<string, SquadBuilderFixtureRow>();
+    for (const row of fixtures ?? []) map.set(row.team, row);
+    return map;
+  }, [fixtures]);
+
   // Scales for the peek's dials, built once from the whole pool rather than from
   // the squad - a percentile is only meaningful against everyone available, and 15
   // players wouldn't be a distribution. Only stats where "higher" plainly means
@@ -314,35 +322,8 @@ export function BuildSquadPanel({
     );
   }
 
-  const [swapTargetId, setSwapTargetId] = useState<number | null>(null);
-  const [swapOptions, setSwapOptions] = useState<PlayerAlternative[] | null>(null);
-  const [swapLoading, setSwapLoading] = useState(false);
-
-  async function loadSwapOptions(player: PoolPlayer) {
-    if (swapTargetId === player.id) {
-      setSwapTargetId(null);
-      setSwapOptions(null);
-      return;
-    }
-    setSwapTargetId(player.id);
-    setSwapOptions(null);
-    setSwapLoading(true);
-    try {
-      const alts = await apiGet<PlayerAlternative[]>(
-        `/api/players/${player.id}/alternatives?limit=5&exclude=${squadIdList.join(",")}`
-      );
-      setSwapOptions(alts.filter((a) => a.cost <= budgetRemaining + player.cost));
-    } catch {
-      setSwapOptions([]);
-    } finally {
-      setSwapLoading(false);
-    }
-  }
-
   function swapPlayer(oldId: number, newId: number) {
     setSquadIdList((prev) => prev.map((id) => (id === oldId ? newId : id)));
-    setSwapTargetId(null);
-    setSwapOptions(null);
   }
 
   function transferIcon(p: PoolPlayer) {
@@ -360,8 +341,6 @@ export function BuildSquadPanel({
 
   function closeStats() {
     setStatsId(null);
-    setSwapTargetId(null);
-    setSwapOptions(null);
   }
 
   const filteredPlayers = useMemo(() => {
@@ -776,6 +755,12 @@ export function BuildSquadPanel({
             predictedPoints: statsPlayer.predicted_points,
             fixtureCount: statsPlayer.fixture_count,
             fixtureTicker: statsPlayer.fixture_ticker,
+            fixtures: (fixturesByTeam.get(statsPlayer.team_short)?.fixtures ?? []).map((f) => ({
+              opponent: f.opponent,
+              isHome: f.is_home,
+              difficulty: f.difficulty,
+              badgeUrl: f.opponent_badge,
+            })),
             ownership: statsPlayer.selected_by_percent,
             value: statsPlayer.value,
             status: statsPlayer.status,
@@ -810,11 +795,17 @@ export function BuildSquadPanel({
             ],
           }}
           onClose={closeStats}
+          replace={{
+            load: () =>
+              getAlternatives(statsPlayer.id, {
+                limit: 3,
+                exclude: squadIdList,
+                maxCost: budgetRemaining + statsPlayer.cost,
+              }),
+            onSelect: (candidateId) => swapPlayer(statsPlayer.id, candidateId),
+          }}
           actions={
             <>
-              <Button size="sm" variant="secondary" onClick={() => loadSwapOptions(statsPlayer)}>
-                {swapTargetId === statsPlayer.id ? "Hide replacements" : "Find replacements"}
-              </Button>
               <Button
                 size="sm"
                 variant="ghost"
@@ -825,36 +816,6 @@ export function BuildSquadPanel({
               >
                 Remove
               </Button>
-              {swapTargetId === statsPlayer.id && (
-                <div className="w-full border-t border-border pt-3">
-                  {swapLoading ? (
-                    <p className="text-xs text-text-muted">Loading…</p>
-                  ) : swapOptions && swapOptions.length > 0 ? (
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-2xs font-semibold uppercase tracking-wide text-text-muted">
-                        Swap in
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {swapOptions.map((a) => (
-                          <button
-                            key={a.id}
-                            onClick={() => {
-                              swapPlayer(statsPlayer.id, a.id);
-                              closeStats();
-                            }}
-                            className="rounded-sm border border-border-strong bg-white px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
-                          >
-                            {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m,{" "}
-                            {a.predicted_points.toFixed(1)} pts)
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-xs text-text-muted">No affordable alternatives found.</p>
-                  )}
-                </div>
-              )}
             </>
           }
         />

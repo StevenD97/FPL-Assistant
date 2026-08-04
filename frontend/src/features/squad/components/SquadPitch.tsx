@@ -7,6 +7,7 @@ import { PlayerPeek } from "@/shared/ui/PlayerPeek";
 import type { CardStat } from "@/shared/ui/PlayerCard";
 import { domainRating, hasSignal, makeScale, percentileRating } from "@/shared/lib/rating";
 import { TransferSuggestions } from "./TransferSuggestions";
+import { getAlternatives } from "@/shared/api/squad";
 import { useFormationEditor } from "../hooks/useFormationEditor";
 import type { SquadPlayer } from "@/shared/types/api";
 
@@ -88,11 +89,23 @@ export function SquadPitch({
   squad,
   bank,
   onReplace,
+  nextFixtures,
 }: {
   squad: SquadPlayer[];
   bank: number;
   /** Previews swapping `candidateId` into `originalPlayerId`'s slot (see useSwapPreview). */
   onReplace: (originalPlayerId: number, candidateId: number) => void;
+  /**
+   * Upcoming fixtures with difficulty, keyed by **live** player id.
+   * `next_opponent` on a SquadPlayer is only a string, so difficulty comes from
+   * the planner, which the page already has (see PlannerOpponent).
+   *
+   * Live id, not `SquadPlayer.id`: the planner works in the live 2026/27
+   * id-space while a squad row's own `id` is the archived one. Keying this the
+   * obvious way matched nothing at all - 0 of 15 - and fell back to the ticker
+   * silently, which is exactly the id-space mix-up `live_id` exists to prevent.
+   */
+  nextFixtures?: Map<number, { opponent: string; isHome: boolean; difficulty: number }[]>;
 }) {
   const [editingFormation, setEditingFormation] = useState(false);
   // Tapping a player used to follow a link to /players/[id], which abandoned the
@@ -257,24 +270,25 @@ export function SquadPitch({
             cost: peekPlayer.cost,
             predictedPoints: peekPlayer.ep_next,
             fixtureTicker: peekPlayer.next_opponent,
+            fixtures:
+              peekPlayer.live_id != null ? nextFixtures?.get(peekPlayer.live_id) : undefined,
             status: peekPlayer.status,
             news: peekPlayer.news,
             ratedStats: peekStats(peekPlayer, squad),
           }}
           onClose={() => setPeekId(null)}
-          actions={
-            peekPlayer.live_id != null ? (
-              <TransferSuggestions
-                playerId={peekPlayer.live_id}
-                playerName={peekPlayer.web_name}
-                maxCost={bank + peekPlayer.cost}
-                excludeIds={excludeIds}
-                onSelect={(candidateId) => {
-                  onReplace(peekPlayer.live_id!, candidateId);
-                  setPeekId(null);
-                }}
-              />
-            ) : null
+          replace={
+            peekPlayer.live_id != null
+              ? {
+                  load: () =>
+                    getAlternatives(peekPlayer.live_id!, {
+                      limit: 3,
+                      exclude: excludeIds,
+                      maxCost: bank + peekPlayer.cost,
+                    }),
+                  onSelect: (candidateId) => onReplace(peekPlayer.live_id!, candidateId),
+                }
+              : undefined
           }
         />
       )}
