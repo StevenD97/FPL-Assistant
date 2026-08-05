@@ -181,7 +181,13 @@ export function SquadDetailTable({
                       ) : (
                         <dl className="flex flex-wrap gap-x-6 gap-y-2">
                           <Stat label="Next opp" value={p.next_opponent} term="nextOpponent" mono={false} />
+                          <Stat label="Owned" value={`${p.selected_by_percent.toFixed(1)}%`} term="ownership" />
                           <Stat label="xGI" value={p.expected_goal_involvements} term="xgi" />
+                          {/* The rates beside the total they're derived from, so the
+                              comparison is right there: a high xGI on heavy minutes
+                              and a high xG/90 are different claims about a player. */}
+                          <Stat label="xG/90" value={p.expected_goals_per_90.toFixed(2)} term="xg90" />
+                          <Stat label="xA/90" value={p.expected_assists_per_90.toFixed(2)} term="xa90" />
                           <Stat label="ICT" value={p.ict_index} term="ictIndex" />
                           <Stat label="Def/90" value={p.defensive_contribution_per_90} term="def90" />
                           <Stat

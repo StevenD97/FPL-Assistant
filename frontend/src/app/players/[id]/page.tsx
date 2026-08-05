@@ -2,6 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from "react";
 import { CompareArrow } from "@/shared/ui/CompareArrow";
+import { StatTile } from "@/shared/ui/Card";
 import { TableFrame, Th } from "@/shared/ui/Table";
 import { PlayerCard } from "@/shared/ui/PlayerCard";
 import { PositionBadge } from "@/shared/ui/PositionBadge";
@@ -182,6 +183,67 @@ function PlayerDetailSkeleton() {
         <Skeleton className="h-56 w-full rounded-lg" />
       </div>
     </main>
+  );
+}
+
+/**
+ * The per-90 rates behind the totals, collapsed by default.
+ *
+ * Two things the feedback asked for at once: stat-focused readers want the
+ * underlying numbers, and nobody wants them cluttering the default view. So the
+ * hero card keeps its six headline figures and this sits below it, shut, costing
+ * one line until someone asks for it.
+ *
+ * Rates rather than totals is the point: a 20-minute substitute with a good
+ * xG/90 is a different player from one with the same season xG over 3000 minutes,
+ * and the totals above can't tell them apart.
+ */
+function UnderlyingStats({ stats }: { stats: NonNullable<PlayerDetail["season_stats"]> }) {
+  const [open, setOpen] = useState(false);
+
+  // FPL sends the per-90s as numbers but `threat` as a string; Number() over both
+  // keeps one code path and copes if that ever changes.
+  const rows: { label: string; value: string; tooltip: StatGlossaryKey }[] = [
+    { label: "xG / 90", value: Number(stats.expected_goals_per_90).toFixed(2), tooltip: "xg90" },
+    { label: "xA / 90", value: Number(stats.expected_assists_per_90).toFixed(2), tooltip: "xa90" },
+    { label: "xGI / 90", value: Number(stats.expected_goal_involvements_per_90).toFixed(2), tooltip: "xgi90" },
+    { label: "xGC / 90", value: Number(stats.expected_goals_conceded_per_90).toFixed(2), tooltip: "xgc90" },
+    { label: "Def / 90", value: Number(stats.defensive_contribution_per_90).toFixed(2), tooltip: "def90" },
+    { label: "Starts / 90", value: Number(stats.starts_per_90).toFixed(2), tooltip: "starts90" },
+    { label: "Threat", value: Number(stats.threat).toFixed(0), tooltip: "threat" },
+  ];
+
+  return (
+    <section className="mb-8">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex items-center gap-2 font-semibold text-text-primary hover:text-pl-purple"
+      >
+        <span aria-hidden="true" className={`text-text-muted transition-transform ${open ? "rotate-90" : ""}`}>
+          ▸
+        </span>
+        Underlying numbers
+        <span className="text-xs font-normal text-text-muted">per 90 minutes</span>
+      </button>
+
+      {open && (
+        <>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+            {rows.map((r) => (
+              <StatTile key={r.label} label={r.label} value={r.value} tooltip={r.tooltip} />
+            ))}
+          </div>
+          {/* Stated rather than left to be discovered: someone reading per-90s is
+              exactly the reader who will go looking for shots and xG/shot. */}
+          <p className="mt-2 text-xs text-text-muted">
+            From last season&apos;s completed data. FPL publishes no shot counts, so shots/90 and xG/shot
+            aren&apos;t available here - Threat is the nearest read on shot volume.
+          </p>
+        </>
+      )}
+    </section>
   );
 }
 
@@ -373,6 +435,8 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
             )}
           </div>
         </section>
+
+        {p.season_stats && <UnderlyingStats stats={p.season_stats} />}
 
         <section className="mb-8">
           <h2 className="mb-3 font-semibold text-text-primary">Compare</h2>

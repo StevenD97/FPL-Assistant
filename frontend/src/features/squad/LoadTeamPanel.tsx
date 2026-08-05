@@ -11,8 +11,11 @@ import { TextField } from "@/shared/ui/TextField";
 import { StatBar } from "@/shared/ui/StatBar";
 import { Inspector } from "@/shared/ui/Inspector";
 import { nextChip } from "@/shared/lib/chips";
+import { DEFAULT_RISK_KEY, riskCeilingFor, type OwnershipKey } from "@/shared/lib/ownership";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
+import { FixtureOutlook, fixtureOutlookSummary } from "./components/FixtureOutlook";
+import { SquadDifferentials, differentialsSummary } from "./components/SquadDifferentials";
 import { SquadDetailTable } from "./components/SquadDetailTable";
 import { SquadPitch } from "./components/SquadPitch";
 import { SquadReadRail, type ReadRow, type SquadRead } from "./components/SquadReadRail";
@@ -32,6 +35,8 @@ const READ_TITLES: Record<SquadRead, string> = {
   transfers: "Suggested transfers",
   captaincy: "Captaincy options",
   chips: "Chip strategy",
+  fixtures: "Fixture outlook",
+  differentials: "Differentials",
   strength: "Squad strength",
   detail: "Squad detail",
   setup: "Team setup",
@@ -84,6 +89,10 @@ export function LoadTeamPanel({
     captainAffected: boolean;
     previewCaptainName: string | null;
   }>({ pointsDelta: 0, captainAffected: false, previewCaptainName: null });
+  // Lives here rather than inside the Differentials read so the rail's summary
+  // counts against the same ceiling the read is showing, and so the setting
+  // survives closing and reopening the panel.
+  const [riskKey, setRiskKey] = useState<OwnershipKey>(DEFAULT_RISK_KEY);
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -139,6 +148,11 @@ export function LoadTeamPanel({
       }, 0)
     : 0;
   const effectiveBank = data ? Math.round((data.bank - swapCostDelta) * 10) / 10 : 0;
+  // Both new reads summarise from data already loaded: fixture_outlook ships with
+  // the squad response, ownership now ships on each squad player.
+  const riskMax = riskCeilingFor(riskKey);
+  const outlookSummary = data ? fixtureOutlookSummary(data.fixture_outlook) : null;
+  const diffSummary = data ? differentialsSummary(data.squad, riskMax) : null;
 
   // The peek's Next section shows difficulty, and SquadPlayer.next_opponent is
   // only a string - so take the structured opponents from the planner, which is
@@ -219,6 +233,37 @@ export function LoadTeamPanel({
         </>
       ) : (
         "Nothing worth playing yet"
+      ),
+    },
+    {
+      // The 5-gameweek average FDR, on the dashboard rather than three clicks
+      // into the Matches page - the reason the payload was being fetched all
+      // along.
+      id: "fixtures",
+      label: "Fixture outlook",
+      summary: outlookSummary ? (
+        <>
+          <span className="font-medium text-success">{outlookSummary.kindest.team_short}</span> easiest (
+          <span className="font-mono">{outlookSummary.kindest.avg_difficulty?.toFixed(1)}</span>) ·{" "}
+          <span className="font-medium text-danger">{outlookSummary.toughest.team_short}</span> toughest (
+          <span className="font-mono">{outlookSummary.toughest.avg_difficulty?.toFixed(1)}</span>)
+        </>
+      ) : (
+        "No fixture read yet"
+      ),
+    },
+    {
+      id: "differentials",
+      label: "Differentials",
+      summary: diffSummary ? (
+        <>
+          <span className="font-mono font-medium text-pl-pink">{diffSummary.edgeCount}</span> under{" "}
+          {riskMax}% ·{" "}
+          <span className="font-mono font-medium text-text-primary">{diffSummary.crowdCount}</span> owned by
+          the crowd
+        </>
+      ) : (
+        "—"
       ),
     },
     {
@@ -460,6 +505,26 @@ export function LoadTeamPanel({
                   </div>
                 )}
               </div>
+            )}
+
+            {read === "fixtures" && (
+              <FixtureOutlook
+                outlook={data.fixture_outlook}
+                squad={data.squad}
+                planner={planner}
+                // The squad response's own window, not the planner's - the two
+                // differ (5 vs 6), and this label describes avg_difficulty.
+                windowLabel={`next ${data.fixture_window} gameweeks`}
+              />
+            )}
+
+            {read === "differentials" && (
+              <SquadDifferentials
+                squad={data.squad}
+                planner={planner}
+                riskKey={riskKey}
+                onRiskChange={setRiskKey}
+              />
             )}
 
             {read === "strength" && (

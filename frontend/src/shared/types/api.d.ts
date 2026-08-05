@@ -161,9 +161,14 @@ export type SeasonStats = {
   assists: number;
   bonus: number;
   clean_sheets: number;
+  defensive_contribution_per_90: number;
   expected_assists: string;
+  expected_assists_per_90: number;
   expected_goal_involvements: string;
+  expected_goal_involvements_per_90: number;
   expected_goals: string;
+  expected_goals_conceded_per_90: number;
+  expected_goals_per_90: number;
   goals_conceded: number;
   goals_scored: number;
   ict_index: string;
@@ -171,6 +176,8 @@ export type SeasonStats = {
   red_cards: number;
   saves: number;
   starts: number;
+  starts_per_90: number;
+  threat: string;
   total_points: number;
   yellow_cards: number;
 };
@@ -180,7 +187,9 @@ export type SquadPlayer = {
   cost: number;
   defensive_contribution_per_90: number;
   ep_next: number;
+  expected_assists_per_90: number;
   expected_goal_involvements: number;
+  expected_goals_per_90: number;
   expected_minutes: number;
   form: number;
   ict_index: number;
@@ -196,6 +205,7 @@ export type SquadPlayer = {
   recommendation_score: number;
   role: "Starting XI" | "Bench";
   rotation_risk: number;
+  selected_by_percent: number;
   set_piece_duty_score: number;
   status: string;
   team_badge: string;
@@ -554,6 +564,7 @@ export type SquadResponse = {
   entry_name: string;
   event: number;
   fixture_outlook: FixtureOutlookRow[];
+  fixture_window: number;
   points: number;
   squad: SquadPlayer[];
   squad_value: number;

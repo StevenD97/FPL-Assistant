@@ -30,8 +30,11 @@ export type Insight = {
 export const POSITION_ORDER: Position[] = ["GKP", "DEF", "MID", "FWD"];
 export const POSITION_LIMITS: Record<Position, number> = { GKP: 2, DEF: 5, MID: 5, FWD: 3 };
 export const MAX_PER_CLUB = 3;
-const TOUGH_FIXTURE_THRESHOLD = 3.2; // rough FDR (1-5 scale) worth flagging
-const EASY_FIXTURE_THRESHOLD = 2.4; // ... and worth celebrating
+// Exported so the loaded squad's Fixture outlook read grades a run the same way
+// the builder's diagnostics do - two surfaces disagreeing about what counts as
+// an easy run would be a bug the reader has no way to explain.
+export const TOUGH_FIXTURE_THRESHOLD = 3.2; // rough FDR (1-5 scale) worth flagging
+export const EASY_FIXTURE_THRESHOLD = 2.4; // ... and worth celebrating
 const STRONG_FIXTURE_TEAMS_TO_CHECK = 4;
 const MAX_SUGGESTIONS = 3;
 // Below this share of a "nailed" starter's appearance_points (max ~2.0 per

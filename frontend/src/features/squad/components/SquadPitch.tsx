@@ -58,6 +58,22 @@ function peekStats(p: SquadPlayer, squad: SquadPlayer[]): CardStat[] {
       rating: withinSquad((x) => x.ep_next),
     },
     { k: "xGI", v: p.expected_goal_involvements.toFixed(2), rating: withinSquad((x) => x.expected_goal_involvements) },
+    // Rates, ranked within the squad like everything else here. These sit next to
+    // the xGI total deliberately: the total is inflated by minutes, so a player
+    // who rates low on xGI and high on xG/90 is being told apart from one who
+    // rates low on both - which the total alone can't say.
+    {
+      k: "xG/90",
+      v: p.expected_goals_per_90.toFixed(2),
+      tooltip: "xg90",
+      rating: withinSquad((x) => x.expected_goals_per_90),
+    },
+    {
+      k: "xA/90",
+      v: p.expected_assists_per_90.toFixed(2),
+      tooltip: "xa90",
+      rating: withinSquad((x) => x.expected_assists_per_90),
+    },
     { k: "ICT", v: p.ict_index.toFixed(0), rating: withinSquad((x) => x.ict_index) },
     // Minutes and duty have real ceilings, so a proportion beats a rank.
     hasSignal(col((x) => x.expected_minutes))

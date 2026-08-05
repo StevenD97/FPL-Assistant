@@ -129,6 +129,38 @@ export function storeTrackedLeagueName(id: number, name: string): void {
   }
 }
 
+// The last league whose standings you actually opened, so a return visit can
+// reopen it instead of showing a picker.
+//
+// Kept separate from the tracked-id list because it answers a different
+// question: tracked means "keep this league in my list", last-viewed means "this
+// is the one I'm following right now", and a league can be either without being
+// the other - your own mini-league is in the list without being tracked, and a
+// country league you tracked once isn't necessarily the one you care about
+// today. Deliberately a single id rather than a history: this only exists to
+// pick a landing view, and anything more would need a UI to manage it.
+const LAST_LEAGUE_KEY = "fpl.lastViewedLeagueId";
+
+export function loadLastViewedLeagueId(): number | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const v = window.localStorage.getItem(LAST_LEAGUE_KEY);
+    if (!v) return null;
+    const n = Number(v);
+    return Number.isInteger(n) && n > 0 ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+export function storeLastViewedLeagueId(id: number): void {
+  try {
+    window.localStorage.setItem(LAST_LEAGUE_KEY, String(id));
+  } catch {
+    // Ignore (private mode / storage disabled) - the app still works per-session.
+  }
+}
+
 // Label cache for tracked teams, learned when an entry loads. Same shape and
 // same reasoning as the league cache above: the id list stays the source of
 // truth, this only means a chip can say "Bruno's XI" instead of "Team 1178869"

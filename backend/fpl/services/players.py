@@ -51,6 +51,21 @@ SEASON_STAT_FIELDS = [
     "total_points", "goals_scored", "assists", "clean_sheets", "goals_conceded",
     "saves", "bonus", "minutes", "starts", "yellow_cards", "red_cards",
     "expected_goals", "expected_assists", "expected_goal_involvements", "ict_index",
+    # Underlying *rates* rather than totals, for the stat-focused reader: a
+    # per-90 separates "good" from "played a lot", which is the whole point of
+    # looking under the totals above.
+    #
+    # This is FPL's own per-90 family, which is as close to shot-level data as
+    # this app can get: FPL publishes no shot counts at all - not in
+    # bootstrap_static's elements, not in the per-gameweek history - so xG/shot
+    # and shots/90 aren't computable from these sources and would need an
+    # external provider (Understat/FBref) plus a player-id mapping layer.
+    # `threat` is the nearest available shot-volume proxy: an Opta-derived score
+    # for the danger of a player's attacking actions. It's a season total, not a
+    # rate, so it's grouped here for what it measures rather than its units.
+    "expected_goals_per_90", "expected_assists_per_90", "expected_goal_involvements_per_90",
+    "expected_goals_conceded_per_90", "defensive_contribution_per_90", "starts_per_90",
+    "threat",
 ]
 
 # appearance_points/fixture (0-2 scale, see _fixture_points in fpl.model.predict)

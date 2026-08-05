@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Button } from "@/shared/ui/Button";
 import { Select } from "@/shared/ui/Select";
@@ -13,10 +14,12 @@ import { seriesColor } from "@/shared/lib/palette";
 import { pickTrendSeries, TREND_SERIES_CAP } from "@/shared/lib/leagueTrend";
 import {
   formatRank,
+  loadLastViewedLeagueId,
   loadTrackedLeagueIds,
   loadTrackedLeagueNames,
   parseLeagueId,
   parseTeamId,
+  storeLastViewedLeagueId,
   storeTrackedLeagueIds,
   storeTrackedLeagueName,
 } from "@/shared/lib/team";
@@ -49,6 +52,9 @@ export default function LeaguesPage() {
   const [trackedIds, setTrackedIds] = useState<number[]>([]);
   const [trackedNames, setTrackedNames] = useState<Record<string, string>>({});
   const [showAllTrend, setShowAllTrend] = useState(false);
+  // The manual team/league lookup, collapsed by default now that a connected
+  // team loads its own leagues - see the disclosure below.
+  const [lookupOpen, setLookupOpen] = useState(false);
 
   // Whose perspective "your rank" is computed from: the last team id searched,
   // falling back to whatever team is connected app-wide (sidebar).
@@ -58,6 +64,23 @@ export default function LeaguesPage() {
     setTrackedIds(loadTrackedLeagueIds());
     setTrackedNames(loadTrackedLeagueNames());
   }, []);
+
+  // Connecting a team is the only identity this page needs, so a connected team
+  // loads its own leagues rather than asking for the ID it already has. This is
+  // one request (FPL returns league membership on the entry itself - see
+  // services/leagues.manager_leagues), which is why it's safe to fire on arrival;
+  // standings are the expensive call and stay deliberate, below.
+  //
+  // The ref guards against re-firing: `connectedTeamId` arrives a beat after
+  // mount (TeamProvider restores it from localStorage), and without this a
+  // manual lookup for someone else's team would be overwritten the moment any
+  // dependency changed.
+  const autoLoadedFor = useRef<number | null>(null);
+  useEffect(() => {
+    if (connectedTeamId == null || autoLoadedFor.current === connectedTeamId) return;
+    autoLoadedFor.current = connectedTeamId;
+    findLeagues(connectedTeamId);
+  }, [connectedTeamId]);
 
   // The team's own leagues and the tracked public ones, merged into one list.
   // A league in both shows once, keeping its real name from the team lookup.
@@ -76,6 +99,33 @@ export default function LeaguesPage() {
     }
     return [...byId.values()];
   }, [leagues, trackedIds, trackedNames]);
+
+  // Land on standings rather than a picker - but only when the choice is
+  // unambiguous, because league_standings fans out to one request per shown
+  // manager plus a paged rank search (services/leagues.py). Guessing wrong would
+  // spend several seconds fetching a league you didn't ask about, on every visit.
+  //
+  // "Unambiguous" means: the league you last opened (if it's still in your list),
+  // or a single league with no alternative to choose between.
+  //
+  // Declared after leagueChoices rather than beside the auto-load effect above:
+  // the dependency array is evaluated during render, so referencing the memo
+  // before its `const` would hit the temporal dead zone.
+  const autoOpened = useRef(false);
+  useEffect(() => {
+    if (autoOpened.current || selectedLeague != null || leagueChoices.length === 0) return;
+    const remembered = loadLastViewedLeagueId();
+    const target =
+      remembered != null && leagueChoices.some((lg) => lg.id === remembered)
+        ? remembered
+        : leagueChoices.length === 1
+          ? leagueChoices[0].id
+          : null;
+    if (target == null) return;
+    autoOpened.current = true;
+    loadStandings(target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leagueChoices, selectedLeague]);
 
   const trendSeries = useMemo(
     () => pickTrendSeries(standings?.trend ?? [], { showAll: showAllTrend, myEntryId: rankTeamId }),
@@ -153,6 +203,10 @@ export default function LeaguesPage() {
     setStandingsLoading(true);
     setStandings(null);
     setError(null);
+    // Remembered before the fetch, not after: opening a league is the intent
+    // worth recording, and a league whose standings fail to load (a private one,
+    // say) is still the one you were looking at.
+    storeLastViewedLeagueId(leagueId);
     try {
       const params = new URLSearchParams();
       if (rankTeamId) params.set("team_id", String(rankTeamId));
@@ -195,55 +249,114 @@ export default function LeaguesPage() {
           league, to see where your score would rank without joining.
         </p>
 
-        {/* Identity first: if a team is connected, one tap loads its leagues -
-            no re-entering an ID. Otherwise coach them to connect. */}
+        {/* Identity is the whole input this page needs: a connected team loads
+            its own leagues on arrival (see the auto-load effect), so there's no
+            ID to re-enter and no button to press for the common case. Without a
+            team, connecting is the ask - not a search box. */}
         {connectedTeamId ? (
-          <div className="mb-5 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-white px-4 py-3 shadow-sm">
+          <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
             <span className="text-sm text-text-secondary">
-              Connected as team <span className="font-mono font-semibold text-text-primary">{connectedTeamId}</span>
+              {loading ? (
+                <>
+                  Loading leagues for team{" "}
+                  <span className="font-mono font-semibold text-text-primary">{connectedTeamId}</span>…
+                </>
+              ) : leagues ? (
+                <>
+                  <span className="font-mono font-semibold text-text-primary">{leagues.length}</span> league
+                  {leagues.length === 1 ? "" : "s"} for team{" "}
+                  <span className="font-mono font-semibold text-text-primary">{connectedTeamId}</span>
+                </>
+              ) : (
+                <>
+                  Connected as team{" "}
+                  <span className="font-mono font-semibold text-text-primary">{connectedTeamId}</span>
+                </>
+              )}
             </span>
-            <Button size="sm" onClick={() => findLeagues(connectedTeamId)} disabled={loading}>
-              {loading ? "Loading…" : "Find my leagues"}
-            </Button>
+            {!loading && (
+              <button
+                type="button"
+                onClick={() => findLeagues(connectedTeamId)}
+                className="text-xs font-semibold text-pl-purple hover:underline"
+              >
+                Refresh
+              </button>
+            )}
           </div>
         ) : (
           <div className="mb-5">
             <ConnectTeamPrompt
               title="Connect to see your leagues"
-              body="Add your FPL team to load your mini-leagues in one tap — or look up any team or public league below."
+              body="Add your FPL team and your mini-leagues load themselves — or look up any team or public league below."
             />
           </div>
         )}
 
-        {/* One search row for both intents. The selector only disambiguates a
-            bare number (is 314 a team or a league?) - a pasted FPL URL is
-            auto-detected and overrides it either way. */}
-        <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-3">
-          <Select
-            label="Look up"
-            options={[TEAM_OPTION, LEAGUE_OPTION]}
-            value={mode === "team" ? TEAM_OPTION : LEAGUE_OPTION}
-            onChange={(e) => setMode(e.target.value === LEAGUE_OPTION ? "league" : "team")}
-            wrapperClassName="w-[9.5rem]"
-          />
-          <TextField
-            label={mode === "team" ? "Team ID or URL" : "League ID or URL"}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={
-              mode === "team" ? "e.g. 1178869 or your team URL" : "e.g. 314 or …/leagues/314/standings/c"
-            }
-            wrapperClassName="min-w-[200px] flex-1 sm:max-w-sm"
-          />
-          <Button type="submit" disabled={loading || !query.trim()}>
-            {loading ? "Loading..." : mode === "team" ? "Find leagues" : "Track"}
-          </Button>
-        </form>
-        <p className="mb-4 mt-1.5 text-xs text-text-secondary">
-          {mode === "team"
-            ? "Loads the mini-leagues that team is in, then pick one below for standings and trends."
-            : "Tracks any public league (joined or not), including a country league, to see where your score ranks. Saved on this device."}
-        </p>
+        {/* The manual lookup is now the exception, so it's collapsed rather than
+            leading the page. It still does both jobs it always did - and the
+            parsing below is unchanged - but a reader with a team connected no
+            longer has to walk past a form asking for the ID we already have. */}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => {
+              setLookupOpen((o) => !o);
+              setError(null);
+            }}
+            aria-expanded={lookupOpen}
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+          >
+            <span aria-hidden="true" className="text-text-muted">
+              {lookupOpen ? "−" : "＋"}
+            </span>
+            Look up another team or track a public league
+          </button>
+
+          <AnimatePresence>
+            {lookupOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-3 rounded-xl border border-border bg-white p-3 shadow-sm">
+                  {/* One search row for both intents. The selector only
+                      disambiguates a bare number (is 314 a team or a league?) -
+                      a pasted FPL URL is auto-detected and overrides it either
+                      way. */}
+                  <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-3">
+                    <Select
+                      label="Look up"
+                      options={[TEAM_OPTION, LEAGUE_OPTION]}
+                      value={mode === "team" ? TEAM_OPTION : LEAGUE_OPTION}
+                      onChange={(e) => setMode(e.target.value === LEAGUE_OPTION ? "league" : "team")}
+                      wrapperClassName="w-[9.5rem]"
+                    />
+                    <TextField
+                      label={mode === "team" ? "Team ID or URL" : "League ID or URL"}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder={
+                        mode === "team" ? "e.g. 1178869 or your team URL" : "e.g. 314 or …/leagues/314/standings/c"
+                      }
+                      wrapperClassName="min-w-[200px] flex-1 sm:max-w-sm"
+                    />
+                    <Button type="submit" disabled={loading || !query.trim()}>
+                      {loading ? "Loading..." : mode === "team" ? "Find leagues" : "Track"}
+                    </Button>
+                  </form>
+                  <p className="mt-1.5 text-xs text-text-secondary">
+                    {mode === "team"
+                      ? "Loads the mini-leagues that team is in, then pick one below for standings and trends."
+                      : "Tracks any public league (joined or not), including a country league, to see where your score ranks. Saved on this device."}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {error && <p className="mb-4 text-sm font-medium text-danger">{error}</p>}
 

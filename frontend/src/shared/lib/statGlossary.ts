@@ -15,6 +15,15 @@ export const STAT_GLOSSARY = {
   xPts: "Our model's predicted FPL points for the gameweek(s) shown.",
   epNext: "Expected points for the very next gameweek only.",
   def90: "Defensive actions (tackles, interceptions, clearances, blocks) per 90 minutes played.",
+  // Rates, not totals - the distinction is the whole point of showing them, so
+  // every one of these says "per 90 minutes" explicitly rather than assuming the
+  // reader infers it from the label.
+  xg90: "Expected goals per 90 minutes played — shot quality at a rate, so a substitute isn't punished for playing less.",
+  xa90: "Expected assists per 90 minutes played — chance creation at a rate, independent of minutes.",
+  xgi90: "Expected goal involvements (goals plus assists) per 90 minutes played.",
+  xgc90: "Expected goals conceded per 90 minutes, by this player's team while he's on — lower is better.",
+  starts90: "Starts per 90 minutes played — near 1.0 means a regular starter rather than a substitute.",
+  threat: "Opta's rating of how dangerous a player's attacking actions are. A season total, not a rate — FPL publishes no shot counts, so this is the closest available read on shot volume.",
   setPieceDuty: "Whether a player takes their club's corners, free-kicks or penalties.",
   netTransfers: "The difference between managers adding vs. removing this player recently.",
   transferRate: "How many managers are transferring this player in or out per hour.",

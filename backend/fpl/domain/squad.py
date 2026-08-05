@@ -113,8 +113,9 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         "id", "code", "team", "position", "web_name", "team_short", "pos", "role", "captain_flag",
         "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
         "form", "recency_weighted_form", "ep_next", "expected_minutes",
-        "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
-        "set_piece_duty_score", "status", "news",
+        "expected_goal_involvements", "expected_goals_per_90", "expected_assists_per_90",
+        "ict_index", "defensive_contribution_per_90",
+        "set_piece_duty_score", "selected_by_percent", "status", "news",
     ]
     squad_rows = squad[squad_cols].copy()
     # `id` above is this bootstrap_file's element id (archived-2025/26 by
@@ -129,6 +130,20 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     # live figures) for transfer-budget math to be correct.
     live_cost_by_id = {p["id"]: p["now_cost"] for p in live_bootstrap["elements"]}
     squad_rows["cost"] = squad_rows["live_id"].map(lambda lid: round(live_cost_by_id[lid] / 10, 1) if lid in live_cost_by_id else None)
+
+    # Same argument for ownership, and it matters more here: `selected_by_percent`
+    # arrived from bootstrap_file (archived by default), where it's frozen at last
+    # season's *final* figure. The squad page uses this to say which of your picks
+    # are differentials, and last season's finishing ownership is not what
+    # "differential" means this week - a player everyone owned in May can be
+    # forgotten by August, and vice versa. Overlaid by `code` (stable across
+    # seasons, unlike element ids), matching the same fix in
+    # fpl.services.players.player_scores. Falls back to the archived value for a
+    # player with no live match - retired, or left the Premier League.
+    live_ownership_by_code = {p["code"]: float(p["selected_by_percent"]) for p in live_bootstrap["elements"]}
+    squad_rows["selected_by_percent"] = (
+        squad_rows["code"].map(live_ownership_by_code).fillna(squad_rows["selected_by_percent"])
+    )
 
     # Official PL CDN images (see team_badge_url/team_kit_url/player_photo_url).
     # `team` above is bootstrap_file's own numeric team id-space (archived by
@@ -153,4 +168,11 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         "bench_depth_score": round(bench["recommendation_score"].mean(), 3) if len(bench) else None,
         "captaincy_options": captaincy_options,
         "fixture_outlook": fixture_outlook,
+        # How many gameweeks fixture_outlook's avg_difficulty is averaged over, so
+        # the frontend can label it instead of guessing. Same reasoning as
+        # gw_count/next_event on the optimiser response: a window size the caller
+        # chose but the payload doesn't state is a number the reader can only
+        # misinterpret - and the nearest available guess (the planner's own
+        # window) is a different length, so guessing gets it wrong.
+        "fixture_window": window_size,
     }

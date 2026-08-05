@@ -6,6 +6,8 @@ export type SquadRead =
   | "transfers"
   | "captaincy"
   | "chips"
+  | "fixtures"
+  | "differentials"
   | "strength"
   | "detail"
   | "setup";
@@ -25,6 +27,17 @@ const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: 
   transfers: { icon: "text-success", text: "text-success", tint: "bg-success-bg", bar: "bg-success" },
   captaincy: { icon: "text-pl-purple", text: "text-pl-purple", tint: "bg-pl-purple/10", bar: "bg-pl-purple" },
   chips: { icon: "text-warning", text: "text-warning", tint: "bg-warning-bg", bar: "bg-warning" },
+  // A muted plum for the schedule: fixture difficulty is the one read whose
+  // *content* is colour-coded (green-to-red FDR chips), so the row itself takes a
+  // neutral brand tone rather than competing with the scale inside it.
+  fixtures: {
+    icon: "text-pl-purple-light",
+    text: "text-pl-purple-light",
+    tint: "bg-pl-purple-light/10",
+    bar: "bg-pl-purple-light",
+  },
+  // pl-pink, the boldest accent in the palette, for the row about bold picks.
+  differentials: { icon: "text-pl-pink", text: "text-pl-pink", tint: "bg-pl-pink/10", bar: "bg-pl-pink" },
   strength: { icon: "text-info", text: "text-info", tint: "bg-info-bg", bar: "bg-info" },
   detail: { icon: "text-slate-600", text: "text-slate-600", tint: "bg-slate-100", bar: "bg-slate-600" },
   setup: { icon: "text-slate-500", text: "text-slate-500", tint: "bg-slate-100", bar: "bg-slate-400" },
@@ -179,6 +192,25 @@ function ReadIcon({ id }: { id: SquadRead }) {
           <ellipse cx="12" cy="6" rx="8" ry="3" />
           <path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6" />
           <path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" />
+        </svg>
+      );
+    case "fixtures":
+      // A road ahead - the run of games as a stretch to travel, rather than a
+      // calendar grid, which is what the Transfer Plan workspace is for.
+      return (
+        <svg {...common}>
+          <path d="M4 21 9 4M20 21 15 4" />
+          <path d="M12 6v2M12 12v2M12 18v2" />
+        </svg>
+      );
+    case "differentials":
+      // One mark stepping out of the row - the whole idea of a differential.
+      return (
+        <svg {...common}>
+          <circle cx="5" cy="17" r="1.6" />
+          <circle cx="11" cy="17" r="1.6" />
+          <circle cx="17" cy="17" r="1.6" />
+          <path d="M17 12V4m0 0-2.5 2.5M17 4l2.5 2.5" />
         </svg>
       );
     case "strength":
