@@ -3,7 +3,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-21T19:00:00Z",
+      "started": true,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 5,
@@ -16,7 +18,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-22T11:30:00Z",
+      "started": true,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 2,
@@ -29,7 +33,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-22T14:00:00Z",
+      "started": true,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -42,7 +48,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-22T14:00:00Z",
+      "started": true,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 2,
@@ -55,7 +63,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-22T14:00:00Z",
+      "started": true,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -68,7 +78,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-22T16:30:00Z",
+      "started": true,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -81,7 +93,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-23T13:00:00Z",
+      "started": true,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -94,7 +108,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-23T13:00:00Z",
+      "started": true,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 5,
@@ -107,7 +123,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-23T15:30:00Z",
+      "started": true,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -120,7 +138,9 @@
     {
       "event": 1,
       "finished": true,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-24T19:00:00Z",
+      "started": true,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -133,7 +153,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-28T19:00:00Z",
+      "started": true,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -146,7 +168,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-29T11:30:00Z",
+      "started": true,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 4,
@@ -159,7 +183,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-29T14:00:00Z",
+      "started": true,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -172,7 +198,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-29T14:00:00Z",
+      "started": true,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 2,
@@ -185,7 +213,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-29T16:30:00Z",
+      "started": true,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -198,7 +228,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-30T13:00:00Z",
+      "started": true,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 4,
@@ -211,7 +243,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-30T13:00:00Z",
+      "started": true,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -224,7 +258,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-30T13:00:00Z",
+      "started": true,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -237,7 +273,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": true,
       "kickoff_time": "2026-08-30T15:30:00Z",
+      "started": true,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 4,
@@ -250,7 +288,9 @@
     {
       "event": 2,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-08-31T19:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 4,
@@ -263,7 +303,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-04T19:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 2,
@@ -276,7 +318,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T11:30:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -289,7 +333,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T14:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -302,7 +348,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T14:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -315,7 +363,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -328,7 +378,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T14:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 5,
@@ -341,7 +393,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T14:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -354,7 +408,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-05T16:30:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 2,
@@ -367,7 +423,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-06T13:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -380,7 +438,9 @@
     {
       "event": 3,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-06T15:30:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 5,
@@ -393,7 +453,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T14:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 4,
@@ -406,7 +468,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -419,7 +483,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 4,
@@ -432,7 +498,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -445,7 +513,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 4,
@@ -458,7 +528,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T16:30:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -471,7 +543,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-12T19:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -484,7 +558,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-13T13:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 2,
@@ -497,7 +573,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-13T15:30:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 4,
@@ -510,7 +588,9 @@
     {
       "event": 4,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-14T19:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -523,7 +603,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-18T19:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -536,7 +618,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T11:30:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -549,7 +633,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T14:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -562,7 +648,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -575,7 +663,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -588,7 +678,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -601,7 +693,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-19T16:30:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -614,7 +708,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-20T13:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -627,7 +723,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-20T13:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 5,
@@ -640,7 +738,9 @@
     {
       "event": 5,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-09-20T15:30:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -653,7 +753,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T11:30:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 5,
@@ -666,7 +768,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 4,
@@ -679,7 +783,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T14:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 4,
@@ -692,7 +798,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 2,
@@ -705,7 +813,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T14:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -718,7 +828,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-10T16:30:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 4,
@@ -731,7 +843,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-11T13:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -744,7 +858,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-11T13:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 2,
@@ -757,7 +873,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-11T15:30:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 4,
@@ -770,7 +888,9 @@
     {
       "event": 6,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-12T19:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 2,
@@ -783,7 +903,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-17T11:30:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -796,7 +918,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-17T14:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -809,7 +933,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-17T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -822,7 +948,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-17T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 5,
@@ -835,7 +963,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-17T16:30:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -848,7 +978,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-18T13:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -861,7 +993,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-18T13:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -874,7 +1008,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-18T13:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -887,7 +1023,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-18T15:30:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -900,7 +1038,9 @@
     {
       "event": 7,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-19T19:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -913,7 +1053,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-23T19:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 2,
@@ -926,7 +1068,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-24T11:30:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 4,
@@ -939,7 +1083,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-24T14:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 5,
@@ -952,7 +1098,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-24T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 2,
@@ -965,7 +1113,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-24T14:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 4,
@@ -978,7 +1128,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-24T16:30:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 4,
@@ -991,7 +1143,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-25T14:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -1004,7 +1158,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-25T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 2,
@@ -1017,7 +1173,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-25T14:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 4,
@@ -1030,7 +1188,9 @@
     {
       "event": 8,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-25T16:30:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -1043,7 +1203,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T12:30:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 4,
@@ -1056,7 +1218,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -1069,7 +1233,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -1082,7 +1248,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 2,
@@ -1095,7 +1263,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 2,
@@ -1108,7 +1278,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 5,
@@ -1121,7 +1293,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-10-31T17:30:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -1134,7 +1308,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-01T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 4,
@@ -1147,7 +1323,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-01T16:30:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 4,
@@ -1160,7 +1338,9 @@
     {
       "event": 9,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-02T20:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -1173,7 +1353,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 5,
@@ -1186,7 +1368,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -1199,7 +1383,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -1212,7 +1398,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -1225,7 +1413,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -1238,7 +1428,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 2,
@@ -1251,7 +1443,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -1264,7 +1458,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 4,
@@ -1277,7 +1473,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -1290,7 +1488,9 @@
     {
       "event": 10,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-07T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -1303,7 +1503,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 4,
@@ -1316,7 +1518,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -1329,7 +1533,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -1342,7 +1548,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 4,
@@ -1355,7 +1563,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 2,
@@ -1368,7 +1578,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 2,
@@ -1381,7 +1593,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 4,
@@ -1394,7 +1608,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 5,
@@ -1407,7 +1623,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -1420,7 +1638,9 @@
     {
       "event": 11,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-21T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -1433,7 +1653,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 5,
@@ -1446,7 +1668,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -1459,7 +1683,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -1472,7 +1698,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -1485,7 +1713,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -1498,7 +1728,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 2,
@@ -1511,7 +1743,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -1524,7 +1758,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 4,
@@ -1537,7 +1773,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -1550,7 +1788,9 @@
     {
       "event": 12,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-11-28T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -1563,7 +1803,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 4,
@@ -1576,7 +1818,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -1589,7 +1833,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -1602,7 +1848,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 4,
@@ -1615,7 +1863,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 2,
@@ -1628,7 +1878,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 2,
@@ -1641,7 +1893,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 4,
@@ -1654,7 +1908,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 5,
@@ -1667,7 +1923,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -1680,7 +1938,9 @@
     {
       "event": 13,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-02T20:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -1693,7 +1953,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 4,
@@ -1706,7 +1968,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -1719,7 +1983,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -1732,7 +1998,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 4,
@@ -1745,7 +2013,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -1758,7 +2028,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -1771,7 +2043,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 4,
@@ -1784,7 +2058,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -1797,7 +2073,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -1810,7 +2088,9 @@
     {
       "event": 14,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-05T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -1823,7 +2103,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 5,
@@ -1836,7 +2118,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -1849,7 +2133,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 2,
@@ -1862,7 +2148,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -1875,7 +2163,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -1888,7 +2178,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 2,
@@ -1901,7 +2193,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 2,
@@ -1914,7 +2208,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 4,
@@ -1927,7 +2223,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 5,
@@ -1940,7 +2238,9 @@
     {
       "event": 15,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-12T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -1953,7 +2253,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 5,
@@ -1966,7 +2268,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -1979,7 +2283,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -1992,7 +2298,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -2005,7 +2313,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 4,
@@ -2018,7 +2328,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -2031,7 +2343,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 4,
@@ -2044,7 +2358,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 5,
@@ -2057,7 +2373,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -2070,7 +2388,9 @@
     {
       "event": 16,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-19T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -2083,7 +2403,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 4,
@@ -2096,7 +2418,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 2,
@@ -2109,7 +2433,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -2122,7 +2448,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -2135,7 +2463,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -2148,7 +2478,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 2,
@@ -2161,7 +2493,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 2,
@@ -2174,7 +2508,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 4,
@@ -2187,7 +2523,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -2200,7 +2538,9 @@
     {
       "event": 17,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-26T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -2213,7 +2553,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 4,
@@ -2226,7 +2568,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 2,
@@ -2239,7 +2583,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -2252,7 +2598,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -2265,7 +2613,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -2278,7 +2628,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 2,
@@ -2291,7 +2643,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 2,
@@ -2304,7 +2658,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 4,
@@ -2317,7 +2673,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -2330,7 +2688,9 @@
     {
       "event": 18,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2026-12-30T20:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -2343,7 +2703,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 5,
@@ -2356,7 +2718,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -2369,7 +2733,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -2382,7 +2748,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -2395,7 +2763,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 4,
@@ -2408,7 +2778,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -2421,7 +2793,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 4,
@@ -2434,7 +2808,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 5,
@@ -2447,7 +2823,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -2460,7 +2838,9 @@
     {
       "event": 19,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-02T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -2473,7 +2853,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 5,
@@ -2486,7 +2868,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -2499,7 +2883,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -2512,7 +2898,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -2525,7 +2913,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -2538,7 +2928,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 2,
@@ -2551,7 +2943,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -2564,7 +2958,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 4,
@@ -2577,7 +2973,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -2590,7 +2988,9 @@
     {
       "event": 20,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-06T20:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -2603,7 +3003,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 4,
@@ -2616,7 +3018,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -2629,7 +3033,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -2642,7 +3048,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 4,
@@ -2655,7 +3063,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 2,
@@ -2668,7 +3078,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 2,
@@ -2681,7 +3093,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 4,
@@ -2694,7 +3108,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 5,
@@ -2707,7 +3123,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -2720,7 +3138,9 @@
     {
       "event": 21,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-16T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -2733,7 +3153,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 5,
@@ -2746,7 +3168,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -2759,7 +3183,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -2772,7 +3198,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -2785,7 +3213,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -2798,7 +3228,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 2,
@@ -2811,7 +3243,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -2824,7 +3258,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 4,
@@ -2837,7 +3273,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -2850,7 +3288,9 @@
     {
       "event": 22,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-23T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -2863,7 +3303,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 4,
@@ -2876,7 +3318,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -2889,7 +3333,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -2902,7 +3348,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 4,
@@ -2915,7 +3363,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 2,
@@ -2928,7 +3378,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 2,
@@ -2941,7 +3393,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 4,
@@ -2954,7 +3408,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 5,
@@ -2967,7 +3423,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -2980,7 +3438,9 @@
     {
       "event": 23,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-01-30T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -2993,7 +3453,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 5,
@@ -3006,7 +3468,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -3019,7 +3483,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -3032,7 +3498,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -3045,7 +3513,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -3058,7 +3528,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 2,
@@ -3071,7 +3543,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -3084,7 +3558,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 4,
@@ -3097,7 +3573,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -3110,7 +3588,9 @@
     {
       "event": 24,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-06T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -3123,7 +3603,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 4,
@@ -3136,7 +3618,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 2,
@@ -3149,7 +3633,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -3162,7 +3648,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -3175,7 +3663,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -3188,7 +3678,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 2,
@@ -3201,7 +3693,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 2,
@@ -3214,7 +3708,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 4,
@@ -3227,7 +3723,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -3240,7 +3738,9 @@
     {
       "event": 25,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-10T20:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -3253,7 +3753,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 5,
@@ -3266,7 +3768,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -3279,7 +3783,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -3292,7 +3798,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -3305,7 +3813,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 4,
@@ -3318,7 +3828,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -3331,7 +3843,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 4,
@@ -3344,7 +3858,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 5,
@@ -3357,7 +3873,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -3370,7 +3888,9 @@
     {
       "event": 26,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-20T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -3383,7 +3903,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 4,
@@ -3396,7 +3918,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 2,
@@ -3409,7 +3933,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -3422,7 +3948,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -3435,7 +3963,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -3448,7 +3978,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 2,
@@ -3461,7 +3993,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 2,
@@ -3474,7 +4008,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 4,
@@ -3487,7 +4023,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -3500,7 +4038,9 @@
     {
       "event": 27,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-02-27T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -3513,7 +4053,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 5,
@@ -3526,7 +4068,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -3539,7 +4083,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -3552,7 +4098,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -3565,7 +4113,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 4,
@@ -3578,7 +4128,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -3591,7 +4143,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 4,
@@ -3604,7 +4158,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 5,
@@ -3617,7 +4173,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -3630,7 +4188,9 @@
     {
       "event": 28,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-03T20:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -3643,7 +4203,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 4,
@@ -3656,7 +4218,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -3669,7 +4233,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 4,
@@ -3682,7 +4248,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 2,
@@ -3695,7 +4263,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -3708,7 +4278,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -3721,7 +4293,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 4,
@@ -3734,7 +4308,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 4,
@@ -3747,7 +4323,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -3760,7 +4338,9 @@
     {
       "event": 29,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-13T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -3773,7 +4353,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 5,
@@ -3786,7 +4368,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -3799,7 +4383,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -3812,7 +4398,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -3825,7 +4413,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -3838,7 +4428,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 2,
@@ -3851,7 +4443,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 2,
@@ -3864,7 +4458,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 5,
@@ -3877,7 +4473,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -3890,7 +4488,9 @@
     {
       "event": 30,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-03-20T15:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -3903,7 +4503,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 4,
@@ -3916,7 +4518,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,
@@ -3929,7 +4533,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 4,
@@ -3942,7 +4548,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 2,
@@ -3955,7 +4563,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -3968,7 +4578,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -3981,7 +4593,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 4,
@@ -3994,7 +4608,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 4,
@@ -4007,7 +4623,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 3,
@@ -4020,7 +4638,9 @@
     {
       "event": 31,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-10T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -4033,7 +4653,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 5,
@@ -4046,7 +4668,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -4059,7 +4683,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -4072,7 +4698,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -4085,7 +4713,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -4098,7 +4728,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 2,
@@ -4111,7 +4743,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 2,
@@ -4124,7 +4758,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 5,
@@ -4137,7 +4773,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 3,
@@ -4150,7 +4788,9 @@
     {
       "event": 32,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-17T14:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -4163,7 +4803,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 4,
@@ -4176,7 +4818,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -4189,7 +4833,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 3,
@@ -4202,7 +4848,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 4,
@@ -4215,7 +4863,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -4228,7 +4878,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -4241,7 +4893,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 4,
@@ -4254,7 +4908,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -4267,7 +4923,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -4280,7 +4938,9 @@
     {
       "event": 33,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-04-24T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -4293,7 +4953,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 5,
@@ -4306,7 +4968,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 3,
@@ -4319,7 +4983,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 2,
@@ -4332,7 +4998,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -4345,7 +5013,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 3,
@@ -4358,7 +5028,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 2,
@@ -4371,7 +5043,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 2,
@@ -4384,7 +5058,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 4,
@@ -4397,7 +5073,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 5,
@@ -4410,7 +5088,9 @@
     {
       "event": 34,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-01T14:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 3,
@@ -4423,7 +5103,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -4436,7 +5118,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 3,
@@ -4449,7 +5133,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -4462,7 +5148,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -4475,7 +5163,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -4488,7 +5178,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -4501,7 +5193,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 5,
@@ -4514,7 +5208,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -4527,7 +5223,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -4540,7 +5238,9 @@
     {
       "event": 35,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-08T14:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -4553,7 +5253,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 5,
@@ -4566,7 +5268,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 4,
@@ -4579,7 +5283,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 4,
@@ -4592,7 +5298,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 2,
@@ -4605,7 +5313,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 3,
@@ -4618,7 +5328,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 2,
@@ -4631,7 +5343,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 2,
@@ -4644,7 +5358,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 4,
@@ -4657,7 +5373,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 4,
@@ -4670,7 +5388,9 @@
     {
       "event": 36,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-15T14:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 3,
@@ -4683,7 +5403,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "CHE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_a_difficulty": 3,
@@ -4696,7 +5418,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "HUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
       "team_a_difficulty": 3,
@@ -4709,7 +5433,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "LIV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_a_difficulty": 3,
@@ -4722,7 +5448,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "ARS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_a_difficulty": 3,
@@ -4735,7 +5463,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "COV",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_a_difficulty": 3,
@@ -4748,7 +5478,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "SUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_a_difficulty": 3,
@@ -4761,7 +5493,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "AVL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_a_difficulty": 5,
@@ -4774,7 +5508,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "CRY",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_a_difficulty": 3,
@@ -4787,7 +5523,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "IPS",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
       "team_a_difficulty": 3,
@@ -4800,7 +5538,9 @@
     {
       "event": 37,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-23T14:00:00Z",
+      "started": false,
       "team_a": "MUN",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_a_difficulty": 3,
@@ -4813,7 +5553,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "BHA",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_a_difficulty": 5,
@@ -4826,7 +5568,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "TOT",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_a_difficulty": 4,
@@ -4839,7 +5583,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "BRE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_a_difficulty": 4,
@@ -4852,7 +5598,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "NFO",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_a_difficulty": 2,
@@ -4865,7 +5613,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "LEE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_a_difficulty": 3,
@@ -4878,7 +5628,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "NEW",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_a_difficulty": 2,
@@ -4891,7 +5643,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "EVE",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_a_difficulty": 2,
@@ -4904,7 +5658,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "BOU",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_a_difficulty": 4,
@@ -4917,7 +5673,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "FUL",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_a_difficulty": 4,
@@ -4930,7 +5688,9 @@
     {
       "event": 38,
       "finished": false,
+      "finished_provisional": false,
       "kickoff_time": "2027-05-30T15:00:00Z",
+      "started": false,
       "team_a": "MCI",
       "team_a_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_a_difficulty": 3,

@@ -80,6 +80,23 @@ export type ChipResponseTable = {
   squad_total_score: number;
 };
 
+export type Faller = {
+  already_moved_today: boolean;
+  cost: number;
+  direction: string;
+  id: number;
+  momentum_pct: number;
+  net_transfers_event: number;
+  official_progress_percent: string;
+  selected_by_percent: number;
+  team_badge: string;
+  team_short: string;
+  transfer_rate_per_hour: null;
+  transfers_in_event: number;
+  transfers_out_event: number;
+  web_name: string;
+};
+
 export type FixtureChip = {
   difficulty: number;
   is_home: boolean;
@@ -523,7 +540,9 @@ export type PriceWatchResponse = {
 export type ScheduleFixture = {
   event: number;
   finished: boolean;
+  finished_provisional: boolean;
   kickoff_time: string | null;
+  started: boolean;
   team_a: string;
   team_a_badge: string;
   team_a_difficulty: number;

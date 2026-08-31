@@ -23,6 +23,16 @@ def fixtures_schedule(season="live"):
     The full season's fixture list (all events), with kickoff time and result
     if played. season="live" (default) uses the live 2026/27 calendar;
     season="archive" uses the archived 2025/26 files.
+
+    Three separate FPL flags decide whether a fixture has a result yet, and
+    only carrying ``finished`` is not enough: FPL leaves it False until the
+    whole gameweek is processed (bonus confirmed), which can be days after
+    the final whistle. Two gameweeks into 2026/27, all nine played GW2
+    matches were ``finished: false, finished_provisional: true`` with real
+    90-minute scores - a consumer keying off ``finished`` alone shows a
+    kickoff time for a match that ended two days ago. So pass ``started``
+    and ``finished_provisional`` through too, and let the caller distinguish
+    not-yet-kicked-off / in progress / result in.
     """
     if season == "archive":
         bootstrap_file, fixtures_file = ARCHIVED_BOOTSTRAP_FILE, ARCHIVED_FIXTURES_FILE
@@ -41,7 +51,9 @@ def fixtures_schedule(season="live"):
         rows.append({
             "event": fx["event"],
             "kickoff_time": fx["kickoff_time"],
+            "started": bool(fx.get("started")),
             "finished": fx["finished"],
+            "finished_provisional": bool(fx.get("finished_provisional")),
             "team_h": teams[fx["team_h"]],
             "team_a": teams[fx["team_a"]],
             "team_h_badge": team_badges[teams[fx["team_h"]]],
