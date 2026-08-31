@@ -12,7 +12,7 @@ FPL -> Postgres ingestion.
 from datetime import datetime, timezone
 
 import pandas as pd
-from sqlalchemy import distinct, select
+from sqlalchemy import distinct, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
@@ -111,6 +111,113 @@ def snapshot_fixtures(season: str | None = None) -> int:
         except Exception as exc:  # noqa: BLE001
             _finish_run(run, "error", error=str(exc))
             raise
+
+
+def prune_snapshots(season: str | None = None, fine_hours: int | None = None,
+                    daily_days: int | None = None) -> dict:
+    """
+    Enforce the raw_snapshots retention policy, so the table reaches a steady
+    state instead of growing without bound.
+
+    Every ingest appends a verbatim copy of bootstrap + fixtures. Nothing ever
+    removed them, and at ~280 kB per ingest an hourly cron adds ~200 MB a
+    month - enough to exhaust a small managed-Postgres tier within a season,
+    which is exactly how this deployment lost its database.
+
+    Three rules, applied per (season, kind):
+      * keep everything fetched within `fine_hours` - the resolution
+        price-watch's transfer-rate column needs (see fpl.domain.price),
+      * keep the newest snapshot of each older UTC day, back `daily_days`,
+      * keep the single newest snapshot unconditionally, however old it is,
+        because that is the row every request reads. A deployment whose cron
+        has been broken for a month must not have its last good snapshot
+        pruned out from under it - that would take the site down rather than
+        leave it stale.
+
+    Idempotent: re-running immediately deletes nothing. Returns per-kind
+    deleted counts.
+    """
+    settings = get_settings()
+    season = season or settings.current_season
+    fine_hours = settings.snapshot_fine_hours if fine_hours is None else fine_hours
+    daily_days = settings.snapshot_daily_days if daily_days is None else daily_days
+
+    # Ranks each row twice: newest-first within its (kind, UTC day) to find the
+    # daily keeper, and newest-first within its kind to find the one row that is
+    # never eligible. Doing it in one statement keeps this a single round trip.
+    stmt = text("""
+        WITH ranked AS (
+            SELECT id,
+                   kind,
+                   fetched_at,
+                   row_number() OVER (
+                       PARTITION BY kind, date_trunc('day', fetched_at AT TIME ZONE 'UTC')
+                       ORDER BY fetched_at DESC
+                   ) AS rank_in_day,
+                   row_number() OVER (
+                       PARTITION BY kind ORDER BY fetched_at DESC
+                   ) AS rank_overall
+            FROM raw_snapshots
+            WHERE season = :season
+        ),
+        doomed AS (
+            SELECT id, kind FROM ranked
+            WHERE rank_overall > 1
+              AND fetched_at < now() - make_interval(hours => :fine_hours)
+              AND (rank_in_day > 1
+                   OR fetched_at < now() - make_interval(days => :daily_days))
+        )
+        DELETE FROM raw_snapshots r
+        USING doomed d
+        WHERE r.id = d.id
+        RETURNING d.kind
+    """)
+
+    with session_scope() as session:
+        run = _start_run(session, "prune", season)
+        try:
+            deleted = session.execute(
+                stmt, {"season": season, "fine_hours": fine_hours, "daily_days": daily_days}
+            ).scalars().all()
+            by_kind: dict[str, int] = {}
+            for kind in deleted:
+                by_kind[kind] = by_kind.get(kind, 0) + 1
+            _finish_run(run, "ok", rows=len(deleted))
+            result = {"season": season, "deleted": len(deleted), "by_kind": by_kind}
+        except Exception as exc:  # noqa: BLE001 - recorded then re-raised
+            _finish_run(run, "error", error=str(exc))
+            raise
+
+    if result["deleted"]:
+        _vacuum_snapshots()
+    return result
+
+
+def _vacuum_snapshots() -> None:
+    """
+    VACUUM ANALYZE raw_snapshots after a prune actually removed rows.
+
+    A DELETE only marks tuples dead; without a vacuum the space is not even
+    reusable, so an hourly cron would keep extending the table on disk despite
+    the retention policy and the table would grow anyway. Plain VACUUM (not
+    FULL) is deliberate: it takes no exclusive lock and needs no scratch space,
+    which makes it safe to run from a cron against a live database. It lets new
+    snapshots reuse the freed pages rather than returning them to the OS, so
+    the table plateaus instead of shrinking - to actually hand space back after
+    the first large prune, run VACUUM FULL once by hand (see DEPLOYMENT.md).
+
+    Best-effort: a managed tier that withholds VACUUM must not fail the ingest
+    that just succeeded.
+    """
+    from sqlalchemy import text as _text
+
+    from fpl.data.db.session import engine
+
+    try:
+        with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+            conn.execute(_text("VACUUM ANALYZE raw_snapshots"))
+    except Exception as exc:  # noqa: BLE001 - advisory only
+        print(f"warning: VACUUM after prune failed ({exc}); autovacuum will catch up")
 
 
 # --- live gameweek stats ----------------------------------------------------
@@ -231,8 +338,13 @@ def ingest_new_finished_gws(season: str | None = None) -> dict:
 
 
 def run_ingest(season: str | None = None) -> dict:
-    """Full refresh: snapshot bootstrap + fixtures, then ingest new finished GWs."""
+    """Full refresh: snapshot bootstrap + fixtures, ingest new finished GWs, prune."""
     season = season or _settings.current_season
     snapshot_bootstrap(season)
     snapshot_fixtures(season)
-    return ingest_new_finished_gws(season)
+    summary = ingest_new_finished_gws(season)
+    # Pruning last, and in the same run, so retention is enforced by the same
+    # schedule that creates the rows - a cron that appends but never reclaims is
+    # what filled the previous database.
+    summary["pruned"] = prune_snapshots(season)["deleted"]
+    return summary
