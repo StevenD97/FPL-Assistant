@@ -1,0 +1,337 @@
+{
+  "entry_info": {
+    "id": null,
+    "player_first_name": "Demo",
+    "player_last_name": "Manager",
+    "name": "xFPL Demo XI",
+    "summary_overall_rank": 287431,
+    "summary_overall_points": 720,
+    "last_deadline_value": 1000,
+    "last_deadline_bank": 0,
+    "current_event": 14,
+    "leagues": {
+      "classic": [
+        {
+          "id": 999001,
+          "name": "xFPL Demo League",
+          "entry_rank": 2
+        }
+      ]
+    }
+  },
+  "entry_history": {
+    "event": 14,
+    "points": 71,
+    "value": 1000,
+    "bank": 0
+  },
+  "picks": [
+    {
+      "element": 82,
+      "position": 1,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 61,
+      "position": 2,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 229,
+      "position": 3,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 356,
+      "position": 4,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 498,
+      "position": 5,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 481,
+      "position": 6,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 426,
+      "position": 7,
+      "multiplier": 2,
+      "is_captain": true,
+      "is_vice_captain": false
+    },
+    {
+      "element": 542,
+      "position": 8,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 55,
+      "position": 9,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 346,
+      "position": 10,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 411,
+      "position": 11,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": true
+    },
+    {
+      "element": 111,
+      "position": 12,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 556,
+      "position": 13,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 132,
+      "position": 14,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    },
+    {
+      "element": 134,
+      "position": 15,
+      "multiplier": 1,
+      "is_captain": false,
+      "is_vice_captain": false
+    }
+  ],
+  "league_standings": {
+    "league_name": "xFPL Demo League",
+    "standings": [
+      {
+        "entry_id": 900001,
+        "player_name": "Alex Ferguson",
+        "entry_name": "Fergie's XI",
+        "rank": 1,
+        "last_rank": 1,
+        "total": 754,
+        "event_total": 77
+      },
+      {
+        "entry_id": 0,
+        "player_name": "Demo Manager",
+        "entry_name": "xFPL Demo XI",
+        "rank": 2,
+        "last_rank": 3,
+        "total": 720,
+        "event_total": 71
+      },
+      {
+        "entry_id": 900002,
+        "player_name": "Pep G",
+        "entry_name": "Tiki Taka FC",
+        "rank": 3,
+        "last_rank": 2,
+        "total": 709,
+        "event_total": 67
+      },
+      {
+        "entry_id": 900003,
+        "player_name": "Jurgen K",
+        "entry_name": "Heavy Metal FPL",
+        "rank": 4,
+        "last_rank": 4,
+        "total": 692,
+        "event_total": 62
+      },
+      {
+        "entry_id": 900004,
+        "player_name": "Mikel A",
+        "entry_name": "Highbury Heroes",
+        "rank": 5,
+        "last_rank": 5,
+        "total": 675,
+        "event_total": 58
+      }
+    ]
+  },
+  "squad_debug": [
+    {
+      "web_name": "Kelleher",
+      "team_short": "BRE",
+      "position": "GKP",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 5.0,
+      "live_id": 82,
+      "archived_id": 101
+    },
+    {
+      "web_name": "Truffert",
+      "team_short": "BOU",
+      "position": "DEF",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 5.5,
+      "live_id": 61,
+      "archived_id": 74
+    },
+    {
+      "web_name": "Tarkowski",
+      "team_short": "EVE",
+      "position": "DEF",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.0,
+      "live_id": 229,
+      "archived_id": 291
+    },
+    {
+      "web_name": "Virgil",
+      "team_short": "LIV",
+      "position": "DEF",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.5,
+      "live_id": 356,
+      "archived_id": 373
+    },
+    {
+      "web_name": "Senesi",
+      "team_short": "TOT",
+      "position": "DEF",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.0,
+      "live_id": 498,
+      "archived_id": 72
+    },
+    {
+      "web_name": "Anderson",
+      "team_short": "MCI",
+      "position": "MID",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.5,
+      "live_id": 481,
+      "archived_id": 517
+    },
+    {
+      "web_name": "B.Fernandes",
+      "team_short": "MUN",
+      "position": "MID",
+      "role": "Starting XI",
+      "captain": true,
+      "cost": 12.0,
+      "live_id": 426,
+      "archived_id": 449
+    },
+    {
+      "web_name": "E.Le F\u00e9e",
+      "team_short": "SUN",
+      "position": "MID",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.0,
+      "live_id": 542,
+      "archived_id": 547
+    },
+    {
+      "web_name": "Watkins",
+      "team_short": "AVL",
+      "position": "FWD",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 8.0,
+      "live_id": 55,
+      "archived_id": 64
+    },
+    {
+      "web_name": "Calvert-Lewin",
+      "team_short": "LEE",
+      "position": "FWD",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 6.0,
+      "live_id": 346,
+      "archived_id": 691
+    },
+    {
+      "web_name": "Haaland",
+      "team_short": "MCI",
+      "position": "FWD",
+      "role": "Starting XI",
+      "captain": false,
+      "cost": 15.5,
+      "live_id": 411,
+      "archived_id": 430
+    },
+    {
+      "web_name": "Steele",
+      "team_short": "BHA",
+      "position": "GKP",
+      "role": "Bench",
+      "captain": false,
+      "cost": 4.0,
+      "live_id": 111,
+      "archived_id": 138
+    },
+    {
+      "web_name": "Targett",
+      "team_short": "HUL",
+      "position": "DEF",
+      "role": "Bench",
+      "captain": false,
+      "cost": 4.0,
+      "live_id": 556,
+      "archived_id": 484
+    },
+    {
+      "web_name": "Howell",
+      "team_short": "BHA",
+      "position": "MID",
+      "role": "Bench",
+      "captain": false,
+      "cost": 4.5,
+      "live_id": 132,
+      "archived_id": 795
+    },
+    {
+      "web_name": "Oriola",
+      "team_short": "BHA",
+      "position": "MID",
+      "role": "Bench",
+      "captain": false,
+      "cost": 4.5,
+      "live_id": 134,
+      "archived_id": 744
+    }
+  ]
+}

@@ -16,10 +16,19 @@ from fastapi import APIRouter, HTTPException
 
 from fpl.api.errors import not_found_detail
 from fpl.data.entry import fetch_entry_info, fetch_entry_picks
+from fpl.domain.gameweek import get_gw_context
 from fpl.services import squad as service
 from fpl.services.common import resolve_gw_params
 
 router = APIRouter()
+
+# How many gameweeks ahead of "now" the chip scan defaults to when the caller
+# doesn't specify a window - wide enough to comfortably cross the mid-season
+# chip reset (see fpl.model.rules.CHIP_RESET_EVENT) regardless of where in the
+# season "now" falls, so a manager always sees both an in-progress-half and a
+# next-half recommendation rather than just whichever half "now" happens to be in.
+CHIP_SCAN_SPAN = 15
+LAST_EVENT = 38
 
 
 @router.get("/api/squad-builder/players")
@@ -55,7 +64,11 @@ def entry_summary(team_id: int):
 
 
 @router.get("/api/squad/{team_id}/chips")
-def chip_strategy(team_id: int, scan_start_event: int = 24, scan_end_event: int = 37):
+def chip_strategy(team_id: int, scan_start_event: Optional[int] = None, scan_end_event: Optional[int] = None):
+    if scan_start_event is None:
+        scan_start_event = get_gw_context()["next_event"]
+    if scan_end_event is None:
+        scan_end_event = min(scan_start_event + CHIP_SCAN_SPAN, LAST_EVENT + 1)
     try:
         return service.chip_strategy(team_id, scan_start_event, scan_end_event)
     except requests.exceptions.HTTPError as e:
@@ -74,6 +87,7 @@ def squad_optimize_transfers(
     gw_count: int = 5,
     free_transfers: int = 1,
     max_transfers: Optional[int] = None,
+    transfers: Optional[int] = None,
 ):
     ref_date, next_event = resolve_gw_params(reference_date, next_event)
     if event is None:
@@ -96,10 +110,20 @@ def squad_optimize_transfers(
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
     current_squad_ids = [pick["element"] for pick in picks_data["picks"]]
     bank = picks_data["entry_history"]["bank"]
-    return service.optimize_transfers_compute(
-        current_squad_ids, bank, ref_date, next_event,
-        gw_count=gw_count, free_transfers=free_transfers, max_transfers=max_transfers,
-    )
+    try:
+        return service.optimize_transfers_compute(
+            current_squad_ids, bank, ref_date, next_event,
+            gw_count=gw_count, free_transfers=free_transfers, max_transfers=max_transfers,
+            exact_transfers=transfers,
+        )
+    except ValueError as e:
+        if transfers is not None:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Couldn't find a legal squad using exactly {transfers} transfer"
+                       f"{'s' if transfers != 1 else ''} under your budget - try a different number.",
+            )
+        raise HTTPException(status_code=502, detail=str(e))
 
 
 @router.get("/api/squad/{team_id}/planner")

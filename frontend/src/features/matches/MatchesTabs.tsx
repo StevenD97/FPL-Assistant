@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Pill } from "@/shared/ui/Pill";
+import { Tabs, TabPanel, type TabItem } from "@/shared/ui/Tabs";
+import { FixtureDifficultyTable } from "@/shared/ui/FixtureDifficultyTable";
 import type { FixtureDifficultyRow, ScheduleFixture } from "@/shared/types/api";
 import { ScheduleView } from "./ScheduleView";
-import { DifficultyView } from "./DifficultyView";
 
 type View = "schedule" | "difficulty";
+
+const VIEWS: readonly TabItem<View>[] = [
+  { id: "schedule", label: "Schedule" },
+  { id: "difficulty", label: "Difficulty" },
+];
 
 /**
  * Owns only which tab is showing. Both datasets are fetched on the server and
@@ -22,19 +27,13 @@ export function MatchesTabs({
   const [view, setView] = useState<View>("schedule");
   return (
     <>
-      <div className="flex gap-1.5">
-        <Pill active={view === "schedule"} onClick={() => setView("schedule")}>
-          Schedule
-        </Pill>
-        <Pill active={view === "difficulty"} onClick={() => setView("difficulty")}>
-          Difficulty
-        </Pill>
-      </div>
-      {view === "schedule" ? (
+      <Tabs tabs={VIEWS} value={view} onChange={setView} label="Matches views" />
+      <TabPanel id="schedule" active={view === "schedule"}>
         <ScheduleView fixtures={fixtures} />
-      ) : (
-        <DifficultyView rows={difficulty} />
-      )}
+      </TabPanel>
+      <TabPanel id="difficulty" active={view === "difficulty"}>
+        <FixtureDifficultyTable rows={difficulty} />
+      </TabPanel>
     </>
   );
 }

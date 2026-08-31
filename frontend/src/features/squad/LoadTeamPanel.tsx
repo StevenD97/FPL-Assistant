@@ -1,26 +1,46 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { Alert } from "@/shared/ui/Alert";
 import { Button } from "@/shared/ui/Button";
-import { Card, StatTile } from "@/shared/ui/Card";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
+import { StatTile } from "@/shared/ui/Card";
 import { Skeleton } from "@/shared/ui/Skeleton";
-import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
-import { FdrChip } from "@/shared/ui/FdrChip";
-import { InfoTooltip } from "@/shared/ui/InfoTooltip";
-import { TeamBadge } from "@/shared/pitch/TeamBadge";
-import { PlannerTable } from "./components/PlannerTable";
+import { StatBar } from "@/shared/ui/StatBar";
+import { Inspector } from "@/shared/ui/Inspector";
+import { nextChip } from "@/shared/lib/chips";
+import { DEFAULT_RISK_KEY, riskCeilingFor, type OwnershipKey } from "@/shared/lib/ownership";
+import { CaptaincyOptions } from "./components/CaptaincyOptions";
+import { ChipPeriodCards } from "./components/ChipPeriodCards";
+import { FixtureOutlook, fixtureOutlookSummary } from "./components/FixtureOutlook";
+import { SquadDifferentials, differentialsSummary } from "./components/SquadDifferentials";
+import { SquadDetailTable } from "./components/SquadDetailTable";
 import { SquadPitch } from "./components/SquadPitch";
+import { SquadReadRail, type ReadRow, type SquadRead } from "./components/SquadReadRail";
 import { SuggestedTransfers } from "./components/SuggestedTransfers";
-import { useAlternatives } from "./hooks/useAlternatives";
 import { useLoadedSquad } from "./hooks/useLoadedSquad";
 import { useSwapPreview } from "./hooks/useSwapPreview";
 
-
+// The team sheet is the one thing always on screen here; everything else is a
+// "read" you summon beside it and dismiss.
+//
+// This replaced a tab bar plus a rail of four summary cards, which was two
+// navigations to the same content (and two cards that opened the same tab), and
+// which threw the pitch away whenever you looked at anything. Now the pitch
+// never unmounts - so a formation edit or a swap preview survives opening a
+// read - and only one deep thing is on screen at a time.
+const READ_TITLES: Record<SquadRead, string> = {
+  transfers: "Suggested transfers",
+  captaincy: "Captaincy options",
+  chips: "Chip strategy",
+  fixtures: "Fixture outlook",
+  differentials: "Differentials",
+  strength: "Squad strength",
+  detail: "Squad detail",
+  setup: "Team setup",
+};
 
 // Stand-in for the loaded squad view: summary lines, the pitch, a bench
 // strip, and the two panels (suggested transfers + planner table) below it.
@@ -49,11 +69,9 @@ function SquadViewSkeleton() {
 }
 
 export function LoadTeamPanel({
-  onSwitchToOptimize,
   initialTeamId,
   embedded = false,
 }: {
-  onSwitchToOptimize?: () => void;
   /** When set (workspace mode), load this exact team instead of the connected one. */
   initialTeamId?: number;
   /** Workspace mode: the switcher labels the team, so hide the intro + team-ID input. */
@@ -61,6 +79,20 @@ export function LoadTeamPanel({
 }) {
   const [teamId, setTeamId] = useState("");
   const [freeTransfers, setFreeTransfers] = useState(1);
+  const [read, setRead] = useState<SquadRead | null>(null);
+  // Formation edits are local state inside SquadPitch (it's the only place
+  // that needs them), so its net effect on the predicted score - and whether
+  // the preview leaves the real captain out of the XI - comes back up through
+  // this rather than being recomputed here from state this panel doesn't have.
+  const [previewEffect, setPreviewEffect] = useState<{
+    pointsDelta: number;
+    captainAffected: boolean;
+    previewCaptainName: string | null;
+  }>({ pointsDelta: 0, captainAffected: false, previewCaptainName: null });
+  // Lives here rather than inside the Differentials read so the rail's summary
+  // counts against the same ceiling the read is showing, and so the setting
+  // survives closing and reopening the panel.
+  const [riskKey, setRiskKey] = useState<OwnershipKey>(DEFAULT_RISK_KEY);
   const { teamId: connectedId } = useTeam();
 
   const {
@@ -71,27 +103,207 @@ export function LoadTeamPanel({
     load,
   } = useLoadedSquad();
   const {
-    suggestFor,
-    alternatives,
-    loading: alternativesLoading,
-    toggle: loadAlternatives,
-  } = useAlternatives();
-  const {
     previews: swapPreviews,
+    costs: swapCosts,
     loading: swapLoading,
-    dragOverRow,
-    setDragOverRow,
-    drop: handleSwapDrop,
+    selectCandidate,
     undo: undoSwap,
+    resetAll: resetSwaps,
   } = useSwapPreview(plannerRes.data);
+  // Picking a replacement (pitch icon, detail table, peek, or a planner-row
+  // drop) applies straight to that slot everywhere it's shown - pitch, bench,
+  // detail table, planner row - rather than sending the reader off to a read
+  // they didn't ask to open. It used to switch the Inspector to "planner" to
+  // make the effect visible; the pitch showing it directly replaced that.
+  const handleReplace = selectCandidate;
 
   // Flattened so the markup below reads the same as it did when all of this was
   // local state - the render output is unchanged, only where the values come
   // from has moved.
   const { data, loading, error } = squadRes;
   const { data: optimizer, loading: optimizerLoading, error: optimizerError } = optimizerRes;
-  const { data: planner, loading: plannerLoading, error: plannerError } = plannerRes;
+  const { data: planner } = plannerRes;
   const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
+
+  // Dashboard summaries: one captaincy call and one chip, rather than the full
+  // lists behind their reads.
+  const topCaptain = data?.captaincy_options?.[0] ?? null;
+  const currentCaptain = data?.squad.find((p) => p.captain_flag === "(C)") ?? null;
+  const chip = nextChip(chips);
+  const startingCount = data?.squad.filter((p) => p.role === "Starting XI").length ?? 0;
+  const benchCount = (data?.squad.length ?? 0) - startingCount;
+  // Strongest line, so the rail's strength row says something specific rather
+  // than repeating four numbers the Inspector already lists.
+  const bestLine = data
+    ? Object.entries(data.category_scores).sort(([, a], [, b]) => b - a)[0]
+    : null;
+  // What a preview actually costs: each swap's candidate price less the
+  // player it replaces, summed. Passed to the pitch/detail table as the
+  // *effective* bank so a second swap's affordability reflects money the
+  // first one freed up, not just the real, un-previewed balance.
+  const swapCostDelta = data
+    ? Object.entries(swapCosts).reduce((sum, [liveIdStr, candidateCost]) => {
+        const original = data.squad.find((p) => p.live_id === Number(liveIdStr));
+        return original ? sum + (candidateCost - original.cost) : sum;
+      }, 0)
+    : 0;
+  const effectiveBank = data ? Math.round((data.bank - swapCostDelta) * 10) / 10 : 0;
+  // Both new reads summarise from data already loaded: fixture_outlook ships with
+  // the squad response, ownership now ships on each squad player.
+  const riskMax = riskCeilingFor(riskKey);
+  const outlookSummary = data ? fixtureOutlookSummary(data.fixture_outlook) : null;
+  const diffSummary = data ? differentialsSummary(data.squad, riskMax) : null;
+
+  // The peek's Next section shows difficulty, and SquadPlayer.next_opponent is
+  // only a string - so take the structured opponents from the planner, which is
+  // already loaded for its own read. Keyed by squad id, first gameweek onward.
+  const nextFixtures = useMemo(() => {
+    const map = new Map<number, { opponent: string; isHome: boolean; difficulty: number }[]>();
+    for (const p of planner?.players ?? []) {
+      const upcoming = p.trajectory
+        .flatMap((row) => row.opponents)
+        .map((o) => ({ opponent: o.team, isHome: o.is_home, difficulty: o.difficulty }));
+      if (upcoming.length > 0) map.set(p.id, upcoming.slice(0, 5));
+    }
+    return map;
+  }, [planner]);
+
+  // The rail is the menu and the overview at once, so each row carries the
+  // readout its summary card used to.
+  const readRows: ReadRow[] = [
+    {
+      id: "transfers",
+      label: "Suggested transfers",
+      summary: optimizerLoading ? (
+        "Solving…"
+      ) : optimizer && optimizer.transferred_out.length > 0 ? (
+        <>
+          <span className="font-medium text-danger">↓ {optimizer.transferred_out[0]?.web_name}</span>
+          <span className="mx-1 text-text-muted">→</span>
+          <span className="font-medium text-success">↑ {optimizer.transferred_in[0]?.web_name}</span>
+          {optimizer.transfers_made > 1 && (
+            <span className="text-text-muted"> +{optimizer.transfers_made - 1} more</span>
+          )}
+        </>
+      ) : optimizer ? (
+        "Already optimal - no changes"
+      ) : (
+        "Not available"
+      ),
+    },
+    {
+      id: "captaincy",
+      label: "Captaincy",
+      summary: previewEffect.captainAffected ? (
+        <span className="font-medium text-warning">
+          Your captain isn&apos;t in the previewed XI - reassign the armband
+        </span>
+      ) : previewEffect.previewCaptainName ? (
+        // A reassignment on the pitch overrides the real armband this read
+        // would otherwise describe - say whose it is now, not compare a
+        // pick that's no longer current against the model's own favourite.
+        <>
+          <span className="font-medium text-text-primary">{previewEffect.previewCaptainName}</span>{" "}
+          <span className="text-pl-purple">· your pick, previewed</span>
+        </>
+      ) : topCaptain ? (
+        <>
+          <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
+          <span className="font-mono font-medium text-text-primary">{topCaptain.ep_next.toFixed(1)}</span>{" "}
+          xP ·{" "}
+          {currentCaptain && currentCaptain.web_name !== topCaptain.web_name ? (
+            <span className="text-warning">you have {currentCaptain.web_name}</span>
+          ) : (
+            <span className="text-success">matches your armband</span>
+          )}
+        </>
+      ) : (
+        "No read yet"
+      ),
+    },
+    {
+      id: "chips",
+      label: "Chip timing",
+      summary: chipsLoading ? (
+        "Scanning…"
+      ) : chip ? (
+        <>
+          <span className="font-medium text-text-primary">{chip.name}</span> ·{" "}
+          <span className="font-mono font-medium text-text-primary">GW{chip.event}</span>
+        </>
+      ) : (
+        "Nothing worth playing yet"
+      ),
+    },
+    {
+      // The 5-gameweek average FDR, on the dashboard rather than three clicks
+      // into the Matches page - the reason the payload was being fetched all
+      // along.
+      id: "fixtures",
+      label: "Fixture outlook",
+      summary: outlookSummary ? (
+        <>
+          <span className="font-medium text-success">{outlookSummary.kindest.team_short}</span> easiest (
+          <span className="font-mono">{outlookSummary.kindest.avg_difficulty?.toFixed(1)}</span>) ·{" "}
+          <span className="font-medium text-danger">{outlookSummary.toughest.team_short}</span> toughest (
+          <span className="font-mono">{outlookSummary.toughest.avg_difficulty?.toFixed(1)}</span>)
+        </>
+      ) : (
+        "No fixture read yet"
+      ),
+    },
+    {
+      id: "differentials",
+      label: "Differentials",
+      summary: diffSummary ? (
+        <>
+          <span className="font-mono font-medium text-pl-pink">{diffSummary.edgeCount}</span> under{" "}
+          {riskMax}% ·{" "}
+          <span className="font-mono font-medium text-text-primary">{diffSummary.crowdCount}</span> owned by
+          the crowd
+        </>
+      ) : (
+        "—"
+      ),
+    },
+    {
+      id: "strength",
+      label: "Squad strength",
+      summary: bestLine ? (
+        <>
+          <span className="font-medium text-text-primary">{bestLine[0]}</span> strongest at{" "}
+          <span className="font-mono font-medium text-text-primary">{bestLine[1].toFixed(3)}</span>
+        </>
+      ) : (
+        "—"
+      ),
+    },
+    {
+      id: "detail",
+      label: "Squad detail",
+      summary: (
+        <>
+          <span className="font-mono font-medium text-text-primary">{data?.squad.length ?? 0}</span>{" "}
+          players · xGI, ICT, Def/90, set pieces
+        </>
+      ),
+    },
+    {
+      // Config as a row rather than a control bolted above the dashboard. It's the
+      // same interaction as everything else here - pick it, it opens beside the
+      // team sheet - and its summary doubles as the stated assumption, so the
+      // value stays visible without a field competing for space.
+      id: "setup",
+      label: "Team setup",
+      aside: true,
+      summary: (
+        <>
+          <span className="font-mono font-medium text-text-primary">{freeTransfers}</span> free
+          transfer{freeTransfers === 1 ? "" : "s"} assumed
+        </>
+      ),
+    },
+  ];
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -112,36 +324,40 @@ export function LoadTeamPanel({
 
   return (
     <div>
+      {/* Embedded, config lives in the rail as the "Team setup" row and opens in
+          the Inspector like every other read - so the whole section is one
+          interaction instead of a control bar plus a menu. Standalone, there's no
+          rail to put it in, so the form stays here. */}
       {!embedded && (
-        <p className="mb-6 text-sm text-text-secondary">
-          Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
-          <SeasonDataNote mode="archived" />
-        </p>
+        <>
+          <p className="mb-6 text-sm text-text-secondary">
+            Enter your team ID, or connect your team in the sidebar to load it automatically.{" "}
+            <SeasonDataNote mode="archived" />
+          </p>
+          <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
+            <TextField
+              label="Team ID"
+              hint="teamId"
+              value={teamId}
+              onChange={(e) => setTeamId(e.target.value)}
+              placeholder="e.g. 1178869"
+            />
+            <TextField
+              label="Free transfers"
+              hint="freeTransfers"
+              type="number"
+              min={0}
+              max={5}
+              value={freeTransfers}
+              onChange={(e) => setFreeTransfers(Number(e.target.value))}
+              wrapperClassName="w-28"
+            />
+            <Button type="submit" disabled={loading || !teamId}>
+              {loading ? "Loading..." : "Load squad"}
+            </Button>
+          </form>
+        </>
       )}
-      <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap items-end gap-3">
-        {!embedded && (
-          <TextField
-            label="Team ID"
-            hint="teamId"
-            value={teamId}
-            onChange={(e) => setTeamId(e.target.value)}
-            placeholder="e.g. 1178869"
-          />
-        )}
-        <TextField
-          label="Free transfers"
-          hint="freeTransfers"
-          type="number"
-          min={0}
-          max={5}
-          value={freeTransfers}
-          onChange={(e) => setFreeTransfers(Number(e.target.value))}
-          wrapperClassName="w-28"
-        />
-        <Button type="submit" disabled={loading || !teamId}>
-          {loading ? "Loading..." : embedded ? "Reload" : "Load squad"}
-        </Button>
-      </form>
 
       {error && (
         <p className="mb-4 text-sm font-medium text-danger">
@@ -153,289 +369,245 @@ export function LoadTeamPanel({
       {loading && !data && <SquadViewSkeleton />}
 
       {data && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div>
             <h2 className="text-lg font-semibold text-text-primary">
               {data.entry_name} - GW{data.event}
             </h2>
-            <p className="flex flex-wrap items-center gap-x-1 text-text-secondary">
-              <span>
-                <span className="font-mono">{data.points}</span> points that GW <InfoTooltip term="gwPts" />
-              </span>
-              <span>
-                {" - £"}
-                <span className="font-mono">{data.squad_value}</span>m squad value <InfoTooltip term="squadValue" />
-              </span>
-              <span>
-                {" - £"}
-                <span className="font-mono">{data.bank}</span>m in bank <InfoTooltip term="bankLeft" />
-              </span>
+            <p className="mt-0.5 text-xs text-text-muted">
+              Your dashboard for this team - the numbers that matter around the team sheet.
             </p>
           </div>
 
-          <SquadPitch squad={data.squad} bank={data.bank} />
-
-          <SuggestedTransfers
-            optimizer={optimizer}
-            loading={optimizerLoading}
-            error={optimizerError}
-            onSwitchToOptimize={onSwitchToOptimize}
-          />
-
-          <PlannerTable
-            planner={planner}
-            loading={plannerLoading}
-            error={plannerError}
-            swapPreviews={swapPreviews}
-            swapLoading={swapLoading}
-            dragOverRow={dragOverRow}
-            setDragOverRow={setDragOverRow}
-            onSwapDrop={handleSwapDrop}
-            onUndoSwap={undoSwap}
-          />
-
-          <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-surface-sunken">
-                <tr>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Role <InfoTooltip term="role" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Score <InfoTooltip term="score" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Next opp <InfoTooltip term="nextOpponent" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      EP next <InfoTooltip term="epNext" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      xGI <InfoTooltip term="xgi" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      ICT <InfoTooltip term="ictIndex" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Def/90 <InfoTooltip term="def90" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      Set-piece duty <InfoTooltip term="setPieceDuty" />
-                    </span>
-                  </th>
-                  <th className="px-3 py-2.5"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.squad.map((p) => (
-                  <tr key={p.position} className="border-t border-border">
-                    <td className="px-3 py-2.5 font-medium">
-                      <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <PositionBadge position={p.pos} />
-                    </td>
-                    <td className="px-3 py-2.5">{p.role}</td>
-                    <td className="px-3 py-2.5 font-mono">
-                      {p.recommendation_score.toFixed(3)}
-                    </td>
-                    <td className="px-3 py-2.5">{p.next_opponent}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ep_next}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.expected_goal_involvements}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.ict_index}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.defensive_contribution_per_90}</td>
-                    <td className="px-3 py-2.5 font-mono">{p.set_piece_duty_score.toFixed(2)}</td>
-                    <td className="px-3 py-2.5">
-                      {p.live_id != null && (
-                        <button
-                          onClick={() => loadAlternatives(p.live_id!, p.web_name)}
-                          className="text-xs text-pl-purple hover:underline"
-                        >
-                          {suggestFor?.liveId === p.live_id ? "Hide" : "Suggest"}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {suggestFor && (
-            <Card>
-              <h3 className="mb-3 font-semibold text-text-primary">
-                Replacements for {suggestFor.name}
-              </h3>
-              {alternativesLoading ? (
-                <p className="text-sm text-text-muted">Loading...</p>
-              ) : alternatives && alternatives.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {alternatives.map((a) => (
-                    <PlayerLink key={a.id} id={a.id}>
-                      <span
-                        draggable
-                        onDragStart={(e) => e.dataTransfer.setData("text/plain", String(a.id))}
-                        className="inline-block cursor-grab rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50 active:cursor-grabbing"
-                        title="Drag onto a Transfer planner row to preview swapping them in"
-                      >
-                        {a.web_name} ({a.team_short}, £{a.cost.toFixed(1)}m, {a.predicted_points.toFixed(1)} pts)
-                      </span>
-                    </PlayerLink>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-text-muted">No alternatives found.</p>
-              )}
-            </Card>
-          )}
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-            {Object.entries(data.category_scores).map(([pos, score]) => (
-              <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
-            ))}
-            <StatTile label="Bench depth" value={data.bench_depth_score?.toFixed(3) ?? "-"} tooltip="benchStrength" />
-          </div>
-
-          <div>
-            <h3 className="mb-1 font-semibold text-text-primary">
-              Captaincy options
-            </h3>
-            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
-              <span className="flex items-center gap-1">
-                Score <InfoTooltip term="score" />
-              </span>
-              <span className="flex items-center gap-1">
-                EP next <InfoTooltip term="epNext" />
-              </span>
-            </p>
-            <ul className="space-y-1 text-sm text-text-secondary">
-              {data.captaincy_options.map((c, i) => (
-                <li key={i}>
-                  {c.web_name} ({c.team_short}, {c.pos}) - score{" "}
-                  <span className="font-mono">{c.recommendation_score.toFixed(3)}</span>, EP next{" "}
-                  <span className="font-mono">{c.ep_next}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-1 font-semibold text-text-primary">
-              Fixture outlook
-            </h3>
-            <p className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
-              <span className="flex items-center gap-1">
-                Score <InfoTooltip term="score" />
-              </span>
-              <span className="flex items-center gap-1">
-                Avg FDR <InfoTooltip term="avgFdr" />
-              </span>
-            </p>
-            <ul className="space-y-1.5 text-sm text-text-secondary">
-              {data.fixture_outlook.map((f, i) => (
-                <li key={i} className="flex flex-wrap items-center gap-1.5">
-                  <TeamBadge teamShort={f.team_short} name={f.team_short} badgeUrl={f.team_badge} />
-                  <span>
-                    score <span className="font-mono">{f.fixture_score}</span> (avg FDR{" "}
-                    <span className="font-mono">{f.avg_difficulty}</span>)
+          {/* One banded bar, headline first, with a context line under each
+              number - four equal tiles gave four equal-weight numbers and no
+              reading order. */}
+          <StatBar
+            items={[
+              {
+                label: `GW${data.event} points`,
+                value: data.points,
+                hint: `${startingCount} in the XI`,
+                tooltip: "gwPts",
+              },
+              {
+                label: "Squad value",
+                value: `£${data.squad_value}m`,
+                hint: `${data.squad.length} players`,
+                tooltip: "squadValue",
+              },
+              {
+                label: "In the bank",
+                value: (
+                  <span className={swapCostDelta !== 0 ? (effectiveBank < 0 ? "text-danger" : "text-pl-purple") : ""}>
+                    £{effectiveBank}m
                   </span>
-                  {f.fixtures.map((fx, fi) => (
-                    <FdrChip
-                      key={fi}
-                      opponent={fx.opponent}
-                      isHome={fx.is_home}
-                      difficulty={fx.difficulty}
-                      badgeUrl={fx.opponent_badge}
-                    />
-                  ))}
-                </li>
-              ))}
-            </ul>
+                ),
+                hint:
+                  swapCostDelta !== 0 ? (
+                    effectiveBank < 0 ? (
+                      <span className="text-danger">
+                        £{Math.abs(swapCostDelta).toFixed(1)}m over budget with this preview
+                      </span>
+                    ) : (
+                      `was £${data.bank}m, before this preview`
+                    )
+                  ) : effectiveBank > 0 ? (
+                    "free to spend"
+                  ) : (
+                    "nothing spare"
+                  ),
+                tooltip: "bankLeft",
+              },
+              {
+                // 3dp, not 1: these scores live in a 0-1 band (0.034 here), so
+                // one decimal rounds every realistic value to "0.0".
+                label: "Bench strength",
+                value: data.bench_depth_score?.toFixed(3) ?? "-",
+                hint: `${benchCount} on the bench`,
+                tooltip: "benchStrength",
+              },
+            ]}
+          />
+
+          {/* The team sheet and the rail share the top row; the read itself opens
+              full width underneath.
+              It used to open *in* the rail's column, which kept everything on one
+              screen but left a read 431px wide on a 1440px display - a quarter of
+              the page for the content the reader actually asked for, and prose
+              cards wrapping to a few words a line. Beneath the pitch it gets the
+              full 1088px while the team sheet stays visible, which was the point
+              of moving reads out of tabs in the first place.
+              Separating them also retires three workarounds the shared cell
+              needed: the rail no longer has to stay mounted-but-hidden to stop the
+              column collapsing mid-exit, and the panel no longer needs
+              `pointer-events-none` to avoid swallowing clicks on the rail it was
+              invisibly covering. */}
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
+            <SquadPitch
+              squad={data.squad}
+              bank={effectiveBank}
+              swapPreviews={swapPreviews}
+              swapCosts={swapCosts}
+              swapLoading={swapLoading}
+              onReplace={handleReplace}
+              onUndoSwap={undoSwap}
+              onResetSwaps={resetSwaps}
+              onPreviewEffect={setPreviewEffect}
+              nextFixtures={nextFixtures}
+            />
+            <SquadReadRail rows={readRows} active={read} onSelect={setRead} />
           </div>
 
-          {/* Chip strategy - folded in from the old standalone /chips page so
-              it lives with the team it's about. */}
-          <div>
-            <h3 className="mb-1 font-semibold text-text-primary">Chip strategy</h3>
-            <p className="mb-3 text-xs text-text-muted">
-              Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard across the next run.
-            </p>
-            {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
-            {chipsError && (
-              <Alert kind="warning">Couldn&apos;t scan chip timing ({chipsError}) - the squad above is unaffected.</Alert>
+          <Inspector
+            open={read != null}
+            title={read ? READ_TITLES[read] : ""}
+            eyebrow={data.entry_name}
+            onClose={() => setRead(null)}
+          >
+            {read === "transfers" && (
+              <SuggestedTransfers
+                optimizer={optimizer}
+                loading={optimizerLoading}
+                error={optimizerError}
+                teamId={teamId}
+                freeTransfers={freeTransfers}
+              />
             )}
-            {chips && (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Bench Boost <InfoTooltip term="benchBoost" />
-                  </p>
-                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.bench_boost.event}</p>
-                  <p className="mt-0.5 text-xs text-text-secondary">
-                    bench <span className="font-mono">{chips.bench_boost.bench_score.toFixed(2)}</span> ·{" "}
-                    {chips.bench_boost.double_count} DGW
-                  </p>
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Triple Captain <InfoTooltip term="tripleCaptain" />
-                  </p>
-                  <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.triple_captain.event}</p>
-                  <p className="mt-0.5 text-xs text-text-secondary">
-                    {chips.triple_captain.player} ·{" "}
-                    <span className="font-mono">{chips.triple_captain.score.toFixed(2)}</span>
-                  </p>
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Free Hit <InfoTooltip term="freeHit" />
-                  </p>
-                  {chips.free_hit.recommended ? (
+
+            {read === "captaincy" && (
+              <CaptaincyOptions options={data.captaincy_options} squad={data.squad} />
+            )}
+
+            {read === "chips" && (
+              <div>
+                <p className="mb-3 text-xs text-text-muted">
+                  Suggested timing for Bench Boost, Triple Captain, Free Hit, and Wildcard.{" "}
+                  {chips && (
                     <>
-                      <p className="mt-1 text-md font-bold text-pl-purple">GW{chips.free_hit.event}</p>
-                      <p className="mt-0.5 text-xs text-text-secondary">{chips.free_hit.blank_count} of 15 blank</p>
+                      Every manager gets a completely fresh set of all four chips at the GW
+                      {chips.reset_event} deadline - anything unused before it is lost, not carried over - so
+                      the two halves below are scored independently.
                     </>
-                  ) : (
-                    <p className="mt-1 text-xs text-text-secondary">No strong case - hold it</p>
                   )}
-                </Card>
-                <Card>
-                  <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                    Wildcard <InfoTooltip term="wildcard" />
-                  </p>
-                  {chips.wildcard ? (
-                    <>
-                      <p className="mt-1 text-md font-bold text-pl-purple">~GW{chips.wildcard.suggested_event}</p>
-                      <p className="mt-0.5 text-xs text-text-secondary">{chips.wildcard.reason}</p>
-                    </>
-                  ) : (
-                    <p className="mt-1 text-xs text-text-secondary">No major cluster found</p>
-                  )}
-                </Card>
+                </p>
+                {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
+                {chipsError && (
+                  <Alert kind="warning">
+                    Couldn&apos;t scan chip timing ({chipsError}) - the squad is unaffected.
+                  </Alert>
+                )}
+                {chips && (
+                  <div className="space-y-5">
+                    {chips.periods.map((period) => (
+                      <ChipPeriodCards key={period.label} period={period} squad={data.squad} />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
-          </div>
+
+            {read === "fixtures" && (
+              <FixtureOutlook
+                outlook={data.fixture_outlook}
+                squad={data.squad}
+                planner={planner}
+                // The squad response's own window, not the planner's - the two
+                // differ (5 vs 6), and this label describes avg_difficulty.
+                windowLabel={`next ${data.fixture_window} gameweeks`}
+              />
+            )}
+
+            {read === "differentials" && (
+              <SquadDifferentials
+                squad={data.squad}
+                planner={planner}
+                riskKey={riskKey}
+                onRiskChange={setRiskKey}
+              />
+            )}
+
+            {read === "strength" && (
+              <div>
+                <p className="mb-3 text-xs text-text-muted">
+                  How each position scores for this squad, and how much is sitting on the bench.
+                </p>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  {Object.entries(data.category_scores).map(([pos, score]) => (
+                    <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
+                  ))}
+                  <StatTile
+                    label="Bench depth"
+                    value={data.bench_depth_score?.toFixed(3) ?? "-"}
+                    tooltip="benchStrength"
+                  />
+                </div>
+              </div>
+            )}
+
+            {read === "detail" && (
+              <SquadDetailTable
+                squad={data.squad}
+                bank={effectiveBank}
+                swapPreviews={swapPreviews}
+                swapCosts={swapCosts}
+                swapLoading={swapLoading}
+                onReplace={handleReplace}
+                onUndoSwap={undoSwap}
+              />
+            )}
+
+            {read === "setup" && (
+              <div>
+                <p className="mb-3 text-xs text-text-muted">
+                  What the model assumes about your team. These change what the reads above
+                  recommend, so they&apos;re stated rather than hidden.
+                </p>
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-wrap items-end gap-3 rounded-lg border border-border bg-surface-sunken p-3"
+                >
+                  <TextField
+                    label="Free transfers"
+                    hint="freeTransfers"
+                    type="number"
+                    min={0}
+                    max={5}
+                    value={freeTransfers}
+                    onChange={(e) => setFreeTransfers(Number(e.target.value))}
+                    wrapperClassName="w-28"
+                  />
+                  <Button type="submit" disabled={loading || !teamId}>
+                    {loading ? "Reloading…" : "Apply"}
+                  </Button>
+                  <p className="max-w-sm text-xs text-text-muted">
+                    FPL gives you one a week, up to five banked. Match your real bank so the
+                    suggested transfers weigh the -4 hit correctly.
+                  </p>
+                </form>
+
+                {/* The one genuinely destructive control on this page, kept at the
+                    bottom of setup rather than beside the squad it would replace. */}
+                <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-text-primary">Refresh from FPL</p>
+                    <p className="text-xs text-text-muted">
+                      Pull this team&apos;s picks again - use it after you&apos;ve made transfers on
+                      the official site.
+                    </p>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => load(teamId, freeTransfers)}
+                    disabled={loading || !teamId}
+                  >
+                    {loading ? "Reloading…" : "Reload"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Inspector>
         </div>
       )}
     </div>

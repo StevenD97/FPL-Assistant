@@ -2,6 +2,8 @@
   "body": {
     "bank": 0.6,
     "free_transfers": 1,
+    "gw_count": 5,
+    "next_event": 10,
     "points_hit": 28,
     "predicted_points": 281.69,
     "squad": [

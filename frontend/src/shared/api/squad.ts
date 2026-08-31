@@ -12,6 +12,7 @@ import type {
   ChipResponse,
   PlannerResponse,
   PlayerAlternative,
+  PlayerListItem,
   PlayerTrajectory,
   PoolPlayer,
   SquadBuilderFixtureRow,
@@ -45,6 +46,8 @@ export function optimizeTransfers(
     reference_date?: string;
     next_event?: number;
     gw_count?: number;
+    /** Force exactly this many transfers instead of letting the solver pick its own count. */
+    transfers?: number;
   },
 ) {
   return apiGet<TransferResult>(
@@ -74,6 +77,25 @@ export function getAlternatives(
       limit: params.limit ?? 5,
       exclude: params.exclude?.length ? params.exclude.join(",") : undefined,
       max_cost: params.maxCost,
+    })}`,
+  );
+}
+
+/**
+ * Free-text player search, scoped to one position.
+ *
+ * The alternatives endpoint above answers "who should I bring in" and
+ * deliberately returns a short ranked shortlist; this answers "I already
+ * know who I want" - so it's a name/team match over the whole pool, with
+ * no affordability cutoff (the caller decides how to present a player the
+ * bank can't currently cover).
+ */
+export function searchPlayers(params: { search: string; position?: string; limit?: number }) {
+  return apiGet<PlayerListItem[]>(
+    `/api/players${query({
+      search: params.search,
+      position: params.position,
+      limit: params.limit ?? 40,
     })}`,
   );
 }

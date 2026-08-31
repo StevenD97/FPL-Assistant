@@ -194,7 +194,7 @@ export type PriceWatchResponse = {
  * incomplete, never that an entry is wrong.
  */
 const NULLABLE = new Set([
-  "ChipResponse.wildcard",
+  "ChipResponsePeriod.wildcard",
   "FixtureDifficultyRow.avg_difficulty",
   "FixtureOutlookRow.avg_difficulty",
   "PlayerDetail.prediction",
@@ -229,11 +229,11 @@ const NULLABLE = new Set([
  * worse than useless — nothing but null can be assigned to them.
  *
  * Shapes taken from the hand-written types being replaced (leagues/page.tsx's
- * `YourRank`, LoadTeamPanel's `ChipResponse.wildcard`). The supporting types are
- * declared in EXTRA_TYPES below.
+ * `YourRank`, LoadTeamPanel's `ChipResponsePeriod.wildcard`). The supporting
+ * types are declared in EXTRA_TYPES below.
  */
 const FIELD_TYPES = {
-  "ChipResponse.wildcard": "WildcardSuggestion | null",
+  "ChipResponsePeriod.wildcard": "WildcardSuggestion | null",
   "StandingsResponse.your_rank": "YourRank | null",
   // Keyed by whatever `metrics[].key` the same response lists, which the team
   // page iterates to decide what to render. Inferring the snapshot's exact key

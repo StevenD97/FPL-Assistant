@@ -37,20 +37,37 @@ export type CaptaincyOption = {
 
 export type CategoryScore = {
   DEF: number;
+  FWD: number;
   GKP: number;
   MID: number;
 };
 
-export type ChipResponseBenchBoost = {
+export type ChipResponsePeriod = {
+  bench_boost: ChipResponsePeriodBenchBoost;
+  end_event: number;
+  free_hit: ChipResponsePeriodFreeHit;
+  label: string;
+  start_event: number;
+  triple_captain: ChipResponsePeriodTripleCaptain;
+  wildcard: WildcardSuggestion | null;
+};
+
+export type ChipResponsePeriodBenchBoost = {
   bench_score: number;
   double_count: number;
   event: number;
 };
 
-export type ChipResponseFreeHit = {
+export type ChipResponsePeriodFreeHit = {
   blank_count: number;
   event: number;
   recommended: boolean;
+};
+
+export type ChipResponsePeriodTripleCaptain = {
+  event: number;
+  player: string;
+  score: number;
 };
 
 export type ChipResponseTable = {
@@ -61,12 +78,6 @@ export type ChipResponseTable = {
   double_count: number;
   event: number;
   squad_total_score: number;
-};
-
-export type ChipResponseTripleCaptain = {
-  event: number;
-  player: string;
-  score: number;
 };
 
 export type FixtureChip = {
@@ -150,9 +161,14 @@ export type SeasonStats = {
   assists: number;
   bonus: number;
   clean_sheets: number;
+  defensive_contribution_per_90: number;
   expected_assists: string;
+  expected_assists_per_90: number;
   expected_goal_involvements: string;
+  expected_goal_involvements_per_90: number;
   expected_goals: string;
+  expected_goals_conceded_per_90: number;
+  expected_goals_per_90: number;
   goals_conceded: number;
   goals_scored: number;
   ict_index: string;
@@ -160,6 +176,8 @@ export type SeasonStats = {
   red_cards: number;
   saves: number;
   starts: number;
+  starts_per_90: number;
+  threat: string;
   total_points: number;
   yellow_cards: number;
 };
@@ -169,7 +187,9 @@ export type SquadPlayer = {
   cost: number;
   defensive_contribution_per_90: number;
   ep_next: number;
+  expected_assists_per_90: number;
   expected_goal_involvements: number;
+  expected_goals_per_90: number;
   expected_minutes: number;
   form: number;
   ict_index: number;
@@ -185,6 +205,7 @@ export type SquadPlayer = {
   recommendation_score: number;
   role: "Starting XI" | "Bench";
   rotation_risk: number;
+  selected_by_percent: number;
   set_piece_duty_score: number;
   status: string;
   team_badge: string;
@@ -281,13 +302,11 @@ export type BestSquadResult = {
 
 /** Response of `GET /api/squad/{team_id}/chips`. */
 export type ChipResponse = {
-  bench_boost: ChipResponseBenchBoost;
-  free_hit: ChipResponseFreeHit;
+  periods: ChipResponsePeriod[];
+  reset_event: number;
   scan_end_event: number;
   scan_start_event: number;
   table: ChipResponseTable[];
-  triple_captain: ChipResponseTripleCaptain;
-  wildcard: WildcardSuggestion | null;
 };
 
 /** Response of `GET /api/fixtures/difficulty returns `FixtureDifficultyRow[]`.`. */
@@ -320,9 +339,11 @@ export type PlannerResponse = {
 export type PlayerAlternative = {
   cost: number;
   id: number;
+  player_photo: string;
   position: Position;
   predicted_points: number;
   selected_by_percent: number;
+  team_badge: string;
   team_short: string;
   value: number;
   web_name: string;
@@ -506,11 +527,11 @@ export type ScheduleFixture = {
   team_a: string;
   team_a_badge: string;
   team_a_difficulty: number;
-  team_a_score: null;
+  team_a_score: number | null;
   team_h: string;
   team_h_badge: string;
   team_h_difficulty: number;
-  team_h_score: null;
+  team_h_score: number | null;
 };
 
 /** Response of `GET /api/season-status`. */
@@ -543,6 +564,7 @@ export type SquadResponse = {
   entry_name: string;
   event: number;
   fixture_outlook: FixtureOutlookRow[];
+  fixture_window: number;
   points: number;
   squad: SquadPlayer[];
   squad_value: number;
@@ -594,6 +616,8 @@ export type TeamSummary = {
 export type TransferResult = {
   bank: number;
   free_transfers: number;
+  gw_count: number;
+  next_event: number;
   points_hit: number;
   predicted_points: number;
   squad: SquadRow[];

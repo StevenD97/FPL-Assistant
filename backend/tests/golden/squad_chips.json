@@ -1,15 +1,29 @@
 {
   "body": {
-    "bench_boost": {
-      "bench_score": 1.088,
-      "double_count": 0,
-      "event": 11
-    },
-    "free_hit": {
-      "blank_count": 0,
-      "event": 10,
-      "recommended": false
-    },
+    "periods": [
+      {
+        "bench_boost": {
+          "bench_score": 1.088,
+          "double_count": 0,
+          "event": 11
+        },
+        "end_event": 14,
+        "free_hit": {
+          "blank_count": 0,
+          "event": 10,
+          "recommended": false
+        },
+        "label": "Before the reset",
+        "start_event": 10,
+        "triple_captain": {
+          "event": 12,
+          "player": "Haaland",
+          "score": 0.88
+        },
+        "wildcard": null
+      }
+    ],
+    "reset_event": 19,
     "scan_end_event": 14,
     "scan_start_event": 10,
     "table": [
@@ -58,13 +72,7 @@
         "event": 14,
         "squad_total_score": 4.169
       }
-    ],
-    "triple_captain": {
-      "event": 12,
-      "player": "Haaland",
-      "score": 0.88
-    },
-    "wildcard": null
+    ]
   },
   "status": 200
 }

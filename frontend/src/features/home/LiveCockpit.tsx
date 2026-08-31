@@ -4,6 +4,8 @@ import Link from "next/link";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { Panel } from "@/shared/ui/Panel";
+import { nextChip } from "@/shared/lib/chips";
 import { formatRank } from "@/shared/lib/team";
 import type { SquadPlayer, TeamEntry } from "@/shared/types/api";
 import type { LiveCockpitData } from "./hooks/useCockpit";
@@ -22,34 +24,6 @@ function toPitchPlayer(p: SquadPlayer): PitchPlayer {
     subtitle: p.next_opponent,
     href: p.live_id != null ? `/players/${p.live_id}` : undefined,
   };
-}
-
-/** The soonest chip worth playing, so the hero shows one recommendation not four. */
-function nextChip(chips: LiveCockpitData["chips"]) {
-  if (!chips) return null;
-  const options = [
-    chips.wildcard && {
-      name: "Wildcard",
-      event: chips.wildcard.suggested_event,
-      detail: chips.wildcard.reason,
-    },
-    chips.triple_captain && {
-      name: "Triple Captain",
-      event: chips.triple_captain.event,
-      detail: chips.triple_captain.player,
-    },
-    chips.bench_boost && {
-      name: "Bench Boost",
-      event: chips.bench_boost.event,
-      detail: `Bench worth ${chips.bench_boost.bench_score.toFixed(1)}`,
-    },
-    chips.free_hit?.recommended && {
-      name: "Free Hit",
-      event: chips.free_hit.event,
-      detail: `${chips.free_hit.blank_count} blanking`,
-    },
-  ].filter(Boolean) as { name: string; event: number; detail: string }[];
-  return options.sort((a, b) => a.event - b.event)[0] ?? null;
 }
 
 /**
@@ -107,7 +81,7 @@ export function LiveCockpit({
         />
         <CockpitStat
           label="Bench strength"
-          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(1) : "—"}
+          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(3) : "—"}
           hint="Higher is a stronger bench"
           tooltip="benchStrength"
         />
@@ -133,7 +107,7 @@ export function LiveCockpit({
 
         <div className="flex flex-col gap-3">
           {topTransfer && (
-            <Panel title="Suggested transfer" href="/squad" cta="See all">
+            <Panel tone="hero" title="Suggested transfer" href="/squad" cta="See all">
               <div className="flex items-center gap-2 text-sm">
                 {/* pl-pink, not the --danger token: that one is tuned for text
                     on white and drops to unreadable on the purple hero. */}
@@ -155,7 +129,7 @@ export function LiveCockpit({
           )}
 
           {chip && (
-            <Panel title="Chip timing" href="/squad" cta="Full scan">
+            <Panel tone="hero" title="Chip timing" href="/squad" cta="Full scan">
               <p className="text-sm font-semibold text-white">
                 {chip.name} <span className="text-pl-green">· GW{chip.event}</span>
               </p>
@@ -164,7 +138,7 @@ export function LiveCockpit({
           )}
 
           {leagues.length > 0 && (
-            <Panel title="Mini-leagues" href="/leagues" cta="Standings">
+            <Panel tone="hero" title="Mini-leagues" href="/leagues" cta="Standings">
               <ul className="flex flex-col">
                 {leagues.slice(0, 3).map((l) => (
                   <li
@@ -182,7 +156,7 @@ export function LiveCockpit({
           )}
 
           {bench.length > 0 && (
-            <Panel title="Bench" href="/squad" cta="Reorder">
+            <Panel tone="hero" title="Bench" href="/squad" cta="Reorder">
               <ul className="flex flex-col">
                 {bench.map((p) => (
                   <li
@@ -205,7 +179,7 @@ export function LiveCockpit({
           )}
 
           {movers.length > 0 && (
-            <Panel title="Price watch · your players" href="/price-watch" cta="All movers">
+            <Panel tone="hero" title="Price watch · your players" href="/price-watch" cta="All movers">
               <ul className="flex flex-col">
                 {movers.slice(0, 3).map((m) => (
                   <li
@@ -230,29 +204,5 @@ export function LiveCockpit({
         </div>
       </div>
     </CockpitShell>
-  );
-}
-
-function Panel({
-  title,
-  href,
-  cta,
-  children,
-}: {
-  title: string;
-  href: string;
-  cta: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
-      <div className="mb-1.5 flex items-center justify-between gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{title}</p>
-        <Link href={href} className="text-[11px] font-semibold text-pl-green hover:underline">
-          {cta} →
-        </Link>
-      </div>
-      {children}
-    </div>
   );
 }

@@ -110,6 +110,12 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
         "id", "code", "web_name", "team", "element_type", "status", "news",
         "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts",
         "now_cost", "selected_by_percent",
+        # expected_goals_per_90/expected_assists_per_90 are carried, not scored:
+        # nothing below reads them, they exist so a squad row can show the rate
+        # behind its xGI total (which can't distinguish a sharp substitute from a
+        # blunt regular). Kept here rather than joined on later so the squad page
+        # doesn't need a second bootstrap read to answer a per-player question.
+        "expected_goals_per_90", "expected_assists_per_90",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
         "penalties_order", "penalties_missed",
         "direct_freekicks_order", "corners_and_indirect_freekicks_order",
@@ -198,6 +204,11 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     df["expected_goal_involvements"] = pd.to_numeric(df["expected_goal_involvements"], errors="coerce").fillna(0)
     df["ict_index"] = pd.to_numeric(df["ict_index"], errors="coerce").fillna(0)
     df["defensive_contribution_per_90"] = pd.to_numeric(df["defensive_contribution_per_90"], errors="coerce").fillna(0)
+    # Same coercion as their siblings above: FPL types these inconsistently across
+    # fields (some numbers, some numeric strings), so nothing downstream should
+    # have to guess which it got.
+    df["expected_goals_per_90"] = pd.to_numeric(df["expected_goals_per_90"], errors="coerce").fillna(0)
+    df["expected_assists_per_90"] = pd.to_numeric(df["expected_assists_per_90"], errors="coerce").fillna(0)
 
     df["xgi_norm"] = min_max_normalize(df["expected_goal_involvements"])
     df["ict_index_norm"] = min_max_normalize(df["ict_index"])

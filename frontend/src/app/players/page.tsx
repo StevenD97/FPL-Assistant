@@ -10,6 +10,7 @@ import { PlayerListCard, PlayerListCardSkeleton } from "@/features/players/Playe
 import type { PlayerListItem } from "@/shared/types/api";
 import { useShortlist } from "@/shared/lib/shortlist";
 import { loadSquadDraft } from "@/shared/lib/draft";
+import { OWNERSHIP_BANDS, type OwnershipKey } from "@/shared/lib/ownership";
 import { apiGet } from "@/shared/lib/api";
 
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
@@ -25,14 +26,9 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "cost", label: "Price" },
 ];
 
-type OwnershipKey = "any" | "lt5" | "lt10" | "lt15";
-
-const OWNERSHIP: { key: OwnershipKey; label: string; max: number | null }[] = [
-  { key: "any", label: "Any", max: null },
-  { key: "lt5", label: "< 5%", max: 5 },
-  { key: "lt10", label: "< 10%", max: 10 },
-  { key: "lt15", label: "< 15%", max: 15 },
-];
+// Shared with My Squad's Differentials read, so "< 10%" is one definition rather
+// than two - see shared/lib/ownership.ts.
+const OWNERSHIP = OWNERSHIP_BANDS;
 
 // The three research surfaces that used to be separate pages, now expressed as
 // lenses over the one player list. In this app xPts *is* the multi-GW outlook,

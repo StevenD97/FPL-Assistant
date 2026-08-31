@@ -213,18 +213,18 @@
       {
         "captain": false,
         "cost": 4.0,
-        "id": 308,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p176420.png",
+        "id": 307,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p222018.png",
         "position": "DEF",
         "predicted_points": 0.0,
         "role": "Bench",
-        "selected_by_percent": 0.3,
+        "selected_by_percent": 0.1,
         "status": "a",
         "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
         "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_40-66.png",
         "team_short": "IPS",
         "value": 0.0,
-        "web_name": "Furlong"
+        "web_name": "Johnson"
       },
       {
         "captain": false,

@@ -2,9 +2,9 @@
   "body": {
     "archive_season_label": "2025/26",
     "current_season_label": "2026/27",
-    "is_preseason": true,
-    "next_deadline": "2026-08-21T17:30:00Z",
-    "next_event": 1
+    "is_preseason": false,
+    "next_deadline": "2026-08-08T19:00:00Z",
+    "next_event": 15
   },
   "status": 200
 }

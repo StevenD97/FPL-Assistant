@@ -9,9 +9,11 @@ import {
   clearStoredTeamId,
   loadStoredTeamId,
   loadTrackedTeamIds,
+  loadTrackedTeamNames,
   parseTeamId,
   storeTeamId,
   storeTrackedTeamIds,
+  storeTrackedTeamName,
 } from "@/shared/lib/team";
 
 type Status = "idle" | "loading" | "ready" | "error";
@@ -27,6 +29,12 @@ type TeamContextValue = {
   trackedTeamIds: number[];
   trackTeam: (input: string) => boolean;
   untrackTeam: (id: number) => void;
+  /**
+   * Real names for tracked teams, keyed by id as a string. Populated from a
+   * device cache immediately and topped up from the API for ids we haven't seen,
+   * so a chip can say "Bruno's XI" rather than "Team 1178869".
+   */
+  trackedTeamNames: Record<string, string>;
 };
 
 const TeamContext = createContext<TeamContextValue | null>(null);
@@ -44,11 +52,45 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [trackedTeamIds, setTrackedTeamIds] = useState<number[]>([]);
+  const [trackedTeamNames, setTrackedTeamNames] = useState<Record<string, string>>({});
 
   // Restore tracked teams on load.
   useEffect(() => {
     setTrackedTeamIds(loadTrackedTeamIds());
+    setTrackedTeamNames(loadTrackedTeamNames());
   }, []);
+
+  // Learn the names we don't have yet, one request per unknown id, and cache
+  // them on the device so this only ever happens once per tracked team.
+  //
+  // The cache is read first (above) so chips render named on a repeat visit
+  // without waiting for anything; this only fills gaps. Failures are ignored on
+  // purpose - a tracked id that can't be resolved still renders, just as
+  // "Team 1178869", which is what it did before.
+  useEffect(() => {
+    const unknown = trackedTeamIds.filter((id) => !trackedTeamNames[String(id)]);
+    if (unknown.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      for (const id of unknown) {
+        try {
+          const data = await apiGet<TeamEntry>(`/api/entry/${id}`);
+          const name = data.team_name?.trim();
+          if (!name || cancelled) continue;
+          storeTrackedTeamName(id, name);
+          setTrackedTeamNames((prev) => ({ ...prev, [String(id)]: name }));
+        } catch {
+          // Ignore - see above.
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // trackedTeamNames is intentionally omitted: it's written by this effect, so
+    // depending on it would re-run the loop on every name learned.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackedTeamIds]);
 
   const trackTeam = useCallback(
     (input: string): boolean => {
@@ -142,6 +184,7 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
         trackedTeamIds,
         trackTeam,
         untrackTeam,
+        trackedTeamNames,
       }}
     >
       {children}
