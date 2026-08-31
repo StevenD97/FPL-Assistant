@@ -88,40 +88,40 @@
       "fixtures": [
         {
           "difficulty": 3,
-          "is_home": false,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 2,
           "is_home": true,
-          "opponent": "IPS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png"
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
         },
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
         },
         {
           "difficulty": 2,
-          "is_home": true,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+          "is_home": false,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
         },
         {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
         }
       ],
       "fixtures_in_window": 5,
-      "team": "TOT",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
-      "team_id": 19,
-      "ticker": "LEE(A,FDR3) | IPS(H,FDR2) | SUN(A,FDR3) | FUL(H,FDR2) | ARS(H,FDR4)"
+      "team": "IPS",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
+      "team_id": 12,
+      "ticker": "BOU(H,FDR3) | TOT(A,FDR3) | AVL(H,FDR3) | COV(A,FDR2) | LEE(A,FDR3)"
     },
     {
       "avg_difficulty": 2.8,
@@ -170,40 +170,40 @@
       "fixtures": [
         {
           "difficulty": 3,
-          "is_home": true,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "AVL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "COV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
-        },
-        {
-          "difficulty": 3,
           "is_home": false,
           "opponent": "LEE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "IPS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
         }
       ],
       "fixtures_in_window": 5,
-      "team": "IPS",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t40.png",
-      "team_id": 12,
-      "ticker": "BOU(H,FDR3) | TOT(A,FDR3) | AVL(H,FDR3) | COV(A,FDR2) | LEE(A,FDR3)"
+      "team": "TOT",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
+      "team_id": 19,
+      "ticker": "LEE(A,FDR3) | IPS(H,FDR2) | SUN(A,FDR3) | FUL(H,FDR2) | ARS(H,FDR4)"
     },
     {
       "avg_difficulty": 3.0,
@@ -294,47 +294,6 @@
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        }
-      ],
-      "fixtures_in_window": 5,
-      "team": "CHE",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-      "team_id": 6,
-      "ticker": "SUN(A,FDR3) | LEE(H,FDR2) | NFO(A,FDR3) | CRY(H,FDR3) | LIV(H,FDR4)"
-    },
-    {
-      "avg_difficulty": 3.0,
-      "fixture_score": 15,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": false,
           "opponent": "EVE",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
         },
@@ -368,47 +327,6 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
       "team_id": 7,
       "ticker": "EVE(A,FDR3) | CRY(H,FDR3) | LEE(A,FDR3) | IPS(H,FDR2) | MUN(A,FDR4)"
-    },
-    {
-      "avg_difficulty": 3.0,
-      "fixture_score": 15,
-      "fixtures": [
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MCI",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": false,
-          "opponent": "HUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        }
-      ],
-      "fixtures_in_window": 5,
-      "team": "NFO",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
-      "team_id": 18,
-      "ticker": "MCI(H,FDR4) | BOU(A,FDR3) | CHE(H,FDR4) | HUL(A,FDR2) | BHA(H,FDR2)"
     },
     {
       "avg_difficulty": 3.0,
@@ -456,6 +374,47 @@
       "fixture_score": 15,
       "fixtures": [
         {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": false,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        }
+      ],
+      "fixtures_in_window": 5,
+      "team": "NFO",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
+      "team_id": 18,
+      "ticker": "MCI(H,FDR4) | BOU(A,FDR3) | CHE(H,FDR4) | HUL(A,FDR2) | BHA(H,FDR2)"
+    },
+    {
+      "avg_difficulty": 3.0,
+      "fixture_score": 15,
+      "fixtures": [
+        {
           "difficulty": 3,
           "is_home": true,
           "opponent": "AVL",
@@ -493,127 +452,45 @@
       "ticker": "AVL(H,FDR3) | LIV(A,FDR4) | BRE(H,FDR3) | NEW(A,FDR3) | COV(H,FDR2)"
     },
     {
-      "avg_difficulty": 3.2,
-      "fixture_score": 14,
+      "avg_difficulty": 3.0,
+      "fixture_score": 15,
       "fixtures": [
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
           "opponent": "SUN",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        }
-      ],
-      "fixtures_in_window": 5,
-      "team": "NEW",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
-      "team_id": 17,
-      "ticker": "FUL(A,FDR3) | ARS(H,FDR4) | BHA(A,FDR3) | MUN(H,FDR4) | SUN(H,FDR2)"
-    },
-    {
-      "avg_difficulty": 3.2,
-      "fixture_score": 14,
-      "fixtures": [
-        {
-          "difficulty": 5,
-          "is_home": false,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
         },
         {
           "difficulty": 2,
           "is_home": true,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
         },
         {
           "difficulty": 3,
           "is_home": false,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": true,
           "opponent": "NFO",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
         },
         {
           "difficulty": 3,
-          "is_home": false,
-          "opponent": "BOU",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        }
-      ],
-      "fixtures_in_window": 5,
-      "team": "HUL",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
-      "team_id": 11,
-      "ticker": "ARS(A,FDR5) | BHA(H,FDR2) | CRY(A,FDR3) | NFO(H,FDR3) | BOU(A,FDR3)"
-    },
-    {
-      "avg_difficulty": 3.2,
-      "fixture_score": 14,
-      "fixtures": [
-        {
-          "difficulty": 3,
-          "is_home": false,
+          "is_home": true,
           "opponent": "CRY",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
         },
         {
           "difficulty": 4,
           "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
-        },
-        {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "difficulty": 4,
-          "is_home": false,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
         }
       ],
       "fixtures_in_window": 5,
-      "team": "LIV",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
-      "team_id": 14,
-      "ticker": "CRY(A,FDR3) | MUN(H,FDR4) | EVE(A,FDR3) | SUN(H,FDR2) | CHE(A,FDR4)"
+      "team": "CHE",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+      "team_id": 6,
+      "ticker": "SUN(A,FDR3) | LEE(H,FDR2) | NFO(A,FDR3) | CRY(H,FDR3) | LIV(H,FDR4)"
     },
     {
       "avg_difficulty": 3.2,
@@ -661,41 +538,41 @@
       "fixture_score": 14,
       "fixtures": [
         {
-          "difficulty": 2,
-          "is_home": true,
-          "opponent": "NEW",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
-        },
-        {
           "difficulty": 5,
           "is_home": false,
-          "opponent": "MCI",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
         },
         {
           "difficulty": 3,
           "is_home": true,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
           "opponent": "BOU",
           "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "TOT",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
-        },
-        {
-          "difficulty": 3,
-          "is_home": false,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
         }
       ],
       "fixtures_in_window": 5,
-      "team": "FUL",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
-      "team_id": 10,
-      "ticker": "NEW(H,FDR2) | MCI(A,FDR5) | BOU(H,FDR3) | TOT(A,FDR3) | EVE(A,FDR3)"
+      "team": "HUL",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png",
+      "team_id": 11,
+      "ticker": "ARS(A,FDR5) | BHA(H,FDR2) | CRY(A,FDR3) | NFO(H,FDR3) | BOU(A,FDR3)"
     },
     {
       "avg_difficulty": 3.2,
@@ -737,6 +614,129 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_id": 8,
       "ticker": "LIV(H,FDR4) | COV(A,FDR2) | HUL(H,FDR2) | CHE(A,FDR4) | AVL(A,FDR4)"
+    },
+    {
+      "avg_difficulty": 3.2,
+      "fixture_score": 14,
+      "fixtures": [
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "difficulty": 5,
+          "is_home": false,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        }
+      ],
+      "fixtures_in_window": 5,
+      "team": "FUL",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
+      "team_id": 10,
+      "ticker": "NEW(H,FDR2) | MCI(A,FDR5) | BOU(H,FDR3) | TOT(A,FDR3) | EVE(A,FDR3)"
+    },
+    {
+      "avg_difficulty": 3.2,
+      "fixture_score": 14,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "BHA",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        }
+      ],
+      "fixtures_in_window": 5,
+      "team": "NEW",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
+      "team_id": 17,
+      "ticker": "FUL(A,FDR3) | ARS(H,FDR4) | BHA(A,FDR3) | MUN(H,FDR4) | SUN(H,FDR2)"
+    },
+    {
+      "avg_difficulty": 3.2,
+      "fixture_score": 14,
+      "fixtures": [
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "difficulty": 3,
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "difficulty": 2,
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "difficulty": 4,
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        }
+      ],
+      "fixtures_in_window": 5,
+      "team": "LIV",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
+      "team_id": 14,
+      "ticker": "CRY(A,FDR3) | MUN(H,FDR4) | EVE(A,FDR3) | SUN(H,FDR2) | CHE(A,FDR4)"
     },
     {
       "avg_difficulty": 3.6,
