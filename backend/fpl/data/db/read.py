@@ -47,12 +47,62 @@ def _latest_snapshot(season: str, kind: str):
         )
 
 
+def latest_snapshot_health(filename: str = "bootstrap_static.json"):
+    """
+    ``(fetched_at, usable)`` for the newest stored bootstrap of this season, or
+    ``(None, False)`` if there is no row at all.
+
+    Powers /api/data-status, which has to answer "what is the app actually
+    serving?" - and a row being present is not the same as it being served,
+    since bootstrap_from_db rejects a malformed one and the loaders then fall
+    back to disk. Reporting "database" on the strength of a row that is being
+    ignored would misdirect exactly the person debugging an outage.
+
+    Deliberately evaluated in SQL rather than by loading the payload: this
+    endpoint is meant to be cheap enough to poll, and the snapshot is ~1.6 MB.
+    """
+    with SessionLocal() as session:
+        row = session.execute(
+            text(
+                "SELECT fetched_at, "
+                "       (jsonb_typeof(data) = 'object' "
+                "        AND jsonb_array_length(coalesce(data->'events', '[]'::jsonb)) > 0 "
+                "        AND jsonb_array_length(coalesce(data->'elements', '[]'::jsonb)) > 0) "
+                "FROM raw_snapshots "
+                "WHERE season = :season AND kind = 'bootstrap' "
+                "ORDER BY fetched_at DESC LIMIT 1"
+            ),
+            {"season": _season_for(filename, _BOOTSTRAP_FILE_TO_SEASON)},
+        ).first()
+    if row is None:
+        return None, False
+    return row[0], bool(row[1])
+
+
 def bootstrap_from_db(filename: str):
-    return _latest_snapshot(_season_for(filename, _BOOTSTRAP_FILE_TO_SEASON), "bootstrap")
+    """
+    Latest stored bootstrap, or None if there isn't a usable one.
+
+    "Usable" is checked rather than assumed: the loaders only fall back to the
+    on-disk snapshot when this *raises or returns None*, so a row that is
+    present but malformed - a truncated write, or an FPL error page stored
+    verbatim as if it were data - would sail through and take out every
+    endpoint downstream with a KeyError, instead of degrading to the file
+    fallback that exists precisely for this. Cheap shape check, one class of
+    silent outage removed.
+    """
+    data = _latest_snapshot(_season_for(filename, _BOOTSTRAP_FILE_TO_SEASON), "bootstrap")
+    if not isinstance(data, dict) or not data.get("events") or not data.get("elements"):
+        return None
+    return data
 
 
 def fixtures_from_db(filename: str):
-    return _latest_snapshot(_season_for(filename, _FIXTURES_FILE_TO_SEASON), "fixtures")
+    """Latest stored fixtures, or None if there isn't a usable one - see bootstrap_from_db."""
+    data = _latest_snapshot(_season_for(filename, _FIXTURES_FILE_TO_SEASON), "fixtures")
+    if not isinstance(data, list) or not data:
+        return None
+    return data
 
 
 def gw_history_from_db(season: str):
