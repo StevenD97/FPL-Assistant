@@ -1,0 +1,107 @@
+name: CI
+
+# The repo had no test workflow at all: the backend suite and the frontend
+# typecheck only ever ran on someone's laptop. Everything below is what a
+# contributor is expected to run locally before pushing - see DEPLOYMENT.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      # The retention and data-status suites exercise window functions and
+      # JSONB, so they need a real Postgres - testing them against anything
+      # else would prove nothing. Without this they skip, and the regressions
+      # they guard (a table that grows until the tier dies, a stale snapshot
+      # nobody notices) are exactly the ones that already bit once.
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: fpl
+          POSTGRES_PASSWORD: fpl_local_dev
+          POSTGRES_DB: fpl
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fpl -d fpl"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install "pytest>=8" "httpx>=0.27"
+
+      - name: Create the schema the DB-backed tests write to
+        env:
+          DATABASE_URL: postgresql+psycopg://fpl:fpl_local_dev@localhost:5432/fpl
+        run: alembic upgrade head
+
+      - name: Run tests
+        env:
+          # conftest pins DATABASE_URL at an unreachable host so the golden
+          # suite takes the file-fallback path; the DB-backed tests opt in
+          # through their own variable instead.
+          TEST_DATABASE_URL: postgresql+psycopg://fpl:fpl_local_dev@localhost:5432/fpl
+        run: python -m pytest -v
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check the generated API types are up to date
+        # api.d.ts is generated from the backend goldens. Regenerating it here
+        # catches the case where a golden was refreshed but the types were not,
+        # which otherwise only shows up as a type error much later.
+        run: |
+          npm run gen:api
+          if ! git diff --quiet -- src/shared/types/api.d.ts; then
+            echo "::error::src/shared/types/api.d.ts is stale. Run 'npm run gen:api' and commit the result."
+            git diff -- src/shared/types/api.d.ts
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        # force-dynamic on the data-backed routes keeps this from needing a
+        # live backend; anything that regressed into build-time fetching would
+        # fail here, which is the point.
+        run: npm run build

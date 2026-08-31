@@ -1,0 +1,61 @@
+name: Check data freshness
+
+# The alarm that was missing.
+#
+# When the free Postgres expired, nothing broke loudly: the file fallback took
+# over, every endpoint kept returning 200, the keep-alive ping stayed green,
+# and the site served a pre-season snapshot for weeks while telling visitors
+# the season had not started. Liveness was never the question.
+#
+# This asks /api/data-status instead, which reports what the deployment is
+# actually serving and whether it is behind the real season, and fails the run
+# when it is - so GitHub's own failure notification is the alert.
+
+on:
+  schedule:
+    # Four times a day. The deadline check makes staleness obvious within
+    # hours of a gameweek starting, without pestering.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the deployment what it is serving
+        id: probe
+        env:
+          # Override with a BACKEND_URL repo variable if the backend moves.
+          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://fpl-assistant-backend-wxtz.onrender.com' }}
+        run: |
+          set -uo pipefail
+          # Generous timeout: a sleeping free-tier instance can take ~35s to
+          # cold-start, and timing that out would be a false alarm.
+          body=$(curl -sf --max-time 90 --retry 2 --retry-delay 10 \
+                   "$BACKEND_URL/api/data-status") || {
+            echo "::error::Could not reach $BACKEND_URL/api/data-status"
+            exit 1
+          }
+          echo "$body" | jq .
+          echo "body=$body" >> "$GITHUB_OUTPUT"
+
+      - name: Fail if the data is stale
+        run: |
+          set -euo pipefail
+          body='${{ steps.probe.outputs.body }}'
+          stale=$(echo "$body" | jq -r '.stale')
+          source=$(echo "$body" | jq -r '.source')
+          echo "serving from: $source"
+          if [ "$stale" = "true" ]; then
+            echo "$body" | jq -r '.reasons[]' | while read -r r; do
+              echo "::error::stale data: $r"
+            done
+            echo "::error::Backend is serving stale data. Check the ingest workflow and DATABASE_URL; see DEPLOYMENT.md."
+            exit 1
+          fi
+          # Serving from files is survivable but means the database is not
+          # being read - worth surfacing without failing the run.
+          if [ "$source" != "database" ]; then
+            echo "::warning::Backend is serving the on-disk fallback, not the database."
+          fi
+          echo "Data is current."

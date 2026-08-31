@@ -3,22 +3,33 @@ name: Ingest FPL data
 # Pulls the latest FPL data into the database on a schedule. Each run:
 #   1. applies any new Alembic migrations,
 #   2. snapshots bootstrap-static + fixtures (prices, status/news, reschedules),
-#   3. ingests any gameweek that has finished since the last run.
+#   3. ingests any gameweek that has finished since the last run,
+#   4. prunes raw_snapshots to the retention policy and vacuums.
 # The ingest is idempotent (upserts + finished-GW diffing), so extra runs are
-# harmless. Every ~6h catches a finished gameweek within a few hours and keeps
-# prices/availability fresh; tune the cron as needed.
+# harmless.
+#
+# Hourly, because that is the resolution price-watch's transfer-rate column
+# reads and FPL moves prices nightly (~02:30 UK). This replaced an identical
+# Render cron job that ran on a paid plan; GitHub Actions does the same work
+# for nothing, so render.yaml no longer defines one.
 #
 # Requires a DATABASE_URL repo secret pointing at the production database
 # (must be reachable from GitHub-hosted runners). Also runs on demand.
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
+
+# A slow run must never overlap the next hour's.
+concurrency:
+  group: ingest-data
+  cancel-in-progress: false
 
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: backend
@@ -33,12 +44,16 @@ jobs:
       # `DATABASE_URL: ` empty and crashed with a SQLAlchemy URL-parse
       # error). Using a step output + `if:` on every later step actually
       # skips them.
+      #
+      # The skip is annotated rather than silent: a repo with no DATABASE_URL
+      # is a repo whose data is quietly going stale, which is the failure this
+      # deployment already lived through once.
       - name: Check DATABASE_URL secret
         id: check_db
         run: |
           if [ -z "${{ secrets.DATABASE_URL }}" ]; then
             echo "has_db=false" >> "$GITHUB_OUTPUT"
-            echo "DATABASE_URL secret not set - skipping ingest."
+            echo "::warning::DATABASE_URL secret not set - skipping ingest. The site will serve the committed snapshot in data/, which goes stale. See DEPLOYMENT.md."
           else
             echo "has_db=true" >> "$GITHUB_OUTPUT"
           fi
@@ -65,3 +80,11 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python -m fpl.data.ingest run
+
+      # Row counts and table sizes in the run log, so storage growth is
+      # visible before it exhausts the tier rather than after.
+      - name: Report database state
+        if: steps.check_db.outputs.has_db == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m fpl.data.ingest status
