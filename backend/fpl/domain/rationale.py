@@ -163,3 +163,53 @@ def free_hit_reason(row):
         f"{blanks} of your 15 have no fixture in GW{row['event']} - "
         f"{'enough to be worth a Free Hit' if blanks >= 3 else 'not enough to be worth a Free Hit yet'}."
     )
+
+
+def comparison_reason(player, better, gw_count):
+    """
+    Why the model prefers `better` to `player`, or why `player` is fine.
+
+    The mirror image of transfer_reason: that one argues for a swap the model
+    chose, this one answers "what about X?" for a player it didn't choose. The
+    question is the most common one a manager actually has - a list of who to
+    buy never says anything about the player they were already thinking of -
+    and it has to be answerable for anyone, not only for the handful the model
+    happens to rank highly.
+    """
+    if better is None:
+        return (
+            f"Nothing in {player['web_name']}'s position at or under "
+            f"£{player['cost']:.1f}m projects higher over {_gw_phrase(gw_count)}. "
+            f"By this model, they are the pick at that price."
+        )
+
+    clauses = []
+    gap = round(better["predicted_points"] - player["predicted_points"], 1)
+    if gap > 0:
+        clauses.append(f"projects {gap:+.1f} pts more over {_gw_phrase(gw_count)}")
+
+    starts_better = _expected_starts(better, gw_count)
+    starts_player = _expected_starts(player, gw_count)
+    if starts_better is not None and starts_player is not None and starts_better - starts_player >= 0.5:
+        clauses.append(
+            f"is projected to start {starts_better:.1f} of the next {gw_count} "
+            f"against {player['web_name']}'s {starts_player:.1f}"
+        )
+
+    fixtures = _first_fixtures(better.get("fixture_ticker"))
+    if fixtures:
+        clauses.append(f"faces {fixtures}")
+
+    delta = better["cost"] - player["cost"]
+    if delta <= -0.1:
+        # No leading "and" - _join supplies the conjunction.
+        clauses.append(f"costs £{abs(delta):.1f}m less")
+    elif delta >= 0.1:
+        clauses.append(f"costs £{delta:.1f}m more")
+
+    if not clauses:
+        return (
+            f"{better['web_name']} edges it, but only just - there is very little "
+            f"between them over {_gw_phrase(gw_count)}."
+        )
+    return f"{better['web_name']} {_join(clauses)}."

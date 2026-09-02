@@ -37,6 +37,7 @@ const RESPONSES = {
   entry_summary: ["TeamEntry", "GET /api/entry/{team_id}"],
   players_all: ["PlayerListItem", "GET /api/players", "item"],
   player_detail: ["PlayerDetail", "GET /api/players/{player_id}"],
+  player_comparison: ["PlayerComparison", "GET /api/players/{player_id}/comparison"],
   player_alternatives: [
     "PlayerAlternative",
     "GET /api/players/{player_id}/alternatives",
@@ -132,6 +133,39 @@ const RENAME = {
  * back to drifting silently, which is the thing this file exists to stop.
  */
 const HAND_WRITTEN = {
+  // `better` is an object when something outranks the player and null when
+  // nothing does - two shapes for one field, which no single snapshot can
+  // express and which the golden map (one golden, one type) cannot merge.
+  // Both branches are recorded and asserted (player_comparison and
+  // player_comparison_best in tests/test_deterministic_routes.py); this only
+  // states the union they prove.
+  PlayerComparison: `export type ComparisonPlayer = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  position: Position;
+  cost: number;
+  predicted_points: number;
+  appearance_points: number;
+  fixture_ticker: string;
+  selected_by_percent: number;
+  status: string;
+  news: string;
+  team_badge: string;
+  player_photo: string;
+};
+
+/** Response of \`GET /api/players/{player_id}/comparison\`. */
+export type PlayerComparison = {
+  player: ComparisonPlayer;
+  /** null when nothing in this position at or under this price projects higher. */
+  better: ComparisonPlayer | null;
+  verdict: "outclassed" | "best at this price";
+  reason: string;
+  gw_count: number;
+  next_event: number;
+};`,
+
   // The pinned snapshot has no qualifying price movers, so risers/fallers are
   // both `[]` and infer as `unknown[]`. Shape read off fpl/domain/price.py
   // (compute_price_change_signals) and fpl/services/players.py, which drops

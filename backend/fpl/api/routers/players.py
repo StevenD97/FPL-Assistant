@@ -96,6 +96,24 @@ def player_alternatives(
         raise HTTPException(status_code=404, detail=str(e))
 
 
+@router.get("/api/players/{player_id}/comparison")
+def player_comparison(
+    player_id: int,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
+    gw_count: int = 5,
+):
+    """
+    "What about X?" - how this player compares to the best the model can find
+    in the same position at or under the same price, and why.
+    """
+    ref_date, next_event = resolve_gw_params(reference_date, next_event)
+    try:
+        return service.player_comparison(player_id, ref_date, next_event, gw_count=gw_count)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
 @router.get("/api/players/{player_id}")
 def player_detail(
     player_id: int,

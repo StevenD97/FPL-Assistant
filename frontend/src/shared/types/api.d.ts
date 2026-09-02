@@ -64,6 +64,22 @@ export type AccuracyResponseSummary = {
   top_ten_average: number;
 };
 
+export type Better = {
+  appearance_points: number;
+  cost: number;
+  fixture_ticker: string;
+  id: number;
+  news: string;
+  player_photo: string;
+  position: Position;
+  predicted_points: number;
+  selected_by_percent: number;
+  status: string;
+  team_badge: string;
+  team_short: string;
+  web_name: string;
+};
+
 export type CaptaincyOption = {
   captain_flag: string;
   ep_next: number;
@@ -428,6 +444,32 @@ export type PlayerAlternative = {
   web_name: string;
 };
 
+export type ComparisonPlayer = {
+  id: number;
+  web_name: string;
+  team_short: string;
+  position: Position;
+  cost: number;
+  predicted_points: number;
+  appearance_points: number;
+  fixture_ticker: string;
+  selected_by_percent: number;
+  status: string;
+  news: string;
+  team_badge: string;
+  player_photo: string;
+};
+
+/** Response of `GET /api/players/{player_id}/comparison`. */
+export type PlayerComparison = {
+  player: ComparisonPlayer;
+  /** null when nothing in this position at or under this price projects higher. */
+  better: ComparisonPlayer | null;
+  verdict: "outclassed" | "best at this price";
+  reason: string;
+  gw_count: number;
+  next_event: number;
+};
 /** Response of `GET /api/players/{player_id}`. */
 export type PlayerDetail = {
   cost: number;

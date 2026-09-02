@@ -1,0 +1,39 @@
+{
+  "body": {
+    "better": {
+      "appearance_points": 10.0,
+      "cost": 5.5,
+      "fixture_ticker": "COV(H) | BRE(A) | LIV(H) | AVL(A) | FUL(H)",
+      "id": 226,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p111234.png",
+      "position": "GKP",
+      "predicted_points": 21.1,
+      "selected_by_percent": 9.0,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
+      "team_short": "EVE",
+      "web_name": "Pickford"
+    },
+    "gw_count": 5,
+    "next_event": 10,
+    "player": {
+      "appearance_points": 10.0,
+      "cost": 6.0,
+      "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
+      "id": 1,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+      "position": "GKP",
+      "predicted_points": 19.57,
+      "selected_by_percent": 38.0,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "web_name": "Raya"
+    },
+    "reason": "Pickford projects +1.5 pts more over the next 5 gameweeks, faces COV(H), BRE(A), LIV(H), and costs \u00a30.5m less.",
+    "verdict": "outclassed"
+  },
+  "status": 200
+}

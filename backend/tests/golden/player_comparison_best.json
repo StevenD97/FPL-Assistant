@@ -1,0 +1,25 @@
+{
+  "body": {
+    "better": null,
+    "gw_count": 5,
+    "next_event": 10,
+    "player": {
+      "appearance_points": 8.79,
+      "cost": 8.0,
+      "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
+      "id": 4,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+      "position": "DEF",
+      "predicted_points": 25.43,
+      "selected_by_percent": 28.0,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "web_name": "Gabriel"
+    },
+    "reason": "Nothing in Gabriel's position at or under \u00a38.0m projects higher over the next 5 gameweeks. By this model, they are the pick at that price.",
+    "verdict": "best at this price"
+  },
+  "status": 200
+}

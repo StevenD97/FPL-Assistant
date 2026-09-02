@@ -19,6 +19,7 @@ import { linearTrend } from "@/shared/lib/trend";
 import { apiGet } from "@/shared/lib/api";
 import type { PlayerDetail, PlayerListItem } from "@/shared/types/api";
 import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
+import { WhyNot } from "@/features/players/WhyNot";
 
 const MAX_COMPARE = 4;
 
@@ -435,6 +436,13 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
             )}
           </div>
         </section>
+
+        {/* The answer to the question the reader arrived with. Directly under
+            the hero, because "should I buy him?" is why they opened this page
+            at all - not something to find after the stat tables. */}
+        <div className="mb-8">
+          <WhyNot playerId={p.id} />
+        </div>
 
         {p.season_stats && <UnderlyingStats stats={p.season_stats} />}
 

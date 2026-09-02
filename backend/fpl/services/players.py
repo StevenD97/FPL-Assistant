@@ -25,6 +25,7 @@ from fpl.domain.media import (
     team_kit_url,
 )
 from fpl.domain.price import MIN_NET_TRANSFERS_TO_FLAG, compute_price_change_signals
+from fpl.domain.rationale import comparison_reason
 from fpl.domain.scoring import (
     rank_desc,
     compute_player_scores,
@@ -353,6 +354,92 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     if max_cost is not None:
         df = df[df["cost"] <= max_cost]
     return rank_desc(df.drop(columns="cost_raw"), "predicted_points", limit).to_dict(orient="records")
+
+
+# How far above a player's own price the comparison is allowed to look.
+# Zero, deliberately: "you could have someone better for two million more" is
+# not an answer to "what about him?", it is a different question. The only
+# useful comparison is one a manager could actually make with the money they
+# have committed to that slot.
+COMPARISON_PRICE_HEADROOM = 0.0
+
+
+def player_comparison(player_id, ref_date, next_event, gw_count=5):
+    """
+    "What about X?" - the question a list of recommendations never answers.
+
+    Every surface in this app ranks players and shows the top of the list. A
+    manager arrives with a name in mind, and that name is usually not in the
+    top ten; nothing here would tell them why. This takes any player and
+    compares them against the best the model can find in the same position at
+    or under the same price, with the reasoning spelled out.
+
+    Same price, not "best available": a comparison against someone two million
+    dearer answers a question nobody asked. If nothing at that price beats
+    them, that is the answer, and it is a useful one.
+    """
+    next_events = list(range(next_event, next_event + gw_count))
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    predicted = predict_multi_gw_breakdown(
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )[["id", "web_name", "team_short", "position", "predicted_points",
+       "appearance_points", "fixture_count", "fixture_ticker"]]
+    pool = build_player_pool(predicted, bootstrap)
+    pool = pool.copy()
+    pool["cost"] = (pool["now_cost"] / 10).round(1)
+
+    target = pool[pool["id"] == player_id]
+    if target.empty:
+        raise ValueError(f"No player with id {player_id} in the live 2026/27 roster")
+    subject = target.iloc[0]
+
+    rivals = pool[
+        (pool["position"] == subject["position"])
+        & (pool["id"] != player_id)
+        & (pool["cost"] <= subject["cost"] + COMPARISON_PRICE_HEADROOM)
+        # Never propose someone who cannot play - the prediction is
+        # archive-trained and will happily score an injured player on what they
+        # used to produce (same guard as player_alternatives).
+        & (~pool["unavailable"])
+        & (pool["predicted_points"] > subject["predicted_points"])
+    ]
+    better_row = rank_desc(rivals, "predicted_points", 1)
+    better = _comparison_row(better_row.iloc[0], bootstrap) if len(better_row) else None
+    subject_row = _comparison_row(subject, bootstrap)
+
+    return {
+        "player": subject_row,
+        "better": better,
+        # A single word the UI can lead with, so the answer is legible before
+        # the sentence is read.
+        "verdict": "outclassed" if better else "best at this price",
+        "reason": comparison_reason(subject_row, better, gw_count),
+        "gw_count": gw_count,
+        "next_event": next_event,
+    }
+
+
+def _comparison_row(row, bootstrap):
+    team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
+    return {
+        "id": int(row["id"]),
+        "web_name": row["web_name"],
+        "team_short": row["team_short"],
+        "position": row["position"],
+        "cost": round(float(row["now_cost"]) / 10, 1),
+        "predicted_points": round(float(row["predicted_points"]), 2),
+        "appearance_points": round(float(row["appearance_points"]), 2),
+        "fixture_ticker": row["fixture_ticker"],
+        "selected_by_percent": float(row["selected_by_percent"]),
+        "status": row["status"],
+        "news": row["news"],
+        "team_badge": team_badge_url(team_code_by_id.get(int(row["team"]))),
+        "player_photo": player_photo_url(int(row["code"])),
+    }
 
 
 def build_trajectory_context(ref_date, next_events):
