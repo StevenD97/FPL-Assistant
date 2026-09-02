@@ -5,36 +5,63 @@ import { FdrChip } from "@/shared/ui/FdrChip";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { useSquadDraftCount } from "@/shared/lib/draft";
-import type { PreSeasonCockpitData } from "./hooks/useCockpit";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
+import type { WaitingCockpitData } from "./hooks/useCockpit";
 import { CockpitShell, CockpitStat } from "./components/CockpitShell";
 
 const SQUAD_SIZE = 15;
 
 /**
- * What the landing page shows a connected manager before their first gameweek
- * locks. FPL exposes no picks, rank, team value or bank until then - see
- * useCockpit - so nothing personal is available beyond their name and any draft
- * they've started on this device.
+ * What the landing page shows a connected manager FPL has no picks for yet.
  *
- * Rather than a large empty panel for the weeks before GW1, the hero leans on
- * the data that *is* live: who the model likes, which clubs open kindest, and
- * where the market is moving. Same shell as the live cockpit, so the page fills
- * in at GW1 instead of changing shape.
+ * Two different situations reach this screen and they need different words:
+ *
+ *   - Genuinely pre-season. Nobody has picks; the season hasn't kicked off.
+ *   - Mid-season, but this manager has no history at the gameweek we asked
+ *     for - a brand-new entry, or an id that was never a real team.
+ *
+ * The copy used to hardcode the first ("Pre-season · 2026/27", "Gameweek 1",
+ * "the moment GW1 locks"), so a manager two gameweeks in was told the season
+ * hadn't started - contradicting the live deadline counter on the same screen.
+ * It now reads season status and says whichever is true.
+ *
+ * Either way the hero leans on the data that *is* live: who the model likes,
+ * which clubs open kindest, and where the market is moving. Same shell as the
+ * live cockpit, so the page fills in rather than changing shape.
  */
-export function PreSeasonCockpit({
+export function WaitingCockpit({
   data,
   teamName,
 }: {
-  data: PreSeasonCockpitData;
+  data: WaitingCockpitData;
   teamName: string | null;
 }) {
   const drafted = useSquadDraftCount();
+  const season = useSeasonStatus();
+
+  // Until season status lands we say nothing season-specific, rather than
+  // guessing pre-season and being wrong for most of the year.
+  const preseason = season?.is_preseason ?? null;
+  const seasonLabel = season?.current_season_label ?? "";
+  const nextEvent = season?.next_event ?? null;
+
+  const eyebrow = preseason
+    ? `Pre-season${seasonLabel ? ` · ${seasonLabel}` : ""}`
+    : nextEvent != null
+      ? `Gameweek ${nextEvent}${seasonLabel ? ` · ${seasonLabel}` : ""}`
+      : seasonLabel || "Your dashboard";
+
+  const subtitle = preseason
+    ? `Your points, rank and squad analysis appear here the moment GW${nextEvent ?? 1} locks. Until then, here's where the season is shaping up.`
+    : preseason === false
+      ? `We couldn't find any picks for this team yet. Once you've made your first gameweek's picks they'll show up here. In the meantime, here's where the season stands.`
+      : "Here's where the season is shaping up.";
 
   return (
     <CockpitShell
-      eyebrow="Pre-season · 2026/27"
+      eyebrow={eyebrow}
       title={teamName ? `Ready when you are, ${teamName}` : "Ready when you are"}
-      subtitle="Your points, rank and squad analysis appear here the moment GW1 locks. Until then, here's where the season is shaping up."
+      subtitle={subtitle}
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <CockpitStat
@@ -58,7 +85,11 @@ export function PreSeasonCockpit({
           }
           tooltip="avgFdr"
         />
-        <CockpitStat label="Gameweek" value="1" hint="Season opener" />
+        <CockpitStat
+          label="Gameweek"
+          value={nextEvent ?? "—"}
+          hint={preseason ? "Season opener" : "Next deadline"}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -117,7 +148,12 @@ export function PreSeasonCockpit({
         href="/squad"
         className="inline-flex w-fit items-center gap-2 rounded-lg bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-transform hover:scale-[1.02]"
       >
-        {drafted > 0 ? "Continue your draft" : "Build your GW1 squad"} →
+        {drafted > 0
+          ? "Continue your draft"
+          : preseason === false
+            ? "Build your squad"
+            : `Build your GW${nextEvent ?? 1} squad`}{" "}
+        →
       </Link>
     </CockpitShell>
   );

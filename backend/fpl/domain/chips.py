@@ -17,7 +17,7 @@ from fpl.config import (
 from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.gameweek import detect_blank_double_gameweeks
-from fpl.model.predict import predict_multi_gw_breakdown
+from fpl.model.predict import predict_by_event
 from fpl.model.rules import CHIP_RESET_EVENT, CROSS_SEASON_HALF_LIFE_DAYS
 
 
@@ -125,23 +125,32 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     squad_element_ids = picks["element"].tolist()
     bench_element_ids = picks.loc[picks["position"] > 11, "element"].tolist()
 
-    scan_events = list(range(scan_start_event, scan_end_event))
+    scan_events = [e for e in range(scan_start_event, scan_end_event) if e in event_deadlines]
+
+    # Predicted points per gameweek on the LIVE fixture calendar. This is the
+    # whole point of pointing the scan at live files: scoring a gameweek
+    # against the archived calendar timed chips by last season's opponents.
+    # Triple Captain landed on GW6 because in 2025/26 that was Burnley at
+    # home; in 2026/27 it is Liverpool away.
+    #
+    # One call, one prediction context, for the whole window. This used to be
+    # one predict_multi_gw_breakdown() per gameweek, each with that
+    # gameweek's own deadline as reference_date, so each rebuilt the context
+    # from scratch - a 15-gameweek scan took 43 seconds. Every scanned
+    # gameweek is in the future, so there is no data at GW16's deadline that
+    # we don't have at the window's start: one reference_date loses nothing.
+    reference_date = event_deadlines[scan_events[0]] if scan_events else datetime.utcnow()
+    per_event = predict_by_event(
+        reference_date, scan_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=bootstrap_file, roster_fixtures_file=fixtures_file,
+    )
 
     rows = []
     for event in scan_events:
-        reference_date = event_deadlines[event]
-        # Predicted points on the LIVE fixture calendar. This is the whole
-        # point of the fix: scoring a gameweek against the archived calendar
-        # timed chips by last season's opponents. Triple Captain landed on GW6
-        # because in 2025/26 that was Burnley at home; in 2026/27 it is
-        # Liverpool away.
-        scores = predict_multi_gw_breakdown(
-            reference_date, [event],
-            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
-            bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
-            apply_live_signals=True,
-            roster_bootstrap_file=bootstrap_file, roster_fixtures_file=fixtures_file,
-        )
+        scores = per_event[event]
 
         squad_scores = scores[scores["id"].isin(squad_element_ids)]
         bench_scores = scores[scores["id"].isin(bench_element_ids)]

@@ -206,7 +206,11 @@ def predict_player_points(reference_date, next_event, half_life_days=21, season=
         roster_bootstrap_file, roster_fixtures_file, current_season, smoothing_alpha, xg_weight, congestion_weight,
         bonus_fixture_sensitivity,
     )
-    return _predict_for_event(context, next_event)
+    # fixture_count is an internal column _predict_for_event adds for callers
+    # that compare single gameweeks (chip timing - see predict_by_event).
+    # Dropped here so this function's long-standing response shape, which the
+    # frontend's generated types are pinned to, doesn't quietly grow a field.
+    return _predict_for_event(context, next_event).drop(columns=["fixture_count"])
 
 
 @lru_cache(maxsize=32)
@@ -352,7 +356,10 @@ def _predict_for_event(context, next_event):
             "team_short": player["team_short"], "position": player["position"],
         }
         if not fx_list:
-            rows.append({**base_row, "next_opponent": "BLANK", **{k: 0.0 for k in _BREAKDOWN_KEYS}})
+            rows.append({
+                **base_row, "next_opponent": "BLANK", "fixture_count": 0,
+                **{k: 0.0 for k in _BREAKDOWN_KEYS},
+            })
             continue
 
         share = involvement.get(player["id"], default_involvement)
@@ -404,9 +411,77 @@ def _predict_for_event(context, next_event):
         totals["clean_sheet_prob"] /= len(fx_list)
         totals = {k: round(v, 3) for k, v in totals.items()}
 
-        rows.append({**base_row, "next_opponent": " & ".join(opponent_labels), **totals})
+        # The real number of fixtures, not whether there is at least one.
+        # Callers scanning a single gameweek (chip timing) need to tell a
+        # double gameweek from a single one, and "next_opponent != BLANK"
+        # cannot: a DGW and a normal week both come back as one non-blank
+        # string. The multi-gameweek wrapper below computes its own
+        # window-level fixture_count and overwrites this, so its meaning
+        # there ("gameweeks with a fixture") is unchanged.
+        rows.append({
+            **base_row, "next_opponent": " & ".join(opponent_labels),
+            "fixture_count": len(fx_list), **totals,
+        })
 
     return pd.DataFrame(rows)
+
+
+def predict_by_event(reference_date, next_events, half_life_days=21, season="2025_26",
+                     bootstrap_file="bootstrap_static_2025_26_final.json",
+                     fixtures_file="fixtures_2025_26_final.json",
+                     shrinkage_games=SHRINKAGE_GAMES, apply_live_signals=False,
+                     roster_bootstrap_file=None, roster_fixtures_file=None,
+                     current_season="2026_27", smoothing_alpha=SHARE_SMOOTHING_ALPHA,
+                     xg_weight=TEAM_XG_WEIGHT, congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                     bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
+    """
+    One DataFrame per gameweek, keyed by event - the per-gameweek frames
+    predict_multi_gw_breakdown() sums, handed back unsummed.
+
+    For callers that need to compare gameweeks against each other rather than
+    add them up. Chip timing is the case: it asks "which single gameweek is
+    the best one to triple-captain in", which a window total cannot answer.
+
+    The point of having this is that the whole set shares ONE prediction
+    context. Scanning a window by calling predict_multi_gw_breakdown() once
+    per gameweek with that gameweek's own deadline as reference_date rebuilds
+    the context every time - the recency-weighted team strengths, involvement
+    shares, appearance probabilities and history rates, each a full scan of
+    the gw_history archive - and that dominated everything else: a 15-gameweek
+    chip scan took 43 seconds, essentially all of it 15 context builds.
+
+    Using a single reference_date for the window is also the more honest
+    model. Every scanned gameweek is in the future, so no extra match data
+    exists at GW16's deadline that we don't already have today; passing each
+    future deadline as reference_date didn't add information, it just decayed
+    the same history a bit further and charged a full rebuild for it.
+    """
+    frames = _predict_by_event_cached(
+        reference_date, tuple(next_events), half_life_days, season, bootstrap_file, fixtures_file,
+        shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
+        smoothing_alpha, xg_weight, congestion_weight, bonus_fixture_sensitivity,
+    )
+    return {event: frame.copy() for event, frame in frames.items()}
+
+
+@lru_cache(maxsize=8)
+def _predict_by_event_cached(reference_date, next_events, half_life_days, season, bootstrap_file,
+                             fixtures_file, shrinkage_games, apply_live_signals,
+                             roster_bootstrap_file, roster_fixtures_file, current_season="2026_27",
+                             smoothing_alpha=SHARE_SMOOTHING_ALPHA, xg_weight=TEAM_XG_WEIGHT,
+                             congestion_weight=CONGESTION_APPEARANCE_WEIGHT,
+                             bonus_fixture_sensitivity=BONUS_FIXTURE_SENSITIVITY):
+    """Cached for the same reason _predict_multi_gw_breakdown_cached is: the
+    per-gameweek Poisson loop is O(players x gameweeks) and a chip scan runs
+    it over the whole window. Callers get copies (see above); this keeps the
+    originals. maxsize is smaller because each entry holds a whole window's
+    worth of frames rather than one."""
+    context = _build_prediction_context(
+        reference_date, half_life_days, season, bootstrap_file, fixtures_file, shrinkage_games,
+        apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
+        smoothing_alpha, xg_weight, congestion_weight, bonus_fixture_sensitivity,
+    )
+    return {event: _predict_for_event(context, event) for event in next_events}
 
 
 def predict_multi_gw_breakdown(reference_date, next_events, half_life_days=21, season="2025_26",

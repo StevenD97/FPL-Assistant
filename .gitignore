@@ -1,6 +1,12 @@
 .claude/settings.local.json
 backend/.env
+# Both spellings: `python -m venv .venv` is the common one and was missing,
+# so a whole interpreter's worth of site-packages was one `git add -A` away
+# from the history.
 backend/venv/
+backend/.venv/
+venv/
+.venv/
 # FPL data snapshots live in a sibling data/ folder at the repo root. The
 # archived training files plus a pinned live snapshot (bootstrap_static.json /
 # fixtures.json) are tracked so the deterministic golden tests reproduce for

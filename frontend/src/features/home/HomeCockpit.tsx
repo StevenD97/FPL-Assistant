@@ -4,7 +4,8 @@ import { useTeam } from "@/shared/team/TeamProvider";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { useCockpit } from "./hooks/useCockpit";
 import { LiveCockpit } from "./LiveCockpit";
-import { PreSeasonCockpit } from "./PreSeasonCockpit";
+import { WaitingCockpit } from "./WaitingCockpit";
+import { CockpitError } from "./CockpitError";
 
 /**
  * The landing page's centrepiece for a connected manager, replacing the
@@ -14,12 +15,20 @@ import { PreSeasonCockpit } from "./PreSeasonCockpit";
 export function HomeCockpit() {
   const { teamId, entry } = useTeam();
   const state = useCockpit(teamId);
+  const teamName = entry?.team_name ?? null;
 
-  if (state.kind === "loading") return <CockpitSkeleton />;
-
-  if (state.kind === "live") return <LiveCockpit data={state.data} entry={entry} />;
-
-  return <PreSeasonCockpit data={state.data} teamName={entry?.team_name ?? null} />;
+  switch (state.kind) {
+    case "loading":
+      return <CockpitSkeleton />;
+    case "live":
+      return <LiveCockpit data={state.data} entry={entry} />;
+    case "error":
+      return (
+        <CockpitError message={state.message} onRetry={state.retry} teamName={teamName} />
+      );
+    case "waiting":
+      return <WaitingCockpit data={state.data} teamName={teamName} />;
+  }
 }
 
 /** Mirrors the hero's shape so the page doesn't jump when the data lands. */

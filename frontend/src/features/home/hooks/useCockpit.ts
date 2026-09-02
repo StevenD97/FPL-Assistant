@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getChips, getSquad, optimizeTransfers } from "@/shared/api/squad";
+import { isStatus } from "@/shared/lib/api";
 import {
   getFixtureDifficulty,
   getManagerLeagues,
@@ -27,7 +28,7 @@ export type LiveCockpitData = {
   movers: PriceMover[];
 };
 
-export type PreSeasonCockpitData = {
+export type WaitingCockpitData = {
   topPicks: PlayerListItem[];
   kindestOpeners: FixtureDifficultyRow[];
   movers: PriceMover[];
@@ -36,27 +37,38 @@ export type PreSeasonCockpitData = {
 /**
  * Which cockpit the landing page can actually show.
  *
- * "live" needs /api/squad/{id}, which 404s for every manager until their first
- * gameweek locks - FPL has no pick history before then. That isn't an error, it
- * is the pre-season state, so a 404 here falls through to the pre-season
- * cockpit rather than surfacing a failure. It resolves itself at GW1 with no
- * season-boundary logic.
+ * "waiting" is the no-picks state: /api/squad/{id} 404s for every manager
+ * until their first gameweek locks, because FPL has no pick history before
+ * then. That is an answer, not a failure, and it resolves itself at GW1.
+ *
+ * "error" is everything else - a 502 from the FPL API, a 500 from us, a cold
+ * backend that never answered. This used to be folded into the no-picks state,
+ * which is why a mid-season manager whose request timed out was told the
+ * season hadn't started yet. A request that never landed tells us nothing
+ * about the season, so it must never be rendered as a fact about the season.
  */
 export type CockpitState =
   | { kind: "loading" }
   | { kind: "live"; data: LiveCockpitData }
-  | { kind: "preseason"; data: PreSeasonCockpitData };
+  | { kind: "waiting"; data: WaitingCockpitData }
+  | { kind: "error"; message: string; retry: () => void };
 
 const MAX_TOP_PICKS = 5;
 const MAX_OPENERS = 5;
 
 export function useCockpit(teamId: number | null): CockpitState {
   const [state, setState] = useState<CockpitState>({ kind: "loading" });
+  // Bumped by retry() to re-run the effect without changing teamId.
+  const [attempt, setAttempt] = useState(0);
+  const retry = useCallback(() => {
+    setState({ kind: "loading" });
+    setAttempt((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadPreSeason(): Promise<PreSeasonCockpitData> {
+    async function loadWaiting(): Promise<WaitingCockpitData> {
       const [players, fixtures, price] = await Promise.all([
         getPlayers().catch(() => [] as PlayerListItem[]),
         getFixtureDifficulty().catch(() => [] as FixtureDifficultyRow[]),
@@ -77,20 +89,30 @@ export function useCockpit(teamId: number | null): CockpitState {
 
     async function load() {
       if (teamId == null) {
-        const data = await loadPreSeason();
-        if (!cancelled) setState({ kind: "preseason", data });
+        const data = await loadWaiting();
+        if (!cancelled) setState({ kind: "waiting", data });
         return;
       }
 
-      const squad = await getSquad(teamId).catch(() => null);
+      let squad: SquadResponse;
+      try {
+        squad = await getSquad(teamId);
+      } catch (err) {
+        if (cancelled) return;
+        // Only a 404 means FPL genuinely has no picks for this manager yet.
+        if (isStatus(err, 404)) {
+          const data = await loadWaiting();
+          if (!cancelled) setState({ kind: "waiting", data });
+          return;
+        }
+        setState({
+          kind: "error",
+          message: err instanceof Error ? err.message : "Something went wrong.",
+          retry,
+        });
+        return;
+      }
       if (cancelled) return;
-
-      if (!squad) {
-        // Pre-season, or a manager FPL has no picks for yet.
-        const data = await loadPreSeason();
-        if (!cancelled) setState({ kind: "preseason", data });
-        return;
-      }
 
       // Everything below is a bonus on top of the squad: each failure degrades
       // its own panel instead of taking the cockpit down with it.
@@ -122,7 +144,7 @@ export function useCockpit(teamId: number | null): CockpitState {
     return () => {
       cancelled = true;
     };
-  }, [teamId]);
+  }, [teamId, attempt, retry]);
 
   return state;
 }
