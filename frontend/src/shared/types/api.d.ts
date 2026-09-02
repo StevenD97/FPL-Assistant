@@ -356,10 +356,12 @@ export type PlannerResponse = {
 export type PlayerAlternative = {
   cost: number;
   id: number;
+  news: string;
   player_photo: string;
   position: Position;
   predicted_points: number;
   selected_by_percent: number;
+  status: string;
   team_badge: string;
   team_short: string;
   value: number;

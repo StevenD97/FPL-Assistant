@@ -3,9 +3,9 @@
     "periods": [
       {
         "bench_boost": {
-          "bench_score": 1.38,
+          "bench_score": 13.944,
           "double_count": 0,
-          "event": 11
+          "event": 12
         },
         "end_event": 14,
         "free_hit": {
@@ -16,9 +16,9 @@
         "label": "Before the reset",
         "start_event": 10,
         "triple_captain": {
-          "event": 12,
+          "event": 14,
           "player": "B.Fernandes",
-          "score": 1.006
+          "score": 7.312
         },
         "wildcard": null
       }
@@ -28,49 +28,49 @@
     "scan_start_event": 10,
     "table": [
       {
-        "bench_score": 1.304,
+        "bench_score": 13.325,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 0.895,
+        "best_captain_score": 6.776,
         "blank_count": 0,
         "double_count": 0,
         "event": 10,
-        "squad_total_score": 6.98
+        "squad_total_score": 56.318
       },
       {
-        "bench_score": 1.38,
+        "bench_score": 13.552,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 0.992,
+        "best_captain_score": 5.707,
         "blank_count": 0,
         "double_count": 0,
         "event": 11,
-        "squad_total_score": 6.865
+        "squad_total_score": 56.012
       },
       {
-        "bench_score": 1.319,
+        "bench_score": 13.944,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 1.006,
+        "best_captain_score": 6.959,
         "blank_count": 0,
         "double_count": 0,
         "event": 12,
-        "squad_total_score": 7.396
+        "squad_total_score": 55.21
       },
       {
-        "bench_score": 1.095,
+        "bench_score": 12.828,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 0.887,
+        "best_captain_score": 5.997,
         "blank_count": 0,
         "double_count": 0,
         "event": 13,
-        "squad_total_score": 6.064
+        "squad_total_score": 55.6
       },
       {
-        "bench_score": 1.176,
+        "bench_score": 13.716,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 0.908,
+        "best_captain_score": 7.312,
         "blank_count": 0,
         "double_count": 0,
         "event": 14,
-        "squad_total_score": 6.436
+        "squad_total_score": 56.932
       }
     ]
   },

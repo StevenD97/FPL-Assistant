@@ -13,7 +13,10 @@ import type { PlayerAlternative, PlayerListItem, Position } from "@/shared/types
  * search returns PlayerListItem; the latter is a superset, so both render
  * through one path and both satisfy `onSelect` without any mapping.
  */
-type Candidate = PlayerAlternative & { status?: string; news?: string };
+// PlayerAlternative now carries status/news itself. This used to widen it
+// with optional copies so StatusBadge below would type-check - which it did,
+// silently, while the backend sent neither and the badge never rendered.
+type Candidate = PlayerAlternative;
 
 /** Long enough that typing a name doesn't fire a request per keystroke. */
 const SEARCH_DEBOUNCE_MS = 250;

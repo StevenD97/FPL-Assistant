@@ -8,11 +8,17 @@ from datetime import datetime
 
 import pandas as pd
 
+from fpl.config import (
+    ARCHIVED_BOOTSTRAP_FILE,
+    ARCHIVED_FIXTURES_FILE,
+    LIVE_BOOTSTRAP_FILE,
+    LIVE_FIXTURES_FILE,
+)
 from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.gameweek import detect_blank_double_gameweeks
-from fpl.domain.scoring import compute_player_scores
-from fpl.model.rules import CHIP_RESET_EVENT
+from fpl.model.predict import predict_multi_gw_breakdown
+from fpl.model.rules import CHIP_RESET_EVENT, CROSS_SEASON_HALF_LIFE_DAYS
 
 
 def _period_recommendation(period_table, doubles, blanks, start_event, end_event, label):
@@ -63,8 +69,8 @@ def _period_recommendation(period_table, doubles, blanks, start_event, end_event
 
 
 def build_chip_strategy(team_id, scan_start_event, scan_end_event,
-                         bootstrap_file="bootstrap_static_2025_26_final.json",
-                         fixtures_file="fixtures_2025_26_final.json"):
+                         bootstrap_file=LIVE_BOOTSTRAP_FILE,
+                         fixtures_file=LIVE_FIXTURES_FILE):
     """
     Scans a gameweek window and recommends timing for Bench Boost, Triple
     Captain, Free Hit (based on the manager's squad) and Wildcard (based on
@@ -80,11 +86,21 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     unchanged across the scan window - a simplifying assumption; a real
     planner would need to re-run this after every transfer.
 
-    bootstrap_file/fixtures_file default to the archived 2025/26 season -
-    every event_deadlines/compute_player_scores/detect_blank_double_gameweeks
-    call below must use the same season's files, since FPL reassigns team
-    ids each season (see compute_player_scores' docstring); mixing seasons
-    here would silently scan the wrong fixtures against the wrong scores.
+    bootstrap_file/fixtures_file are the LIVE season's, and must stay that
+    way: a chip is timed by *when* your squad's fixtures are good, so the scan
+    has to run against the calendar you are actually playing. They previously
+    defaulted to the archived 2025/26 files, which timed every chip by last
+    season's opponents - Triple Captain came back as GW6 because in 2025/26
+    that was Burnley at home, while GW6 of 2026/27 is Liverpool away, the
+    hardest fixture in the window.
+
+    The archive still does the job it is good at. Player scoring comes from
+    predict_multi_gw_breakdown with bootstrap_file=ARCHIVED (the trained
+    stats) and roster_bootstrap_file=live (who those players are now and who
+    they face), the same split the transfer optimiser uses. That is what makes
+    it safe to point this at live files without mixing id-spaces, which the
+    old compute_player_scores path could not do - it reads 2025/26 gameweek
+    history keyed by 2025/26 element ids.
     """
     bootstrap = load_bootstrap(bootstrap_file)
     fixtures = load_fixtures(fixtures_file)
@@ -99,22 +115,13 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     picks_data = fetch_entry_picks(team_id, basis_event)
     picks = pd.DataFrame(picks_data["picks"])
 
-    # picks come from FPL's live API, so `element` is a live-season id; scores
-    # below are computed against bootstrap_file (archived by default), a
-    # *different* id-space - FPL reassigns element ids every season (see
-    # compute_player_scores' docstring). Without remapping, the .isin() match
-    # below silently drops or mismatches most of the squad. Matched by code
-    # (the stable cross-season id), same as fpl.model.ids' roster remapping.
-    from fpl.model.ids import resolve_live_to_training_id
-
-    live_bootstrap = load_bootstrap()
-    live_elements = live_bootstrap["elements"]
-    training_elements = bootstrap["elements"]
-    picks["element"] = picks["element"].apply(
-        lambda live_id: resolve_live_to_training_id(live_id, live_elements, training_elements)
-    )
-    picks = picks.dropna(subset=["element"])
-    picks["element"] = picks["element"].astype(int)
+    # No id remapping here any more, and none needed: picks come from FPL's
+    # live API and the predictions below are produced in that same live
+    # id-space (archive-trained stats remapped onto the live roster - see
+    # predict_multi_gw_breakdown's roster_bootstrap_file). The old code scored
+    # against the archived bootstrap, so it had to remap every pick into the
+    # 2025/26 id-space and dropped any player without a 2025/26 record - which
+    # silently shrank the squad a chip was being judged on.
     squad_element_ids = picks["element"].tolist()
     bench_element_ids = picks.loc[picks["position"] > 11, "element"].tolist()
 
@@ -123,18 +130,34 @@ def build_chip_strategy(team_id, scan_start_event, scan_end_event,
     rows = []
     for event in scan_events:
         reference_date = event_deadlines[event]
-        scores = compute_player_scores(reference_date, event,
-                                        bootstrap_file=bootstrap_file, fixtures_file=fixtures_file)
+        # Predicted points on the LIVE fixture calendar. This is the whole
+        # point of the fix: scoring a gameweek against the archived calendar
+        # timed chips by last season's opponents. Triple Captain landed on GW6
+        # because in 2025/26 that was Burnley at home; in 2026/27 it is
+        # Liverpool away.
+        scores = predict_multi_gw_breakdown(
+            reference_date, [event],
+            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+            bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+            apply_live_signals=True,
+            roster_bootstrap_file=bootstrap_file, roster_fixtures_file=fixtures_file,
+        )
 
         squad_scores = scores[scores["id"].isin(squad_element_ids)]
         bench_scores = scores[scores["id"].isin(bench_element_ids)]
-        best_captain_idx = squad_scores["recommendation_score"].idxmax()
+        if squad_scores.empty:
+            continue
+        best_captain_idx = squad_scores["predicted_points"].idxmax()
 
+        # These now carry predicted POINTS rather than the old normalised
+        # recommendation score, so "bench worth 12.4" reads as the points the
+        # bench is expected to return - a number a manager can weigh a chip
+        # against, where "bench worth 0.263" was not.
         rows.append({
             "event": event,
-            "squad_total_score": round(squad_scores["recommendation_score"].sum(), 3),
-            "bench_score": round(bench_scores["recommendation_score"].sum(), 3),
-            "best_captain_score": round(squad_scores["recommendation_score"].max(), 3),
+            "squad_total_score": round(squad_scores["predicted_points"].sum(), 3),
+            "bench_score": round(bench_scores["predicted_points"].sum(), 3),
+            "best_captain_score": round(squad_scores["predicted_points"].max(), 3),
             "best_captain_name": squad_scores.loc[best_captain_idx, "web_name"],
             "blank_count": int((squad_scores["fixture_count"] == 0).sum()),
             "double_count": int((squad_scores["fixture_count"] >= 2).sum()),

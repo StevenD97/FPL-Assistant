@@ -10,6 +10,7 @@ from fpl.data.loaders import load_bootstrap
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
 from fpl.domain.scoring import (
+    rank_desc,
     compute_player_scores,
     map_archived_ids_to_live,
     nullable_float_column,
@@ -97,7 +98,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         if (starting["pos"] == pos).any()
     }
 
-    captaincy_options = starting.sort_values("recommendation_score", ascending=False).head(5)[
+    captaincy_options = rank_desc(starting, "recommendation_score", 5)[
         ["web_name", "team_short", "pos", "recommendation_score", "ep_next", "captain_flag"]
     ].to_dict(orient="records")
 

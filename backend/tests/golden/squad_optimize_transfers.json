@@ -4,8 +4,8 @@
     "free_transfers": 1,
     "gw_count": 5,
     "next_event": 10,
-    "points_hit": 12,
-    "predicted_points": 307.68,
+    "points_hit": 0,
+    "predicted_points": 297.55,
     "squad": [
       {
         "captain": false,
@@ -57,19 +57,19 @@
       },
       {
         "captain": false,
-        "cost": 6.0,
-        "id": 498,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p221466.png",
+        "cost": 6.5,
+        "id": 387,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p472769.png",
         "position": "DEF",
-        "predicted_points": 24.382,
+        "predicted_points": 17.883,
         "role": "Starting XI",
-        "selected_by_percent": 6.8,
+        "selected_by_percent": 20.0,
         "status": "a",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_6-66.png",
-        "team_short": "TOT",
-        "value": 4.06,
-        "web_name": "Senesi"
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
+        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_43-66.png",
+        "team_short": "MCI",
+        "value": 2.75,
+        "web_name": "O'Reilly"
       },
       {
         "captain": false,
@@ -89,6 +89,22 @@
       },
       {
         "captain": false,
+        "cost": 7.5,
+        "id": 40,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244850.png",
+        "position": "MID",
+        "predicted_points": 18.02,
+        "role": "Starting XI",
+        "selected_by_percent": 25.9,
+        "status": "a",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_8-66.png",
+        "team_short": "CHE",
+        "value": 2.4,
+        "web_name": "Rogers"
+      },
+      {
+        "captain": false,
         "cost": 7.0,
         "id": 368,
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p424876.png",
@@ -105,19 +121,19 @@
       },
       {
         "captain": false,
-        "cost": 6.4,
-        "id": 481,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
+        "cost": 8.5,
+        "id": 397,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
         "position": "MID",
-        "predicted_points": 24.982,
+        "predicted_points": 19.766,
         "role": "Starting XI",
-        "selected_by_percent": 5.6,
+        "selected_by_percent": 22.2,
         "status": "a",
         "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
         "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_43-66.png",
         "team_short": "MCI",
-        "value": 3.9,
-        "web_name": "Anderson"
+        "value": 2.33,
+        "web_name": "Semenyo"
       },
       {
         "captain": false,
@@ -134,22 +150,6 @@
         "team_short": "MUN",
         "value": 2.67,
         "web_name": "B.Fernandes"
-      },
-      {
-        "captain": false,
-        "cost": 8.0,
-        "id": 106,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
-        "position": "FWD",
-        "predicted_points": 28.431,
-        "role": "Starting XI",
-        "selected_by_percent": 15.4,
-        "status": "a",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_94-66.png",
-        "team_short": "BRE",
-        "value": 3.55,
-        "web_name": "Thiago"
       },
       {
         "captain": false,
@@ -217,39 +217,39 @@
       },
       {
         "captain": false,
-        "cost": 6.5,
-        "id": 387,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p472769.png",
+        "cost": 4.5,
+        "id": 423,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p106760.png",
         "position": "DEF",
-        "predicted_points": 17.883,
+        "predicted_points": 15.908,
         "role": "Bench",
-        "selected_by_percent": 20.0,
+        "selected_by_percent": 18.3,
         "status": "a",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_43-66.png",
-        "team_short": "MCI",
-        "value": 2.75,
-        "web_name": "O'Reilly"
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
+        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_1-66.png",
+        "team_short": "MUN",
+        "value": 3.54,
+        "web_name": "Shaw"
       },
       {
         "captain": false,
-        "cost": 7.5,
-        "id": 40,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244850.png",
-        "position": "MID",
-        "predicted_points": 18.02,
+        "cost": 6.0,
+        "id": 346,
+        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p177815.png",
+        "position": "FWD",
+        "predicted_points": 16.533,
         "role": "Bench",
-        "selected_by_percent": 25.9,
+        "selected_by_percent": 27.3,
         "status": "a",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_8-66.png",
-        "team_short": "CHE",
-        "value": 2.4,
-        "web_name": "Rogers"
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
+        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_2-66.png",
+        "team_short": "LEE",
+        "value": 2.76,
+        "web_name": "Calvert-Lewin"
       }
     ],
-    "starting_xi_predicted_points": 319.68,
-    "total_cost": 110.6,
+    "starting_xi_predicted_points": 297.55,
+    "total_cost": 109.2,
     "transferred_in": [
       {
         "id": 13,
@@ -262,81 +262,9 @@
         "team_short": "ARS",
         "value": 3.55,
         "web_name": "Rice"
-      },
-      {
-        "id": 106,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p502500.png",
-        "position": "FWD",
-        "predicted_points": 28.431,
-        "selected_by_percent": 15.4,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_94-66.png",
-        "team_short": "BRE",
-        "value": 3.55,
-        "web_name": "Thiago"
-      },
-      {
-        "id": 481,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215379.png",
-        "position": "MID",
-        "predicted_points": 24.982,
-        "selected_by_percent": 5.6,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_43-66.png",
-        "team_short": "MCI",
-        "value": 3.9,
-        "web_name": "Anderson"
-      },
-      {
-        "id": 498,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p221466.png",
-        "position": "DEF",
-        "predicted_points": 24.382,
-        "selected_by_percent": 6.8,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_6-66.png",
-        "team_short": "TOT",
-        "value": 4.06,
-        "web_name": "Senesi"
       }
     ],
     "transferred_out": [
-      {
-        "id": 423,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p106760.png",
-        "position": "DEF",
-        "predicted_points": 15.908,
-        "selected_by_percent": 18.3,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_1-66.png",
-        "team_short": "MUN",
-        "value": 3.54,
-        "web_name": "Shaw"
-      },
-      {
-        "id": 397,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437730.png",
-        "position": "MID",
-        "predicted_points": 19.766,
-        "selected_by_percent": 22.2,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_43-66.png",
-        "team_short": "MCI",
-        "value": 2.33,
-        "web_name": "Semenyo"
-      },
-      {
-        "id": 346,
-        "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p177815.png",
-        "position": "FWD",
-        "predicted_points": 16.533,
-        "selected_by_percent": 27.3,
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
-        "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_2-66.png",
-        "team_short": "LEE",
-        "value": 2.76,
-        "web_name": "Calvert-Lewin"
-      },
       {
         "id": 154,
         "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p244851.png",
@@ -350,7 +278,7 @@
         "web_name": "Palmer"
       }
     ],
-    "transfers_made": 4
+    "transfers_made": 1
   },
   "status": 200
 }

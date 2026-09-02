@@ -293,6 +293,35 @@ def nullable_int_column(series):
     )
 
 
+def rank_desc(df, column, limit=None):
+    """
+    Sort by `column` descending with `id` as a tie-break, optionally keeping
+    the top `limit` rows.
+
+    The tie-break is the point. Sorting on the score alone leaves rows with
+    equal values in whatever order they happened to arrive, and truncating
+    that with .head() then picks an arbitrary subset of the tied group. Two
+    things make ties common here: whole tails of the pool share a predicted
+    score of exactly 0.0, and scores that merely *look* distinct can differ
+    below float64's noise floor, which varies by CPU (see tests/conftest.py's
+    _FLOAT_PRECISION - CI caught the same class of non-determinism in the
+    goldens).
+
+    Left unfixed, the same request returns a different list on different
+    machines - and a reader refreshing a page of replacement suggestions
+    would watch equally-rated players trade places for no reason.
+
+    Falls back to the frame's own index where there is no `id` column, so a
+    caller holding a simpler frame still gets a stable order rather than an
+    error.
+    """
+    if "id" in df.columns:
+        ordered = df.sort_values([column, "id"], ascending=[False, True])
+    else:
+        ordered = df.sort_values(column, ascending=False, kind="stable")
+    return ordered.head(limit) if limit is not None else ordered
+
+
 def nullable_float_column(values, index):
     """
     The float counterpart of nullable_int_column, for the same reason and the
@@ -319,4 +348,4 @@ def nullable_float_column(values, index):
 def top_differentials(df, max_ownership=10.0, top_n=15):
     """Same recommendation_score, filtered to low-ownership players."""
     pool = df[df["selected_by_percent"] <= max_ownership]
-    return pool.sort_values("recommendation_score", ascending=False).head(top_n)
+    return rank_desc(pool, "recommendation_score", top_n)

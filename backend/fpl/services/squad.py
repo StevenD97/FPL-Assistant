@@ -16,6 +16,7 @@ from fpl.config import (
 from fpl.data.entry import fetch_entry_info
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.chips import build_chip_strategy
+from fpl.domain.scoring import rank_desc
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.gameweek import get_gw_context
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
@@ -81,7 +82,7 @@ def squad_builder_players(ref_date, next_event, gw_count=5):
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"})
     df["cost"] = (df["cost_raw"] / 10).round(1)
-    return df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).to_dict(orient="records")
+    return rank_desc(df.drop(columns="cost_raw"), "predicted_points").to_dict(orient="records")
 
 
 def squad_builder_fixtures(next_event=None, gw_count=5):

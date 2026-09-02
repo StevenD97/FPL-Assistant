@@ -40,6 +40,38 @@ MAX_PER_CLUB = 3
 POINTS_PER_TRANSFER_HIT = 4
 DEFAULT_BUDGET = 1000  # £100.0m, the standard starting budget
 
+# FPL element statuses that mean "will not play": injured, suspended,
+# unavailable (left the club / on loan elsewhere), not in squad. A player
+# carrying one of these is never a legitimate thing to *buy*, however well the
+# model scores them - the archive-trained prediction knows what they used to
+# produce, not that they are currently crocked or at another club.
+#
+# Deliberately excludes "d" (doubtful). Those carry a real
+# chance_of_playing_next_round (50-75% across the current roster) and are
+# already scaled down by compute_live_availability; dropping them outright
+# would hide legitimate options over a fitness test.
+#
+# Verified against the live 2026/27 roster: no player with an i/s/u/n status
+# has chance_of_playing_next_round above 0, so this needs no secondary test.
+UNAVAILABLE_STATUSES = frozenset({"i", "s", "u", "n"})
+
+# How much a bench player's predicted points count toward the objective.
+#
+# Zero - the previous behaviour - makes the bench invisible: the solver has no
+# reason to prefer a useful sub over the cheapest body that fits, and no reason
+# to replace an injured one, because neither changes the objective at all.
+# Verified before this: with an injured player owned, the optimiser would not
+# sell him even at four forced transfers.
+#
+# Full weight is just as wrong. A benched player only scores through an
+# auto-sub or a Bench Boost, so counting him like a starter would have the
+# solver buy players it never intends to field.
+#
+# 0.1 is deliberately small - enough to break ties toward a bench that can
+# actually cover, not enough to outrank a starting-XI upgrade. An XI gain of
+# 1.5 still beats a 10-point bench gain.
+BENCH_POINTS_WEIGHT = 0.1
+
 
 def build_player_pool(predicted_df, bootstrap):
     """
@@ -68,6 +100,7 @@ def build_player_pool(predicted_df, bootstrap):
     extra["selected_by_percent"] = extra["selected_by_percent"].astype(float)
     pool = predicted_df.merge(extra, on="id", how="inner")
     pool["value"] = (pool["predicted_points"] / (pool["now_cost"] / 10)).round(2)
+    pool["unavailable"] = pool["status"].isin(UNAVAILABLE_STATUSES)
     return pool
 
 
@@ -106,6 +139,37 @@ def _add_starting_xi_and_captain(prob, squad_vars, players_df):
 
     prob += pulp.lpSum(captain_vars.values()) == 1, "one_captain"
     return xi_vars, captain_vars
+
+
+def _bench_points(squad_vars, xi_vars, players_df):
+    """
+    The bench's predicted points - squad membership minus the starting XI.
+
+    Weighted by BENCH_POINTS_WEIGHT wherever it is used, never counted in
+    full: a benched player only scores through an auto-sub or a Bench Boost,
+    so treating his points as equal to a starter's would have the solver
+    build the squad around players it never intends to field.
+    """
+    return pulp.lpSum(
+        (squad_vars[i] - xi_vars[i]) * players_df.loc[i, "predicted_points"]
+        for i in players_df.index
+    )
+
+
+def _block_unavailable(prob, squad_vars, players_df, owned=frozenset()):
+    """
+    Forbid buying anyone who will not play (see UNAVAILABLE_STATUSES).
+
+    `owned` is exempt: an unavailable player already in the squad has to stay
+    selectable or the solver could not sell him, which is exactly the transfer
+    you most want suggested when one of yours gets injured. A from-scratch
+    build passes nothing, so the whole unavailable set is off the table.
+    """
+    if "unavailable" not in players_df.columns:
+        return
+    for i in players_df.index[players_df["unavailable"].fillna(False)]:
+        if i not in owned:
+            prob += squad_vars[i] == 0, f"unavailable_{i}"
 
 
 def _solve(prob):
@@ -155,9 +219,12 @@ def optimize_best_squad(players_df, budget=DEFAULT_BUDGET):
     _add_squad_constraints(prob, squad_vars, players_df, budget)
     xi_vars, captain_vars = _add_starting_xi_and_captain(prob, squad_vars, players_df)
 
+    _block_unavailable(prob, squad_vars, players_df)
+
     prob += (
         pulp.lpSum(xi_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
         + pulp.lpSum(captain_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
+        + BENCH_POINTS_WEIGHT * _bench_points(squad_vars, xi_vars, players_df)
     )
     _solve(prob)
 
@@ -166,15 +233,24 @@ def optimize_best_squad(players_df, budget=DEFAULT_BUDGET):
     return result
 
 
-def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_transfers=None, exact_transfers=None):
+def optimize_transfers(players_df, current_squad_ids, bank, free_transfers,
+                       max_transfers=None, exact_transfers=None, allow_hits=False):
     """
     Given an existing 15-man squad (by player id) and money in the bank,
     finds the provably optimal set of transfers: which players to buy
     and sell, and how many transfers to make - maximizing predicted
-    starting-XI points (captain doubled) minus the 4-point hit for every
-    transfer beyond free_transfers. The solver decides transfer COUNT
-    itself; making 0 transfers (banking the free transfer) is a valid,
-    sometimes-optimal outcome this can return, not something forced.
+    starting-XI points (captain doubled). Making 0 transfers (banking the
+    free transfer) is a valid, sometimes-optimal outcome this can return,
+    not something forced.
+
+    By default it spends free transfers only and never proposes a hit; see
+    the paid_transfers block below for why the solver cannot be trusted to
+    price one. allow_hits=True restores the old behaviour of letting it
+    choose, paying POINTS_PER_TRANSFER_HIT per transfer beyond
+    free_transfers.
+
+    Players whose live status says they will not play are never bought (see
+    UNAVAILABLE_STATUSES); ones already in the squad stay sellable.
 
     budget = current squad's total now_cost + bank (see the v1
     simplification note in the module docstring re: sale price).
@@ -202,11 +278,29 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
     _add_squad_constraints(prob, squad_vars, players_df, budget)
     xi_vars, captain_vars = _add_starting_xi_and_captain(prob, squad_vars, players_df)
 
+    _block_unavailable(prob, squad_vars, players_df, owned=set(current_idx))
+
     transfers_out = pulp.lpSum(1 - squad_vars[i] for i in current_idx)
     if exact_transfers is not None:
         prob += transfers_out == exact_transfers, "exact_transfers"
-    elif max_transfers is not None:
-        prob += transfers_out <= max_transfers, "max_transfers"
+    else:
+        # Default: spend free transfers only, never recommend a hit.
+        #
+        # The objective sums predicted points over the whole horizon (5
+        # gameweeks by default) but the hit is charged once, so a transfer
+        # worth +1/week reads as +5 against a -4 cost. Stacking that produced
+        # advice like "9 transfers, -32 points". Worse, the model has no
+        # concept of the free transfer arriving next week, so it cannot see
+        # that those same moves are free if made one a week.
+        #
+        # exact_transfers still overrides this: "show me the best 3 transfers"
+        # is a deliberate question, and the hit is reported honestly in the
+        # result. allow_hits=True restores the old solver-chooses behaviour.
+        limits = [max_transfers] if max_transfers is not None else []
+        if not allow_hits:
+            limits.append(free_transfers)
+        if limits:
+            prob += transfers_out <= min(limits), "max_transfers"
 
     paid_transfers = pulp.LpVariable("paid_transfers", lowBound=0)
     prob += paid_transfers >= transfers_out - free_transfers, "paid_transfers_floor"
@@ -220,6 +314,7 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers, max_
     prob += (
         pulp.lpSum(xi_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
         + pulp.lpSum(captain_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
+        + BENCH_POINTS_WEIGHT * _bench_points(squad_vars, xi_vars, players_df)
         - POINTS_PER_TRANSFER_HIT * paid_transfers
         - 0.0001 * transfers_out
     )
