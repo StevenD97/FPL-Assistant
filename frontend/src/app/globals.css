@@ -483,7 +483,12 @@ button.gw-tile:focus-visible {
 
    Sits outside @layer so it beats Tailwind's layered utilities, same as the
    dense-table rules above. */
-.tap-target { position: relative; }
+/* `position: relative` only where the element hasn't asked for its own. This
+   rule sits outside @layer and would otherwise beat a Tailwind `absolute` on
+   the same element and move it; :not() keeps it out of the way. No call site
+   currently combines the two, and this makes sure adding one later is not a
+   silent layout bug. */
+.tap-target:not(.absolute):not(.fixed):not(.sticky) { position: relative; }
 
 @media (pointer: coarse) {
   .tap-target::after {

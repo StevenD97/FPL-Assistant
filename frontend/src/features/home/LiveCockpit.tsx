@@ -107,7 +107,7 @@ export function LiveCockpit({
             wants to look at. */}
         <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
               Your starting XI
             </p>
             <Link href="/squad" className="tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline">

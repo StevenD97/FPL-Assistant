@@ -227,7 +227,7 @@ export default function SquadPage() {
               setAddError(null);
             }}
             aria-expanded={adding}
-            className="shrink-0 rounded-xl border border-border bg-white px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+            className="tap-target min-h-[44px] shrink-0 rounded-xl border border-border bg-white px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
           >
             ＋ Add
           </button>

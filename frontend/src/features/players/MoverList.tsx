@@ -105,7 +105,7 @@ export function MoverList({
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
-          className="w-full border-t border-border px-3.5 py-2.5 text-xs font-semibold text-pl-purple hover:bg-surface-sunken"
+          className="min-h-[44px] w-full border-t border-border px-3.5 py-2.5 text-xs font-semibold text-pl-purple hover:bg-surface-sunken"
         >
           {showAll ? "Show fewer" : `Show all ${movers.length}`}
         </button>

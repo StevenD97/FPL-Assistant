@@ -199,7 +199,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile header */}
         <header className="bg-fpl-hero sticky top-0 z-20 flex items-center justify-between gap-3 px-4 py-3 lg:hidden">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="tap-target flex items-center gap-2.5">
             <Logo variant="mark" size={30} tone="dark" />
             <span className="flex flex-col leading-tight">
               <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-pl-green">

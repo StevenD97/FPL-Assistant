@@ -29,7 +29,7 @@ export function CockpitError({
       subtitle="This is on us, not your team. The rest of the site still works."
     >
       <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
           What went wrong
         </p>
         <p className="mt-1.5 text-sm text-white">{message}</p>

@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-white px-4 py-6 pb-24 lg:px-6 lg:pb-6">
       <div className="mx-auto flex max-w-6xl flex-col gap-4">
-        <div className="flex items-center gap-2">
+        <div className="tap-target flex items-center gap-2">
           <Logo size={24} tone="light" />
           <span className="text-xs text-text-muted">· Independent FPL analytics</span>
         </div>
@@ -20,10 +20,10 @@ export function Footer() {
           </p>
           <div className="flex shrink-0 items-center gap-x-5 gap-y-1 text-xs">
             <DiscordCTA variant="inline" className="text-text-secondary hover:text-pl-purple" />
-            <Link href="/privacy" className="text-text-secondary transition-colors hover:text-pl-purple">
+            <Link href="/privacy" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-pl-purple">
               Privacy
             </Link>
-            <Link href="/terms" className="text-text-secondary transition-colors hover:text-pl-purple">
+            <Link href="/terms" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-pl-purple">
               Terms
             </Link>
             <span className="text-text-muted">© {year} xFPL</span>

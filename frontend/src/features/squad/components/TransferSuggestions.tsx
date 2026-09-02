@@ -204,7 +204,7 @@ export function TransferSuggestions({
           type="button"
           onClick={openModal}
           aria-label={`Find a replacement for ${playerName}`}
-          className={`flex items-center justify-center rounded-full bg-pl-purple text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
+          className={`tap-target flex items-center justify-center rounded-full bg-pl-purple text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
         >
           <TransferGlyph className="h-3 w-3" />
         </button>

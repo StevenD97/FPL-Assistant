@@ -38,7 +38,7 @@ export function DiscordCTA({
         href={DISCORD_INVITE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-flex items-center gap-1.5 transition-colors ${className}`}
+        className={`tap-target inline-flex items-center gap-1.5 transition-colors ${className}`}
       >
         <DiscordIcon className="h-3.5 w-3.5" style={{ color: DISCORD_BLURPLE }} />
         Discord

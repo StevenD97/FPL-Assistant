@@ -299,7 +299,7 @@ export function SquadPitch({
           <button
             type="button"
             onClick={toggleEdit}
-            className={`rounded-md border px-2.5 py-1 font-medium ${
+            className={`tap-target rounded-md border px-2.5 py-1 font-medium ${
               editingFormation
                 ? "border-pl-purple bg-pl-purple text-white"
                 : "border-border text-text-secondary hover:border-pl-purple hover:text-pl-purple"

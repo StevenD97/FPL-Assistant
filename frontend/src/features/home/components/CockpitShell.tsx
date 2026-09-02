@@ -44,11 +44,11 @@ export function CockpitShell({
             href="/squad"
             className="min-h-[44px] shrink-0 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-right transition-colors hover:bg-white/15"
           >
-            <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-pl-green">
+            <span className="block text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
               Deadline
             </span>
             <Countdown className="block text-lg font-bold text-white" />
-            <span className="block text-[10px] text-[#c9a9d1]"><DeadlineLabel /></span>
+            <span className="block text-[11px] text-[#c9a9d1]"><DeadlineLabel /></span>
           </Link>
         </div>
 
@@ -73,7 +73,9 @@ export function CockpitStat({
 }) {
   return (
     <div className="flex flex-col rounded-lg border border-white/15 bg-white/10 px-3.5 py-3">
-      <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+      {/* 11px, not 10: these label the numbers on the first screen a connected
+          manager sees, so they are content rather than micro-chrome. */}
+      <p className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
         {label}
         {tooltip && (
           <InfoTooltip

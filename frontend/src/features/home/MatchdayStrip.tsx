@@ -49,8 +49,8 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Sc
               <div
                 className={
                   state === "live"
-                    ? "text-[10px] font-semibold text-success"
-                    : "text-[10px] text-text-muted"
+                    ? "text-[11px] font-semibold text-success"
+                    : "text-[11px] text-text-muted"
                 }
               >
                 {state === "live" ? "LIVE" : state === "result" ? "FT" : kickoffLabel(f.kickoff_time)}
