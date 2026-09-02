@@ -55,6 +55,23 @@ DEFAULT_BUDGET = 1000  # £100.0m, the standard starting budget
 # has chance_of_playing_next_round above 0, so this needs no secondary test.
 UNAVAILABLE_STATUSES = frozenset({"i", "s", "u", "n"})
 
+# How much a bench player's predicted points count toward the objective.
+#
+# Zero - the previous behaviour - makes the bench invisible: the solver has no
+# reason to prefer a useful sub over the cheapest body that fits, and no reason
+# to replace an injured one, because neither changes the objective at all.
+# Verified before this: with an injured player owned, the optimiser would not
+# sell him even at four forced transfers.
+#
+# Full weight is just as wrong. A benched player only scores through an
+# auto-sub or a Bench Boost, so counting him like a starter would have the
+# solver buy players it never intends to field.
+#
+# 0.1 is deliberately small - enough to break ties toward a bench that can
+# actually cover, not enough to outrank a starting-XI upgrade. An XI gain of
+# 1.5 still beats a 10-point bench gain.
+BENCH_POINTS_WEIGHT = 0.1
+
 
 def build_player_pool(predicted_df, bootstrap):
     """
@@ -124,6 +141,37 @@ def _add_starting_xi_and_captain(prob, squad_vars, players_df):
     return xi_vars, captain_vars
 
 
+def _bench_points(squad_vars, xi_vars, players_df):
+    """
+    The bench's predicted points - squad membership minus the starting XI.
+
+    Weighted by BENCH_POINTS_WEIGHT wherever it is used, never counted in
+    full: a benched player only scores through an auto-sub or a Bench Boost,
+    so treating his points as equal to a starter's would have the solver
+    build the squad around players it never intends to field.
+    """
+    return pulp.lpSum(
+        (squad_vars[i] - xi_vars[i]) * players_df.loc[i, "predicted_points"]
+        for i in players_df.index
+    )
+
+
+def _block_unavailable(prob, squad_vars, players_df, owned=frozenset()):
+    """
+    Forbid buying anyone who will not play (see UNAVAILABLE_STATUSES).
+
+    `owned` is exempt: an unavailable player already in the squad has to stay
+    selectable or the solver could not sell him, which is exactly the transfer
+    you most want suggested when one of yours gets injured. A from-scratch
+    build passes nothing, so the whole unavailable set is off the table.
+    """
+    if "unavailable" not in players_df.columns:
+        return
+    for i in players_df.index[players_df["unavailable"].fillna(False)]:
+        if i not in owned:
+            prob += squad_vars[i] == 0, f"unavailable_{i}"
+
+
 def _solve(prob):
     status = prob.solve(pulp.PULP_CBC_CMD(msg=0))
     if pulp.LpStatus[status] != "Optimal":
@@ -171,9 +219,12 @@ def optimize_best_squad(players_df, budget=DEFAULT_BUDGET):
     _add_squad_constraints(prob, squad_vars, players_df, budget)
     xi_vars, captain_vars = _add_starting_xi_and_captain(prob, squad_vars, players_df)
 
+    _block_unavailable(prob, squad_vars, players_df)
+
     prob += (
         pulp.lpSum(xi_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
         + pulp.lpSum(captain_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
+        + BENCH_POINTS_WEIGHT * _bench_points(squad_vars, xi_vars, players_df)
     )
     _solve(prob)
 
@@ -227,15 +278,7 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers,
     _add_squad_constraints(prob, squad_vars, players_df, budget)
     xi_vars, captain_vars = _add_starting_xi_and_captain(prob, squad_vars, players_df)
 
-    # Never buy a player who will not play. Applied to buys only: an
-    # unavailable player already in the squad has to stay selectable, or the
-    # solver could not sell him - which is exactly the transfer you most want
-    # suggested when one of yours gets injured.
-    if "unavailable" in players_df.columns:
-        owned = set(current_idx)
-        for i in players_df.index[players_df["unavailable"].fillna(False)]:
-            if i not in owned:
-                prob += squad_vars[i] == 0, f"unavailable_{i}"
+    _block_unavailable(prob, squad_vars, players_df, owned=set(current_idx))
 
     transfers_out = pulp.lpSum(1 - squad_vars[i] for i in current_idx)
     if exact_transfers is not None:
@@ -271,6 +314,7 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers,
     prob += (
         pulp.lpSum(xi_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
         + pulp.lpSum(captain_vars[i] * players_df.loc[i, "predicted_points"] for i in players_df.index)
+        + BENCH_POINTS_WEIGHT * _bench_points(squad_vars, xi_vars, players_df)
         - POINTS_PER_TRANSFER_HIT * paid_transfers
         - 0.0001 * transfers_out
     )
