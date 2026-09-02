@@ -90,39 +90,49 @@ def season_stats_by_live_id():
 
 
 def player_scores(ref_date, next_event, max_ownership=None, limit=50):
-    df = compute_player_scores(ref_date, next_event)
-    # recommendation_score stays pinned to the archived season (see
-    # compute_player_scores' docstring), but ownership is a live, currently-
-    # changing number - showing last season's final selected_by_percent here
-    # would be stale and, worse, wrong for what "differential" means right
-    # now. Overlay live selected_by_percent (matched by the stable `code`
-    # field, same as map_archived_ids_to_live) before filtering/ranking, so
-    # both the max_ownership cutoff and the displayed % reflect this season's
-    # actual picks-so-far. Falls back to the archived value for a player with
-    # no live match (retired, or left the Premier League).
-    live_ownership_by_code = {
-        p["code"]: float(p["selected_by_percent"]) for p in load_bootstrap(LIVE_BOOTSTRAP_FILE)["elements"]
-    }
-    df["selected_by_percent"] = df["code"].map(live_ownership_by_code).fillna(df["selected_by_percent"])
+    # Scored in the LIVE id-space: live players, live clubs, live prices, live
+    # ownership, live fixtures, with the archive supplying only the
+    # season-long stats that need a full season behind them. See
+    # compute_player_scores.
+    #
+    # This used to run archive-only and then translate ids at the end, which
+    # meant the list was ranked on last season's opponents and labelled with
+    # last season's clubs - and any player the archive had never heard of (a
+    # promoted club's, a summer signing) was simply absent from it.
+    df = compute_player_scores(
+        ref_date, next_event,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )
     if max_ownership is not None:
         df = top_differentials(df, max_ownership=max_ownership, top_n=limit)
     else:
         df = rank_desc(df, "recommendation_score", limit)
-    team_code_by_id = {t["id"]: t["code"] for t in load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)["teams"]}
+    live = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    team_code_by_id = {t["id"]: t["code"] for t in live["teams"]}
     df = df.copy()
     df["team_badge"] = df["team"].map(team_code_by_id).apply(team_badge_url)
     df = df[PLAYER_SCORE_COLUMNS + ["team_badge"]].copy()
-    # `id` above is an archived-2025/26 element id (compute_player_scores'
-    # default bootstrap) - add live_id so the frontend can link to
-    # /players/{live_id} without mixing season id-spaces. None if this player
-    # isn't in the live game anymore (see map_archived_ids_to_live).
-    live_ids = map_archived_ids_to_live(df["id"].tolist(), load_bootstrap(ARCHIVED_BOOTSTRAP_FILE), load_bootstrap(LIVE_BOOTSTRAP_FILE))
-    df["live_id"] = nullable_int_column(df["id"].map(live_ids))
+    # `id` is already the live element id, so live_id is the same number. The
+    # field stays because the frontend links to /players/{live_id}; it used to
+    # be a cross-season code lookup that returned None - an unclickable row -
+    # for anyone the archive had never seen.
+    df["live_id"] = df["id"]
     return df.to_dict(orient="records")
 
 
 def predicted_points(ref_date, next_event, limit=50):
-    df = predict_player_points(ref_date, next_event)
+    # Archive-trained, live roster and live calendar - the same split every
+    # other prediction surface uses. Without the roster arguments this
+    # predicted 2025/26 players against 2025/26 fixtures and served the result
+    # as this week's: asked for GW3 it answered "De Ligt v Burnley at home",
+    # which was GW3 of last season.
+    df = predict_player_points(
+        ref_date, next_event,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )
     return rank_desc(df, "predicted_points", limit).to_dict(orient="records")
 
 

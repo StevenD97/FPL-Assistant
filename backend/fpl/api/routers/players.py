@@ -6,7 +6,6 @@ per-gameweek trajectory, and the price-change watch.
 Literal-suffix routes (/scores, /price-watch, …) are registered before the
 `/{player_id}` route so an int path param never shadows them.
 """
-from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException
@@ -24,18 +23,26 @@ def price_watch(limit: int = 20, history_hours: int = 48, player_ids: Optional[s
 
 @router.get("/api/players/scores")
 def player_scores(
-    reference_date: str = "2025-11-30",
-    next_event: int = 10,
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
     max_ownership: Optional[float] = None,
     limit: int = 50,
 ):
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+    # Dynamic defaults, like every other endpoint here. These two were the
+    # last holdouts on frozen literals ("2025-11-30", gameweek 10), so a
+    # request with no query string answered for a gameweek from last November
+    # - permanently, and with no way for a caller to tell.
+    ref_date, next_event = resolve_gw_params(reference_date, next_event)
     return service.player_scores(ref_date, next_event, max_ownership=max_ownership, limit=limit)
 
 
 @router.get("/api/players/predicted-points")
-def player_predicted_points(reference_date: str = "2025-11-30", next_event: int = 10, limit: int = 50):
-    ref_date = datetime.strptime(reference_date, "%Y-%m-%d")
+def player_predicted_points(
+    reference_date: Optional[str] = None,
+    next_event: Optional[int] = None,
+    limit: int = 50,
+):
+    ref_date, next_event = resolve_gw_params(reference_date, next_event)
     return service.predicted_points(ref_date, next_event, limit=limit)
 
 

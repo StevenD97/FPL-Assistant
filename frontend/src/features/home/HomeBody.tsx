@@ -11,12 +11,20 @@ import { GetStartedSteps } from "@/features/home/GetStartedSteps";
 // are now the hero itself (HomeLanding -> HomeCockpit) rather than a strip
 // below a marketing pitch. The shortlist teaser threads the personal watchlist
 // on for either.
-export function HomeBody() {
+//
+// `workedExample` arrives as a prop rather than being imported, for the same
+// reason HomeLanding takes its hero that way: it is a Server Component that
+// fetches live data, and it matters most for a first visit and for indexing,
+// so it belongs in the HTML rather than waiting on hydration. It shows before
+// the setup steps - the demonstration should come before the ask, not after
+// it.
+export function HomeBody({ workedExample }: { workedExample?: React.ReactNode }) {
   const { entry } = useTeam();
   const shortlist = useShortlist();
 
   return (
     <div className="flex flex-col gap-6">
+      {!entry && workedExample}
       {!entry && <GetStartedSteps />}
 
       {shortlist.length > 0 && (

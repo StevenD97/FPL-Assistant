@@ -88,9 +88,12 @@ export function GetStartedSteps() {
           </Step>
 
           <Step number="03" icon="leagues" title="Track your gameweek">
+            {/* No "once GW1 kicks off" - the season is under way, and copy
+                that waits for a kick-off eleven months in the past is how the
+                whole product came to read as abandoned. */}
             <p className="text-xs leading-relaxed text-text-secondary">
-              Once GW1 kicks off, watch your score update, get nudged on chip timing, and follow your
-              mini-leagues.
+              Watch your score update through the gameweek, get nudged on chip timing, and follow
+              your mini-leagues.
             </p>
             <Link href="/leagues" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
               Track leagues →

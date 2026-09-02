@@ -4,6 +4,7 @@ import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { HeroActions } from "@/features/home/HeroActions";
 import { HomeBody } from "@/features/home/HomeBody";
 import { HomeLanding } from "@/features/home/HomeLanding";
+import { WorkedExample } from "@/features/home/WorkedExample";
 import { MatchdayStrip } from "@/features/home/MatchdayStrip";
 import { BlogCover } from "@/features/blog/BlogCover";
 import { DiscordCTA } from "@/shared/ui/DiscordCTA";
@@ -70,7 +71,7 @@ export default async function LandingPage() {
 
       {/* Guided setup for a new visitor, plus the shortlist teaser. The
           connected manager's numbers now live in the cockpit above. */}
-      <HomeBody />
+      <HomeBody workedExample={<WorkedExample />} />
 
       {/* Matchday */}
       {matchday && <MatchdayStrip event={matchday.event} fixtures={matchday.fixtures} />}
