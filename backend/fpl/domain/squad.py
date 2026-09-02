@@ -15,6 +15,7 @@ from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
+from fpl.domain.rationale import captain_reason
 from fpl.domain.scoring import (
     rank_desc,
     compute_player_scores,
@@ -145,6 +146,15 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         ["web_name", "team_short", "pos", "recommendation_score", "predicted_points",
          "predicted_points_next", "ep_next", "captain_flag", "next_opponent"]
     ].to_dict(orient="records")
+
+    # A sentence per option, so the ranking is arguable rather than asserted.
+    # Only the top pick mentions who currently wears the armband, and only when
+    # it isn't them: repeating "you have B.Fernandes" against every other name
+    # on a ranked list is noise, not information.
+    current_captain = next((p["web_name"] for p in captaincy_options if p["captain_flag"] == "(C)"), None)
+    for i, option in enumerate(captaincy_options):
+        runner_up = captaincy_options[1] if i == 0 and len(captaincy_options) > 1 else None
+        option["reason"] = captain_reason(option, current_captain if i == 0 else None, runner_up)
 
     # team_badge/fixtures (structured, badge-ready form of `ticker`) come from
     # fixture_scores directly rather than through `squad`'s own merged copy -

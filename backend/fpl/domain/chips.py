@@ -17,6 +17,7 @@ from fpl.config import (
 from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.gameweek import detect_blank_double_gameweeks
+from fpl.domain.rationale import bench_boost_reason, free_hit_reason, triple_captain_reason
 from fpl.model.predict import predict_by_event
 from fpl.model.rules import CHIP_RESET_EVENT, CROSS_SEASON_HALF_LIFE_DAYS
 
@@ -55,14 +56,17 @@ def _period_recommendation(period_table, doubles, blanks, start_event, end_event
         "bench_boost": {
             "event": int(bb_row["event"]), "bench_score": bb_row["bench_score"],
             "double_count": int(bb_row["double_count"]),
+            "reason": bench_boost_reason(bb_row),
         },
         "triple_captain": {
             "event": int(tc_row["event"]), "player": tc_row["best_captain_name"],
             "score": tc_row["best_captain_score"],
+            "reason": triple_captain_reason(tc_row),
         },
         "free_hit": {
             "recommended": bool(fh_row["blank_count"] >= 3),
             "event": int(fh_row["event"]), "blank_count": int(fh_row["blank_count"]),
+            "reason": free_hit_reason(fh_row),
         },
         "wildcard": wildcard_recommendation,
     }

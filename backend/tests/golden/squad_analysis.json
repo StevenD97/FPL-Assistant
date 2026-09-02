@@ -11,6 +11,7 @@
         "pos": "FWD",
         "predicted_points": 35.68,
         "predicted_points_next": 6.88,
+        "reason": "6.9 pts projected away at NFO, 0.2 clear of B.Fernandes - you have Raya.",
         "recommendation_score": 0.830445935,
         "team_short": "MCI",
         "web_name": "Haaland"
@@ -22,6 +23,7 @@
         "pos": "MID",
         "predicted_points": 32.01,
         "predicted_points_next": 6.65,
+        "reason": "6.7 pts projected at home to AVL.",
         "recommendation_score": 1.242335719,
         "team_short": "MUN",
         "web_name": "B.Fernandes"
@@ -33,6 +35,7 @@
         "pos": "MID",
         "predicted_points": 27.37,
         "predicted_points_next": 5.32,
+        "reason": "5.3 pts projected away at CRY.",
         "recommendation_score": 0.943726354,
         "team_short": "LIV",
         "web_name": "Szoboszlai"
@@ -44,6 +47,7 @@
         "pos": "DEF",
         "predicted_points": 22.05,
         "predicted_points_next": 5.25,
+        "reason": "5.2 pts projected at home to HUL.",
         "recommendation_score": 0.372706807,
         "team_short": "ARS",
         "web_name": "Calafiori"
@@ -55,6 +59,7 @@
         "pos": "GKP",
         "predicted_points": 19.57,
         "predicted_points_next": 4.57,
+        "reason": "4.6 pts projected at home to HUL.",
         "recommendation_score": 0.277751735,
         "team_short": "ARS",
         "web_name": "Raya"

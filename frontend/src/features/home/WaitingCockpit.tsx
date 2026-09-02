@@ -174,7 +174,7 @@ function Panel({
     <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{title}</p>
-        <Link href={href} className="text-[11px] font-semibold text-pl-green hover:underline">
+        <Link href={href} className="tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline">
           {cta} →
         </Link>
       </div>

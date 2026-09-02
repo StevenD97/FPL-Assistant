@@ -58,7 +58,7 @@ export function GetStartedSteps() {
                   </span>
                   .
                 </p>
-                <Link href="/squad" className="text-xs font-semibold text-pl-purple hover:underline">
+                <Link href="/squad" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
                   View my squad →
                 </Link>
               </>
@@ -70,7 +70,7 @@ export function GetStartedSteps() {
                 <button
                   type="button"
                   onClick={promptConnect}
-                  className="text-left text-xs font-semibold text-pl-purple hover:underline"
+                  className="text-left tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
                 >
                   Connect your team →
                 </button>
@@ -82,7 +82,7 @@ export function GetStartedSteps() {
             <p className="text-xs leading-relaxed text-text-secondary">
               Predicted points, suggested transfers, and captaincy picks - recomputed every gameweek.
             </p>
-            <Link href="/players" className="text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/players" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
               See predictions →
             </Link>
           </Step>
@@ -92,7 +92,7 @@ export function GetStartedSteps() {
               Once GW1 kicks off, watch your score update, get nudged on chip timing, and follow your
               mini-leagues.
             </p>
-            <Link href="/leagues" className="text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/leagues" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
               Track leagues →
             </Link>
           </Step>

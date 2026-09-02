@@ -110,7 +110,7 @@ export function LiveCockpit({
             <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
               Your starting XI
             </p>
-            <Link href="/squad" className="text-[11px] font-semibold text-pl-green hover:underline">
+            <Link href="/squad" className="tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline">
               Open workspace →
             </Link>
           </div>

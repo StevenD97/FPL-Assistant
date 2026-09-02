@@ -33,6 +33,7 @@ export type CaptaincyOption = {
   pos: Position;
   predicted_points: number;
   predicted_points_next: number;
+  reason: string;
   recommendation_score: number;
   team_short: string;
   web_name: string;
@@ -59,17 +60,20 @@ export type ChipResponsePeriodBenchBoost = {
   bench_score: number;
   double_count: number;
   event: number;
+  reason: string;
 };
 
 export type ChipResponsePeriodFreeHit = {
   blank_count: number;
   event: number;
+  reason: string;
   recommended: boolean;
 };
 
 export type ChipResponsePeriodTripleCaptain = {
   event: number;
   player: string;
+  reason: string;
   score: number;
 };
 
@@ -290,11 +294,17 @@ export type TrajectoryRow = {
 };
 
 export type TransferPlayer = {
+  appearance_points: number;
+  fixture_ticker: string;
   id: number;
+  news: string;
+  now_cost: number;
   player_photo: string;
   position: Position;
   predicted_points: number;
+  reason: string;
   selected_by_percent: number;
+  status: string;
   team_badge: string;
   team_kit: string;
   team_short: string;

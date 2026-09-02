@@ -134,7 +134,7 @@ export function SquadDetailTable({
                         type="button"
                         onClick={() => setOpenRow(expanded ? null : original.position)}
                         aria-expanded={expanded}
-                        className="text-xs font-semibold text-pl-purple hover:underline"
+                        className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
                       >
                         {expanded ? "Hide" : "More"}
                       </button>
@@ -142,7 +142,7 @@ export function SquadDetailTable({
                         <button
                           type="button"
                           onClick={() => onUndoSwap(original.live_id!)}
-                          className="text-xs font-semibold text-pl-purple hover:underline"
+                          className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
                         >
                           Reset
                         </button>

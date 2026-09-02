@@ -14,7 +14,7 @@ const TONES = {
   hero: {
     box: "rounded-lg border border-white/15 bg-white/[0.07] p-3.5",
     title: "text-[10px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]",
-    cta: "text-[11px] font-semibold text-pl-green hover:underline",
+    cta: "tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline",
   },
   light: {
     box: "rounded-lg border border-border bg-white p-3.5 shadow-sm",

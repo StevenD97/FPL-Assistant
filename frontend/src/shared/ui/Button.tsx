@@ -26,7 +26,7 @@ export function Button({ variant = "primary", size = "md", className = "", child
   return (
     <button
       {...rest}
-      className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md font-semibold transition-all duration-fast ease-standard active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+      className={`tap-target inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md font-semibold transition-all duration-fast ease-standard active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
     >
       {children}
     </button>

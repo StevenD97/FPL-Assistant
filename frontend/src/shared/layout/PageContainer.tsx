@@ -39,7 +39,11 @@ export function PageHeader({
           <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-muted">{eyebrow}</span>
         )}
         <h1 className="text-lg font-bold tracking-tight text-pl-purple">{title}</h1>
-        {subtitle && <p className="max-w-2xl text-sm text-text-secondary">{subtitle}</p>}
+        {/* Hidden on a phone. A page subtitle is orientation copy for someone
+            deciding whether they are in the right place; on a 390px screen it
+            is a paragraph between the reader and the thing they came for, and
+            the squad page had two of them stacked. */}
+        {subtitle && <p className="hidden max-w-2xl text-sm text-text-secondary sm:block">{subtitle}</p>}
       </div>
       {action}
     </div>

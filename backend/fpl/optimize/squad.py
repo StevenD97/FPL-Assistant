@@ -331,7 +331,14 @@ def optimize_transfers(players_df, current_squad_ids, bank, free_transfers,
 
     transferred_out = [i for i in current_idx if pulp.value(squad_vars[i]) < 0.5]
     transferred_in = [i for i in players_df.index if i not in current_idx and pulp.value(squad_vars[i]) > 0.5]
-    cols = ["id", "web_name", "team_short", "position", "predicted_points", "value", "selected_by_percent", "code", "team"]
+    # status/news/now_cost/fixture_ticker ride along so the frontend can flag a
+    # departing player and so pair_reasons below has something to explain with.
+    cols = [
+        "id", "web_name", "team_short", "position", "predicted_points", "value",
+        "selected_by_percent", "code", "team", "now_cost", "status", "news", "fixture_ticker",
+        "appearance_points",
+    ]
+    cols = [c for c in cols if c in players_df.columns]
     result["transferred_out"] = players_df.loc[transferred_out, cols].to_dict(orient="records")
     result["transferred_in"] = players_df.loc[transferred_in, cols].to_dict(orient="records")
     result["bank"] = round(bank / 10, 1)

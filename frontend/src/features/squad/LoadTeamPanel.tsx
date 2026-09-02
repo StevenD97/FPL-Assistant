@@ -13,6 +13,7 @@ import { Inspector } from "@/shared/ui/Inspector";
 import { nextChip } from "@/shared/lib/chips";
 import { DEFAULT_RISK_KEY, riskCeilingFor, type OwnershipKey } from "@/shared/lib/ownership";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
+import { ThisWeek } from "./components/ThisWeek";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { FixtureOutlook, fixtureOutlookSummary } from "./components/FixtureOutlook";
 import { SquadDifferentials, differentialsSummary } from "./components/SquadDifferentials";
@@ -372,15 +373,11 @@ export function LoadTeamPanel({
 
       {data && (
         <div className="space-y-6">
-          <div>
-            <h2 className="text-lg font-semibold text-text-primary">
-              {data.entry_name} - GW{data.event}
-            </h2>
-            <p className="mt-0.5 text-xs text-text-muted">
-              Your dashboard for this team - the numbers that matter around the team sheet.
-            </p>
-          </div>
-
+          {/* No heading here. The page already says "My Squad", the switcher
+              directly above says which team is selected, and the stat bar
+              below is labelled with the gameweek - so a second title and a
+              second subtitle were ~200px of a phone screen spent repeating
+              what was on either side of them. */}
           {/* One banded bar, headline first, with a context line under each
               number - four equal tiles gave four equal-weight numbers and no
               reading order.
@@ -434,6 +431,17 @@ export function LoadTeamPanel({
                 hint: `${benchCount} on the bench`,
               },
             ]}
+          />
+
+          {/* The answer, before the evidence. */}
+          <ThisWeek
+            optimizer={optimizer}
+            optimizerLoading={optimizerLoading}
+            topCaptain={topCaptain}
+            currentCaptainName={currentCaptain?.web_name ?? null}
+            nextEvent={data.event + 1}
+            onOpenTransfers={() => setRead("transfers")}
+            onOpenCaptaincy={() => setRead("captaincy")}
           />
 
           {/* The team sheet and the rail share the top row; the read itself opens

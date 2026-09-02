@@ -464,3 +464,38 @@ button.gw-tile:focus-visible {
   font-size: 0.85em;
 }
 .blog-prose hr { border: none; border-top: 1px solid var(--slate-200); margin: 1.75em 0; }
+
+/* --- Touch targets ---
+   A control can be the right size to look at and the wrong size to hit. The
+   audit counted 49 controls under 40px on the squad page alone, 38 on the
+   players list: filter pills, star toggles, info triggers, the small chevrons
+   on a read rail. Every one of them is a legitimately small piece of visual
+   design, and every one of them is a miss waiting to happen under a thumb.
+
+   Rather than inflate them - which would wreck the density the dense tables
+   above were carefully tuned for - this grows the *hit area* to 44px square
+   without moving a pixel of what is drawn. It only applies where the pointer
+   is coarse, so a mouse keeps the tight target it can hit precisely.
+
+   Applied through the shared primitives (Pill, Button, ShortlistStar,
+   InfoTooltip), so it lands on the controls the app actually renders rather
+   than needing to be remembered at each call site.
+
+   Sits outside @layer so it beats Tailwind's layered utilities, same as the
+   dense-table rules above. */
+.tap-target { position: relative; }
+
+@media (pointer: coarse) {
+  .tap-target::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+    /* Behind the control's own content, so text stays selectable and the
+       element's own hover/active styling is unaffected. */
+    z-index: -1;
+  }
+}

@@ -16,6 +16,7 @@ from fpl.config import (
 from fpl.data.entry import fetch_entry_info
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.chips import build_chip_strategy
+from fpl.domain.rationale import transfer_reason
 from fpl.domain.scoring import rank_desc
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.gameweek import get_gw_context
@@ -111,13 +112,19 @@ def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
     """The provably optimal set of transfers for a squad, drawn from the live 2026/27 pool."""
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    predicted = predict_multi_gw_points(
+    # The breakdown rather than the headline total, for appearance_points: the
+    # single most decision-relevant number behind most swaps is how often each
+    # player is expected to be on the pitch, and a points total alone cannot
+    # say it. Shares a cache with predict_multi_gw_points, so this costs
+    # nothing extra - see predict_multi_gw_breakdown.
+    predicted = predict_multi_gw_breakdown(
         ref_date, next_events,
         half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
         bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
         apply_live_signals=True,
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
-    )
+    )[["id", "web_name", "team_short", "position", "predicted_points",
+       "appearance_points", "fixture_count", "fixture_ticker"]]
     pool = build_player_pool(predicted, bootstrap)
     result = optimize_transfers(
         pool, current_squad_ids, bank=bank, free_transfers=free_transfers,
@@ -132,6 +139,19 @@ def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
     # multi-gameweek total is a single gameweek's score (see SuggestedTransfers.tsx).
     result["gw_count"] = gw_count
     result["next_event"] = next_event
+
+    # Pair each incoming player with the one they replace, and say why in a
+    # sentence. The optimiser returns two flat lists, so the pairing is by
+    # order - which is also how every caller renders them, side by side.
+    #
+    # The same sentence goes on both halves of a pair (it names both players
+    # anyway), rather than a directional "replaces"/"replaced_by" pair of
+    # fields: the two lists stay the same shape, and a caller showing either
+    # side has the whole explanation without having to look up the other.
+    for player_in, player_out in zip(result["transferred_in"], result["transferred_out"]):
+        reason = transfer_reason(player_in, player_out, gw_count)
+        player_in["reason"] = reason
+        player_out["reason"] = reason
     return result
 
 

@@ -110,7 +110,7 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
                     type="button"
                     onClick={() => setOpenRow(expanded ? null : p.id)}
                     aria-expanded={expanded}
-                    className="text-xs font-semibold text-pl-purple hover:underline"
+                    className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
                   >
                     {expanded ? "Hide" : "More"}
                   </button>

@@ -161,7 +161,9 @@ export default function PlayersPage() {
   const start = (safePage - 1) * PAGE_SIZE;
   const visible = rows.slice(start, start + PAGE_SIZE);
 
-  const activeFilterCount = (position !== "All" ? 1 : 0) + (ownership !== "any" ? 1 : 0);
+  // Position isn't counted: it has its own always-visible row, so a badge for
+  // it would be a count of something already on screen.
+  const activeFilterCount = ownership !== "any" ? 1 : 0;
 
   return (
     <PageContainer>
@@ -172,8 +174,13 @@ export default function PlayersPage() {
         action={players ? <span className="font-mono text-sm text-text-muted">{rows.length} players</span> : undefined}
       />
 
-      {/* One tidy toolbar - sticks under the header while you scroll the grid.
-          View = the merged lenses; Filters holds position + ownership. */}
+      {/* One tidy toolbar - sticks under the header while you scroll the list.
+          View = the merged lenses; Filters holds ownership.
+
+          Position is not in that popover any more. With 626 players and a list
+          that runs for pages, narrowing to one position is the first thing
+          almost everyone does, and it was two taps behind a button labelled
+          "Filters". It now has its own always-visible row. */}
       <div className="sticky top-[56px] z-10 -mx-4 border-b border-border bg-surface-sunken/95 px-4 py-2.5 backdrop-blur lg:top-0 lg:-mx-6 lg:px-6">
         <div className="flex flex-wrap items-center gap-2">
           <TextField
@@ -217,7 +224,7 @@ export default function PlayersPage() {
             >
               Filters
               {activeFilterCount > 0 && (
-                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[10px] font-bold text-white">
+                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[11px] font-bold text-white">
                   {activeFilterCount}
                 </span>
               )}
@@ -227,25 +234,6 @@ export default function PlayersPage() {
                 <div className="fixed inset-0 z-10" onClick={() => setFiltersOpen(false)} aria-hidden="true" />
                 <div className="absolute right-0 z-20 mt-2 w-64 rounded-lg border border-border bg-white p-3 shadow-lg">
                   <div>
-                    <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                      Position
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {POSITIONS.map((pos) => (
-                        <Pill
-                          key={pos}
-                          active={position === pos}
-                          onClick={() => {
-                            setPosition(pos);
-                            setPage(1);
-                          }}
-                        >
-                          {pos === "All" ? "All" : pos}
-                        </Pill>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-3">
                     <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
                       Owned
                     </span>
@@ -282,7 +270,7 @@ export default function PlayersPage() {
             </span>
             Shortlist
             {shortlist.length > 0 && (
-              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[10px] font-bold text-white">
+              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[11px] font-bold text-white">
                 {shortlist.length}
               </span>
             )}
@@ -304,11 +292,30 @@ export default function PlayersPage() {
             </select>
           </label>
         </div>
+
+        {/* Position, always one tap away. Scrolls rather than wraps, so the
+            toolbar keeps a fixed height as the list scrolls under it. */}
+        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
+          {POSITIONS.map((pos) => (
+            <Pill
+              key={pos}
+              active={position === pos}
+              onClick={() => {
+                setPosition(pos);
+                setPage(1);
+              }}
+            >
+              {pos}
+            </Pill>
+          ))}
+        </div>
       </div>
 
-      {/* One legend covers every card's stat strip, since the same abbreviations
-          repeat on every card in the grid below. */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+      {/* One legend covers every tile's stat strip, since the same abbreviations
+          repeat on every tile in the grid below. Hidden on a phone, where the
+          compact rows show none of them - a legend for abbreviations that
+          aren't on screen is seven more info triggers and nothing else. */}
+      <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:flex">
         <span className="flex items-center gap-1">
           xPts <InfoTooltip term="xPts" />
         </span>

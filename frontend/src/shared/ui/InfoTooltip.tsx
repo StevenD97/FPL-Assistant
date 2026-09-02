@@ -102,7 +102,7 @@ export function InfoTooltip({ term, text, label, className = "" }: InfoTooltipPr
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        className={`inline-flex h-3.5 w-3.5 shrink-0 cursor-help items-center justify-center rounded-full border border-slate-400 text-[9px] font-bold leading-none text-text-muted transition-colors hover:border-pl-purple hover:bg-pl-purple hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-pl-purple ${className}`}
+        className={`tap-target inline-flex h-3.5 w-3.5 shrink-0 cursor-help items-center justify-center rounded-full border border-slate-400 text-[9px] font-bold leading-none text-text-muted transition-colors hover:border-pl-purple hover:bg-pl-purple hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-pl-purple ${className}`}
       >
         i
       </span>

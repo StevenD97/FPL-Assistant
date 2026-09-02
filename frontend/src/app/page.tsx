@@ -80,7 +80,7 @@ export default async function LandingPage() {
         <section>
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">From the blog</span>
-            <Link href="/blog" className="text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/blog" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
               All posts →
             </Link>
           </div>

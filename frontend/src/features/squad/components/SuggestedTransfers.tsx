@@ -130,6 +130,21 @@ export function SuggestedTransfers({
             <InfoTooltip term="predictedXiWindow" />
           </p>
 
+          {/* Why, before who. The two columns below say what the optimiser
+              decided; these sentences say what decided it - the points
+              difference, the fixtures behind it, an availability flag, what it
+              does to the bank. Without them the page asserts a swap and the
+              reader has to take it on faith. */}
+          {shown.transferred_in.some((p) => p.reason) && (
+            <ul className="mb-3 flex flex-col gap-1.5">
+              {shown.transferred_in.map((p) => (
+                <li key={`why-${p.id}`} className="text-sm leading-snug text-text-secondary">
+                  {p.reason}
+                </li>
+              ))}
+            </ul>
+          )}
+
           {shown.transferred_out.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2">
               <div>

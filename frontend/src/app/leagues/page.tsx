@@ -278,7 +278,7 @@ export default function LeaguesPage() {
               <button
                 type="button"
                 onClick={() => findLeagues(connectedTeamId)}
-                className="text-xs font-semibold text-pl-purple hover:underline"
+                className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
               >
                 Refresh
               </button>
@@ -499,7 +499,7 @@ export default function LeaguesPage() {
                     <button
                       type="button"
                       onClick={() => setShowAllTrend((v) => !v)}
-                      className="text-xs font-semibold text-pl-purple hover:underline"
+                      className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
                     >
                       {showAllTrend
                         ? `Show top ${TREND_SERIES_CAP}`

@@ -5,12 +5,14 @@
         "bench_boost": {
           "bench_score": 13.995,
           "double_count": 0,
-          "event": 12
+          "event": 12,
+          "reason": "Your bench projects 14.0 pts in GW12, the most of any week scanned."
         },
         "end_event": 14,
         "free_hit": {
           "blank_count": 0,
           "event": 10,
+          "reason": "No gameweek in the scan leaves enough of your squad without a fixture to be worth a Free Hit.",
           "recommended": false
         },
         "label": "Before the reset",
@@ -18,6 +20,7 @@
         "triple_captain": {
           "event": 14,
           "player": "B.Fernandes",
+          "reason": "B.Fernandes projects 7.4 pts in GW14, the highest single-gameweek score in your squad across the scan.",
           "score": 7.421
         },
         "wildcard": null

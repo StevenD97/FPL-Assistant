@@ -105,10 +105,13 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
           verdict={`GW${bb.event}`}
           detail={
             <>
-              bench <span className="font-mono">{bb.bench_score.toFixed(3)}</span>
+              {/* Points, not the old 3dp normalised score - the bench totals
+                  are predicted points now, so say so. */}
+              bench <span className="font-mono">{bb.bench_score.toFixed(1)}</span> pts
               {bb.double_count > 0 ? ` · ${bb.double_count} DGW` : " · no DGW"}
             </>
           }
+          why={bb.reason}
         />
 
         <ChipCard
@@ -124,9 +127,10 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
               {tcPlayer && (
                 <TeamBadge teamShort={tcPlayer.team_short} name={tcPlayer.team_short} badgeUrl={tcPlayer.team_badge} />
               )}
-              <span className="font-mono">· {tc.score.toFixed(2)}</span>
+              <span className="font-mono">· {tc.score.toFixed(1)} pts</span>
             </span>
           }
+          why={tc.reason}
         />
 
         {fh.recommended ? (
@@ -137,6 +141,7 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
             accentClass={CHIP_ACCENT.freeHit}
             verdict={`GW${fh.event}`}
             detail={`${fh.blank_count} of 15 blank`}
+            why={fh.reason}
           />
         ) : (
           <ChipCard
@@ -145,7 +150,7 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
             accentClass={CHIP_ACCENT.freeHit}
             verdict="Hold"
             detail={`only ${fh.blank_count} of 15 blank`}
-            why="Not enough of your squad blanks in this window to be worth the chip. Save it for a run of injuries and suspensions, or a bigger blank gameweek later."
+            why={`${fh.reason} Save it for a run of injuries and suspensions, or a bigger blank gameweek later.`}
           />
         )}
 
