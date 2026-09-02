@@ -8,7 +8,7 @@ import { WorkedExample } from "@/features/home/WorkedExample";
 import { MatchdayStrip } from "@/features/home/MatchdayStrip";
 import { BlogCover } from "@/features/blog/BlogCover";
 import { DiscordCTA } from "@/shared/ui/DiscordCTA";
-import { getAllPosts } from "@/shared/lib/blog";
+import { getRecentPosts } from "@/shared/lib/blog";
 import { apiGet } from "@/shared/lib/api";
 import { currentEvent } from "@/shared/lib/fixtureState";
 import type { ScheduleFixture } from "@/shared/types/api";
@@ -39,7 +39,10 @@ function formatDate(iso: string): string {
 }
 
 export default async function LandingPage() {
-  const posts = getAllPosts().slice(0, 3);
+  // Recent posts only. A five-week-old pre-season note featured under "From
+  // the blog" with no visible date is worse than no blog strip at all - see
+  // getRecentPosts.
+  const posts = getRecentPosts(3);
   const matchday = await getMatchday();
 
   return (

@@ -142,7 +142,9 @@ export type ChipResponseTable = {
 };
 
 export type Faller = {
+  about_to_change: boolean;
   already_moved_today: boolean;
+  change_progress_pct: number;
   cost: number;
   direction: string;
   id: number;
@@ -560,7 +562,7 @@ export type PlayerScore = {
   form: number;
   ict_index: number;
   id: number;
-  live_id: number | null;
+  live_id: number;
   next_opponent: string;
   opponent_multiplier: number;
   penalties_missed: number;
@@ -624,6 +626,13 @@ export type PriceMover = {
   already_moved_today: boolean;
   // bootstrap's price_change_percent is a string ("0"), not a number.
   official_progress_percent: string | null;
+  // abs(official_progress_percent) as a plain 0-100+ percentage toward a
+  // change in whichever direction the player is heading; null when FPL
+  // publishes no figure for them.
+  change_progress_pct: number | null;
+  // Over the threshold and not yet moved today - barring FPL changing its
+  // mind, this is tonight's price change.
+  about_to_change: boolean;
   transfer_rate_per_hour: number | null;
   team_short: string;
   team_badge: string;

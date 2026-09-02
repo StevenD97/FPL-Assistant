@@ -44,14 +44,26 @@ def compute_price_change_signals(bootstrap, history_snapshots=None):
     bootstrap["total_players"] (FPL doesn't publish a raw per-player
     owner count directly).
 
-    FPL's own price_change_percent field is passed through as-is under
-    official_progress_percent - presumably its own authoritative progress-
-    toward-threshold figure (premierleague.com announced a "Price Change
-    Predictor" for 2026/27, updated every 15 minutes on FPL's own site),
-    but every element's value is still 0 as of writing (no 2026/27
-    transfer activity yet), so its exact sign convention/scale can't be
-    verified against real data here - surfaced for reference, not treated
-    as ground truth by the momentum_pct ranking above.
+    FPL's own price_change_percent field comes through as
+    official_progress_percent, and as of 2026/27 it is populated and is the
+    best signal available - FPL's own Price Change Predictor, updated every
+    fifteen minutes on premierleague.com. When this was written every
+    element's value was still 0 (no transfer activity yet), so the convention
+    could not be checked; it can now, and against live data it is
+    unambiguous:
+
+        +100  the threshold for a RISE has been reached
+           0  no movement either way
+        -100  the threshold for a FALL has been reached
+
+    with the sign agreeing with net transfers on every player checked (Cherki
+    +80.7 on +666k net in; Mateta -83.0 on -121k net out; De Cuyper +109.5,
+    over the line and yet to move today).
+
+    So it, rather than momentum_pct, is what `change_progress_pct` and
+    `about_to_change` below are built from, and what callers should lead
+    with. momentum_pct remains as the fallback ranking for any player FPL has
+    no figure for, and as a sanity check on this one.
 
     history_snapshots (optional): [(fetched_at, bootstrap_dict), ...],
     oldest first - e.g. from fpl.data.db.read.recent_bootstrap_snapshots. When
@@ -69,6 +81,8 @@ def compute_price_change_signals(bootstrap, history_snapshots=None):
         estimated_owners = max(owned_pct / 100 * total_players, 1)
         momentum_pct = round(net / estimated_owners * 100, 3) if abs(net) >= MIN_NET_TRANSFERS_TO_FLAG else 0.0
 
+        official = _as_float(el.get("price_change_percent"))
+        already_moved = el["cost_change_event"] != 0
         rows.append({
             "id": el["id"],
             "web_name": el["web_name"],
@@ -81,11 +95,27 @@ def compute_price_change_signals(bootstrap, history_snapshots=None):
             "net_transfers_event": net,
             "momentum_pct": momentum_pct,
             "direction": "rising" if net > 0 else "falling" if net < 0 else "stable",
-            "already_moved_today": el["cost_change_event"] != 0,
+            "already_moved_today": already_moved,
             "official_progress_percent": el.get("price_change_percent"),
+            # How far along FPL says this player is, as a plain 0-100+
+            # percentage in whichever direction they are heading. The signed
+            # figure above is exact but needs decoding; this is the number a
+            # reader can act on - "83% of the way to a fall".
+            "change_progress_pct": round(abs(official), 1) if official is not None else None,
+            # Over the line and not yet moved today: barring FPL changing its
+            # mind, this is tonight's price change.
+            "about_to_change": bool(official is not None and abs(official) >= 100 and not already_moved),
             "transfer_rate_per_hour": rate_by_id.get(el["id"]),
         })
     return pd.DataFrame(rows)
+
+
+def _as_float(value):
+    """FPL types price_change_percent inconsistently (number or numeric string)."""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _transfer_rate_per_hour(history_snapshots):

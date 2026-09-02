@@ -28,21 +28,47 @@ function MoverRow({ mover, sign }: { mover: PriceMover; sign: "+" | "-" }) {
           </span>
         </div>
       </div>
+      {/* Progress toward the change first, transfer count second. A raw net
+          transfer count is an input to a decision nobody can make from it;
+          "94% of the way to a rise" is the decision. It is FPL's own figure
+          (price_change_percent), updated every fifteen minutes, not a guess
+          at their threshold. */}
       <div className="flex shrink-0 flex-col items-end">
-        <span
-          className={`font-mono text-sm font-semibold ${sign === "+" ? "text-success" : "text-danger"}`}
-        >
-          {sign}
-          {formatCount(Math.abs(mover.net_transfers_event))}
-        </span>
+        {mover.change_progress_pct != null ? (
+          <span
+            className={`font-mono text-sm font-semibold ${sign === "+" ? "text-success" : "text-danger"}`}
+          >
+            {mover.change_progress_pct.toFixed(0)}%
+          </span>
+        ) : (
+          <span
+            className={`font-mono text-sm font-semibold ${sign === "+" ? "text-success" : "text-danger"}`}
+          >
+            {sign}
+            {formatCount(Math.abs(mover.net_transfers_event))}
+          </span>
+        )}
+        {mover.about_to_change ? (
+          <span
+            className={`text-[11px] font-bold uppercase tracking-wide ${
+              sign === "+" ? "text-success" : "text-danger"
+            }`}
+          >
+            Changes tonight
+          </span>
+        ) : mover.already_moved_today ? (
+          <span className="text-[11px] font-medium text-text-muted">already moved today</span>
+        ) : (
+          <span className="font-mono text-[11px] text-text-muted">
+            {sign}
+            {formatCount(Math.abs(mover.net_transfers_event))} transfers
+          </span>
+        )}
         {mover.transfer_rate_per_hour != null && (
           <span className="font-mono text-[11px] text-text-muted">
             {mover.transfer_rate_per_hour > 0 ? "+" : ""}
             {formatCount(mover.transfer_rate_per_hour)}/hr
           </span>
-        )}
-        {mover.already_moved_today && (
-          <span className="text-[11px] font-medium text-text-muted">already moved today</span>
         )}
       </div>
     </li>
@@ -50,9 +76,10 @@ function MoverRow({ mover, sign }: { mover: PriceMover; sign: "+" | "-" }) {
 }
 
 /**
- * One column of price movers. The endpoint returns 15 per direction, which
- * stacked to 30 consecutive rows on a phone; only the leading few are shown
- * until asked, since the list is already sorted by how likely a move is.
+ * One column of price movers, ordered by how close each is to actually
+ * moving. The endpoint returns 15 per direction, which stacked to 30
+ * consecutive rows on a phone; only the leading few are shown until asked,
+ * since the ones that matter are at the top.
  */
 export function MoverList({
   movers,

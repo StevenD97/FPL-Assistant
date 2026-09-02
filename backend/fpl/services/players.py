@@ -582,9 +582,19 @@ def price_watch(limit=20, history_hours=48, player_ids=None):
             "owned": owned.to_dict(orient="records"),
         }
 
-    qualifying = df[df["net_transfers_event"].abs() >= MIN_NET_TRANSFERS_TO_FLAG]
-    risers = qualifying[qualifying["direction"] == "rising"].sort_values("net_transfers_event", ascending=False)
-    fallers = qualifying[qualifying["direction"] == "falling"].sort_values("net_transfers_event", ascending=True)
+    qualifying = df[df["net_transfers_event"].abs() >= MIN_NET_TRANSFERS_TO_FLAG].copy()
+    # Ordered by how close FPL says each player is to actually moving, not by
+    # raw transfer count. They are not the same question: the player with the
+    # most net transfers is usually one who has already moved today and reset,
+    # while the one about to change tonight can be well down that list. Net
+    # transfers break ties and rank anyone FPL has no figure for.
+    qualifying["_closeness"] = qualifying["change_progress_pct"].fillna(-1)
+    risers = qualifying[qualifying["direction"] == "rising"].sort_values(
+        ["_closeness", "net_transfers_event"], ascending=[False, False]
+    ).drop(columns="_closeness")
+    fallers = qualifying[qualifying["direction"] == "falling"].sort_values(
+        ["_closeness", "net_transfers_event"], ascending=[False, True]
+    ).drop(columns="_closeness")
 
     return {
         "has_history_trend": len(history_snapshots) >= 2,

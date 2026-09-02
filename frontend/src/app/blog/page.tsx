@@ -9,12 +9,20 @@ export const metadata = { title: "Blog - xFPL" };
 
 export default function BlogIndexPage() {
   const posts = getAllPosts();
+  const latest = posts[0]?.date ?? null;
 
   return (
     <PageContainer>
       <PageHeader
         title="Blog"
-        subtitle="Pre-season notes, transfer watch, and gameweek analysis - written to help you plan your squad."
+        subtitle="Squad-planning notes and gameweek analysis. Written by hand, so it appears when there is something worth saying rather than on a schedule - the numbers that update every week live on the rest of the site."
+        action={
+          latest ? (
+            <span className="text-xs text-text-muted">
+              Last post <time dateTime={latest}>{formatBlogDate(latest)}</time>
+            </span>
+          ) : undefined
+        }
       />
 
       <DiscordCTA className="mb-5" />

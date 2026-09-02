@@ -1,4 +1,5 @@
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { ratingBand } from "@/shared/lib/rating";
 import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 /**
@@ -56,7 +57,7 @@ export function StatMeter({
         viewBox={`0 0 ${size} ${size}`}
         className="shrink-0 -rotate-90"
         role="img"
-        aria-label={`${label}: ${clamped} out of 99 (${value})`}
+        aria-label={`${label}: ${ratingBand(clamped)}, ${clamped} out of 99 (${value})`}
       >
         {/* Track: the same hue at its lowest step, so the limit reads as part of
             the same scale rather than as a foreign grey. */}
@@ -81,10 +82,12 @@ export function StatMeter({
           strokeDashoffset={c * (1 - clamped / 99)}
         />
       </svg>
-      {/* The rating reads inside the ring on wider cards, but at 44px it collides
-          with the arc, so it sits beside it with the raw figure underneath. */}
+      {/* The band, not the number. A dial reading 87 beside one reading 84
+          invites a distinction the underlying percentile cannot support - see
+          ratingBand. The raw figure is still directly underneath, and the
+          exact percentile is still in the accessible label. */}
       <span className="flex min-w-0 flex-col leading-tight">
-        <span className="font-mono text-[13px] font-bold text-white">{clamped}</span>
+        <span className="text-[12px] font-bold text-white">{ratingBand(clamped)}</span>
         <span className="flex items-center gap-0.5 truncate text-[9px] font-semibold uppercase tracking-wide text-[#c9a9d1]">
           {label}
           {tooltip && (

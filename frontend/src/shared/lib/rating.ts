@@ -78,3 +78,25 @@ export function hasSignal(values: number[]): boolean {
   if (finite.length === 0) return false;
   return finite.some((v) => v !== 0) && new Set(finite).size > 1;
 }
+
+/**
+ * The three-word answer, which is all a percentile can honestly support.
+ *
+ * A dial reading 87 next to one reading 84 invites a reader to believe there
+ * is a difference between them. There isn't one they can act on: the
+ * underlying stats are noisy, the pool shifts every gameweek, and three points
+ * of percentile is well inside that. Six such dials on a card is six invented
+ * distinctions.
+ *
+ * The bands match the meter's existing colour steps exactly, so the word and
+ * the colour say the same thing rather than two slightly different things. The
+ * raw figure stays on screen underneath and the exact percentile stays in the
+ * accessible label - nothing is hidden, it just stops being the headline.
+ */
+export type RatingBand = "Low" | "Solid" | "Elite";
+
+export function ratingBand(rating: number): RatingBand {
+  if (rating <= 39) return "Low";
+  if (rating <= 69) return "Solid";
+  return "Elite";
+}

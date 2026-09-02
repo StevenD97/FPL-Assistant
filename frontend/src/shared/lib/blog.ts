@@ -90,3 +90,30 @@ export function formatBlogDate(iso: string): string {
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 }
+
+/**
+ * How old a post can be before the landing page stops featuring it as news.
+ *
+ * The homepage carried three posts under "From the blog" with no hint of
+ * their age; by September they were five weeks old and every one of them was
+ * pre-season copy ("preseason transfer watch", "opening fixture swings") about
+ * a season that had since started. Stale content presented as current is a
+ * stronger signal of abandonment than an empty section, because the reader has
+ * to notice the date themselves to work out they were misled.
+ *
+ * Fourteen days is roughly the beat of an FPL fortnight: within it a post is
+ * still about the situation the reader is in. Beyond it, the archive is still
+ * at /blog, clearly dated - it just isn't presented as this week's thinking.
+ */
+export const FEATURED_POST_MAX_AGE_DAYS = 14;
+
+/** Posts recent enough to feature. Empty is a perfectly good answer. */
+export function getRecentPosts(limit: number, now: Date = new Date()): BlogPostMeta[] {
+  const cutoff = now.getTime() - FEATURED_POST_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+  return getAllPosts()
+    .filter((post) => {
+      const at = Date.parse(post.date);
+      return Number.isFinite(at) && at >= cutoff;
+    })
+    .slice(0, limit);
+}

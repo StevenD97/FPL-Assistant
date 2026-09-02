@@ -25,13 +25,22 @@ export default async function PriceWatchPage() {
   // present here - narrow once rather than guarding at every use.
   const risers = data?.risers ?? [];
   const fallers = data?.fallers ?? [];
+  // The headline this page never had: how many are actually over the line
+  // right now. Everything below is a ranking; this is the news.
+  const aboutToChange = [...risers, ...fallers].filter((m) => m.about_to_change).length;
 
   return (
     <PageContainer>
       <PageHeader
         title="Price watch"
-        subtitle="Players with the biggest net transfer activity today - a signal for who's at risk of a £0.1m
-          price change at tonight's update (~2:30am UK), not a guaranteed prediction."
+        subtitle="How close each player is to a £0.1m price change at tonight's update (~2:30am UK), using FPL's own progress figure - refreshed every fifteen minutes. Anything at 100% is over the line; FPL can still change its mind."
+        action={
+          aboutToChange > 0 ? (
+            <span className="font-mono text-sm font-semibold text-pl-purple">
+              {aboutToChange} changing tonight
+            </span>
+          ) : undefined
+        }
       />
 
       {error && <p className="text-sm font-medium text-danger">{error}</p>}
