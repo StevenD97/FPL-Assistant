@@ -84,13 +84,6 @@ class Settings(BaseSettings):
     # snapshots so local dev, tests, and cold deploys still work.
     allow_file_fallback: bool = True
 
-    # Demo mode (env var DEMO_MODE): every manager lookup (any team id)
-    # resolves to the same fixed squad instead of hitting the live FPL API -
-    # see fpl.demo. Used only by the `demo` branch's own deployment for
-    # reviewer feedback; the default (off) leaves the real production
-    # behaviour untouched.
-    demo_mode: bool = False
-
     # raw_snapshots retention (see fpl.data.ingest.pipeline.prune_snapshots).
     # Every ingest appends a verbatim bootstrap + fixtures row; measured on
     # Postgres 16, a bootstrap row is ~254 kB of JSONB and fixtures ~26 kB, so

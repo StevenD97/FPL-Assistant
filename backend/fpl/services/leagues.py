@@ -9,9 +9,8 @@ router to translate into a CORS-correct 404.
 """
 import requests
 
-from fpl.config import FPL_API_BASE, get_settings
+from fpl.config import FPL_API_BASE
 from fpl.data.entry import fetch_entry_info
-from fpl.demo.data import demo_league_standings, demo_manager_leagues
 
 LEAGUE_STANDINGS_ENTRY_CAP = 20
 # How many standings pages (roughly LEAGUE_RANK_SEARCH_PAGE_CAP * 50 entries)
@@ -24,8 +23,6 @@ LEAGUE_RANK_SEARCH_PAGE_CAP = 20
 
 def manager_leagues(team_id):
     """This manager's classic (non-H2H) leagues - id/name/rank - for the Leagues page's league picker."""
-    if get_settings().demo_mode:
-        return demo_manager_leagues(team_id)
     response = requests.get(f"{FPL_API_BASE}/entry/{team_id}/", timeout=30)
     if response.status_code == 404:
         raise ValueError(f"No FPL manager with team id {team_id}")
@@ -81,10 +78,6 @@ def league_standings(league_id, max_entries=LEAGUE_STANDINGS_ENTRY_CAP, team_id=
     total inserted into this league's full standings via estimate_rank_in_league.
     None if team_id is omitted or the manager lookup fails.
     """
-    if get_settings().demo_mode:
-        demo = demo_league_standings(league_id, team_id=team_id)
-        if demo is not None:
-            return demo
     response = requests.get(f"{FPL_API_BASE}/leagues-classic/{league_id}/standings/", timeout=30)
     if response.status_code == 404:
         raise ValueError(f"No classic league with id {league_id}")
