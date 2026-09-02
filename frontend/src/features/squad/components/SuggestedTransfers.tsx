@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { Pending } from "@/shared/ui/Pending";
 import { optimizeTransfers } from "@/shared/api/squad";
 import { TransferPlayerRow } from "./TransferPlayerRow";
 import type { TransferResult } from "@/shared/types/api";
@@ -98,7 +99,7 @@ export function SuggestedTransfers({
       </p>
 
       {shownLoading && (
-        <p className="text-sm text-text-muted">Solving...</p>
+        <Pending label="Solving for your best transfers…" slowLabel="The optimiser is checking every legal swap against your budget and club limits." />
       )}
 
       {shownError && (

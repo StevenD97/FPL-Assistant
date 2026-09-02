@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
+import { Pending } from "@/shared/ui/Pending";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import type { PoolPlayer } from "@/shared/types/api";
 import type { PlanCandidate } from "../lib/transferPlan";
@@ -121,7 +122,7 @@ export function TransferPlanPicker({
           />
         </div>
         <div className="flex-1 overflow-y-auto p-2">
-          {poolLoading && <p className="p-2 text-sm text-text-muted">Loading players…</p>}
+          {poolLoading && <Pending className="p-2" label="Loading players…" />}
           {!poolLoading && results.length === 0 && (
             <p className="p-2 text-sm text-text-muted">
               No affordable {outgoing.position}{search ? " matches that search" : " found"}.

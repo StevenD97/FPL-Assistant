@@ -22,6 +22,10 @@ import os
 # import time from get_settings(), which reads the environment once).
 os.environ["DATABASE_URL"] = "postgresql+psycopg://fpl:fpl@127.0.0.1:1/fpl"
 os.environ["ALLOW_FILE_FALLBACK"] = "true"
+# The startup warmup precomputes predictions for today's real gameweek; every
+# test here pins its own reference date, so warming would burn seconds building
+# a cache entry no assertion ever reads. See fpl.api.warmup.
+os.environ["FPL_SKIP_WARMUP"] = "1"
 
 import json
 from pathlib import Path

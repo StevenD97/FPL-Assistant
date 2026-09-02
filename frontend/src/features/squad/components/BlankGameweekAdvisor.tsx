@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
+import { Pending } from "@/shared/ui/Pending";
 import { optimizeTransfers } from "@/shared/api/squad";
 import { TransferPlayerRow } from "./TransferPlayerRow";
 import type { ChipResponse, TransferResult } from "@/shared/types/api";
@@ -74,7 +75,7 @@ export function BlankGameweekAdvisor({
     }
   }
 
-  if (chipsLoading) return <p className="text-sm text-text-muted">Scanning ahead…</p>;
+  if (chipsLoading) return <Pending label="Scanning ahead for blanks and doubles…" />;
   if (!chips) return null;
 
   const nextEvent = chips.scan_start_event;

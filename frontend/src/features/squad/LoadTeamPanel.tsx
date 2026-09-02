@@ -10,6 +10,7 @@ import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
 import { TextField } from "@/shared/ui/TextField";
 import { StatBar } from "@/shared/ui/StatBar";
 import { Inspector } from "@/shared/ui/Inspector";
+import { Pending } from "@/shared/ui/Pending";
 import { nextChip } from "@/shared/lib/chips";
 import { DEFAULT_RISK_KEY, riskCeilingFor, type OwnershipKey } from "@/shared/lib/ownership";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
@@ -505,7 +506,12 @@ export function LoadTeamPanel({
                     </>
                   )}
                 </p>
-                {chipsLoading && <p className="text-sm text-text-muted">Scanning chip timing…</p>}
+                {chipsLoading && (
+                  <Pending
+                    label="Scanning chip timing…"
+                    slowLabel="Projecting every player in your squad across the next fifteen gameweeks."
+                  />
+                )}
                 {chipsError && (
                   <Alert kind="warning">
                     Couldn&apos;t scan chip timing ({chipsError}) - the squad is unaffected.

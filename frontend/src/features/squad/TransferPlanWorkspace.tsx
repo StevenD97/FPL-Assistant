@@ -8,6 +8,7 @@ import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import { StatBar } from "@/shared/ui/StatBar";
 import { TextField } from "@/shared/ui/TextField";
+import { Pending } from "@/shared/ui/Pending";
 import { getPlayerPool } from "@/shared/api/squad";
 import { BlankGameweekAdvisor, findFlaggedWeeks } from "./components/BlankGameweekAdvisor";
 import { PlanGameweekBar, planTabId, type PlanWeekSummary } from "./components/PlanGameweekBar";
@@ -299,7 +300,10 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
             </Card>
           )}
           {optimizerLoading && !optimizer && (
-            <p className="text-sm text-text-muted">Solving your best transfer…</p>
+            <Pending
+              label="Solving your best transfer…"
+              slowLabel="Checking every legal swap against your budget and club limits."
+            />
           )}
 
           {planner && events.length > 0 ? (

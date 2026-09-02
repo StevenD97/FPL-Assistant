@@ -15,6 +15,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from fpl.api.routers import fixtures, health, leagues, optimizer, players, squad, teams
+from fpl.api.warmup import start_warmup
 from fpl.data.loaders import ensure_data_fetched
 
 load_dotenv()
@@ -44,6 +45,10 @@ _ROUTERS = [health, players, teams, fixtures, optimizer, squad, leagues]
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     ensure_data_fetched()
+    # Before the port binds, with a timeout: the first real request is warm
+    # instead of paying seconds to build the prediction context, and a slow
+    # warm can't hold the app down. See fpl.api.warmup.
+    start_warmup()
     yield
 
 

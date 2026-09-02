@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { getAlternatives, searchPlayers } from "@/shared/api/squad";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
+import { Pending } from "@/shared/ui/Pending";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import type { PlayerAlternative, PlayerListItem, Position } from "@/shared/types/api";
 
@@ -262,7 +263,7 @@ export function TransferSuggestions({
                   </>
                 ) : (
                   <>
-                    {loading && <p className="text-sm text-text-muted">Finding replacements…</p>}
+                    {loading && <Pending label="Finding replacements…" />}
                     {!loading && error && <p className="text-sm text-danger">Couldn&apos;t load suggestions.</p>}
                     {!loading && !error && candidates && candidates.length === 0 && (
                       <p className="text-sm text-text-muted">
