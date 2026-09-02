@@ -11,6 +11,16 @@ import type { SquadPlayer, TeamEntry } from "@/shared/types/api";
 import type { LiveCockpitData } from "./hooks/useCockpit";
 import { CockpitShell, CockpitStat } from "./components/CockpitShell";
 
+/**
+ * Expected bench points that make a Bench Boost worth playing.
+ *
+ * A rough line, deliberately: an average gameweek returns ~4 points a player,
+ * so a bench predicted to beat sixteen is one that would earn more than a
+ * replacement-level four-man bench. It exists so the tile says something a
+ * manager can act on rather than restating the number in words.
+ */
+const BENCH_BOOST_WORTH_IT = 16;
+
 function toPitchPlayer(p: SquadPlayer): PitchPlayer {
   return {
     id: p.id,
@@ -54,6 +64,11 @@ export function LiveCockpit({
       eyebrow={`Gameweek ${squad.event} · your dashboard`}
       title={squad.entry_name}
     >
+      {/* Four info triggers in a four-tile grid is not four explanations, it
+          is visual noise - and the one that most needed explaining, "bench
+          strength 0.133", was an internal normalised score that no amount of
+          tooltip could make actionable. Every tile now carries a unit a
+          manager already thinks in, and says what it means in its own hint. */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <CockpitStat
           label={`GW${squad.event} points`}
@@ -61,13 +76,11 @@ export function LiveCockpit({
           hint={
             entry?.overall_rank != null ? `Rank ${formatRank(entry.overall_rank)}` : undefined
           }
-          tooltip="gwPts"
         />
         <CockpitStat
           label="Squad value"
           value={`£${squad.squad_value.toFixed(1)}m`}
           hint={`£${squad.bank.toFixed(1)}m in the bank`}
-          tooltip="squadValue"
         />
         <CockpitStat
           label="Captain"
@@ -77,13 +90,15 @@ export function LiveCockpit({
               ? `Model prefers ${bestCaptain.web_name}`
               : "Matches the model"
           }
-          tooltip="captain"
         />
         <CockpitStat
-          label="Bench strength"
-          value={squad.bench_depth_score != null ? squad.bench_depth_score.toFixed(3) : "—"}
-          hint="Higher is a stronger bench"
-          tooltip="benchStrength"
+          label="Bench next GW"
+          value={`${squad.bench_predicted_points.toFixed(1)} pts`}
+          hint={
+            squad.bench_predicted_points >= BENCH_BOOST_WORTH_IT
+              ? "Worth a Bench Boost"
+              : "Too thin to boost"
+          }
         />
       </div>
 

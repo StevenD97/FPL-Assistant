@@ -25,6 +25,10 @@ load_dotenv()
 # points at an old URL (e.g. a previous Vercel deployment).
 DEFAULT_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    # Same dev server, other spelling. Browsers treat the two as different
+    # origins, so a contributor who opens 127.0.0.1:3000 instead of
+    # localhost:3000 gets a silently team-less app and no obvious reason why.
+    "http://127.0.0.1:3000",
     "http://192.168.0.19:3000",
     "https://xfpl.co.uk",
     "https://www.xfpl.co.uk",

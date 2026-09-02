@@ -82,10 +82,16 @@ export function CockpitStat({
           />
         )}
       </p>
-      {/* Every value renders at the same size in the same fixed-height box, so
-          the four read as one row of numbers rather than drifting off each
-          other's baseline when one holds a name instead of a figure. */}
-      <p className="mt-1 flex h-6 items-center truncate font-mono text-xl font-extrabold leading-none text-white">
+      {/* Every value renders in the same fixed-height box, so the four read as
+          one row of numbers rather than drifting off each other's baseline
+          when one holds a name instead of a figure. A long name steps down a
+          size rather than being cut: "B.Fernand…" in the captain tile is the
+          same failure as the truncated hero, one tile smaller. */}
+      <p
+        className={`mt-1 flex h-6 items-center truncate font-mono font-extrabold leading-none text-white ${
+          typeof value === "string" && value.length > 9 ? "text-base" : "text-xl"
+        }`}
+      >
         {value}
       </p>
       {/* Reserved whether or not there's a hint, so tiles with one don't sit

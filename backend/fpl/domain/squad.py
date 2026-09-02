@@ -5,6 +5,12 @@ outlook (the JSON behind the My Squad page).
 """
 import pandas as pd
 
+from fpl.config import (
+    ARCHIVED_BOOTSTRAP_FILE,
+    ARCHIVED_FIXTURES_FILE,
+    LIVE_BOOTSTRAP_FILE,
+    LIVE_FIXTURES_FILE,
+)
 from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.fixtures import compute_fixture_difficulty
@@ -12,26 +18,37 @@ from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
 from fpl.domain.scoring import (
     rank_desc,
     compute_player_scores,
-    map_archived_ids_to_live,
     nullable_float_column,
-    nullable_int_column,
 )
+from fpl.model.predict import predict_multi_gw_points
+from fpl.model.rules import CROSS_SEASON_HALF_LIFE_DAYS
 
 
 def build_squad_analysis(team_id, event, reference_date, next_event, fixture_start_event, window_size=5,
-                          bootstrap_file="bootstrap_static_2025_26_final.json",
-                          fixtures_file="fixtures_2025_26_final.json"):
+                          bootstrap_file=ARCHIVED_BOOTSTRAP_FILE,
+                          fixtures_file=ARCHIVED_FIXTURES_FILE,
+                          roster_bootstrap_file=LIVE_BOOTSTRAP_FILE,
+                          roster_fixtures_file=LIVE_FIXTURES_FILE):
     """
     Pulls a manager's squad live (by team_id) for a specific gameweek and
     returns full squad detail, category scores, bench depth, captaincy
     options, and fixture outlook.
 
-    bootstrap_file/fixtures_file default to the archived 2025/26 season
-    and are passed to BOTH internal calls below - they must always match,
-    since the two results get merged by team id and FPL reassigns team
-    ids each season (see compute_player_scores' docstring). Mixing an
-    archived player_scores with a live fixture_scores here would silently
-    attach the wrong team's fixture ticker to a player.
+    Everything here happens in the LIVE season's id-space. bootstrap_file /
+    fixtures_file are the training archive the season-long stats come from;
+    roster_bootstrap_file / roster_fixtures_file are the season being played,
+    and every id, club, fixture and price on the page is theirs. See
+    compute_player_scores.
+
+    This used to run the other way round - remap the manager's picks back into
+    the archive's id-space, score there, and translate the ids at the end -
+    and the page was wrong in four visible ways at once because of it. FPL
+    reassigns element ids every season, so a pick with no 2025/26 record
+    (a promoted club's player, a summer signing) had nothing to map onto and
+    was dropped: a fifteen-man squad rendered as thirteen players, "10 in the
+    XI", "3 on the bench" and the impossible formation 3-3-3. The players who
+    did survive were labelled with last season's clubs and shown last
+    season's opponents.
     """
     entry = fetch_entry_info(team_id)
     if event is None:
@@ -50,28 +67,46 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
 
     picks = pd.DataFrame(picks_data["picks"])
 
-    # picks come from FPL's live API, so `element` is a live-season id; the
-    # merge below is against player_scores, computed from bootstrap_file
-    # (archived by default) - a *different* id-space, since FPL reassigns
-    # element ids every season (see compute_player_scores' docstring).
-    # Remapped by code (the stable cross-season id), same fix already
-    # applied to build_chip_strategy for the identical problem.
-    from fpl.model.ids import resolve_live_to_training_id
-
-    live_bootstrap_for_remap = load_bootstrap()
-    archived_elements = load_bootstrap(bootstrap_file)["elements"]
-    live_elements = live_bootstrap_for_remap["elements"]
-    picks["element"] = picks["element"].apply(
-        lambda live_id: resolve_live_to_training_id(live_id, live_elements, archived_elements)
+    # No remapping, and none wanted: `element` is a live-season id and every
+    # frame it is joined to below is built in that same live id-space. The
+    # squad on the page is the squad FPL has, all fifteen of them, under the
+    # clubs they play for now.
+    player_scores = compute_player_scores(
+        reference_date, next_event,
+        bootstrap_file=bootstrap_file, fixtures_file=fixtures_file,
+        roster_bootstrap_file=roster_bootstrap_file, roster_fixtures_file=roster_fixtures_file,
     )
-    picks = picks.dropna(subset=["element"])
-    picks["element"] = picks["element"].astype(int)
-
-    player_scores = compute_player_scores(reference_date, next_event,
-                                           bootstrap_file=bootstrap_file, fixtures_file=fixtures_file)
     fixture_scores = compute_fixture_difficulty(fixture_start_event, window_size,
-                                                 bootstrap_file=bootstrap_file,
-                                                 fixtures_file=fixtures_file).set_index("team_id")
+                                                 bootstrap_file=roster_bootstrap_file,
+                                                 fixtures_file=roster_fixtures_file).set_index("team_id")
+
+    # Predicted points, so the page can talk in points rather than in a
+    # normalised internal score. Two horizons, because the page asks two
+    # different questions:
+    #
+    #   predicted_points      - the whole fixture-outlook window. "Is this
+    #                           squad set up well for the next few weeks?"
+    #   predicted_points_next - the next gameweek alone. Captaincy and Bench
+    #                           Boost are single-gameweek decisions, and
+    #                           ranking them on a five-gameweek total answers
+    #                           a question nobody asked.
+    #
+    # Both share one prediction context (same reference_date), so the second
+    # call is close to free - see predict_by_event.
+    def _points(events, column):
+        frame = predict_multi_gw_points(
+            reference_date, events,
+            half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+            bootstrap_file=bootstrap_file, fixtures_file=fixtures_file,
+            apply_live_signals=True,
+            roster_bootstrap_file=roster_bootstrap_file, roster_fixtures_file=roster_fixtures_file,
+        )[["id", "predicted_points"]]
+        return frame.rename(columns={"predicted_points": column})
+
+    window_events = list(range(next_event, next_event + window_size))
+    for events, column in ((window_events, "predicted_points"), ([next_event], "predicted_points_next")):
+        player_scores = player_scores.merge(_points(events, column), on="id", how="left")
+        player_scores[column] = player_scores[column].fillna(0.0).round(2)
 
     squad = picks.merge(player_scores, left_on="element", right_on="id", suffixes=("", "_score"))
     squad = squad.merge(
@@ -98,8 +133,17 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         if (starting["pos"] == pos).any()
     }
 
-    captaincy_options = rank_desc(starting, "recommendation_score", 5)[
-        ["web_name", "team_short", "pos", "recommendation_score", "ep_next", "captain_flag"]
+    # What the bench is worth, in points, over the same window as the fixture
+    # outlook. The old bench_depth_score was the mean of an internal
+    # normalised recommendation_score and reached the page as "BENCH STRENGTH
+    # 0.133" - a number with no unit, no scale and nothing to compare it to.
+    # Four expected points from a bench is a fact a manager can weigh against
+    # a Bench Boost; 0.133 is not.
+    bench_predicted_points = round(float(bench["predicted_points_next"].sum()), 1) if len(bench) else 0.0
+
+    captaincy_options = rank_desc(starting, "predicted_points_next", 5)[
+        ["web_name", "team_short", "pos", "recommendation_score", "predicted_points",
+         "predicted_points_next", "ep_next", "captain_flag", "next_opponent"]
     ].to_dict(orient="records")
 
     # team_badge/fixtures (structured, badge-ready form of `ticker`) come from
@@ -117,52 +161,41 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
 
     squad_cols = [
         "id", "code", "team", "position", "web_name", "team_short", "pos", "role", "captain_flag",
-        "recommendation_score", "next_opponent", "opponent_multiplier", "rotation_risk",
-        "form", "recency_weighted_form", "ep_next", "expected_minutes",
+        "recommendation_score", "predicted_points", "predicted_points_next",
+        "next_opponent", "opponent_multiplier",
+        "rotation_risk", "form", "recency_weighted_form", "ep_next", "expected_minutes",
         "expected_goal_involvements", "expected_goals_per_90", "expected_assists_per_90",
         "ict_index", "defensive_contribution_per_90",
         "set_piece_duty_score", "selected_by_percent", "status", "news",
     ]
     squad_rows = squad[squad_cols].copy()
-    # `id` above is this bootstrap_file's element id (archived-2025/26 by
-    # default) - add live_id so the frontend can link to /players/{live_id}
-    # without mixing season id-spaces (see map_archived_ids_to_live).
-    live_bootstrap = load_bootstrap()
-    live_ids = map_archived_ids_to_live(squad_rows["id"].tolist(), load_bootstrap(bootstrap_file), live_bootstrap)
-    squad_rows["live_id"] = nullable_int_column(squad_rows["id"].map(live_ids))
+    live_bootstrap = load_bootstrap(roster_bootstrap_file)
+    # `id` is already the live element id, so live_id is the same number. The
+    # field stays because the frontend links to /players/{live_id}; it used to
+    # be the output of a cross-season code lookup that returned None - and so
+    # an unclickable row - for anyone the archive had never heard of.
+    squad_rows["live_id"] = squad_rows["id"]
 
-    # Current live price, not the archived-season one `squad` was scored
-    # against - this has to line up with `bank`/`squad_value` below (both
-    # live figures) for transfer-budget math to be correct.
+    # Price straight off the live roster, matching `bank`/`squad_value` below
+    # so transfer-budget math is consistent.
     live_cost_by_id = {p["id"]: p["now_cost"] for p in live_bootstrap["elements"]}
     squad_rows["cost"] = nullable_float_column(
         [
-            round(live_cost_by_id[lid] / 10, 1) if lid in live_cost_by_id else None
-            for lid in squad_rows["live_id"]
+            round(live_cost_by_id[pid] / 10, 1) if pid in live_cost_by_id else None
+            for pid in squad_rows["id"]
         ],
         squad_rows.index,
     )
 
-    # Same argument for ownership, and it matters more here: `selected_by_percent`
-    # arrived from bootstrap_file (archived by default), where it's frozen at last
-    # season's *final* figure. The squad page uses this to say which of your picks
-    # are differentials, and last season's finishing ownership is not what
-    # "differential" means this week - a player everyone owned in May can be
-    # forgotten by August, and vice versa. Overlaid by `code` (stable across
-    # seasons, unlike element ids), matching the same fix in
-    # fpl.services.players.player_scores. Falls back to the archived value for a
-    # player with no live match - retired, or left the Premier League.
-    live_ownership_by_code = {p["code"]: float(p["selected_by_percent"]) for p in live_bootstrap["elements"]}
-    squad_rows["selected_by_percent"] = (
-        squad_rows["code"].map(live_ownership_by_code).fillna(squad_rows["selected_by_percent"])
-    )
+    # selected_by_percent already comes from the live roster (see
+    # _overlay_archive_stats_onto_roster - ownership is deliberately not one
+    # of the archived fields), so there is nothing to overlay here any more.
+    # It has to be live: the page uses it to call a pick a differential, and
+    # last season's finishing ownership is not what "differential" means this
+    # week.
 
     # Official PL CDN images (see team_badge_url/team_kit_url/player_photo_url).
-    # `team` above is bootstrap_file's own numeric team id-space (archived by
-    # default), but `code` is stable for both teams and players regardless of
-    # season - safe to build these from whichever bootstrap `team`/`code`
-    # here actually came from.
-    team_code_by_id = {t["id"]: t["code"] for t in load_bootstrap(bootstrap_file)["teams"]}
+    team_code_by_id = {t["id"]: t["code"] for t in live_bootstrap["teams"]}
     squad_rows["team_code"] = squad_rows["team"].map(team_code_by_id)
     squad_rows["team_badge"] = squad_rows["team_code"].apply(team_badge_url)
     squad_rows["team_kit"] = squad_rows["team_code"].apply(team_kit_url)
@@ -177,6 +210,7 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
         "bank": picks_data["entry_history"]["bank"] / 10,
         "squad": squad_rows.to_dict(orient="records"),
         "category_scores": category_scores,
+        "bench_predicted_points": bench_predicted_points,
         "bench_depth_score": round(bench["recommendation_score"].mean(), 3) if len(bench) else None,
         "captaincy_options": captaincy_options,
         "fixture_outlook": fixture_outlook,

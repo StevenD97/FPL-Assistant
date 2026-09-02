@@ -29,7 +29,10 @@ export type YourRank = {
 export type CaptaincyOption = {
   captain_flag: string;
   ep_next: number;
+  next_opponent: string;
   pos: Position;
+  predicted_points: number;
+  predicted_points_next: number;
   recommendation_score: number;
   team_short: string;
   web_name: string;
@@ -218,6 +221,8 @@ export type SquadPlayer = {
   player_photo: string;
   pos: Position;
   position: number;
+  predicted_points: number;
+  predicted_points_next: number;
   recency_weighted_form: number;
   recommendation_score: number;
   role: "Starting XI" | "Bench";
@@ -580,6 +585,7 @@ export type SquadBuilderFixtureRow = {
 export type SquadResponse = {
   bank: number;
   bench_depth_score: number | null;
+  bench_predicted_points: number;
   captaincy_options: CaptaincyOption[];
   category_scores: CategoryScore;
   entry_name: string;

@@ -60,14 +60,17 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
                   <TeamBadge teamShort={option.team_short} name={option.team_short} badgeUrl={row?.team_badge} />
                   {row && <span>vs {row.next_opponent}</span>}
                 </div>
+                {/* Our own next-gameweek prediction, which is also what this
+                    list is ranked by - not FPL's ep_next, which was shown here
+                    while the order came from somewhere else entirely, and not
+                    the 0-1 internal rating, which meant nothing to a reader
+                    choosing a captain. */}
                 <p className="mt-1 text-xs text-text-secondary">
-                  {RANK_LABEL[i] ?? `${i + 1}th pick`} · Rating{" "}
+                  {RANK_LABEL[i] ?? `${i + 1}th pick`} ·{" "}
                   <span className="font-mono font-medium text-text-primary">
-                    {option.recommendation_score.toFixed(2)}
+                    {option.predicted_points_next.toFixed(1)}
                   </span>{" "}
-                  ·{" "}
-                  <span className="font-mono font-medium text-text-primary">{option.ep_next.toFixed(1)}</span> pts
-                  expected next gameweek
+                  pts expected next gameweek
                 </p>
               </div>
             </div>

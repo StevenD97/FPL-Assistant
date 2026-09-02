@@ -9,6 +9,7 @@ import pandas as pd
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.fixtures import build_fixtures_by_team_event, compute_congestion
 from fpl.domain.recency import compute_recency_weighted_form
+from fpl.model.ids import map_player_stats_to_roster
 
 
 def min_max_normalize(series):
@@ -47,6 +48,83 @@ def _scale_0_1(value, lo, hi):
     return (value - lo) / (hi - lo)
 
 
+
+# Season-long accumulations that only mean anything after a full season has
+# been played. Two gameweeks into a new season the live file's versions of
+# these are near-empty, so they come from the training archive, matched by
+# `code`. Everything NOT listed here - identity, club, position, price,
+# ownership, status/news/chance_of_playing, set-piece duty, `form` and
+# `ep_next` - stays as the live roster has it, because FPL keeps those
+# current and last season's values are simply wrong for them.
+_ARCHIVE_STAT_FIELDS = (
+    "expected_goal_involvements",
+    "ict_index",
+    "defensive_contribution_per_90",
+    "expected_goals_per_90",
+    "expected_assists_per_90",
+    "penalties_missed",
+    # Derived below rather than raw `starts`: rotation risk is starts as a
+    # share of the team's played matches, and those two have to come from the
+    # same season. Carrying raw `starts` (38 games' worth) alongside a live
+    # `team_played` of 2 would produce nonsense.
+    "starts_share",
+    "starts_per_90",
+)
+
+
+def _starts_share(bootstrap):
+    """element id -> fraction of their team's played matches the player started."""
+    played_by_team = {t["id"]: t.get("played") or 0 for t in bootstrap["teams"]}
+    shares = {}
+    for p in bootstrap["elements"]:
+        played = played_by_team.get(p["team"], 0)
+        if played:
+            shares[p["id"]] = min(1.0, (p.get("starts") or 0) / played)
+    return shares
+
+
+def _overlay_archive_stats_onto_roster(stats_bootstrap, roster_bootstrap):
+    """
+    The live roster's elements, with the archive's season-long stats laid over
+    them, matched by FPL's stable `code`.
+
+    This is what lets the squad page be scored on a full season of evidence
+    while still being *about* the players, clubs and fixtures of the season
+    being played. Scoring in the archive's own id-space instead is what put
+    thirteen of a fifteen-man squad on the page under last season's clubs and
+    last season's opponents: FPL reassigns element ids every season, so any
+    pick without a 2025/26 record - a promoted club's player, a new signing -
+    had nothing to map onto and was silently dropped.
+
+    A player with no archive record keeps the live file's own values (which
+    for these fields means ~0). That is the honest answer for someone with no
+    top-flight history, and it is a row on the page rather than a hole in the
+    squad.
+    """
+    stats_by_id = {
+        p["id"]: {f: p.get(f) for f in _ARCHIVE_STAT_FIELDS if f != "starts_share"}
+        for p in stats_bootstrap["elements"]
+    }
+    for element_id, share in _starts_share(stats_bootstrap).items():
+        if element_id in stats_by_id:
+            stats_by_id[element_id]["starts_share"] = share
+
+    overlaid = map_player_stats_to_roster(
+        stats_by_id, stats_bootstrap["elements"], roster_bootstrap["elements"],
+    )
+
+    live_shares = _starts_share(roster_bootstrap)
+    elements = []
+    for player in roster_bootstrap["elements"]:
+        merged = dict(player)
+        merged.setdefault("starts_share", live_shares.get(player["id"]))
+        stats = overlaid.get(player["id"])
+        if stats:
+            merged.update({k: v for k, v in stats.items() if v is not None})
+        elements.append(merged)
+    return elements
+
+
 def compute_player_scores(reference_date, next_event, congestion_window_days=7,
                            w_expected_returns=0.4, w_form=0.2, w_minutes_trend=0.15,
                            w_opponent_adjustment=0.4, w_rotation_risk=0.3,
@@ -54,7 +132,8 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
                            set_piece_bonus_primary=0.15, set_piece_bonus_backup=0.05,
                            penalty_miss_penalty=0.02, form_half_life_days=21,
                            bootstrap_file="bootstrap_static_2025_26_final.json",
-                           fixtures_file="fixtures_2025_26_final.json"):
+                           fixtures_file="fixtures_2025_26_final.json",
+                           roster_bootstrap_file=None, roster_fixtures_file=None):
     """
     Returns a DataFrame, one row per player, with a recommendation_score
     combining:
@@ -90,9 +169,49 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     always need to point at the same season. See compute_fixture_difficulty,
     which is safe to point at live data since it doesn't touch player
     stats at all.
+
+    roster_bootstrap_file/roster_fixtures_file are the supported way to get a
+    live answer, and they must be used together. They put the whole
+    computation in the LIVE season's id-space - live players, live clubs,
+    live prices, live availability, live fixtures - while the season-long
+    accumulations that need a full season behind them (xGI, ICT, defensive
+    contribution rate, rotation risk) are lifted from bootstrap_file's
+    archive and matched onto live players by `code`. See
+    _overlay_archive_stats_onto_roster. This is the same archive-trained,
+    live-roster split predict_multi_gw_breakdown already uses, and it exists
+    for the same reason: it is the only way to score a squad on real evidence
+    without describing it in last season's terms.
+
+    Default None keeps the archive-only behaviour above, unchanged.
     """
-    bootstrap = load_bootstrap(bootstrap_file)
-    fixtures = load_fixtures(fixtures_file)
+    if (roster_bootstrap_file is None) != (roster_fixtures_file is None):
+        raise ValueError(
+            "roster_bootstrap_file and roster_fixtures_file must be given together - a live "
+            "roster read against archived fixtures mixes two team id-spaces."
+        )
+
+    stats_bootstrap = load_bootstrap(bootstrap_file)
+    if roster_bootstrap_file is None:
+        shares = _starts_share(stats_bootstrap)
+        bootstrap = {
+            **stats_bootstrap,
+            "elements": [
+                {**p, "starts_share": shares.get(p["id"])} for p in stats_bootstrap["elements"]
+            ],
+        }
+        fixtures = load_fixtures(fixtures_file)
+        stats_season_ids = None
+    else:
+        roster_bootstrap = load_bootstrap(roster_bootstrap_file)
+        bootstrap = {
+            "elements": _overlay_archive_stats_onto_roster(stats_bootstrap, roster_bootstrap),
+            "teams": roster_bootstrap["teams"],
+            "element_types": roster_bootstrap["element_types"],
+        }
+        fixtures = load_fixtures(roster_fixtures_file)
+        # gw_history is keyed by the archive's element ids; recency-weighted
+        # form has to be remapped onto live ids before it can be joined below.
+        stats_season_ids = (stats_bootstrap["elements"], roster_bootstrap["elements"])
 
     players = pd.DataFrame(bootstrap["elements"])
     teams_df = pd.DataFrame(bootstrap["teams"])
@@ -108,7 +227,7 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
 
     df = players[[
         "id", "code", "web_name", "team", "element_type", "status", "news",
-        "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts",
+        "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts_share",
         "now_cost", "selected_by_percent",
         # expected_goals_per_90/expected_assists_per_90 are carried, not scored:
         # nothing below reads them, they exist so a squad row can show the rate
@@ -136,7 +255,12 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     # Rotation risk: fraction of the team's played matches where this player
     # did NOT start. Distinct from congestion - this is about THIS player's
     # historical usage pattern, not the team's upcoming schedule.
-    df["rotation_risk"] = 1 - (df["starts"] / df["team_played"].replace(0, pd.NA))
+    #
+    # starts_share (starts / team_played) is computed per season before the
+    # frames are combined, never here: on a live roster the two halves of that
+    # ratio come from different seasons, and a full season's starts over two
+    # played matches is not a fraction of anything.
+    df["rotation_risk"] = 1 - pd.to_numeric(df["starts_share"], errors="coerce")
     df["rotation_risk"] = df["rotation_risk"].clip(lower=0, upper=1).fillna(0)
     df["rotation_multiplier"] = (1 - w_rotation_risk * df["rotation_risk"]).clip(lower=0.5)
 
@@ -188,6 +312,8 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     # reference_date before the archive's first fixture) fall back to
     # FPL's own canned `form` field.
     recency_form_by_id = compute_recency_weighted_form(reference_date, form_half_life_days)
+    if stats_season_ids is not None:
+        recency_form_by_id = map_player_stats_to_roster(recency_form_by_id, *stats_season_ids)
     df["recency_weighted_form"] = df["id"].map(recency_form_by_id)
     df["recency_weighted_form"] = df["recency_weighted_form"].fillna(df["form"])
 

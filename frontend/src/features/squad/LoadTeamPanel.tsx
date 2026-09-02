@@ -209,7 +209,9 @@ export function LoadTeamPanel({
       ) : topCaptain ? (
         <>
           <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
-          <span className="font-mono font-medium text-text-primary">{topCaptain.ep_next.toFixed(1)}</span>{" "}
+          <span className="font-mono font-medium text-text-primary">
+            {topCaptain.predicted_points_next.toFixed(1)}
+          </span>{" "}
           xP ·{" "}
           {currentCaptain && currentCaptain.web_name !== topCaptain.web_name ? (
             <span className="text-warning">you have {currentCaptain.web_name}</span>
@@ -381,20 +383,23 @@ export function LoadTeamPanel({
 
           {/* One banded bar, headline first, with a context line under each
               number - four equal tiles gave four equal-weight numbers and no
-              reading order. */}
+              reading order.
+              No info triggers on the first three: a gameweek score, a squad
+              value and a bank balance are things a manager already knows how
+              to read, and an icon on each turns a summary into a row of
+              question marks. Tooltips stay where a number genuinely needs
+              defining, further down the page. */}
           <StatBar
             items={[
               {
                 label: `GW${data.event} points`,
                 value: data.points,
                 hint: `${startingCount} in the XI`,
-                tooltip: "gwPts",
               },
               {
                 label: "Squad value",
                 value: `£${data.squad_value}m`,
                 hint: `${data.squad.length} players`,
-                tooltip: "squadValue",
               },
               {
                 label: "In the bank",
@@ -417,15 +422,16 @@ export function LoadTeamPanel({
                   ) : (
                     "nothing spare"
                   ),
-                tooltip: "bankLeft",
               },
               {
-                // 3dp, not 1: these scores live in a 0-1 band (0.034 here), so
-                // one decimal rounds every realistic value to "0.0".
-                label: "Bench strength",
-                value: data.bench_depth_score?.toFixed(3) ?? "-",
+                // Points, not the 0-1 internal score this used to print to
+                // three decimals. "Bench strength 0.133" is unreadable: no
+                // unit, no scale, nothing to compare it against. The bench's
+                // expected points for the coming gameweek is the number the
+                // Bench Boost decision actually turns on.
+                label: "Bench next GW",
+                value: `${data.bench_predicted_points.toFixed(1)} pts`,
                 hint: `${benchCount} on the bench`,
-                tooltip: "benchStrength",
               },
             ]}
           />
@@ -530,16 +536,15 @@ export function LoadTeamPanel({
             {read === "strength" && (
               <div>
                 <p className="mb-3 text-xs text-text-muted">
-                  How each position scores for this squad, and how much is sitting on the bench.
+                  How each position scores for this squad, and what the bench is worth next gameweek.
                 </p>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
                   {Object.entries(data.category_scores).map(([pos, score]) => (
                     <StatTile key={pos} label={pos} value={score.toFixed(3)} tooltip="positionScore" />
                   ))}
                   <StatTile
-                    label="Bench depth"
-                    value={data.bench_depth_score?.toFixed(3) ?? "-"}
-                    tooltip="benchStrength"
+                    label="Bench next GW"
+                    value={`${data.bench_predicted_points.toFixed(1)} pts`}
                   />
                 </div>
               </div>

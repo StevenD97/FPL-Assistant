@@ -30,7 +30,7 @@ export const STAT_GLOSSARY = {
   cleanSheetProb: "Our model's estimated chance the player's team keeps a clean sheet.",
   ptsPerMillion: "Points scored per £1m of price — a value-for-money measure.",
   squadValue: "The total current market price of your 15 players.",
-  benchStrength: "Your bench's average Score (below) - a 0-1+ rating, not a points total. Higher means a stronger bench if you need to use a substitute.",
+  benchStrength: "What your four bench players are predicted to score between them in the coming gameweek. Roughly what a Bench Boost would be worth.",
   benchBoost: "One-time chip: your bench's points count too, on top of your starting XI, for one gameweek.",
   tripleCaptain: "One-time chip: your captain scores triple points instead of double, for one gameweek.",
   freeHit: "One-time chip: unlimited free transfers for one gameweek only — your squad reverts after.",
