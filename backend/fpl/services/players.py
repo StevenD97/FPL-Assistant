@@ -26,6 +26,7 @@ from fpl.domain.media import (
 )
 from fpl.domain.price import MIN_NET_TRANSFERS_TO_FLAG, compute_price_change_signals
 from fpl.domain.scoring import (
+    rank_desc,
     compute_player_scores,
     map_archived_ids_to_live,
     nullable_int_column,
@@ -105,7 +106,7 @@ def player_scores(ref_date, next_event, max_ownership=None, limit=50):
     if max_ownership is not None:
         df = top_differentials(df, max_ownership=max_ownership, top_n=limit)
     else:
-        df = df.sort_values("recommendation_score", ascending=False).head(limit)
+        df = rank_desc(df, "recommendation_score", limit)
     team_code_by_id = {t["id"]: t["code"] for t in load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)["teams"]}
     df = df.copy()
     df["team_badge"] = df["team"].map(team_code_by_id).apply(team_badge_url)
@@ -121,7 +122,7 @@ def player_scores(ref_date, next_event, max_ownership=None, limit=50):
 
 def predicted_points(ref_date, next_event, limit=50):
     df = predict_player_points(ref_date, next_event)
-    return df.sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
+    return rank_desc(df, "predicted_points", limit).to_dict(orient="records")
 
 
 def predicted_points_outlook(ref_date, next_event, gw_count=5, limit=50):
@@ -137,7 +138,7 @@ def predicted_points_outlook(ref_date, next_event, gw_count=5, limit=50):
     # unlike its archived-only sibling - no archived->live remap needed, but
     # live_id is still included so the frontend's PlayerLink doesn't need a
     # separate code path from that sibling endpoint.
-    df = df.sort_values("predicted_points", ascending=False).head(limit).copy()
+    df = rank_desc(df, "predicted_points", limit).copy()
     df["live_id"] = df["id"]
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
     team_badges = team_badge_by_short_name(bootstrap)
@@ -193,7 +194,7 @@ def all_players(search, position, ref_date, next_event, gw_count=5, limit=600):
     ]
     df = pool[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
-    records = df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
+    records = rank_desc(df.drop(columns="cost_raw"), "predicted_points", limit).to_dict(orient="records")
 
     # Per-player next-N fixtures (with FDR difficulty + opponent badge) so the
     # unified players list can show a fixture ticker - the "outlook" context
@@ -351,7 +352,7 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     df["cost"] = (df["cost_raw"] / 10).round(1)
     if max_cost is not None:
         df = df[df["cost"] <= max_cost]
-    return df.drop(columns="cost_raw").sort_values("predicted_points", ascending=False).head(limit).to_dict(orient="records")
+    return rank_desc(df.drop(columns="cost_raw"), "predicted_points", limit).to_dict(orient="records")
 
 
 def build_trajectory_context(ref_date, next_events):

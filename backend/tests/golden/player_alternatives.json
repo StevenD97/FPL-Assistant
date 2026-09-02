@@ -281,18 +281,18 @@
       "web_name": "M.Bizot"
     },
     {
-      "cost": 4.5,
-      "id": 83,
+      "cost": 5.0,
+      "id": 2,
       "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p507433.png",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p109745.png",
       "position": "GKP",
       "predicted_points": 0.0,
       "selected_by_percent": 0.1,
       "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
-      "team_short": "BRE",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
       "value": 0.0,
-      "web_name": "Valdimarsson"
+      "web_name": "Arrizabalaga"
     },
     {
       "cost": 5.0,
@@ -309,20 +309,6 @@
       "web_name": "Meslier"
     },
     {
-      "cost": 4.5,
-      "id": 615,
-      "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p230650.png",
-      "position": "GKP",
-      "predicted_points": 0.0,
-      "selected_by_percent": 0.0,
-      "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
-      "team_short": "BOU",
-      "value": 0.0,
-      "web_name": "Di Gregorio"
-    },
-    {
       "cost": 4.0,
       "id": 58,
       "news": "",
@@ -337,18 +323,32 @@
       "web_name": "Forster"
     },
     {
-      "cost": 5.0,
-      "id": 597,
+      "cost": 4.5,
+      "id": 83,
       "news": "",
-      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p433969.png",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p507433.png",
       "position": "GKP",
       "predicted_points": 0.0,
-      "selected_by_percent": 0.9,
+      "selected_by_percent": 0.1,
       "status": "a",
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
-      "team_short": "AVL",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
+      "team_short": "BRE",
       "value": 0.0,
-      "web_name": "Suzuki"
+      "web_name": "Valdimarsson"
+    },
+    {
+      "cost": 4.5,
+      "id": 110,
+      "news": "",
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p472739.png",
+      "position": "GKP",
+      "predicted_points": 0.0,
+      "selected_by_percent": 1.2,
+      "status": "a",
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png",
+      "team_short": "COV",
+      "value": 0.0,
+      "web_name": "Rushworth"
     }
   ],
   "status": 200
