@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchSeasonStatus, type SeasonStatus } from "./seasonStatus";
-import {
-  formatDeadlineLabel,
-  NEXT_DEADLINE_ISO,
-  NEXT_DEADLINE_LABEL,
-} from "./deadline";
+import { formatDeadlineLabel, NEXT_DEADLINE_LABEL } from "./deadline";
 
 // null while loading/on error - callers should have a sensible fallback
 // (the pre-season copy) rather than blocking render on this.
@@ -39,10 +35,12 @@ export function useSeasonStatus(): SeasonStatus | null {
  * Falls back to the pinned GW1 values until the fetch lands, which also keeps
  * the server render and the first client render identical.
  */
-export function useNextDeadline(): { iso: string; label: string } {
+export function useNextDeadline(): { iso: string | null; label: string } {
   const status = useSeasonStatus();
   if (!status?.next_deadline) {
-    return { iso: NEXT_DEADLINE_ISO, label: NEXT_DEADLINE_LABEL };
+    // No date at all rather than a stale one - see deadline.ts. A countdown to
+    // a deadline that has already passed is worse than no countdown.
+    return { iso: null, label: NEXT_DEADLINE_LABEL };
   }
   return {
     iso: status.next_deadline,

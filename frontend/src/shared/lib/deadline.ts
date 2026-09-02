@@ -3,19 +3,20 @@
 // value imported from a "use client" module becomes a client reference,
 // not the actual value.
 
-// Fallback only, used for the first paint and if /api/season-status can't be
-// reached. The real value now comes from the backend's bootstrap
-// events[].deadline_time via useNextDeadline, so it advances by itself each
-// gameweek.
+// Placeholder shown until /api/season-status answers, and if it never does.
+// The real value comes from the backend's bootstrap events[].deadline_time via
+// useNextDeadline, so it advances by itself each gameweek.
 //
-// These constants used to be the only source, and were wrong: they assumed FPL
-// sets a deadline ~90 minutes before the first kickoff. 2026/27 GW1 is actually
-// 17:30Z, so the countdown ran seven hours fast. Kept in sync with the real
-// GW1 value rather than the old guess.
-export const NEXT_DEADLINE_ISO = "2026-08-21T17:30:00Z";
-export const NEXT_DEADLINE_LABEL = "GW1 · Fri 21 Aug, 18:30";
+// Deliberately not a date. This used to be a pinned GW1 deadline
+// ("2026-08-21T17:30:00Z" / "GW1 · Fri 21 Aug, 18:30"), which meant every
+// server-rendered page asserted a specific gameweek and a specific time -
+// still GW1, twelve days after GW1 had been played, in the HTML a crawler and
+// a first paint both see. A hardcoded date is right for exactly one week of
+// the season and quietly wrong for the other thirty-seven; an em-dash is
+// honest for all thirty-eight.
+export const NEXT_DEADLINE_LABEL = "—";
 
-/** "GW1 · Fri 21 Aug, 18:30", in the reader's own timezone. */
+/** "GW3 · Fri 4 Sep, 18:30", in the reader's own timezone. */
 export function formatDeadlineLabel(iso: string, event: number): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return NEXT_DEADLINE_LABEL;

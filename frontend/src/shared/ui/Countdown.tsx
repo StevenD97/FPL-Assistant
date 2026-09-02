@@ -14,10 +14,13 @@ export function Countdown({ target, className = "" }: { target?: string; classNa
   const deadline = target ?? iso;
 
   // Render a stable placeholder on the server; fill in the live value after
-  // mount to avoid a hydration mismatch on the ticking clock.
+  // mount to avoid a hydration mismatch on the ticking clock. It stays a
+  // placeholder while `deadline` is null - there is no honest countdown to a
+  // deadline we haven't been told yet.
   const [text, setText] = useState("—");
 
   useEffect(() => {
+    if (!deadline) return;
     const at = new Date(deadline).getTime();
     const tick = () => setText(formatCountdown(at - Date.now()));
     tick();
