@@ -3,9 +3,11 @@
     {
       "cost": 5.5,
       "id": 226,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p111234.png",
       "position": "GKP",
       "predicted_points": 21.097,
-      "selected_by_percent": 8.9,
+      "selected_by_percent": 9.0,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_short": "EVE",
       "value": 3.84,
       "web_name": "Pickford"
@@ -13,9 +15,11 @@
     {
       "cost": 4.0,
       "id": 497,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p67089.png",
       "position": "GKP",
       "predicted_points": 20.925,
-      "selected_by_percent": 24.8,
+      "selected_by_percent": 18.2,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_short": "TOT",
       "value": 5.23,
       "web_name": "Dubravka"
@@ -23,9 +27,11 @@
     {
       "cost": 4.5,
       "id": 57,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p457569.png",
       "position": "GKP",
       "predicted_points": 20.78,
-      "selected_by_percent": 3.5,
+      "selected_by_percent": 3.4,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png",
       "team_short": "BOU",
       "value": 4.62,
       "web_name": "Petrovi\u0107"
@@ -33,29 +39,23 @@
     {
       "cost": 5.0,
       "id": 529,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p498016.png",
       "position": "GKP",
       "predicted_points": 20.547,
-      "selected_by_percent": 5.6,
+      "selected_by_percent": 3.7,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png",
       "team_short": "SUN",
       "value": 4.11,
       "web_name": "Roefs"
     },
     {
       "cost": 4.5,
-      "id": 494,
-      "position": "GKP",
-      "predicted_points": 19.891,
-      "selected_by_percent": 1.6,
-      "team_short": "TOT",
-      "value": 4.42,
-      "web_name": "Vicario"
-    },
-    {
-      "cost": 4.5,
       "id": 109,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p489639.png",
       "position": "GKP",
       "predicted_points": 18.914,
-      "selected_by_percent": 16.8,
+      "selected_by_percent": 21.5,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png",
       "team_short": "BHA",
       "value": 4.2,
       "web_name": "Verbruggen"
@@ -63,19 +63,23 @@
     {
       "cost": 5.0,
       "id": 28,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p98980.png",
       "position": "GKP",
-      "predicted_points": 18.672,
-      "selected_by_percent": 4.4,
-      "team_short": "AVL",
-      "value": 3.73,
+      "predicted_points": 18.577,
+      "selected_by_percent": 4.3,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+      "team_short": "CHE",
+      "value": 3.72,
       "web_name": "Martinez"
     },
     {
       "cost": 5.0,
       "id": 82,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p200720.png",
       "position": "GKP",
       "predicted_points": 18.048,
-      "selected_by_percent": 5.5,
+      "selected_by_percent": 6.8,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
       "team_short": "BRE",
       "value": 3.61,
       "web_name": "Kelleher"
@@ -83,9 +87,11 @@
     {
       "cost": 5.0,
       "id": 198,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p172649.png",
       "position": "GKP",
       "predicted_points": 17.504,
-      "selected_by_percent": 3.1,
+      "selected_by_percent": 1.8,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
       "team_short": "CRY",
       "value": 3.5,
       "web_name": "Henderson"
@@ -93,9 +99,11 @@
     {
       "cost": 4.5,
       "id": 250,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p80201.png",
       "position": "GKP",
       "predicted_points": 17.4,
-      "selected_by_percent": 3.2,
+      "selected_by_percent": 3.0,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
       "team_short": "FUL",
       "value": 3.87,
       "web_name": "Leno"
@@ -103,9 +111,11 @@
     {
       "cost": 5.5,
       "id": 384,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204936.png",
       "position": "GKP",
       "predicted_points": 17.359,
-      "selected_by_percent": 11.2,
+      "selected_by_percent": 8.1,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
       "team_short": "MCI",
       "value": 3.16,
       "web_name": "Donnarumma"
@@ -113,9 +123,11 @@
     {
       "cost": 5.0,
       "id": 467,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p85633.png",
       "position": "GKP",
       "predicted_points": 17.066,
-      "selected_by_percent": 1.4,
+      "selected_by_percent": 1.5,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png",
       "team_short": "NFO",
       "value": 3.41,
       "web_name": "Sels"
@@ -123,9 +135,11 @@
     {
       "cost": 5.0,
       "id": 442,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p98747.png",
       "position": "GKP",
       "predicted_points": 16.511,
-      "selected_by_percent": 1.1,
+      "selected_by_percent": 1.2,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
       "team_short": "NEW",
       "value": 3.3,
       "web_name": "Pope"
@@ -133,9 +147,11 @@
     {
       "cost": 5.0,
       "id": 140,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p215059.png",
       "position": "GKP",
       "predicted_points": 14.333,
-      "selected_by_percent": 2.0,
+      "selected_by_percent": 1.9,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_short": "CHE",
       "value": 2.87,
       "web_name": "S\u00e1nchez"
@@ -143,9 +159,11 @@
     {
       "cost": 5.0,
       "id": 412,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p465247.png",
       "position": "GKP",
       "predicted_points": 12.947,
-      "selected_by_percent": 19.9,
+      "selected_by_percent": 14.9,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_short": "MUN",
       "value": 2.59,
       "web_name": "Lammens"
@@ -153,9 +171,11 @@
     {
       "cost": 4.5,
       "id": 326,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p201595.png",
       "position": "GKP",
       "predicted_points": 10.344,
-      "selected_by_percent": 0.7,
+      "selected_by_percent": 0.5,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
       "team_short": "LEE",
       "value": 2.3,
       "web_name": "Perri"
@@ -163,9 +183,11 @@
     {
       "cost": 5.0,
       "id": 351,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p449027.png",
       "position": "GKP",
       "predicted_points": 8.664,
-      "selected_by_percent": 0.2,
+      "selected_by_percent": 0.1,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_short": "LIV",
       "value": 1.73,
       "web_name": "Mamardashvili"
@@ -173,82 +195,110 @@
     {
       "cost": 5.5,
       "id": 350,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p116535.png",
       "position": "GKP",
       "predicted_points": 7.876,
-      "selected_by_percent": 4.1,
+      "selected_by_percent": 3.8,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
       "team_short": "LIV",
       "value": 1.43,
       "web_name": "A.Becker"
     },
     {
       "cost": 4.5,
-      "id": 413,
-      "position": "GKP",
-      "predicted_points": 6.286,
-      "selected_by_percent": 0.2,
-      "team_short": "MUN",
-      "value": 1.4,
-      "web_name": "Bayindir"
-    },
-    {
-      "cost": 4.5,
       "id": 325,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p59735.png",
       "position": "GKP",
-      "predicted_points": 4.102,
-      "selected_by_percent": 0.1,
+      "predicted_points": 5.462,
+      "selected_by_percent": 0.0,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
       "team_short": "MUN",
-      "value": 0.91,
+      "value": 1.21,
       "web_name": "Darlow"
     },
     {
       "cost": 5.0,
       "id": 385,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p432720.png",
       "position": "GKP",
-      "predicted_points": 2.215,
-      "selected_by_percent": 1.5,
-      "team_short": "MCI",
-      "value": 0.44,
+      "predicted_points": 2.249,
+      "selected_by_percent": 4.9,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png",
+      "team_short": "LEE",
+      "value": 0.45,
       "web_name": "Trafford"
     },
     {
       "cost": 4.5,
       "id": 29,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p72147.png",
       "position": "GKP",
       "predicted_points": 1.648,
       "selected_by_percent": 0.1,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
       "team_short": "AVL",
       "value": 0.37,
       "web_name": "M.Bizot"
     },
     {
-      "cost": 5.0,
-      "id": 141,
+      "cost": 4.5,
+      "id": 413,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p451302.png",
       "position": "GKP",
-      "predicted_points": 1.016,
-      "selected_by_percent": 0.1,
-      "team_short": "CHE",
-      "value": 0.2,
-      "web_name": "J\u00f6rgensen"
-    },
-    {
-      "cost": 4.0,
-      "id": 59,
-      "position": "GKP",
-      "predicted_points": 0.0,
-      "selected_by_percent": 0.2,
-      "team_short": "BOU",
-      "value": 0.0,
-      "web_name": "Dennis"
+      "predicted_points": 0.066,
+      "selected_by_percent": 0.0,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
+      "team_short": "MUN",
+      "value": 0.01,
+      "web_name": "Bayindir"
     },
     {
       "cost": 4.5,
-      "id": 110,
+      "id": 494,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p184254.png",
+      "position": "GKP",
+      "predicted_points": 0.013,
+      "selected_by_percent": 0.2,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
+      "team_short": "TOT",
+      "value": 0.0,
+      "web_name": "Vicario"
+    },
+    {
+      "cost": 5.0,
+      "id": 597,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p433969.png",
       "position": "GKP",
       "predicted_points": 0.0,
-      "selected_by_percent": 0.5,
-      "team_short": "BHA",
+      "selected_by_percent": 0.9,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png",
+      "team_short": "AVL",
       "value": 0.0,
-      "web_name": "Rushworth"
+      "web_name": "Suzuki"
+    },
+    {
+      "cost": 5.0,
+      "id": 2,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p109745.png",
+      "position": "GKP",
+      "predicted_points": 0.0,
+      "selected_by_percent": 0.1,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "value": 0.0,
+      "web_name": "Arrizabalaga"
+    },
+    {
+      "cost": 5.0,
+      "id": 3,
+      "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p437495.png",
+      "position": "GKP",
+      "predicted_points": 0.0,
+      "selected_by_percent": 0.0,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "value": 0.0,
+      "web_name": "Meslier"
     }
   ],
   "status": 200

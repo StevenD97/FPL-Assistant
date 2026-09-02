@@ -5,11 +5,12 @@ Ingestion CLI.
   python -m ingest run [--season ..] # snapshot bootstrap+fixtures, ingest new finished GWs
   python -m ingest snapshot          # just refresh bootstrap+fixtures snapshots
   python -m ingest live              # just ingest any newly-finished gameweeks
+  python -m ingest prune             # apply the raw_snapshots retention policy
   python -m ingest status            # row counts + recent ingest runs
 """
 import argparse
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from fpl.config import get_settings
 from fpl.data.db.models import IngestRun, PlayerGwStat, RawSnapshot
@@ -28,6 +29,16 @@ def _status() -> None:
         print("raw_snapshots:")
         for season, kind, n, latest in snaps:
             print(f"  {season:8} {kind:10} {n:>3} snapshots (latest {latest:%Y-%m-%d %H:%M})")
+
+        # Table size, because this is the growth that exhausts a small managed
+        # tier - see pipeline.prune_snapshots. Watching it here is how you
+        # notice retention has stopped running before the database fills.
+        total = session.execute(
+            text("SELECT pg_size_pretty(pg_total_relation_size('raw_snapshots')), "
+                 "       pg_size_pretty(pg_total_relation_size('player_gw_stats')), "
+                 "       pg_size_pretty(pg_database_size(current_database()))")
+        ).one()
+        print(f"  on disk: raw_snapshots {total[0]}, player_gw_stats {total[1]}, database {total[2]}")
 
         stats = session.execute(
             select(PlayerGwStat.season, func.count(), func.count(func.distinct(PlayerGwStat.event)))
@@ -51,7 +62,7 @@ def _status() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="ingest", description="FPL -> Postgres ingestion")
-    parser.add_argument("command", choices=["backfill", "run", "snapshot", "live", "status"])
+    parser.add_argument("command", choices=["backfill", "run", "snapshot", "live", "prune", "status"])
     parser.add_argument("--season", default=None, help="override season (defaults to current_season)")
     args = parser.parse_args()
 
@@ -66,6 +77,8 @@ def main() -> None:
         print(f"snapshots refreshed for {season}")
     elif args.command == "live":
         print(pipeline.ingest_new_finished_gws(args.season))
+    elif args.command == "prune":
+        print(pipeline.prune_snapshots(args.season))
     elif args.command == "status":
         _status()
 

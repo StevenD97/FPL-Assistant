@@ -149,16 +149,39 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Type scale (xs -> 4xl): 12/13/15/17/20/24/32/44/60 */
+  /* Type scale.
+     Body steps (3xs -> xl) stay fixed: data-dense UI wants a stable rhythm, and
+     a table cell that resizes with the window is harder to scan, not easier.
+     Display steps (2xl -> 4xl) are fluid, because the fixed jumps 32 -> 44 -> 60
+     left nothing between them: a 44px heading is oversized in a 900px window and
+     undersized at 1600px.
+
+     Each clamp is solved for its endpoints rather than eyeballed - it hits the
+     min at a 375px viewport and the max at 1280px:
+       slope = (max - min) / (W2 - W1)      vw part = slope * 100
+       fixed part = min - slope * W1
+     The maxima are the previous fixed values (32/44/60), and 1280px is where
+     they're reached, so a laptop and anything wider renders exactly as it did
+     before - desktop loses no size. Only the range *below* a laptop changes,
+     which is the gap this was for: the old fixed steps jumped 32 -> 44 -> 60
+     with nothing between, so a 44px heading was oversized in a 900px window.
+     Topping out at 1440px instead (the first attempt) quietly shrank every
+     desktop heading, which is the opposite of the point.
+
+     The fixed part is in `rem`, not `px`, so the whole value still scales with
+     the reader's browser font-size setting. A pure-vw interpolant ignores that
+     preference (WCAG 1.4.4); mixing in rem keeps it honoured. */
+  --text-3xs: 10px;
+  --text-2xs: 11px;
   --text-xs: 12px;
   --text-sm: 13px;
   --text-base: 15px;
   --text-md: 17px;
   --text-lg: 20px;
   --text-xl: 24px;
-  --text-2xl: 32px;
-  --text-3xl: 44px;
-  --text-4xl: 60px;
+  --text-2xl: clamp(1.625rem, 0.663vw + 1.47rem, 2rem); /* 26 -> 32px by 1280 */
+  --text-3xl: clamp(2rem, 1.326vw + 1.689rem, 2.75rem); /* 32 -> 44px by 1280 */
+  --text-4xl: clamp(2.375rem, 2.431vw + 1.805rem, 3.75rem); /* 38 -> 60px by 1280 */
   --tracking-wide: 0.04em;
 
   /* Radius */
@@ -303,6 +326,112 @@ body {
     font-size: 15px; font-weight: 600;
   }
   table.table-cards td.cell-primary::before { content: none; }
+  /* A full-width expanded panel inside a card row (the "More" row on the
+     optimizer's squad table): it holds its own layout, so opt out of the
+     label:value flex treatment. */
+  table.table-cards td.cell-detail {
+    display: block; text-align: left; padding: 6px 14px 2px;
+  }
+  table.table-cards td.cell-detail::before { content: none; }
+}
+
+/* --- Density downshift ---
+   The third mobile mode for tables, and the right one for a *matrix* - a grid
+   where the reader's question is "is this row better than that row", answered by
+   scanning down a column.
+
+   `table-cards` answers a different question well (one row at a time, many
+   low-priority columns) but it destroys a matrix: fifteen stacked label:value
+   cards can't be compared at a glance. The other existing option, plain
+   horizontal scroll, keeps the grid but hides half of it off-screen.
+
+   `table-dense` keeps the whole grid on screen and shrinks it to fit: every type
+   step drops one rung and the padding tightens, so a 6-gameweek planner fits a
+   phone without either scrolling sideways or losing the comparison.
+
+   Nothing here goes below --text-3xs (10px), which is the floor for this app. */
+@media (max-width: 767px) {
+  table.table-dense { font-size: var(--text-xs); }
+
+  /* Step the utility classes the cells actually use down one rung. These sit
+     outside @layer, so they beat Tailwind's layered utilities regardless of
+     specificity - same mechanism table-cards above relies on. */
+  table.table-dense .text-sm { font-size: var(--text-xs); }
+  table.table-dense .text-xs { font-size: var(--text-2xs); }
+  table.table-dense .text-2xs { font-size: var(--text-3xs); }
+
+  table.table-dense th,
+  table.table-dense td { padding-left: 6px; padding-right: 6px; }
+  table.table-dense th { padding-top: 7px; padding-bottom: 7px; }
+  table.table-dense td { padding-top: 5px; padding-bottom: 5px; }
+
+  /* Inline glyphs and player photos ride the type scale rather than staying at
+     their desktop pixel size, which would otherwise dominate the shrunk row.
+     `em` means one rule covers every size they're used at. Anything that must
+     keep its own footprint opts out with `dense-keep`. */
+  table.table-dense td :is(img, svg):not(.dense-keep) { width: 1.7em; height: 1.7em; }
+
+  /* An expanded detail row holds its own layout - leave its padding alone. */
+  table.table-dense td.cell-detail { padding-left: 10px; padding-right: 10px; }
+}
+
+/* --- Gameweek tiles ---
+   A gameweek's shape is the thing chip timing turns on, and until now it was
+   only available as prose ("at most 3 of 15 blank this window") or a single cell
+   tint. These states make a run of gameweeks scannable: doubles and blanks are
+   recognisable before they're read, which is the whole point of a strip you look
+   across rather than a sentence you parse.
+
+   Tones come from the existing semantic palette - info for opportunity, warning
+   for risk - rather than new hues, so the strip reads as part of the system
+   (same reasoning as SquadReadRail's tone map). A gameweek can be both at once,
+   which real FPL does produce, so the two are ranked rather than exclusive and
+   the tile still shows both counts. */
+.gw-tile {
+  --gw-accent: var(--border-strong);
+  position: relative;
+  background: var(--surface-default);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
+}
+.gw-tile-dgw {
+  --gw-accent: var(--info);
+  background: linear-gradient(165deg, var(--info-bg), var(--surface-default) 70%);
+  border-color: color-mix(in srgb, var(--info) 35%, transparent);
+}
+.gw-tile-bgw {
+  --gw-accent: var(--warning);
+  background: linear-gradient(165deg, var(--warning-bg), var(--surface-default) 70%);
+  border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+}
+/* The soonest gameweek, whatever its shape - a left edge rather than a colour,
+   so it stacks with the dgw/bgw tone instead of competing with it. */
+.gw-tile-next {
+  box-shadow:
+    inset 3px 0 0 0 var(--pl-purple),
+    var(--shadow-sm);
+  border-color: color-mix(in srgb, var(--pl-purple) 40%, transparent);
+}
+/* Interactive tiles only - a plain readout shouldn't invite a click. */
+a.gw-tile:hover,
+button.gw-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--gw-accent);
+  box-shadow: var(--shadow-md);
+}
+button.gw-tile:focus-visible {
+  outline: 2px solid var(--gw-accent);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  a.gw-tile:hover,
+  button.gw-tile:hover {
+    transform: none;
+  }
 }
 
 /* --- Scrollbar --- */

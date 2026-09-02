@@ -28,8 +28,8 @@ from conftest import assert_golden
 
 # 1 GKP, 4 DEF, 4 MID, 2 FWD starting (positions 1-11); backup GKP + 1 of each
 # outfield on the bench (positions 12-15). Real element ids from data/.
-_START = [1, 5, 260, 373, 72, 411, 449, 82, 21, 47, 329]   # GKP,DEF*4,MID*4,FWD*2
-_BENCH = [470, 136, 430, 249]                               # GKP,FWD,MID,DEF
+_START = [1, 8, 387, 356, 423, 426, 368, 40, 397, 411, 165]  # GKP,DEF*4,MID*4,FWD*2
+_BENCH = [109, 346, 154, 259]                                # GKP,FWD,MID,DEF
 _SQUAD = _START + _BENCH
 
 ENTRY_INFO = {

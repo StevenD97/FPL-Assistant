@@ -1,55 +1,10 @@
 import { Alert } from "@/shared/ui/Alert";
 import { Card } from "@/shared/ui/Card";
-import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
-import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { apiGet } from "@/shared/lib/api";
-import type { PriceMover, PriceWatchResponse } from "@/shared/types/api";
-
-function formatCount(n: number): string {
-  const abs = Math.abs(n);
-  if (abs >= 1000) return `${(n / 1000).toFixed(1)}k`;
-  return String(n);
-}
-
-function MoverRow({ mover, sign }: { mover: PriceMover; sign: "+" | "-" }) {
-  return (
-    <li className="flex items-center justify-between gap-3 border-t border-border px-3.5 py-2.5 first:border-t-0">
-      <div className="flex min-w-0 items-center gap-2.5">
-        <TeamBadge teamShort={mover.team_short} name="" badgeUrl={mover.team_badge} />
-        <div className="flex min-w-0 flex-col">
-          <PlayerLink id={mover.id} className="truncate text-sm font-medium text-text-primary">
-            {mover.web_name}
-          </PlayerLink>
-          <span className="text-xs text-text-muted">
-            {mover.team_short} &middot; £{mover.cost.toFixed(1)}m &middot; {mover.selected_by_percent.toFixed(1)}% owned
-          </span>
-        </div>
-      </div>
-      <div className="flex shrink-0 flex-col items-end">
-        <span
-          className={`font-mono text-sm font-semibold ${
-            sign === "+" ? "text-success" : "text-danger"
-          }`}
-        >
-          {sign}
-          {formatCount(Math.abs(mover.net_transfers_event))}
-        </span>
-        {mover.transfer_rate_per_hour != null && (
-          <span className="font-mono text-[11px] text-text-muted">
-            {mover.transfer_rate_per_hour > 0 ? "+" : ""}
-            {formatCount(mover.transfer_rate_per_hour)}/hr
-          </span>
-        )}
-        {mover.already_moved_today && (
-          <span className="text-[11px] font-medium text-text-muted">already moved today</span>
-        )}
-      </div>
-    </li>
-  );
-}
-
+import { MoverList } from "@/features/players/MoverList";
+import type { PriceWatchResponse } from "@/shared/types/api";
 
 // Prices move through the day, so this is per-request; force-dynamic also
 // keeps `next build` from calling the backend.
@@ -115,30 +70,14 @@ export default async function PriceWatchPage() {
               <div className="border-b border-border px-3.5 py-3">
                 <h2 className="text-md font-semibold text-text-primary">Likely risers</h2>
               </div>
-              {risers.length === 0 ? (
-                <p className="p-3.5 text-sm text-text-muted">No riser activity yet.</p>
-              ) : (
-                <ul>
-                  {risers.map((m) => (
-                    <MoverRow key={m.id} mover={m} sign="+" />
-                  ))}
-                </ul>
-              )}
+              <MoverList movers={risers} sign="+" emptyLabel="No riser activity yet." />
             </Card>
 
             <Card padded={false} className="overflow-hidden">
               <div className="border-b border-border px-3.5 py-3">
                 <h2 className="text-md font-semibold text-text-primary">Likely fallers</h2>
               </div>
-              {fallers.length === 0 ? (
-                <p className="p-3.5 text-sm text-text-muted">No faller activity yet.</p>
-              ) : (
-                <ul>
-                  {fallers.map((m) => (
-                    <MoverRow key={m.id} mover={m} sign="-" />
-                  ))}
-                </ul>
-              )}
+              <MoverList movers={fallers} sign="-" emptyLabel="No faller activity yet." />
             </Card>
           </div>
         </>

@@ -84,6 +84,32 @@ class Settings(BaseSettings):
     # snapshots so local dev, tests, and cold deploys still work.
     allow_file_fallback: bool = True
 
+    # Demo mode (env var DEMO_MODE): every manager lookup (any team id)
+    # resolves to the same fixed squad instead of hitting the live FPL API -
+    # see fpl.demo. Used only by the `demo` branch's own deployment for
+    # reviewer feedback; the default (off) leaves the real production
+    # behaviour untouched.
+    demo_mode: bool = False
+
+    # raw_snapshots retention (see fpl.data.ingest.pipeline.prune_snapshots).
+    # Every ingest appends a verbatim bootstrap + fixtures row; measured on
+    # Postgres 16, a bootstrap row is ~254 kB of JSONB and fixtures ~26 kB, so
+    # an hourly cron grows the table by ~200 MB/month with nothing reclaiming
+    # it. That is what exhausts a small managed-Postgres tier.
+    #
+    # Two windows, so the table reaches a steady state instead of growing:
+    #   * everything inside snapshot_fine_hours is kept at full resolution -
+    #     this is what price-watch's transfer-rate column reads (it asks for
+    #     history_hours=48, so a week leaves 3.5x margin for a wider query),
+    #   * beyond that, one snapshot per UTC day is kept for
+    #     snapshot_daily_days, a cheap long-term price/ownership trail at
+    #     ~280 kB/day.
+    # Steady state is ~100 MB at the defaults, and the newest snapshot of each
+    # (season, kind) is never deleted whatever these are set to - the app
+    # reads that row on every request.
+    snapshot_fine_hours: int = 24 * 7
+    snapshot_daily_days: int = 180
+
 
 @lru_cache
 def get_settings() -> Settings:

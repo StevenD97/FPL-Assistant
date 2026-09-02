@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageContainer } from "@/shared/layout/PageContainer";
-import { TeamLeaderboard } from "@/features/teams/TeamLeaderboard";
+import { TeamMetricTabs } from "@/features/teams/TeamMetricTabs";
 import { ClubCrest } from "@/features/teams/ClubCrest";
 import { apiGet } from "@/shared/lib/api";
 import type { TeamDetail } from "@/shared/types/api";
@@ -52,11 +52,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ id:
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {data.metrics.map((m) => (
-          <TeamLeaderboard key={m.key} metric={m} rows={data.leaderboards[m.key] ?? []} />
-        ))}
-      </div>
+      <TeamMetricTabs metrics={data.metrics} leaderboards={data.leaderboards} />
     </PageContainer>
   );
 }

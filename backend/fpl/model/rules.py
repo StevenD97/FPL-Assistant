@@ -175,6 +175,14 @@ MIN_APPEARANCE_WEIGHT_FOR_POSITION_PRIOR = 0.5
 # Spearman ~0.81 - see README for the numbers).
 CROSS_SEASON_HALF_LIFE_DAYS = 90
 
+# The gameweek whose deadline resets every manager's chips (Wildcard, Free
+# Hit, Triple Captain, Bench Boost each get a fresh, independent second copy
+# from this gameweek on - an unused first copy is lost, not carried over).
+# FPL announces the exact gameweek each season rather than fixing it to a
+# calendar date; GW19 matches the 2025/26 announcement (deadline 30 Dec
+# 2025) - update this if a season announces a different gameweek.
+CHIP_RESET_EVENT = 19
+
 # Personal-history stats pulled via compute_recency_weighted_stat - every
 # category that isn't derivable from the Stage 1 team-goals model.
 HISTORY_STAT_COLUMNS = [

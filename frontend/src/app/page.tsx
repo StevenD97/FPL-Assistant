@@ -9,6 +9,7 @@ import { BlogCover } from "@/features/blog/BlogCover";
 import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 import { getAllPosts } from "@/shared/lib/blog";
 import { apiGet } from "@/shared/lib/api";
+import { currentEvent } from "@/shared/lib/fixtureState";
 import type { ScheduleFixture } from "@/shared/types/api";
 
 // Fetches live matchday fixtures at request time; force-dynamic keeps Next
@@ -22,7 +23,7 @@ async function getMatchday(): Promise<{ event: number; fixtures: ScheduleFixture
     const all = await apiGet<ScheduleFixture[]>("/api/fixtures/schedule", { cache: "no-store" });
     if (!all.length) return null;
     // Feature the next gameweek still to be played (fall back to the last).
-    const nextEvent = all.find((f) => !f.finished)?.event ?? all[all.length - 1].event;
+    const nextEvent = currentEvent(all) ?? all[all.length - 1].event;
     return { event: nextEvent, fixtures: all.filter((f) => f.event === nextEvent).slice(0, 10) };
   } catch {
     return null;

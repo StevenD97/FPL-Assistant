@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/Button";
+import { TableFrame, Th } from "@/shared/ui/Table";
 import { CaptainBadge } from "@/shared/ui/CaptainBadge";
 import { PlayerLink } from "@/shared/ui/PlayerLink";
 import { PlayerPhoto } from "@/shared/ui/PlayerPhoto";
-import { PositionBadge } from "@/shared/ui/PositionBadge";
 import { StatusBadge } from "@/shared/ui/StatusBadge";
 import { SeasonDataNote } from "@/shared/ui/SeasonDataNote";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
 import { TextField } from "@/shared/ui/TextField";
 import { Alert } from "@/shared/ui/Alert";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
-import { TeamBadge } from "@/shared/pitch/TeamBadge";
 import { PitchFormation, type PitchPlayer } from "@/shared/pitch/PitchFormation";
 import { apiGet } from "@/shared/lib/api";
 import type { BestSquadResult, SquadRow, TransferResult } from "@/shared/types/api";
@@ -63,61 +63,97 @@ function IdealXI({ squad }: { squad: SquadRow[] }) {
   );
 }
 
+/**
+ * The solved squad's per-player numbers. Deliberately narrow: the pitch above
+ * (`IdealXI`) already shows who's in, their club, position, captaincy and
+ * XI-vs-bench, so this used to repeat all of that across eight columns. Team,
+ * position and role are dropped as duplicates of the pitch; value and ownership
+ * move into a per-row expansion, so nothing is lost from the solve.
+ */
 function SquadTable({ squad }: { squad: SquadRow[] }) {
+  const [openRow, setOpenRow] = useState<number | null>(null);
   return (
-    <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-surface-sunken">
-          <tr>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              <span className="inline-flex items-center gap-1">
-                Role <InfoTooltip term="role" />
-              </span>
-            </th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Player</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Pos</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Cost</th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              <span className="inline-flex items-center gap-1">
-                Predicted pts <InfoTooltip term="xPts" />
-              </span>
-            </th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              <span className="inline-flex items-center gap-1">
-                Value <InfoTooltip term="value" />
-              </span>
-            </th>
-            <th className="px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              <span className="inline-flex items-center gap-1">
-                Own% <InfoTooltip term="ownership" />
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortSquad(squad).map((p) => (
-            <tr key={p.id} className="border-t border-border">
-              <td className="px-3 py-2.5 text-text-muted">{p.role === "Starting XI" ? "XI" : "Bench"}</td>
-              <td className="px-3 py-2.5 font-medium">
-                <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
-                {p.captain && <CaptainBadge />}
-                <StatusBadge status={p.status} />
-              </td>
-              <td className="px-3 py-2.5">
-                <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
-              </td>
-              <td className="px-3 py-2.5">
-                <PositionBadge position={p.position} />
-              </td>
-              <td className="px-3 py-2.5 font-mono">£{p.cost.toFixed(1)}m</td>
-              <td className="px-3 py-2.5 font-mono font-medium">{p.predicted_points.toFixed(2)}</td>
-              <td className="px-3 py-2.5 font-mono">{p.value.toFixed(2)}</td>
-              <td className="px-3 py-2.5 font-mono">{p.selected_by_percent.toFixed(1)}%</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <TableFrame>
+      <thead className="bg-surface-sunken">
+        <tr>
+          <Th>Player</Th>
+          <Th>Cost</Th>
+          <Th>
+            <span className="inline-flex items-center gap-1">
+              Predicted pts <InfoTooltip term="xPts" />
+            </span>
+          </Th>
+          <Th>
+            <span className="sr-only">Details</span>
+          </Th>
+        </tr>
+      </thead>
+      <tbody>
+        {sortSquad(squad).map((p) => {
+          const expanded = openRow === p.id;
+          return (
+            <Fragment key={p.id}>
+              <tr className="border-t border-border">
+                <td className="cell-primary px-3 py-2.5">
+                  <PlayerLink id={p.id}>{p.web_name}</PlayerLink>
+                  {p.captain && <CaptainBadge />}
+                  <StatusBadge status={p.status} />
+                </td>
+                <td data-label="Cost" className="px-3 py-2.5 font-mono">
+                  £{p.cost.toFixed(1)}m
+                </td>
+                <td data-label="Predicted pts" className="px-3 py-2.5 font-mono font-medium">
+                  {p.predicted_points.toFixed(2)}
+                </td>
+                <td data-label="Detail" className="px-3 py-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setOpenRow(expanded ? null : p.id)}
+                    aria-expanded={expanded}
+                    className="text-xs font-semibold text-pl-purple hover:underline"
+                  >
+                    {expanded ? "Hide" : "More"}
+                  </button>
+                </td>
+              </tr>
+              {expanded && (
+                <tr className="border-t border-border bg-surface-sunken/60">
+                  <td className="cell-detail px-3 pb-3 pt-1" colSpan={4}>
+                    <dl className="flex flex-wrap gap-x-6 gap-y-2">
+                      <OptStat label="Role" value={p.role === "Starting XI" ? "XI" : "Bench"} term="role" />
+                      <OptStat label="Value" value={p.value.toFixed(2)} term="value" />
+                      <OptStat
+                        label="Own%"
+                        value={`${p.selected_by_percent.toFixed(1)}%`}
+                        term="ownership"
+                      />
+                    </dl>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          );
+        })}
+      </tbody>
+    </TableFrame>
+  );
+}
+
+function OptStat({
+  label,
+  value,
+  term,
+}: {
+  label: string;
+  value: React.ReactNode;
+  term: Parameters<typeof InfoTooltip>[0]["term"];
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+        {label} <InfoTooltip term={term} />
+      </dt>
+      <dd className="font-mono text-sm text-text-primary">{value}</dd>
     </div>
   );
 }
@@ -130,6 +166,15 @@ function BestSquadPanel() {
   const [result, setResult] = useState<BestSquadResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const status = useSeasonStatus();
+
+  const seededFromStatus = useRef(false);
+  useEffect(() => {
+    if (!status || seededFromStatus.current) return;
+    seededFromStatus.current = true;
+    setNextEvent(status.next_event);
+    setReferenceDate(status.next_deadline.slice(0, 10));
+  }, [status]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -229,6 +274,20 @@ function TransfersPanel() {
   const [result, setResult] = useState<TransferResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const status = useSeasonStatus();
+
+  // Seed the form from the real current gameweek once season status loads,
+  // instead of leaving the GW1 placeholder defaults in place once the
+  // season has actually moved on - only once, so it doesn't clobber a
+  // manual edit made before the fetch lands.
+  const seededFromStatus = useRef(false);
+  useEffect(() => {
+    if (!status || seededFromStatus.current) return;
+    seededFromStatus.current = true;
+    setEvent(Math.max(1, status.next_event - 1));
+    setNextEvent(status.next_event);
+    setReferenceDate(status.next_deadline.slice(0, 10));
+  }, [status]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -256,10 +315,13 @@ function TransfersPanel() {
         transfers&quot; under Load my team; this panel adds full control over the prediction window and
         gameweek.
       </p>
-      <Alert kind="warning">
-        No team ID has a fetchable squad until 2026/27 GW1 locks (2026-08-21) - FPL resets pick history each
-        season boundary.
-      </Alert>
+      {status?.is_preseason !== false && (
+        <Alert kind="warning">
+          No team ID has a fetchable squad until {status?.current_season_label ?? "2026/27"} GW1 locks
+          {status?.next_deadline ? ` (${status.next_deadline.slice(0, 10)})` : ""} - FPL resets pick history each
+          season boundary.
+        </Alert>
+      )}
       <form onSubmit={handleSubmit} className="mb-6 mt-6 flex flex-wrap items-end gap-4">
         <TextField
           label="Team ID"

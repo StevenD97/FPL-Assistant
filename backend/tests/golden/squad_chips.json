@@ -1,70 +1,78 @@
 {
   "body": {
-    "bench_boost": {
-      "bench_score": 1.088,
-      "double_count": 0,
-      "event": 11
-    },
-    "free_hit": {
-      "blank_count": 0,
-      "event": 10,
-      "recommended": false
-    },
+    "periods": [
+      {
+        "bench_boost": {
+          "bench_score": 1.38,
+          "double_count": 0,
+          "event": 11
+        },
+        "end_event": 14,
+        "free_hit": {
+          "blank_count": 0,
+          "event": 10,
+          "recommended": false
+        },
+        "label": "Before the reset",
+        "start_event": 10,
+        "triple_captain": {
+          "event": 12,
+          "player": "B.Fernandes",
+          "score": 1.006
+        },
+        "wildcard": null
+      }
+    ],
+    "reset_event": 19,
     "scan_end_event": 14,
     "scan_start_event": 10,
     "table": [
       {
-        "bench_score": 1.08,
-        "best_captain_name": "Haaland",
-        "best_captain_score": 0.762,
+        "bench_score": 1.304,
+        "best_captain_name": "B.Fernandes",
+        "best_captain_score": 0.895,
         "blank_count": 0,
         "double_count": 0,
         "event": 10,
-        "squad_total_score": 4.85
+        "squad_total_score": 6.98
       },
       {
-        "bench_score": 1.088,
-        "best_captain_name": "Haaland",
-        "best_captain_score": 0.672,
+        "bench_score": 1.38,
+        "best_captain_name": "B.Fernandes",
+        "best_captain_score": 0.992,
         "blank_count": 0,
         "double_count": 0,
         "event": 11,
-        "squad_total_score": 4.625
+        "squad_total_score": 6.865
       },
       {
-        "bench_score": 1.011,
-        "best_captain_name": "Haaland",
-        "best_captain_score": 0.88,
+        "bench_score": 1.319,
+        "best_captain_name": "B.Fernandes",
+        "best_captain_score": 1.006,
         "blank_count": 0,
         "double_count": 0,
         "event": 12,
-        "squad_total_score": 4.725
+        "squad_total_score": 7.396
       },
       {
-        "bench_score": 0.952,
-        "best_captain_name": "Haaland",
-        "best_captain_score": 0.666,
+        "bench_score": 1.095,
+        "best_captain_name": "B.Fernandes",
+        "best_captain_score": 0.887,
         "blank_count": 0,
         "double_count": 0,
         "event": 13,
-        "squad_total_score": 4.081
+        "squad_total_score": 6.064
       },
       {
-        "bench_score": 0.998,
-        "best_captain_name": "Haaland",
-        "best_captain_score": 0.744,
+        "bench_score": 1.176,
+        "best_captain_name": "B.Fernandes",
+        "best_captain_score": 0.908,
         "blank_count": 0,
         "double_count": 0,
         "event": 14,
-        "squad_total_score": 4.169
+        "squad_total_score": 6.436
       }
-    ],
-    "triple_captain": {
-      "event": 12,
-      "player": "Haaland",
-      "score": 0.88
-    },
-    "wildcard": null
+    ]
   },
   "status": 200
 }

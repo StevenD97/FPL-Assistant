@@ -110,6 +110,12 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
         "id", "code", "web_name", "team", "element_type", "status", "news",
         "chance_of_playing_next_round", "form", "ep_next", "starts_per_90", "starts",
         "now_cost", "selected_by_percent",
+        # expected_goals_per_90/expected_assists_per_90 are carried, not scored:
+        # nothing below reads them, they exist so a squad row can show the rate
+        # behind its xGI total (which can't distinguish a sharp substitute from a
+        # blunt regular). Kept here rather than joined on later so the squad page
+        # doesn't need a second bootstrap read to answer a per-player question.
+        "expected_goals_per_90", "expected_assists_per_90",
         "expected_goal_involvements", "ict_index", "defensive_contribution_per_90",
         "penalties_order", "penalties_missed",
         "direct_freekicks_order", "corners_and_indirect_freekicks_order",
@@ -198,6 +204,11 @@ def compute_player_scores(reference_date, next_event, congestion_window_days=7,
     df["expected_goal_involvements"] = pd.to_numeric(df["expected_goal_involvements"], errors="coerce").fillna(0)
     df["ict_index"] = pd.to_numeric(df["ict_index"], errors="coerce").fillna(0)
     df["defensive_contribution_per_90"] = pd.to_numeric(df["defensive_contribution_per_90"], errors="coerce").fillna(0)
+    # Same coercion as their siblings above: FPL types these inconsistently across
+    # fields (some numbers, some numeric strings), so nothing downstream should
+    # have to guess which it got.
+    df["expected_goals_per_90"] = pd.to_numeric(df["expected_goals_per_90"], errors="coerce").fillna(0)
+    df["expected_assists_per_90"] = pd.to_numeric(df["expected_assists_per_90"], errors="coerce").fillna(0)
 
     df["xgi_norm"] = min_max_normalize(df["expected_goal_involvements"])
     df["ict_index_norm"] = min_max_normalize(df["ict_index"])
@@ -279,6 +290,29 @@ def nullable_int_column(series):
     """
     return pd.Series(
         [None if pd.isna(v) else int(v) for v in series], index=series.index, dtype=object,
+    )
+
+
+def nullable_float_column(values, index):
+    """
+    The float counterpart of nullable_int_column, for the same reason and the
+    same failure: a column of floats-or-None built by Series.map (or assigned
+    from a plain list) upcasts to float64, turning None into NaN, and
+    Starlette's JSONResponse sets allow_nan=False - so one missing value 500s
+    the whole endpoint rather than serialising as null.
+
+    `cost` in build_squad_analysis is exactly that column: it is None for any
+    squad player with no live-season id, which stayed hypothetical while the
+    roster happened to map cleanly and became real the moment the live
+    snapshot was refreshed mid-season.
+
+    Takes values + index rather than a Series because the coercion has already
+    happened by the time a mapped Series exists.
+    """
+    return pd.Series(
+        [None if v is None or pd.isna(v) else float(v) for v in values],
+        index=index,
+        dtype=object,
     )
 
 

@@ -8,6 +8,12 @@
       "port": 8000
     },
     {
+      "name": "backend-demo",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["DEMO_MODE=1", "backend/venv/bin/python", "-m", "uvicorn", "fpl.api.main:app", "--reload", "--reload-dir", "backend", "--app-dir", "backend", "--host", "0.0.0.0"],
+      "port": 8000
+    },
+    {
       "name": "frontend",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "frontend"],

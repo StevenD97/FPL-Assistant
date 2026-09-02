@@ -106,7 +106,7 @@ def chip_strategy(team_id, scan_start_event, scan_end_event):
 
 
 def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
-                               gw_count=5, free_transfers=1, max_transfers=None):
+                               gw_count=5, free_transfers=1, max_transfers=None, exact_transfers=None):
     """The provably optimal set of transfers for a squad, drawn from the live 2026/27 pool."""
     next_events = list(range(next_event, next_event + gw_count))
     bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
@@ -118,11 +118,19 @@ def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
         roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
     )
     pool = build_player_pool(predicted, bootstrap)
-    result = optimize_transfers(pool, current_squad_ids, bank=bank, free_transfers=free_transfers, max_transfers=max_transfers)
+    result = optimize_transfers(
+        pool, current_squad_ids, bank=bank, free_transfers=free_transfers,
+        max_transfers=max_transfers, exact_transfers=exact_transfers,
+    )
     team_code_by_id = {t["id"]: t["code"] for t in bootstrap["teams"]}
     attach_player_media(result["squad"], team_code_by_id)
     attach_player_media(result["transferred_out"], team_code_by_id)
     attach_player_media(result["transferred_in"], team_code_by_id)
+    # So the frontend can say exactly what starting_xi_predicted_points/predicted_points
+    # are summed over, instead of leaving the reader to guess whether a combined
+    # multi-gameweek total is a single gameweek's score (see SuggestedTransfers.tsx).
+    result["gw_count"] = gw_count
+    result["next_event"] = next_event
     return result
 
 

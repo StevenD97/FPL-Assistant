@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { TeamBadge } from "@/shared/pitch/TeamBadge";
+import { currentEvent, fixtureState } from "@/shared/lib/fixtureState";
 import type { ScheduleFixture } from "@/shared/types/api";
 
 /**
@@ -12,9 +13,7 @@ import type { ScheduleFixture } from "@/shared/types/api";
 export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
   // Open on the next gameweek still to be played. Derived from the same props
   // the server rendered, so the first client render agrees with the HTML.
-  const [event, setEvent] = useState(
-    () => fixtures.find((fx) => !fx.finished)?.event ?? 1,
-  );
+  const [event, setEvent] = useState(() => currentEvent(fixtures) ?? 1);
 
   const events = useMemo(
     () => [...new Set(fixtures.map((fx) => fx.event))].sort((a, b) => a - b),
@@ -53,6 +52,7 @@ export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
                 // MatchdayStrip shows those as TBC, so match it rather than
                 // rendering "Invalid Date".
                 const kickoff = fx.kickoff_time ? new Date(fx.kickoff_time) : null;
+                const state = fixtureState(fx);
                 return (
                   <div
                     key={i}
@@ -62,10 +62,17 @@ export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
                       <TeamBadge teamShort={fx.team_h} name={fx.team_h} badgeUrl={fx.team_h_badge} />
                     </div>
                     <div className="shrink-0 px-2 text-center leading-tight">
-                      {fx.finished ? (
-                        <span className="font-mono text-base font-bold text-text-primary">
-                          {fx.team_h_score}-{fx.team_a_score}
-                        </span>
+                      {state !== "scheduled" ? (
+                        <>
+                          <span className="font-mono text-base font-bold text-text-primary">
+                            {fx.team_h_score}-{fx.team_a_score}
+                          </span>
+                          {state === "live" && (
+                            <div className="font-mono text-[11px] font-semibold text-success">
+                              LIVE
+                            </div>
+                          )}
+                        </>
                       ) : kickoff ? (
                         <>
                           <div className="font-mono text-xs font-medium text-text-primary">

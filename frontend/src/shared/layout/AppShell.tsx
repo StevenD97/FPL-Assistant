@@ -259,6 +259,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             exit={{ opacity: 0 }}
           >
             <div className="absolute inset-0 bg-black/50" onClick={() => setMoreOpen(false)} aria-hidden="true" />
+            {/* Draggable on the y-axis so it dismisses with a downward swipe,
+                the way a native sheet does. Constraints pin it at rest and
+                elasticity is bottom-only, so it rubber-bands down but never
+                lifts above its resting position; a short drag springs back. */}
             <motion.div
               className="bg-fpl-sidebar absolute inset-x-0 bottom-0 rounded-t-2xl border-t border-white/10 p-4 shadow-lg"
               style={{ paddingBottom: "max(16px, env(safe-area-inset-bottom))" }}
@@ -266,10 +270,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", stiffness: 420, damping: 38 }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0, bottom: 0.55 }}
+              dragMomentum={false}
+              onDragEnd={(_, info) => {
+                // Either a decisive distance or a quick flick closes it.
+                if (info.offset.y > 90 || info.velocity.y > 500) setMoreOpen(false);
+              }}
               role="dialog"
               aria-label="More menu"
             >
-              <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-white/20" />
+              {/* Grab handle - also a tap target, so the sheet is dismissable
+                  without a swipe (and for pointer users who won't try one). */}
+              <button
+                type="button"
+                onClick={() => setMoreOpen(false)}
+                aria-label="Close menu"
+                className="mx-auto mb-4 block cursor-grab touch-none rounded-full px-6 py-1.5 active:cursor-grabbing"
+              >
+                <span className="block h-1.5 w-10 rounded-full bg-white/20" />
+              </button>
               <div className="grid grid-cols-3 gap-2">
                 {NAV.filter((n) => !PRIMARY.has(n.href)).map((item) => {
                   const active = isActive(pathname, item.href);

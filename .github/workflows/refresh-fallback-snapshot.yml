@@ -1,0 +1,140 @@
+name: Refresh fallback snapshot
+
+# data/bootstrap_static.json and data/fixtures.json are what the app serves
+# whenever the database is empty or unreachable (see allow_file_fallback).
+# That fallback is only as good as the day it was committed, and it had gone a
+# month stale by the time anyone looked - so the site kept insisting the season
+# had not started.
+#
+# This refreshes them from the live FPL API and opens a PR. Deliberately a PR
+# and not a push to main:
+#   * the committed snapshot feeds the golden tests, so a refresh always moves
+#     ~17 golden files with it and that diff deserves eyes;
+#   * merging deploys, and unreviewed data should not deploy itself;
+#   * a season rollover changes the roster wholesale, which is exactly when a
+#     human should look.
+#
+# Weekly is enough: while the database is healthy these files are not read at
+# all, and their job is to be a recent-enough parachute.
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-fallback-snapshot
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+          pip install "pytest>=8" "httpx>=0.27"
+
+      - name: Fetch the live snapshot
+        run: |
+          set -euo pipefail
+          # Written compactly, matching how the committed files are stored, so
+          # the diff is a data change rather than a reformat.
+          python - <<'PY'
+          import json, urllib.request
+
+          BASE = "https://fantasy.premierleague.com/api"
+          for endpoint, path in [
+              ("bootstrap-static/", "data/bootstrap_static.json"),
+              ("fixtures/", "data/fixtures.json"),
+          ]:
+              with urllib.request.urlopen(f"{BASE}/{endpoint}", timeout=120) as r:
+                  payload = json.load(r)
+              # Refuse to overwrite a good snapshot with a bad response.
+              if endpoint.startswith("bootstrap"):
+                  assert payload.get("elements") and payload.get("events"), "bootstrap looks empty"
+              else:
+                  assert isinstance(payload, list) and payload, "fixtures look empty"
+              with open(path, "w", encoding="utf-8") as f:
+                  json.dump(payload, f, separators=(",", ":"))
+              print(f"wrote {path}")
+          PY
+
+      - name: Regenerate goldens and run the suite
+        working-directory: backend
+        run: |
+          set -euo pipefail
+          # The goldens are byte-exact snapshots of real responses computed
+          # from the files above, so a data refresh necessarily moves them.
+          FPL_UPDATE_GOLDENS=1 python -m pytest -q
+          # Then prove the refreshed goldens actually hold.
+          python -m pytest -q
+
+      - name: Regenerate the frontend API types
+        # The generator reads the goldens with node:fs only - no dependencies,
+        # so no npm install to keep in sync here.
+        run: node frontend/scripts/gen-api-types.mjs
+
+      - name: Summarise what changed
+        id: summary
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Snapshot is already current; nothing to do."
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+
+          data = json.load(open("data/bootstrap_static.json"))
+          nxt = next((e["id"] for e in data["events"] if e.get("is_next")), "n/a")
+          print(f"next_event={nxt}")
+          print(f"elements={len(data['elements'])}")
+          PY
+
+      - name: Open a pull request
+        if: steps.summary.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automation/refresh-fallback-snapshot
+          delete-branch: true
+          title: "chore(data): refresh the fallback snapshot"
+          commit-message: |
+            chore(data): refresh the fallback snapshot
+
+            Automated refresh of data/bootstrap_static.json and
+            data/fixtures.json from the live FPL API, with goldens and
+            frontend API types regenerated to match.
+          body: |
+            Automated weekly refresh of the on-disk fallback snapshot — what
+            the app serves when the database is empty or unreachable.
+
+            - next gameweek in the new snapshot: **GW${{ steps.summary.outputs.next_event }}**
+            - players in the roster: **${{ steps.summary.outputs.elements }}**
+
+            Goldens were regenerated (`FPL_UPDATE_GOLDENS=1 pytest`) and the
+            suite then re-run against them, and `npm run gen:api` was applied.
+
+            **What to check before merging:** the golden diff should be values
+            moving (prices, form, ownership, results), not fields appearing or
+            vanishing. A large change in the player count means FPL altered the
+            roster — normal around a transfer window, worth a look otherwise.
+            Element ids are reassigned when the pool changes, so if anything
+            pins an id (see `backend/tests/test_network_routes.py`), confirm it
+            still means the player it claims to.
