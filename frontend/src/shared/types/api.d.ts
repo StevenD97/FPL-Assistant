@@ -26,6 +26,44 @@ export type YourRank = {
   found_exact: boolean;
 };
 
+export type AccuracyResponseCoverage = {
+  graded: number[];
+  pending: number[];
+};
+
+export type AccuracyResponseEvent = {
+  captain: AccuracyResponseEventCaptain;
+  event: number;
+  players_graded: number;
+  rank_correlation: number;
+  top_ten: AccuracyResponseEventTopTen;
+};
+
+export type AccuracyResponseEventCaptain = {
+  actual: number;
+  best_actual: number;
+  best_actual_player: string;
+  pick: string;
+  pick_team: string;
+  predicted: number;
+  rank_of_pick: number;
+};
+
+export type AccuracyResponseEventTopTen = {
+  average_actual: number;
+  field_average: number;
+  names: string[];
+};
+
+export type AccuracyResponseSummary = {
+  captain_average: number;
+  captain_best_possible_average: number;
+  events_graded: number;
+  field_average: number;
+  rank_correlation: number;
+  top_ten_average: number;
+};
+
 export type CaptaincyOption = {
   captain_flag: string;
   ep_next: number;
@@ -322,6 +360,13 @@ export type TrendEntry = {
 export type TrendPoint = {
   event: number;
   total_points: number;
+};
+
+/** Response of `GET /api/accuracy`. */
+export type AccuracyResponse = {
+  coverage: AccuracyResponseCoverage;
+  events: AccuracyResponseEvent[];
+  summary: AccuracyResponseSummary;
 };
 
 /** Response of `GET /api/optimizer/best-squad`. */

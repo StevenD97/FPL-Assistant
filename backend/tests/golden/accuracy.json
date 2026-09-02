@@ -1,0 +1,82 @@
+{
+  "body": {
+    "coverage": {
+      "graded": [
+        1,
+        2
+      ],
+      "pending": []
+    },
+    "events": [
+      {
+        "captain": {
+          "actual": 23,
+          "best_actual": 23,
+          "best_actual_player": "B.Fernandes",
+          "pick": "B.Fernandes",
+          "pick_team": "MUN",
+          "predicted": 7.7,
+          "rank_of_pick": 1
+        },
+        "event": 2,
+        "players_graded": 312,
+        "rank_correlation": 0.257,
+        "top_ten": {
+          "average_actual": 8.3,
+          "field_average": 2.86,
+          "names": [
+            "B.Fernandes",
+            "Szoboszlai",
+            "Haaland",
+            "Anderson",
+            "Gibbs-White",
+            "Truffert",
+            "Calvert-Lewin",
+            "Mbeumo",
+            "Virgil",
+            "E.Le F\u00e9e"
+          ]
+        }
+      },
+      {
+        "captain": {
+          "actual": 2,
+          "best_actual": 17,
+          "best_actual_player": "De Cuyper",
+          "pick": "B.Fernandes",
+          "pick_team": "MUN",
+          "predicted": 6.2,
+          "rank_of_pick": 148
+        },
+        "event": 1,
+        "players_graded": 310,
+        "rank_correlation": 0.2,
+        "top_ten": {
+          "average_actual": 3.2,
+          "field_average": 3.06,
+          "names": [
+            "B.Fernandes",
+            "Haaland",
+            "Gibbs-White",
+            "Anderson",
+            "Thiago",
+            "Szoboszlai",
+            "Gabriel",
+            "E.Le F\u00e9e",
+            "Gro\u00df",
+            "Kelleher"
+          ]
+        }
+      }
+    ],
+    "summary": {
+      "captain_average": 12.5,
+      "captain_best_possible_average": 20.0,
+      "events_graded": 2,
+      "field_average": 2.96,
+      "rank_correlation": 0.229,
+      "top_ten_average": 5.75
+    }
+  },
+  "status": 200
+}

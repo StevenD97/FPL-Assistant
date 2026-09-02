@@ -33,6 +33,7 @@ const OUT = join(import.meta.dirname, "../src/shared/types/api.d.ts");
  */
 const RESPONSES = {
   season_status: ["SeasonStatus", "GET /api/season-status"],
+  accuracy: ["AccuracyResponse", "GET /api/accuracy"],
   entry_summary: ["TeamEntry", "GET /api/entry/{team_id}"],
   players_all: ["PlayerListItem", "GET /api/players", "item"],
   player_detail: ["PlayerDetail", "GET /api/players/{player_id}"],

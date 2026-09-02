@@ -17,32 +17,38 @@ import { formatRank, initials } from "@/shared/lib/team";
 type NavItem = { href: string; label: string; icon: IconName; short?: string };
 type NavSection = { label?: string; items: NavItem[] };
 
-// Grouped by depth/purpose so the sidebar reads as organised rather than a
-// flat list of peers. Fixtures + Schedule are merged into one Matches page.
+/**
+ * Four destinations, then everything else behind one disclosure.
+ *
+ * Eight top-level links across four labelled groups is not a hierarchy, it is
+ * a list with headings: every destination looked equally important, so none of
+ * them did. These four are what a manager opens week to week - their
+ * dashboard, their squad, the player list, their leagues - and they are the
+ * same four the mobile tab bar already promoted, so the two navigations now
+ * agree instead of implying different priorities on different screens.
+ *
+ * The rest are real pages people do go to, just not every week; they are one
+ * tap away under "More" rather than competing for attention with the four.
+ * Fixtures + Schedule are merged into one Matches page.
+ */
+const PRIMARY_ITEMS: NavItem[] = [
+  { href: "/", label: "Home", icon: "home" },
+  { href: "/squad", label: "My Squad", icon: "squad", short: "Squad" },
+  { href: "/players", label: "Players", icon: "players" },
+  { href: "/leagues", label: "Leagues", icon: "leagues" },
+];
+
+const SECONDARY_ITEMS: NavItem[] = [
+  { href: "/matches", label: "Matches", icon: "fixtures" },
+  { href: "/teams", label: "Teams", icon: "teams" },
+  { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
+  { href: "/accuracy", label: "Accuracy", icon: "accuracy" },
+  { href: "/blog", label: "Blog", icon: "blog" },
+];
+
 const NAV_SECTIONS: NavSection[] = [
-  { items: [{ href: "/", label: "Home", icon: "home" }] },
-  {
-    label: "Your game",
-    items: [
-      { href: "/squad", label: "My Squad", icon: "squad", short: "Squad" },
-      { href: "/leagues", label: "Leagues", icon: "leagues" },
-    ],
-  },
-  {
-    label: "Research",
-    items: [
-      { href: "/players", label: "Players", icon: "players" },
-      { href: "/teams", label: "Teams", icon: "teams" },
-      { href: "/price-watch", label: "Price Watch", icon: "price-watch" },
-    ],
-  },
-  {
-    label: "Matchday & more",
-    items: [
-      { href: "/matches", label: "Matches", icon: "fixtures" },
-      { href: "/blog", label: "Blog", icon: "blog" },
-    ],
-  },
+  { items: PRIMARY_ITEMS },
+  { label: "More", items: SECONDARY_ITEMS },
 ];
 
 const NAV: NavItem[] = NAV_SECTIONS.flatMap((s) => s.items);
@@ -50,7 +56,7 @@ const NAV: NavItem[] = NAV_SECTIONS.flatMap((s) => s.items);
 // Destinations with their own mobile bottom-tab; the rest live behind the
 // "More" tab, which opens a bottom sheet. The tab bar is the single mobile nav
 // mechanism - no separate hamburger/drawer (that was redundant with "More").
-const PRIMARY = new Set(["/", "/squad", "/players", "/leagues"]);
+const PRIMARY = new Set(PRIMARY_ITEMS.map((i) => i.href));
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";

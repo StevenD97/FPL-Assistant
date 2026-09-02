@@ -20,6 +20,11 @@ P = "reference_date=2025-11-30&next_event=10&gw_count=5&window_size=5&budget=100
 DETERMINISTIC_ROUTES = [
     ("health", "/api/health"),
     ("season_status", "/api/season-status"),
+    # Deterministic because every finished gameweek is already graded in the
+    # committed data/accuracy.json - the endpoint grades nothing and touches
+    # no network. A missing grade would show up here as a golden that changed,
+    # which is the right way to notice.
+    ("accuracy", "/api/accuracy"),
     ("fixtures_difficulty", "/api/fixtures/difficulty?start_event=10&window_size=5"),
     ("fixtures_schedule", "/api/fixtures/schedule?season=live"),
     ("players_price_watch", "/api/players/price-watch?limit=20&history_hours=48"),

@@ -14,6 +14,7 @@ const COMMANDS: Cmd[] = [
   { label: "Players", href: "/players", icon: "players", keywords: "search browse database outlook predicted points differentials low ownership" },
   { label: "Teams", href: "/teams", icon: "teams", keywords: "clubs top 5 goals assists xg xa xgi minutes bonus cards leaderboard" },
   { label: "Price Watch", href: "/price-watch", icon: "price-watch", keywords: "rises falls transfers momentum" },
+  { label: "Accuracy", href: "/accuracy", icon: "accuracy", keywords: "track record graded backtest how good hit rate" },
   { label: "Matches", href: "/matches", icon: "fixtures", keywords: "fixtures schedule results difficulty fdr calendar" },
   { label: "Leagues", href: "/leagues", icon: "leagues", keywords: "mini standings rivals" },
   { label: "Blog", href: "/blog", icon: "blog", keywords: "news posts" },

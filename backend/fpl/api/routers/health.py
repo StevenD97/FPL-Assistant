@@ -133,3 +133,18 @@ def season_status():
         "archive_season_label": "2025/26",
         "current_season_label": "2026/27",
     }
+
+
+@router.get("/api/accuracy")
+def accuracy():
+    """
+    How the model has actually done, gameweek by gameweek.
+
+    Public and unfiltered on purpose: a prediction nobody ever checks is a
+    number a reader has to take on faith. Grades are cached (see
+    fpl.services.accuracy), so this is cheap after the first call following a
+    finished gameweek.
+    """
+    from fpl.services.accuracy import accuracy_report
+
+    return accuracy_report()

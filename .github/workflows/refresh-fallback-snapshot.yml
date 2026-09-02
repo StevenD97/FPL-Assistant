@@ -74,6 +74,21 @@ jobs:
               print(f"wrote {path}")
           PY
 
+      - name: Grade any newly finished gameweeks
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          # data/accuracy.json is the public track record (see /accuracy). The
+          # API will grade a gameweek or two on demand so the page is never
+          # badly stale, but each one costs a full prediction context, and
+          # backfilling on someone's page load is not acceptable. Doing it here
+          # means the committed file is already complete.
+          #
+          # Runs before the goldens below, because /api/accuracy has one.
+          python tools/build_accuracy.py
+
       - name: Regenerate goldens and run the suite
         working-directory: backend
         run: |
@@ -119,7 +134,8 @@ jobs:
             chore(data): refresh the fallback snapshot
 
             Automated refresh of data/bootstrap_static.json and
-            data/fixtures.json from the live FPL API, with goldens and
+            data/fixtures.json from the live FPL API, plus grades for any
+            newly finished gameweeks in data/accuracy.json, with goldens and
             frontend API types regenerated to match.
           body: |
             Automated weekly refresh of the on-disk fallback snapshot — what
