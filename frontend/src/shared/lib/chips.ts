@@ -26,12 +26,13 @@ export function nextChip(chips: ChipResponse | null): ChipSuggestion | null {
       detail: period.triple_captain.player,
     },
     {
-      // 3dp, matching the backend's own rounding: bench_score is the sum of
-      // four sub-1.0 recommendation scores (0.0-0.263 across a full scan), so
-      // coarser rounding collapses nearly every value to "0.0".
+      // bench_score is now the bench's predicted POINTS for that gameweek, not
+      // the old sum of four sub-1.0 recommendation scores - so one decimal and
+      // a unit, because "Bench worth 14.1 pts" is a number you can weigh a
+      // chip against and "Bench worth 0.263" was not.
       name: "Bench Boost",
       event: period.bench_boost.event,
-      detail: `Bench worth ${period.bench_boost.bench_score.toFixed(3)}`,
+      detail: `Bench worth ${period.bench_boost.bench_score.toFixed(1)} pts`,
     },
     period.free_hit.recommended && {
       name: "Free Hit",

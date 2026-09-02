@@ -321,7 +321,16 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     if exclude:
         excluded_ids |= {int(x) for x in exclude.split(",") if x.strip()}
 
-    candidates = pool[(pool["position"] == position) & (~pool["id"].isin(excluded_ids))].copy()
+    # Never offer a replacement who will not play. The prediction is
+    # archive-trained, so it happily scores an injured player on what they used
+    # to produce - at a tight budget cap that surfaced genuinely unbuyable
+    # suggestions (a £4.5m forward with an unspecified injury, players out on
+    # loan at another club), with nothing on the card to say so.
+    candidates = pool[
+        (pool["position"] == position)
+        & (~pool["id"].isin(excluded_ids))
+        & (~pool["unavailable"])
+    ].copy()
 
     # Photo + badge so the UI can show a replacement as the same player card it
     # shows everywhere else, rather than a name and two numbers. Same derivation
@@ -330,9 +339,13 @@ def player_alternatives(player_id, exclude, limit, ref_date, next_event, gw_coun
     candidates["team_badge"] = candidates["team"].map(team_code_by_id).apply(team_badge_url)
     candidates["player_photo"] = candidates["code"].apply(player_photo_url)
 
+    # status/news ride along so the UI can mark a doubtful ("d", 50-75% chance)
+    # candidate as such. Those are deliberately still offered - see
+    # UNAVAILABLE_STATUSES - and a reader deciding between two similar options
+    # should be told which one has a fitness test to pass.
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",
-        "selected_by_percent", "team_badge", "player_photo",
+        "selected_by_percent", "team_badge", "player_photo", "status", "news",
     ]
     df = candidates[cols].rename(columns={"now_cost": "cost_raw"}).copy()
     df["cost"] = (df["cost_raw"] / 10).round(1)
