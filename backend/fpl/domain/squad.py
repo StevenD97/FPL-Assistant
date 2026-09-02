@@ -9,7 +9,12 @@ from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
-from fpl.domain.scoring import compute_player_scores, map_archived_ids_to_live, nullable_int_column
+from fpl.domain.scoring import (
+    compute_player_scores,
+    map_archived_ids_to_live,
+    nullable_float_column,
+    nullable_int_column,
+)
 
 
 def build_squad_analysis(team_id, event, reference_date, next_event, fixture_start_event, window_size=5,
@@ -129,7 +134,13 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     # against - this has to line up with `bank`/`squad_value` below (both
     # live figures) for transfer-budget math to be correct.
     live_cost_by_id = {p["id"]: p["now_cost"] for p in live_bootstrap["elements"]}
-    squad_rows["cost"] = squad_rows["live_id"].map(lambda lid: round(live_cost_by_id[lid] / 10, 1) if lid in live_cost_by_id else None)
+    squad_rows["cost"] = nullable_float_column(
+        [
+            round(live_cost_by_id[lid] / 10, 1) if lid in live_cost_by_id else None
+            for lid in squad_rows["live_id"]
+        ],
+        squad_rows.index,
+    )
 
     # Same argument for ownership, and it matters more here: `selected_by_percent`
     # arrived from bootstrap_file (archived by default), where it's frozen at last

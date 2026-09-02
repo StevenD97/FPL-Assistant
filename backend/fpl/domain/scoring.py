@@ -293,6 +293,29 @@ def nullable_int_column(series):
     )
 
 
+def nullable_float_column(values, index):
+    """
+    The float counterpart of nullable_int_column, for the same reason and the
+    same failure: a column of floats-or-None built by Series.map (or assigned
+    from a plain list) upcasts to float64, turning None into NaN, and
+    Starlette's JSONResponse sets allow_nan=False - so one missing value 500s
+    the whole endpoint rather than serialising as null.
+
+    `cost` in build_squad_analysis is exactly that column: it is None for any
+    squad player with no live-season id, which stayed hypothetical while the
+    roster happened to map cleanly and became real the moment the live
+    snapshot was refreshed mid-season.
+
+    Takes values + index rather than a Series because the coercion has already
+    happened by the time a mapped Series exists.
+    """
+    return pd.Series(
+        [None if v is None or pd.isna(v) else float(v) for v in values],
+        index=index,
+        dtype=object,
+    )
+
+
 def top_differentials(df, max_ownership=10.0, top_n=15):
     """Same recommendation_score, filtered to low-ownership players."""
     pool = df[df["selected_by_percent"] <= max_ownership]
