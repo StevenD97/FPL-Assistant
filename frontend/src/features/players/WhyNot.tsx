@@ -27,9 +27,18 @@ export function WhyNot({ playerId }: { playerId: number }) {
     { kind: "loading" } | { kind: "ready"; data: PlayerComparison } | { kind: "error" }
   >({ kind: "loading" });
 
+  // Reset during render, not in the effect. React's own "adjusting state when
+  // a prop changes" pattern: navigating to another player must not show the
+  // previous player's verdict for a frame, and doing it in an effect means a
+  // committed render with stale content plus a second render to correct it.
+  const [renderedFor, setRenderedFor] = useState(playerId);
+  if (renderedFor !== playerId) {
+    setRenderedFor(playerId);
+    setState({ kind: "loading" });
+  }
+
   useEffect(() => {
     let cancelled = false;
-    setState({ kind: "loading" });
     apiGet<PlayerComparison>(`/api/players/${playerId}/comparison`)
       .then((data) => {
         if (!cancelled) setState({ kind: "ready", data });
