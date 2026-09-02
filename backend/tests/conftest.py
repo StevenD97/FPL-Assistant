@@ -40,10 +40,40 @@ def client():
     return TestClient(app)
 
 
+# Decimal places every float in a golden is rounded to before comparison.
+#
+# Without this the goldens only pass on the machine that generated them. They
+# recorded full float64 repr, and values built by long floating-point
+# reductions - recency_weighted_form's exponential decay sum is the worst -
+# differ in the last significant digit across CPUs, because numpy is free to
+# vectorise and reassociate the sum differently. Real examples, same commit and
+# the same pinned numpy, developer machine vs CI runner:
+#
+#   2.5175308869521595  vs  2.517530886952159
+#   5.427427217459395   vs  5.427427217459394
+#
+# That is a relative difference around 1e-16 - float64's own noise floor, not a
+# behaviour change. These are scores, forms and prices, so nine decimal places
+# is many orders of magnitude below anything the app or a reader could act on,
+# while still catching any change worth calling a regression.
+_FLOAT_PRECISION = 9
+
+
+def _round_floats(value):
+    """Recursively round floats so a golden means the same thing on any machine."""
+    if isinstance(value, float):
+        return round(value, _FLOAT_PRECISION)
+    if isinstance(value, dict):
+        return {k: _round_floats(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_round_floats(v) for v in value]
+    return value
+
+
 def _canonical(payload) -> str:
     # sort_keys => key ordering never causes a false diff; default=str keeps any
     # stray non-JSON scalar (e.g. a datetime) stable rather than crashing.
-    return json.dumps(payload, sort_keys=True, indent=2, default=str)
+    return json.dumps(_round_floats(payload), sort_keys=True, indent=2, default=str)
 
 
 def assert_golden(name: str, payload) -> None:
