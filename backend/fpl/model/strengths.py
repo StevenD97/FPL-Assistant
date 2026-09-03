@@ -63,6 +63,14 @@ def _blend_weight(n_current_gws, shrinkage_games=SHRINKAGE_GAMES):
     accumulates games, using the same "pseudo-games of trust" shrinkage
     shape as _shrink_ratio, so the model is internally consistent about
     how fast it starts trusting new evidence over old.
+
+    The shape is asserted, not fitted, and it is worth being clear about
+    that: it reaches 0.5 by gameweek 3 and 0.77 by gameweek 10, which is
+    fast for a signal as noisy as three matches. Validating it needs two
+    full seasons - fit the curve on one transition, test it on the next -
+    and the archive holds one season. So it inherits SHRINKAGE_GAMES
+    rather than inventing a second constant nobody can check. Revisit once
+    2026/27 finishes and there are two transitions to fit against.
     """
     if n_current_gws <= 0:
         return 0.0
