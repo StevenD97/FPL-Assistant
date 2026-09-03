@@ -49,6 +49,35 @@ It supersedes the earlier owners' desk
 (https://claude.ai/code/artifact/1907e06b-30b0-4763-89d6-59c4d03b1214), which held no
 answers and can be ignored.
 
+### Getting your partner in
+
+Open the HQ, use the **share** control on the page, and add him. Then have him open the
+link while signed in to his own Claude account.
+
+**The thing that decides whether this works:** a page that stores data is
+organisation-internal — it cannot be opened by a public link, and every reader has to be
+a signed-in member of the same Claude organisation as the owner. Two separate personal
+Claude subscriptions are usually two separate organisations, in which case the share
+dialog will not offer him and the link will not open for him.
+
+The share dialog tells you which case you are in. If it lets you add him by name or
+email, you are in one organisation and it will work. If it only offers a link and warns
+that others cannot open it, you are not.
+
+Once he is in: he reads and writes the same decisions you do, and his questions to the
+CEO draw on **his** Claude usage, not yours. Nothing is billed.
+
+### If the share does not work
+
+Do not pay to fix it. The repository already gives you both a shared executive system
+that does not depend on organisations at all: you each run `/ceo`, `/exec-meeting` and
+`/exec-status` in your own Claude Code session on this repo, and everything those
+produce is committed to `company/`, which is shared by definition. The HQ is the nicer
+surface; git is the durable one, and it already works for both of you.
+
+A middle option: he opens the HQ read-only through your screen or a screenshot for the
+overview, and does his own executive work in a session. Clumsy, but free.
+
 Answers are stored with the page and survive between sessions. To bring them back into
 a session, say **"read the desk"** — Claude reads the stored answers directly. There is
 also a button on the page that builds a summary to paste in, if that is easier.
