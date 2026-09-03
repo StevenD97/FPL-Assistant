@@ -377,7 +377,7 @@ def _predict_for_event(context, next_event):
         if not fx_list:
             rows.append({
                 **base_row, "next_opponent": "BLANK", "fixture_count": 0,
-                "haul_probability": 0.0, "ceiling": 0,
+                "haul_probability": 0.0, "floor": 0, "ceiling": 0,
                 **{k: 0.0 for k in _BREAKDOWN_KEYS},
             })
             continue
@@ -445,6 +445,7 @@ def _predict_for_event(context, next_event):
             **base_row, "next_opponent": " & ".join(opponent_labels),
             "fixture_count": len(fx_list),
             "haul_probability": shape["haul_probability"],
+            "floor": shape["floor"],
             "ceiling": shape["ceiling"],
             **totals,
         })
@@ -581,6 +582,17 @@ def _predict_multi_gw_breakdown_cached(reference_date, next_events, half_life_da
     result["clean_sheet_prob"] = result["clean_sheet_prob"] / len(next_events)
     result["fixture_count"] = sum((df["next_opponent"] != "BLANK").astype(int) for df in per_gw.values())
 
+    # Shape of the outcome - but only when the window is a single gameweek,
+    # because that is the only case where it means anything. A haul is five
+    # points in one week, not five spread across five, so these cannot be
+    # summed; and attaching one gameweek's ceiling to a five-gameweek total
+    # would read as the window's ceiling to anyone looking at the page. A
+    # caller wanting shape across a window should predict each gameweek and
+    # read them per event, which is what predict_by_event is for.
+    if len(next_events) == 1:
+        for column in ("haul_probability", "floor", "ceiling"):
+            result[column] = per_gw[first_event][column]
+
     ticker = per_gw[first_event]["next_opponent"]
     for event in next_events[1:]:
         ticker = ticker.str.cat(per_gw[event]["next_opponent"], sep=" | ")
@@ -614,6 +626,9 @@ def predict_multi_gw_points(reference_date, next_events, half_life_days=21, seas
         shrinkage_games, apply_live_signals, roster_bootstrap_file, roster_fixtures_file, current_season,
         smoothing_alpha, xg_weight, congestion_weight, bonus_fixture_sensitivity,
     )
-    return breakdown[[
-        "id", "web_name", "team_short", "position", "predicted_points", "fixture_count", "fixture_ticker",
-    ]]
+    columns = ["id", "web_name", "team_short", "position", "predicted_points",
+               "fixture_count", "fixture_ticker"]
+    # Only present for a single-gameweek window, where a haul probability and
+    # a ceiling actually mean something - see predict_multi_gw_breakdown.
+    columns += [c for c in ("haul_probability", "floor", "ceiling") if c in breakdown.columns]
+    return breakdown[columns]

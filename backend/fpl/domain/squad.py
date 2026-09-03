@@ -101,8 +101,15 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
             bootstrap_file=bootstrap_file, fixtures_file=fixtures_file,
             apply_live_signals=True,
             roster_bootstrap_file=roster_bootstrap_file, roster_fixtures_file=roster_fixtures_file,
-        )[["id", "predicted_points"]]
-        return frame.rename(columns={"predicted_points": column})
+        )
+        # The shape of the single-gameweek outcome comes back only for a
+        # one-gameweek window (see predict_multi_gw_breakdown), which is
+        # exactly the captaincy call - so it rides along with that request
+        # rather than costing a third prediction.
+        keep = ["id", "predicted_points"]
+        if "haul_probability" in frame.columns:
+            keep += ["haul_probability", "floor", "ceiling"]
+        return frame[keep].rename(columns={"predicted_points": column})
 
     window_events = list(range(next_event, next_event + window_size))
     for events, column in ((window_events, "predicted_points"), ([next_event], "predicted_points_next")):
@@ -142,9 +149,14 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     # a Bench Boost; 0.133 is not.
     bench_predicted_points = round(float(bench["predicted_points_next"].sum()), 1) if len(bench) else 0.0
 
+    # Ranked on the expectation, not on the haul probability. The backtest
+    # tried the latter and it picked worse captains - 4.92 points a week
+    # against 5.32, hauling 35% of weeks against 41% - so the shape is shown
+    # beside the ranking rather than used as it. See fpl.model.distribution.
     captaincy_options = rank_desc(starting, "predicted_points_next", 5)[
         ["web_name", "team_short", "pos", "recommendation_score", "predicted_points",
-         "predicted_points_next", "ep_next", "captain_flag", "next_opponent"]
+         "predicted_points_next", "ep_next", "captain_flag", "next_opponent",
+         "haul_probability", "floor", "ceiling"]
     ].to_dict(orient="records")
 
     # A sentence per option, so the ranking is arguable rather than asserted.

@@ -68,9 +68,13 @@ from fpl.model.rules import (
 # A haul, in the sense the accuracy benchmark uses it.
 HAUL_THRESHOLD = 5
 
-# The percentile reported as "ceiling". Not a maximum: a true maximum is
-# unbounded and useless - every forward's is a hat-trick. The 90th percentile
-# is the good week a manager is actually hoping for when they captain someone.
+# The percentiles reported as "floor" and "ceiling". Not a minimum and a
+# maximum: a true maximum is unbounded and useless - every forward's is a
+# hat-trick - and a true minimum is zero for everyone, because anyone can be
+# dropped. The 10th and 90th are the bad week and the good week a manager is
+# actually weighing, and quoting them as a range says what a single expected
+# value cannot: how wide the bet is.
+FLOOR_PERCENTILE = 0.10
 CEILING_PERCENTILE = 0.90
 
 # Where each Poisson tail is truncated. Beyond these the mass is negligible:
@@ -272,6 +276,10 @@ def summarise(dist):
     """
     The two numbers a decision needs, plus the mean for cross-checking.
 
+    `floor` and `ceiling` bracket the ordinary range - the 10th and 90th
+    percentiles - so a projection can be quoted as "most weeks 2-13" instead
+    of as a single number carrying a decimal place it has not earned.
+
     `haul_probability` is P(>= HAUL_THRESHOLD), recalibrated. It is emphatically
     *not* what captaincy is ranked on: the backtest tried that and it picked
     worse captains than the plain expectation did (4.92 points a week against
@@ -291,15 +299,34 @@ def summarise(dist):
     haul = sum(p for points, p in dist.items() if points >= HAUL_THRESHOLD) / total
     mean = sum(points * p for points, p in dist.items()) / total
 
-    cumulative = 0.0
-    ceiling = 0
-    for points in sorted(dist):
-        cumulative += dist[points] / total
-        if cumulative >= CEILING_PERCENTILE:
-            ceiling = points
-            break
+    floor, ceiling = _percentiles(dist, total, (FLOOR_PERCENTILE, CEILING_PERCENTILE))
     return {
         "haul_probability": round(recalibrate(haul), 4),
+        "floor": int(floor),
         "ceiling": int(ceiling),
         "mean": round(mean, 3),
     }
+
+
+def _percentiles(dist, total, wanted):
+    """
+    The requested percentiles, in one pass up the sorted outcomes.
+
+    `wanted` must be ascending. Each is the first outcome at which the
+    cumulative probability reaches it, which is the ordinary discrete
+    definition and means both ends come from the same walk rather than two.
+    """
+    found = []
+    cumulative = 0.0
+    remaining = list(wanted)
+    last = 0
+    for points in sorted(dist):
+        cumulative += dist[points] / total
+        last = points
+        while remaining and cumulative >= remaining[0]:
+            found.append(points)
+            remaining.pop(0)
+        if not remaining:
+            break
+    found.extend([last] * len(remaining))
+    return found

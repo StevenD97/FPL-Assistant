@@ -84,7 +84,10 @@ export type Better = {
 
 export type CaptaincyOption = {
   captain_flag: string;
+  ceiling: number;
   ep_next: number;
+  floor: number;
+  haul_probability: number;
   next_opponent: string;
   pos: Position;
   predicted_points: number;
@@ -548,6 +551,7 @@ export type PlayerPredictedPoints = {
   clean_sheet_points: number;
   clean_sheet_prob: number;
   defensive_contribution_points: number;
+  floor: number;
   goal_points: number;
   goals_conceded_points: number;
   haul_probability: number;

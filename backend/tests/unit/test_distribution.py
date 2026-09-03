@@ -106,6 +106,24 @@ def test_ceiling_is_a_good_week_not_the_best_imaginable_one():
     assert shape["ceiling"] < max(dist)
 
 
+def test_the_range_brackets_the_mean_and_is_not_zero_to_infinity():
+    """
+    The point of quoting a range is that it is narrower than "anything could
+    happen". A floor of 0 for every player and a ceiling at the top of the
+    support would be true and useless.
+    """
+    shape = summarise(_dist(predicted_goals=0.6, predicted_assists=0.3))
+    assert shape["floor"] <= shape["mean"] <= shape["ceiling"]
+    assert shape["floor"] > 0
+    assert shape["ceiling"] < max(_dist(predicted_goals=0.6, predicted_assists=0.3))
+
+
+def test_a_rotation_risk_has_a_floor_of_zero_because_that_is_the_truth():
+    """A player who misses one week in four genuinely might score nothing."""
+    shape = summarise(_dist(appearance={"p_any": 0.55, "p_60_plus": 0.4}))
+    assert shape["floor"] == 0
+
+
 def test_recalibration_leaves_the_honest_range_alone_and_shrinks_above_it():
     assert recalibrate(0.05) == 0.05
     assert recalibrate(CALIBRATION_KNEE) == CALIBRATION_KNEE

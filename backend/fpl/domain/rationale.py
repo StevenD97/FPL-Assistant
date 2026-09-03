@@ -138,6 +138,15 @@ def captain_reason(option, current_captain_name=None, runner_up=None):
 
     if current_captain_name and current_captain_name != option["web_name"]:
         lead += f" - you have {current_captain_name}"
+
+    # The projection is an average; the armband is a bet on the good week. A
+    # manager choosing between two similar projections is really choosing
+    # between two shapes, and this is the only place the sentence can say so.
+    haul = option.get("haul_probability")
+    floor, ceiling = option.get("floor"), option.get("ceiling")
+    if haul is not None and floor is not None and ceiling is not None and haul > 0:
+        return (f"{lead}. Most weeks {floor:.0f}-{ceiling:.0f}, "
+                f"{round(haul * 100)}% chance of a haul.")
     return lead + "."
 
 
