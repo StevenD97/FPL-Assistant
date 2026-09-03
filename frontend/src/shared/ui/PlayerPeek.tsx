@@ -168,7 +168,7 @@ export function PlayerPeek({
       <div
         ref={panelRef}
         tabIndex={-1}
-        className={`relative z-[1] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-surface p-4 shadow-lg outline-none sm:rounded-2xl sm:p-5 ${
+        className={`relative z-[1] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-surface p-4 shadow-lg outline-none sm:rounded-lg sm:p-5 ${
           // The replace view needs room for three cards abreast; the player view
           // sizes to its own content (see hasAside).
           //

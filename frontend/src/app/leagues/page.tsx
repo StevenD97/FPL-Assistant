@@ -315,7 +315,7 @@ export default function LeaguesPage() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="mt-3 rounded-xl border border-border bg-surface p-3 shadow-sm">
+                <div className="mt-3 rounded-lg border border-border bg-surface p-3 shadow-sm">
                   {/* One search row for both intents. The selector only
                       disambiguates a bare number (is 314 a team or a league?) -
                       a pasted FPL URL is auto-detected and overrides it either
@@ -359,7 +359,7 @@ export default function LeaguesPage() {
             Provenance is a marker on the row rather than a separate section. */}
         {leagueChoices.length > 0 && (
           <div className="mb-6">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+            <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-text-muted">
               Your leagues
             </span>
             <div className="flex flex-wrap gap-2">
@@ -380,7 +380,7 @@ export default function LeaguesPage() {
                     {lg.tracked && (
                       <span
                         title="Tracked on this device"
-                        className={`font-mono text-[10px] font-semibold uppercase tracking-wide ${
+                        className={`font-mono text-xs font-semibold uppercase tracking-wide ${
                           selected ? "text-white/70" : "text-text-muted"
                         }`}
                       >

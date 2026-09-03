@@ -110,7 +110,7 @@ export function CommandPalette() {
         >
           <div className="absolute inset-0 bg-ink-900/50" onClick={() => setOpen(false)} aria-hidden="true" />
           <motion.div
-            className="bg-fpl-sidebar relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 shadow-lg"
+            className="bg-fpl-sidebar relative w-full max-w-lg overflow-hidden rounded-lg border border-white/10 shadow-lg"
             initial={{ y: -12, opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -8, opacity: 0 }}
@@ -128,7 +128,7 @@ export function CommandPalette() {
                 placeholder="Jump to…  (players, chips, differentials)"
                 className="w-full bg-transparent py-3.5 text-sm text-white outline-none placeholder:text-ink-400"
               />
-              <kbd className="rounded bg-surface/10 px-1.5 py-0.5 font-mono text-[10px] text-ink-300">esc</kbd>
+              <kbd className="rounded bg-surface/10 px-1.5 py-0.5 font-mono text-xs text-ink-300">esc</kbd>
             </div>
             <div className="max-h-[50vh] overflow-y-auto p-2">
               {results.length === 0 && (

@@ -103,12 +103,12 @@ export function WaitingCockpit({
                 <PlayerPhoto
                   src={p.player_photo}
                   name={p.web_name}
-                  className="h-7 w-7 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-[8px]"
+                  className="h-7 w-7 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-xs"
                 />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
                   {p.web_name}
                 </span>
-                <span className="shrink-0 text-[11px] text-ink-300">
+                <span className="shrink-0 text-xs text-ink-300">
                   {p.team_short} · £{p.cost.toFixed(1)}m
                 </span>
                 <span className="shrink-0 font-mono text-sm font-bold text-text-primary">
@@ -173,8 +173,8 @@ function Panel({
   return (
     <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3.5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">{title}</p>
-        <Link href={href} className="tap-target inline-flex items-center text-[11px] font-semibold text-text-primary hover:underline">
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink-300">{title}</p>
+        <Link href={href} className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
           {cta} →
         </Link>
       </div>

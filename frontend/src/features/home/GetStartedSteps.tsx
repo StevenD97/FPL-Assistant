@@ -42,7 +42,7 @@ export function GetStartedSteps() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-primary/60">Get started</span>
+        <span className="text-xs font-bold uppercase tracking-[0.1em] text-text-primary/60">Get started</span>
         <h2 className="text-lg font-bold tracking-tight text-text-primary">Three steps from sign-up to matchday.</h2>
       </div>
 

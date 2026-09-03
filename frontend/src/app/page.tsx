@@ -55,7 +55,7 @@ export default async function LandingPage() {
           <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 text-white lg:p-8">
             <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,176,32,0.16),transparent_70%)]" />
             <div className="relative flex flex-col gap-4">
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">
+              <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-primary">
                 Fantasy Premier League · 2026/27
               </span>
               <h1 className="max-w-3xl text-2xl font-bold leading-[1.05] tracking-tight lg:text-3xl">
@@ -83,7 +83,7 @@ export default async function LandingPage() {
       {posts.length > 0 && (
         <section>
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">From the blog</span>
+            <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-primary">From the blog</span>
             <Link href="/blog" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
               All posts →
             </Link>
@@ -97,7 +97,7 @@ export default async function LandingPage() {
               >
                 <BlogCover cover={post.cover} size="card" />
                 <div className="p-3.5">
-                  <div className="text-[11px] text-text-muted">{formatDate(post.date)}</div>
+                  <div className="text-xs text-text-muted">{formatDate(post.date)}</div>
                   <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-text-primary group-hover:underline">
                     {post.title}
                   </h3>

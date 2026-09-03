@@ -50,22 +50,22 @@ function MoverRow({ mover, sign }: { mover: PriceMover; sign: "+" | "-" }) {
         )}
         {mover.about_to_change ? (
           <span
-            className={`text-[11px] font-bold uppercase tracking-wide ${
+            className={`text-xs font-bold uppercase tracking-wide ${
               sign === "+" ? "text-success" : "text-danger"
             }`}
           >
             Changes tonight
           </span>
         ) : mover.already_moved_today ? (
-          <span className="text-[11px] font-medium text-text-muted">already moved today</span>
+          <span className="text-xs font-medium text-text-muted">already moved today</span>
         ) : (
-          <span className="font-mono text-[11px] text-text-muted">
+          <span className="font-mono text-xs text-text-muted">
             {sign}
             {formatCount(Math.abs(mover.net_transfers_event))} transfers
           </span>
         )}
         {mover.transfer_rate_per_hour != null && (
-          <span className="font-mono text-[11px] text-text-muted">
+          <span className="font-mono text-xs text-text-muted">
             {mover.transfer_rate_per_hour > 0 ? "+" : ""}
             {formatCount(mover.transfer_rate_per_hour)}/hr
           </span>

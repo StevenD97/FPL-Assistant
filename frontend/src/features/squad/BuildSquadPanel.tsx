@@ -567,8 +567,8 @@ export function BuildSquadPanel({
               {/* Bench: 1 GK + 3 outfield (the per-position overflow past the XI). */}
               <div className="mt-3 rounded-lg border border-border bg-surface-sunken px-4 py-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">Bench</span>
-                  <span className="text-[10px] text-text-muted">GK + 3 outfield</span>
+                  <span className="text-xs font-semibold uppercase tracking-wide text-text-muted">Bench</span>
+                  <span className="text-xs text-text-muted">GK + 3 outfield</span>
                 </div>
                 <div className="flex flex-wrap items-start justify-center gap-4">
                   {POSITION_ORDER.map((pos) => {
@@ -592,10 +592,10 @@ export function BuildSquadPanel({
                             <PlayerPhoto
                               src={p.player_photo}
                               name={p.web_name}
-                              className="h-11 w-11 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-[10px]"
+                              className="h-11 w-11 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-xs"
                             />
                           </button>
-                          <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+                          <span className="whitespace-nowrap text-xs font-medium text-text-primary">{p.web_name}</span>
                         </div>
                       );
                     }
@@ -609,10 +609,10 @@ export function BuildSquadPanel({
                         aria-label={`Add a bench ${pos}`}
                         className="group flex h-[76px] flex-col items-center gap-1"
                       >
-                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-border-strong text-[10px] font-bold text-text-muted transition-colors group-hover:border-brand group-hover:text-brand">
+                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-border-strong text-xs font-bold text-text-muted transition-colors group-hover:border-brand group-hover:text-brand">
                           {pos}
                         </span>
-                        <span className="text-[11px] font-medium text-text-muted">Add {pos}</span>
+                        <span className="text-xs font-medium text-text-muted">Add {pos}</span>
                       </button>
                     );
                   })}

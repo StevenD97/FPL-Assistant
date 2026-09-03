@@ -202,7 +202,7 @@ function SourceBadge({ source, frozenAt }: { source: string; frozenAt: string | 
   const frozen = source === "frozen";
   return (
     <span
-      className={`rounded px-1.5 py-0.5 text-[11px] font-semibold ${
+      className={`rounded px-1.5 py-0.5 text-xs font-semibold ${
         frozen ? "bg-success/10 text-success" : "bg-surface-sunken text-text-muted"
       }`}
       title={
@@ -219,9 +219,9 @@ function SourceBadge({ source, frozenAt }: { source: string; frozenAt: string | 
 function Headline({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
     <div className="rounded-lg border border-border bg-surface px-3.5 py-3 shadow-sm">
-      <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">{label}</p>
+      <p className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">{label}</p>
       <p className="mt-1 font-mono text-xl font-extrabold text-text-primary">{value}</p>
-      <p className="mt-1 text-[11px] leading-4 text-text-muted">{hint}</p>
+      <p className="mt-1 text-xs leading-4 text-text-muted">{hint}</p>
     </div>
   );
 }
@@ -239,7 +239,7 @@ function Row({
 }) {
   return (
     <div>
-      <dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-text-muted">{label}</dt>
+      <dt className="text-xs font-bold uppercase tracking-[0.08em] text-text-muted">{label}</dt>
       <dd className={`mt-0.5 text-sm font-semibold ${good ? "text-success" : "text-danger"}`}>{value}</dd>
       <dd className="mt-0.5 text-xs leading-snug text-text-muted">{detail}</dd>
     </div>

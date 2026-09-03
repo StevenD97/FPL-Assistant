@@ -38,7 +38,7 @@ export function StatTile({
 }) {
   return (
     <div className="flex flex-col gap-0.5 rounded-md bg-surface-sunken p-3">
-      <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-text-muted">
+      <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.06em] text-text-muted">
         {label}
         {(tooltip || tooltipText) && <InfoTooltip term={tooltip} text={tooltipText} />}
       </span>

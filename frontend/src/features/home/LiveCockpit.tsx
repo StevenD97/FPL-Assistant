@@ -107,10 +107,10 @@ export function LiveCockpit({
             wants to look at. */}
         <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink-300">
               Your starting XI
             </p>
-            <Link href="/squad" className="tap-target inline-flex items-center text-[11px] font-semibold text-text-primary hover:underline">
+            <Link href="/squad" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
               Open workspace →
             </Link>
           </div>
@@ -134,7 +134,7 @@ export function LiveCockpit({
                 </span>
               </div>
               {transfers && (
-                <p className="mt-1 text-[11px] text-ink-300">
+                <p className="mt-1 text-xs text-ink-300">
                   {transfers.transfers_made} transfer
                   {transfers.transfers_made === 1 ? "" : "s"}
                   {transfers.points_hit > 0 ? ` · -${transfers.points_hit} hit` : " · no hit"}
@@ -148,7 +148,7 @@ export function LiveCockpit({
               <p className="text-sm font-semibold text-white">
                 {chip.name} <span className="text-text-primary">· GW{chip.event}</span>
               </p>
-              <p className="mt-0.5 truncate text-[11px] text-ink-300">{chip.detail}</p>
+              <p className="mt-0.5 truncate text-xs text-ink-300">{chip.detail}</p>
             </Panel>
           )}
 
@@ -181,10 +181,10 @@ export function LiveCockpit({
                     <PlayerPhoto
                       src={p.player_photo}
                       name={p.web_name}
-                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-[8px]"
+                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-xs"
                     />
                     <span className="min-w-0 flex-1 truncate text-white">{p.web_name}</span>
-                    <span className="shrink-0 text-[11px] text-ink-300">
+                    <span className="shrink-0 text-xs text-ink-300">
                       {p.pos} · {p.team_short}
                     </span>
                   </li>

@@ -13,7 +13,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-3xl text-[11px] leading-relaxed text-text-muted">
+          <p className="max-w-3xl text-xs leading-relaxed text-text-muted">
             Not affiliated with, endorsed by, or connected to the Premier League, the Football Association
             Premier League Limited, or the official Fantasy Premier League game. For informational purposes
             only — not betting, gambling, or financial advice.

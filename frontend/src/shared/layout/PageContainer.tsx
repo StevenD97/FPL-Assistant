@@ -36,7 +36,7 @@ export function PageHeader({
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div className="flex flex-col gap-1">
         {eyebrow && (
-          <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-muted">{eyebrow}</span>
+          <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-muted">{eyebrow}</span>
         )}
         <h1 className="text-lg font-bold tracking-tight text-text-primary">{title}</h1>
         {/* Hidden on a phone. A page subtitle is orientation copy for someone

@@ -158,7 +158,7 @@ function PlayerDetailSkeleton() {
     <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start">
-          <Skeleton className="h-[352px] w-full max-w-[248px] shrink-0 rounded-2xl" />
+          <Skeleton className="h-[352px] w-full max-w-[248px] shrink-0 rounded-lg" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-3">
               <Skeleton className="h-6 w-52" />
@@ -252,9 +252,9 @@ function UnderlyingStats({ stats }: { stats: NonNullable<PlayerDetail["season_st
 // so the key predictions read as the focal point around the card.
 function HeroStat({ label, value, tooltip }: { label: string; value: string; tooltip?: StatGlossaryKey }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-surface px-3 py-4 text-center shadow-sm">
+    <div className="flex flex-col items-center justify-center rounded-lg border border-border bg-surface px-3 py-4 text-center shadow-sm">
       <span className="font-mono text-2xl font-bold text-text-primary">{value}</span>
-      <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+      <span className="mt-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
         {label}
         {tooltip && <InfoTooltip term={tooltip} />}
       </span>

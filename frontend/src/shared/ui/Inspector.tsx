@@ -78,7 +78,7 @@ export function Inspector({
               names the region for assistive tech and labels the close button;
               the strip carries the subject (which team) and the way out. */}
           <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
-            <p className="min-w-0 truncate text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted">
+            <p className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
               {eyebrow}
             </p>
             <button

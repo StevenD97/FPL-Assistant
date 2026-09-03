@@ -41,7 +41,7 @@ export function ThisWeek({
 
   return (
     <section className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-      <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
+      <h2 className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
         {nextEvent != null ? `Before the GW${nextEvent} deadline` : "Before the deadline"}
       </h2>
 
@@ -106,7 +106,7 @@ function Action({
       onClick={onOpen}
       className="tap-target flex w-full items-start gap-3 rounded-md border border-transparent p-1 text-left transition-colors hover:border-border hover:bg-surface-sunken"
     >
-      <span className="mt-0.5 w-16 shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-text-muted">
+      <span className="mt-0.5 w-16 shrink-0 text-xs font-bold uppercase tracking-[0.08em] text-text-muted">
         {kind}
       </span>
       <span className="min-w-0 flex-1">

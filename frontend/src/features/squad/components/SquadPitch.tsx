@@ -247,7 +247,7 @@ export function SquadPitch({
     }
     if (swapLoading[originalLiveId]) {
       return (
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface text-[9px] text-text-muted shadow ring-2 ring-border">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface text-xs text-text-muted shadow ring-2 ring-border">
           …
         </span>
       );
@@ -373,7 +373,7 @@ export function SquadPitch({
         }
       />
       <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
-        <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
+        <span className="w-full text-center text-xs font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
           Bench
         </span>
         {displaySquad

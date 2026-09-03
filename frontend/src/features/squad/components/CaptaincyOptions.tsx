@@ -46,12 +46,12 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
                   <span className="font-semibold text-text-primary">{option.web_name}</span>
                   <PositionBadge position={option.pos} />
                   {isCurrentCaptain && (
-                    <span className="rounded-sm bg-ink-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                    <span className="rounded-sm bg-ink-900 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
                       Your captain
                     </span>
                   )}
                   {isCurrentVice && (
-                    <span className="rounded-sm bg-surface-sunken px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-secondary">
+                    <span className="rounded-sm bg-surface-sunken px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide text-text-secondary">
                       Your vice
                     </span>
                   )}

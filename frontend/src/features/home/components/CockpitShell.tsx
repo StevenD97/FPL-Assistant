@@ -31,7 +31,7 @@ export function CockpitShell({
               instead of truncating, and the deadline tile drops below it on a
               phone rather than squeezing it. */}
           <div className="min-w-0 basis-full sm:basis-auto sm:flex-1">
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">
+            <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-primary">
               {eyebrow}
             </span>
             <h1 className="mt-1 text-balance break-words text-2xl font-bold leading-tight tracking-tight lg:text-3xl">
@@ -44,11 +44,11 @@ export function CockpitShell({
             href="/squad"
             className="min-h-[44px] shrink-0 rounded-lg border border-white/20 bg-surface/10 px-4 py-2.5 text-right transition-colors hover:bg-surface/15"
           >
-            <span className="block text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">
+            <span className="block text-xs font-bold uppercase tracking-[0.12em] text-text-primary">
               Deadline
             </span>
             <Countdown className="block text-lg font-bold text-white" />
-            <span className="block text-[11px] text-ink-300"><DeadlineLabel /></span>
+            <span className="block text-xs text-ink-300"><DeadlineLabel /></span>
           </Link>
         </div>
 
@@ -75,7 +75,7 @@ export function CockpitStat({
     <div className="flex flex-col rounded-lg border border-white/15 bg-surface/10 px-3.5 py-3">
       {/* 11px, not 10: these label the numbers on the first screen a connected
           manager sees, so they are content rather than micro-chrome. */}
-      <p className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">
+      <p className="flex items-center gap-1 text-xs font-bold uppercase tracking-[0.1em] text-ink-300">
         {label}
         {tooltip && (
           <InfoTooltip
@@ -98,7 +98,7 @@ export function CockpitStat({
       </p>
       {/* Reserved whether or not there's a hint, so tiles with one don't sit
           taller than the rest. */}
-      <p className="mt-1 h-4 truncate text-[11px] leading-4 text-ink-300">{hint}</p>
+      <p className="mt-1 h-4 truncate text-xs leading-4 text-ink-300">{hint}</p>
     </div>
   );
 }

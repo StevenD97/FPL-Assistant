@@ -67,16 +67,16 @@ function SidebarTeam() {
   const { entry, promptConnect, disconnect } = useTeam();
   if (entry) {
     return (
-      <div className="flex flex-col gap-2 rounded-xl bg-surface/5 p-2.5">
+      <div className="flex flex-col gap-2 rounded-lg bg-surface/5 p-2.5">
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-danger text-[11px] font-bold text-white">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-danger text-xs font-bold text-white">
             {initials(entry.player_name)}
           </span>
           <div className="flex min-w-0 flex-col leading-tight">
             <span className="truncate text-xs font-semibold text-white">
               {entry.player_name ?? entry.team_name ?? `Team ${entry.id}`}
             </span>
-            <span className="font-mono text-[10px] text-ink-300">
+            <span className="font-mono text-xs text-ink-300">
               {entry.overall_rank != null ? `OR ${formatRank(entry.overall_rank)}` : `ID ${entry.id}`}
             </span>
           </div>
@@ -85,14 +85,14 @@ function SidebarTeam() {
           <button
             type="button"
             onClick={promptConnect}
-            className="flex-1 rounded-md bg-surface/10 px-2 py-1 text-[11px] font-semibold text-white hover:bg-surface/15"
+            className="flex-1 rounded-md bg-surface/10 px-2 py-1 text-xs font-semibold text-white hover:bg-surface/15"
           >
             Switch
           </button>
           <button
             type="button"
             onClick={disconnect}
-            className="rounded-md px-2 py-1 text-[11px] font-medium text-ink-300 hover:text-white"
+            className="rounded-md px-2 py-1 text-xs font-medium text-ink-300 hover:text-white"
           >
             Disconnect
           </button>
@@ -104,9 +104,9 @@ function SidebarTeam() {
     <button
       type="button"
       onClick={promptConnect}
-      className="flex items-center gap-2 rounded-xl bg-surface/5 p-2.5 text-sm text-ink-200 transition-colors hover:bg-surface/10 hover:text-white"
+      className="flex items-center gap-2 rounded-lg bg-surface/5 p-2.5 text-sm text-ink-200 transition-colors hover:bg-surface/10 hover:text-white"
     >
-      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-danger text-[11px] font-bold text-white">
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-danger text-xs font-bold text-white">
         +
       </span>
       Connect your team
@@ -142,11 +142,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
-          className="flex items-center gap-2 rounded-[9px] border border-white/10 bg-surface/5 px-2.5 py-2 text-sm text-ink-400 transition-colors hover:bg-surface/10 hover:text-white"
+          className="flex items-center gap-2 rounded-sm border border-white/10 bg-surface/5 px-2.5 py-2 text-sm text-ink-400 transition-colors hover:bg-surface/10 hover:text-white"
         >
           <span aria-hidden="true">⌕</span>
           <span>Search</span>
-          <kbd className="ml-auto rounded bg-surface/10 px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+          <kbd className="ml-auto rounded bg-surface/10 px-1.5 py-0.5 font-mono text-xs">⌘K</kbd>
         </button>
 
         <LayoutGroup id="desktop-nav">
@@ -154,7 +154,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {NAV_SECTIONS.map((section, si) => (
               <div key={si} className="flex flex-col gap-0.5">
                 {section.label && (
-                  <span className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-[0.1em] text-ink-400">
+                  <span className="px-2.5 pb-1 text-xs font-bold uppercase tracking-[0.1em] text-ink-400">
                     {section.label}
                   </span>
                 )}
@@ -165,7 +165,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       key={item.href}
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`relative flex items-center gap-2.5 rounded-[9px] px-2.5 py-2.5 text-sm transition-colors ${
+                      className={`relative flex items-center gap-2.5 rounded-sm px-2.5 py-2.5 text-sm transition-colors ${
                         active
                           ? "font-semibold text-ink-900"
                           : "font-medium text-ink-200 hover:bg-surface/5 hover:text-white"
@@ -174,7 +174,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       {active && (
                         <motion.span
                           layoutId="desktop-nav-active"
-                          className="absolute inset-0 rounded-[9px] bg-brand"
+                          className="absolute inset-0 rounded-sm bg-brand"
                           transition={{ type: "spring", stiffness: 400, damping: 34 }}
                         />
                       )}
@@ -189,15 +189,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </LayoutGroup>
 
         <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5 rounded-xl border border-brand/35 bg-brand/10 p-3">
-            <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-text-primary">Deadline</span>
+          <div className="flex flex-col gap-1.5 rounded-lg border border-brand/35 bg-brand/10 p-3">
+            <span className="text-xs font-bold uppercase tracking-[0.09em] text-text-primary">Deadline</span>
             <Countdown className="text-lg font-bold text-white" />
-            <span className="text-[11px] text-ink-300"><DeadlineLabel /></span>
+            <span className="text-xs text-ink-300"><DeadlineLabel /></span>
           </div>
           <SidebarTeam />
           <DiscordCTA
             variant="inline"
-            className="justify-center rounded-xl border border-white/10 bg-surface/5 py-2.5 text-sm font-medium text-ink-200 hover:bg-surface/10 hover:text-white"
+            className="justify-center rounded-lg border border-white/10 bg-surface/5 py-2.5 text-sm font-medium text-ink-200 hover:bg-surface/10 hover:text-white"
           />
         </div>
       </aside>
@@ -209,7 +209,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link href="/" className="tap-target flex items-center gap-2.5">
             <Logo variant="mark" size={30} tone="dark" />
             <span className="flex flex-col leading-tight">
-              <span className="text-[10px] font-bold uppercase tracking-[0.09em] text-text-primary">
+              <span className="text-xs font-bold uppercase tracking-[0.09em] text-text-primary">
                 {current?.label ?? "xFPL"}
               </span>
               <span className="text-sm font-semibold text-white">xFPL</span>
@@ -238,7 +238,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex flex-1 flex-col items-center gap-1 rounded-[10px] px-1 py-1.5 text-[10px] font-semibold transition-colors ${
+                className={`flex flex-1 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-xs font-semibold transition-colors ${
                   active ? "bg-brand/15 text-brand" : "text-ink-400"
                 }`}
               >
@@ -252,7 +252,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setMoreOpen(true)}
             aria-expanded={moreOpen}
             aria-label="More"
-            className={`flex flex-1 flex-col items-center gap-1 rounded-[10px] px-1 py-1.5 text-[10px] font-semibold transition-colors ${
+            className={`flex flex-1 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-xs font-semibold transition-colors ${
               moreOpen ? "bg-brand/15 text-text-primary" : "text-ink-400"
             }`}
           >
@@ -312,7 +312,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       key={item.href}
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-[11px] font-semibold transition-colors ${
+                      className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs font-semibold transition-colors ${
                         active
                           ? "border-brand bg-brand/15 text-white"
                           : "border-white/10 bg-surface/5 text-ink-200 hover:bg-surface/10 hover:text-white"

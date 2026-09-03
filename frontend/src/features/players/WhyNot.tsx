@@ -55,7 +55,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
 
   return (
     <section className="rounded-lg border border-border bg-surface p-4 shadow-sm">
-      <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
+      <h2 className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
         The model&apos;s verdict
       </h2>
 
@@ -82,7 +82,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
               <PlayerPhoto
                 src={state.data.better.player_photo}
                 name={state.data.better.web_name}
-                className="h-9 w-9 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-[11px]"
+                className="h-9 w-9 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-xs"
               />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold text-text-primary">
@@ -98,7 +98,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
                 <span className="block font-mono text-md font-bold text-text-primary">
                   {state.data.better.predicted_points.toFixed(1)}
                 </span>
-                <span className="mt-0.5 block text-[11px] uppercase tracking-wide text-text-muted">
+                <span className="mt-0.5 block text-xs uppercase tracking-wide text-text-muted">
                   xPts
                 </span>
               </span>

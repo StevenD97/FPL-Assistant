@@ -25,13 +25,13 @@ export function FixtureDifficultyTable({
         <table className="table-cards w-full text-left text-sm">
           <thead className="bg-surface-sunken">
             <tr>
-              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Team</th>
-              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+              <th className="px-3.5 py-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Team</th>
+              <th className="px-3.5 py-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
                 <span className="inline-flex items-center gap-1">
                   Avg FDR <InfoTooltip term="avgFdr" />
                 </span>
               </th>
-              <th className="px-3.5 py-3 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+              <th className="px-3.5 py-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
                 <span className="inline-flex items-center gap-1">
                   Next {windowSize} <InfoTooltip term="fdr" />
                 </span>

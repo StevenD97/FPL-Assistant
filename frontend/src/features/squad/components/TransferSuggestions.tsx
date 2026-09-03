@@ -282,7 +282,7 @@ export function TransferSuggestions({
                 )}
               </div>
 
-              <p className="mt-3 shrink-0 text-[11px] text-text-muted">
+              <p className="mt-3 shrink-0 text-xs text-text-muted">
                 {isSearching
                   ? "Search covers every player, including ones your bank doesn't cover yet - the shortfall shows in your squad's bank."
                   : "Swaps them in here as a preview - not submitted to FPL."}

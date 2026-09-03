@@ -166,7 +166,7 @@ export default function SquadPage() {
             <button
               type="button"
               onClick={promptConnect}
-              className="shrink-0 rounded-xl border border-dashed border-brand/40 bg-surface px-3.5 py-2 text-left text-sm font-semibold text-brand transition-colors hover:bg-ink-900/5"
+              className="shrink-0 rounded-lg border border-dashed border-brand/40 bg-surface px-3.5 py-2 text-left text-sm font-semibold text-brand transition-colors hover:bg-ink-900/5"
             >
               ＋ Connect your team
             </button>
@@ -242,7 +242,7 @@ export default function SquadPage() {
               setAddError(null);
             }}
             aria-expanded={adding}
-            className="tap-target min-h-[44px] shrink-0 rounded-xl border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-brand/40 hover:text-brand"
+            className="tap-target min-h-[44px] shrink-0 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-brand/40 hover:text-brand"
           >
             ＋ Add
           </button>
@@ -259,7 +259,7 @@ export default function SquadPage() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="grid gap-4 rounded-xl border border-border bg-surface p-3 shadow-sm md:grid-cols-2">
+            <div className="grid gap-4 rounded-lg border border-border bg-surface p-3 shadow-sm md:grid-cols-2">
               <form onSubmit={handleTrack}>
                 <p className="mb-2 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
                   Track a team from FPL
@@ -366,7 +366,7 @@ function TeamChip({
       <button
         type="button"
         onClick={onClick}
-        className={`relative flex shrink-0 items-center gap-2.5 rounded-xl border px-3.5 py-2 text-left transition-colors ${
+        className={`relative flex shrink-0 items-center gap-2.5 rounded-lg border px-3.5 py-2 text-left transition-colors ${
           active
             ? "border-brand bg-ink-900 text-white"
             : "border-border bg-surface text-text-primary hover:border-brand/40"
@@ -375,7 +375,7 @@ function TeamChip({
         {active && (
           <motion.span
             layoutId="squad-active-chip"
-            className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-brand"
+            className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-brand"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}

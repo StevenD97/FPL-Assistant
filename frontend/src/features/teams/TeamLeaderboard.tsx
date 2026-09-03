@@ -48,7 +48,7 @@ export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: Leader
           {METRIC_TOOLTIP[metric.key] && <InfoTooltip term={METRIC_TOOLTIP[metric.key]} />}
         </h3>
         <span
-          className={`shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${
+          className={`shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-xs font-bold uppercase tracking-wide ${
             metric.kind === "model" ? "bg-ink-900/10 text-text-primary" : "bg-surface-sunken text-text-muted"
           }`}
         >
@@ -65,7 +65,7 @@ export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: Leader
               <PlayerPhoto
                 src={r.player_photo}
                 name={r.web_name}
-                className="h-7 w-7 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-[9px]"
+                className="h-7 w-7 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-xs"
               />
               <PlayerLink id={r.id} className="min-w-0 flex-1 truncate text-sm font-medium text-text-primary">
                 {r.web_name}

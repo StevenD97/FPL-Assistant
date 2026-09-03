@@ -7,18 +7,11 @@ import { ShortlistStar } from "@/shared/ui/ShortlistStar";
 import { Skeleton } from "@/shared/ui/Skeleton";
 import type { PlayerListItem } from "@/shared/types/api";
 
-const POS_ACCENT: Record<string, string> = {
-  GKP: "bg-pos-gkp",
-  DEF: "bg-pos-def",
-  MID: "bg-pos-mid",
-  FWD: "bg-pos-fwd",
-};
-
 function Stat({ k, v }: { k: string; v: string | number }) {
   return (
     <div className="flex flex-col items-center">
       <span className="font-mono text-sm font-bold text-text-primary">{v}</span>
-      <span className="text-[11px] uppercase tracking-wide text-text-muted">{k}</span>
+      <span className="text-xs uppercase tracking-wide text-text-muted">{k}</span>
     </div>
   );
 }
@@ -49,7 +42,9 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
       href={`/players/${p.id}`}
       className="group card-lift relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-surface p-3 shadow-sm hover:border-brand/40 sm:block sm:p-3.5"
     >
-      <span className={`absolute inset-x-0 top-0 h-1 ${POS_ACCENT[p.position] ?? "bg-ink-300"}`} />
+      {/* No position stripe. It sat eight pixels above the position badge and
+          said the same thing in a less readable way - a colour a reader has to
+          learn, against a label that already reads MID. */}
 
       {/* Tile-only: club, position and availability get their own row. On a
           phone they ride in the meta line under the name instead. */}
@@ -64,10 +59,10 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
               (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
             }}
           />
-          <span className="font-mono text-[11px] text-text-muted">{p.team_short}</span>
+          <span className="font-mono text-xs text-text-muted">{p.team_short}</span>
           <PositionBadge position={p.position} />
           {inDraft && (
-            <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-primary">
+            <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide text-text-primary">
               In draft
             </span>
           )}
@@ -106,16 +101,16 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
           <span className="font-mono text-xl font-bold text-text-primary sm:text-2xl">
             {p.predicted_points.toFixed(1)}
           </span>
-          <span className="ml-1 hidden text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:inline">
+          <span className="ml-1 hidden text-xs font-semibold uppercase tracking-wide text-text-muted sm:inline">
             xPts · 5GW
           </span>
-          <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:hidden">
+          <span className="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-text-muted sm:hidden">
             xPts
           </span>
         </div>
         <div className="hidden text-right leading-tight sm:block">
           <div className="font-mono text-sm font-semibold text-text-primary">£{p.cost.toFixed(1)}m</div>
-          <div className="font-mono text-[11px] text-text-muted">
+          <div className="font-mono text-xs text-text-muted">
             {p.value.toFixed(1)}/£m · {p.selected_by_percent.toFixed(0)}%
           </div>
         </div>
@@ -130,7 +125,7 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
 
       {p.fixtures.length > 0 && (
         <div className="mt-2.5 hidden flex-wrap items-center gap-1 border-t border-border pt-2.5 sm:flex">
-          <span className="mr-0.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted">Next</span>
+          <span className="mr-0.5 text-xs font-semibold uppercase tracking-wide text-text-muted">Next</span>
           {p.fixtures.slice(0, 5).map((fx, i) => (
             <FdrChip
               key={i}

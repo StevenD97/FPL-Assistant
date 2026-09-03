@@ -45,7 +45,7 @@ function IdealXI({ squad }: { squad: SquadRow[] }) {
     <div>
       <PitchFormation players={xi.map(toPitchPlayer)} />
       <div className="mt-3 flex flex-wrap justify-center gap-4 rounded-lg border border-border bg-surface-sunken px-4 py-3">
-        <span className="w-full text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
+        <span className="w-full text-center text-xs font-semibold uppercase tracking-wide text-text-muted sm:w-auto sm:text-left">
           Bench
         </span>
         {bench.map((p) => (
@@ -53,9 +53,9 @@ function IdealXI({ squad }: { squad: SquadRow[] }) {
             <PlayerPhoto
               src={p.player_photo}
               name={p.web_name}
-              className="h-10 w-10 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-[10px]"
+              className="h-10 w-10 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-xs"
             />
-            <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
+            <span className="whitespace-nowrap text-xs font-medium text-text-primary">{p.web_name}</span>
           </PlayerLink>
         ))}
       </div>
@@ -150,7 +150,7 @@ function OptStat({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+      <dt className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
         {label} <InfoTooltip term={term} />
       </dt>
       <dd className="font-mono text-sm text-text-primary">{value}</dd>

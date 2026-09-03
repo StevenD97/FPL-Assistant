@@ -32,7 +32,7 @@ export function StatBar({ items, className = "" }: { items: StatBarItem[]; class
           {/* Accent on the headline only - it establishes which number to read
               first without colour-coding all four into noise. */}
           {i === 0 && <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-ink-900" />}
-          <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.09em] text-text-muted">
+          <dt className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.09em] text-text-muted">
             {item.label}
             {(item.tooltip || item.tooltipText) && (
               <InfoTooltip term={item.tooltip} text={item.tooltipText} />
@@ -45,7 +45,7 @@ export function StatBar({ items, className = "" }: { items: StatBarItem[]; class
           >
             {item.value}
           </dd>
-          {item.hint && <p className="mt-1 text-[11px] leading-tight text-text-muted">{item.hint}</p>}
+          {item.hint && <p className="mt-1 text-xs leading-tight text-text-muted">{item.hint}</p>}
         </div>
       ))}
     </dl>

@@ -68,7 +68,7 @@ export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
                             {fx.team_h_score}-{fx.team_a_score}
                           </span>
                           {state === "live" && (
-                            <div className="font-mono text-[11px] font-semibold text-success">
+                            <div className="font-mono text-xs font-semibold text-success">
                               LIVE
                             </div>
                           )}
@@ -78,7 +78,7 @@ export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
                           <div className="font-mono text-xs font-medium text-text-primary">
                             {kickoff.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                           </div>
-                          <div className="font-mono text-[11px] text-text-muted">
+                          <div className="font-mono text-xs text-text-muted">
                             {kickoff.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
                           </div>
                         </>

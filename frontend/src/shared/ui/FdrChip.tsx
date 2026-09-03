@@ -22,7 +22,7 @@ export function FdrChip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[11px] font-semibold ${
+      className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-xs font-semibold ${
         DIFFICULTY_CLASSES[difficulty] ?? "bg-ink-100 text-text-secondary"
       }`}
     >

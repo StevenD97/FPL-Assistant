@@ -128,7 +128,7 @@ function HoldingList({
 }) {
   return (
     <div>
-      <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-text-muted">{title}</h4>
+      <h4 className="text-xs font-bold uppercase tracking-[0.08em] text-text-muted">{title}</h4>
       {rows.length === 0 ? (
         <p className="mt-2 text-sm leading-snug text-text-secondary">{empty}</p>
       ) : (

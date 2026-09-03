@@ -224,7 +224,7 @@ export default function PlayersPage() {
             >
               Filters
               {activeFilterCount > 0 && (
-                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-[11px] font-bold text-white">
+                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-xs font-bold text-white">
                   {activeFilterCount}
                 </span>
               )}
@@ -234,7 +234,7 @@ export default function PlayersPage() {
                 <div className="fixed inset-0 z-10" onClick={() => setFiltersOpen(false)} aria-hidden="true" />
                 <div className="absolute right-0 z-20 mt-2 w-64 rounded-lg border border-border bg-surface p-3 shadow-lg">
                   <div>
-                    <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                    <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-text-muted">
                       Owned
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -270,19 +270,19 @@ export default function PlayersPage() {
             </span>
             Shortlist
             {shortlist.length > 0 && (
-              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-[11px] font-bold text-white">
+              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-xs font-bold text-white">
                 {shortlist.length}
               </span>
             )}
           </button>
 
           {/* Sort */}
-          <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+          <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
             Sort
             <select
               value={sortKey}
               onChange={(e) => changeSort(e.target.value as SortKey)}
-              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-medium normal-case tracking-normal text-text-primary outline-none focus:border-info focus:shadow-focus"
+              className="select-control rounded-md border border-border bg-surface px-2.5 py-2 text-sm font-medium normal-case tracking-normal text-text-primary outline-none focus:border-info focus:shadow-focus"
             >
               {SORTS.map((s) => (
                 <option key={s.key} value={s.key}>
@@ -295,7 +295,7 @@ export default function PlayersPage() {
 
         {/* Position, always one tap away. Scrolls rather than wraps, so the
             toolbar keeps a fixed height as the list scrolls under it. */}
-        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
+        <div className="mt-2 flex gap-1.5 scroll-edge overflow-x-auto pb-0.5">
           {POSITIONS.map((pos) => (
             <Pill
               key={pos}
@@ -315,7 +315,7 @@ export default function PlayersPage() {
           repeat on every tile in the grid below. Hidden on a phone, where the
           compact rows show none of them - a legend for abbreviations that
           aren't on screen is seven more info triggers and nothing else. */}
-      <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:flex">
+      <div className="hidden flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-wide text-text-muted sm:flex">
         <span className="flex items-center gap-1">
           xPts <InfoTooltip term="xPts" />
         </span>

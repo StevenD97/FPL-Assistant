@@ -102,7 +102,7 @@ export function InfoTooltip({ term, text, label, className = "" }: InfoTooltipPr
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        className={`tap-target inline-flex h-3.5 w-3.5 shrink-0 cursor-help items-center justify-center rounded-full border border-ink-400 text-[9px] font-bold leading-none text-text-muted transition-colors hover:border-brand hover:bg-ink-900 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand ${className}`}
+        className={`tap-target inline-flex h-3.5 w-3.5 shrink-0 cursor-help items-center justify-center rounded-full border border-ink-400 text-xs font-bold leading-none text-text-muted transition-colors hover:border-brand hover:bg-ink-900 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand ${className}`}
       >
         i
       </span>
@@ -119,7 +119,7 @@ export function InfoTooltip({ term, text, label, className = "" }: InfoTooltipPr
               left: coords.left,
               transform: `translate(-50%, ${coords.placement === "bottom" ? "0" : "-100%"})`,
             }}
-            className="z-[100] block w-max max-w-[220px] text-pretty rounded-md bg-ink-900 px-2.5 py-1.5 text-[11px] font-medium leading-snug text-white shadow-lg"
+            className="z-[100] block w-max max-w-[220px] text-pretty rounded-md bg-ink-900 px-2.5 py-1.5 text-xs font-medium leading-snug text-white shadow-lg"
           >
             {content}
           </span>,

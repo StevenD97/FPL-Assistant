@@ -159,7 +159,7 @@ export function TransferPlanPicker({
             ))}
           </ul>
         </div>
-        <p className="border-t border-border p-2 text-center text-[11px] text-text-muted">
+        <p className="border-t border-border p-2 text-center text-xs text-text-muted">
           Predicted points here are this player&apos;s general outlook <InfoTooltip term="xPts" /> - picking one
           fetches their gameweek-by-gameweek trajectory for the plan.
         </p>

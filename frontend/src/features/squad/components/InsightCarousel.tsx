@@ -62,7 +62,7 @@ function InsightCard({ insight, onAddPlayer }: { insight: Insight; onAddPlayer: 
           <img src={insight.badgeUrl} alt="" className="mt-0.5 h-7 w-7 shrink-0 object-contain" />
         )}
         <div className="min-w-0 flex-1">
-          <span className={`text-[10px] font-bold uppercase tracking-wide ${meta.textClass}`}>{meta.label}</span>
+          <span className={`text-xs font-bold uppercase tracking-wide ${meta.textClass}`}>{meta.label}</span>
           <h3 className="mt-0.5 font-semibold text-text-primary">{insight.title}</h3>
           <p className="mt-1 text-sm text-text-secondary">{insight.detail}</p>
           {insight.fixtures && insight.fixtures.length > 0 && (

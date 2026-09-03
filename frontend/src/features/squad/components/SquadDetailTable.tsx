@@ -113,7 +113,7 @@ export function SquadDetailTable({
                       <PositionBadge position={p.pos} />
                       <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                       {preview && (
-                        <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-text-primary">
+                        <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-text-primary">
                           Preview
                         </span>
                       )}
@@ -222,7 +222,7 @@ function Stat({
 }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+      <dt className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
         {label} <InfoTooltip term={term} />
       </dt>
       <dd className={`text-sm text-text-primary ${mono ? "font-mono" : ""}`}>{value}</dd>

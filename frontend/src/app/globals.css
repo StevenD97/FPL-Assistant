@@ -600,3 +600,64 @@ button.gw-tile:focus-visible {
     z-index: -1;
   }
 }
+
+
+/* --- Scroll affordance ---
+   A horizontal scroller with a card cut off at the viewport edge and nothing
+   else looks like a layout bug, not like more content. `scroll-edge` fades the
+   trailing edge so it reads as "keep going", and the fade tracks the scroll
+   position through `animation-timeline`, so it disappears at the end rather
+   than sitting over the last card forever.
+
+   Everything here degrades to a plain scroller: browsers without scroll-driven
+   animations show no fade rather than a stuck one, and reduced-motion users get
+   the fade held at full strength (it is a gradient, not movement, but the
+   timeline is still an animation). */
+.scroll-edge {
+  --edge: 28px;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--edge)), transparent 100%);
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--edge)), transparent 100%);
+}
+
+@supports (animation-timeline: scroll(self inline)) {
+  @keyframes scrollEdgeFade {
+    to { --edge: 0px; }
+  }
+  @property --edge {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 28px;
+  }
+  .scroll-edge {
+    animation: scrollEdgeFade linear both;
+    animation-timeline: scroll(self inline);
+    animation-range: contain 85% contain 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-edge { animation: none; }
+}
+
+
+/* --- Select ---
+   A native <select> next to five custom controls reads as an OS widget that
+   wandered in: it draws its own chevron in the platform's colour, at the
+   platform's size, and on a dark ground it is the one control that looks
+   borrowed. appearance-none removes that and the chevron below replaces it in
+   our own ink, sized and positioned to match the toolbar's other controls.
+
+   Still a real <select>, deliberately. The option list stays the platform's,
+   which is the part that is genuinely better than anything hand-rolled -
+   keyboard behaviour, type-ahead, screen readers, and a usable list on a phone.
+   Only the closed state is restyled. */
+.select-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238b95a3' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 12px 8px;
+}

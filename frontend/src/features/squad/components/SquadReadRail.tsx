@@ -77,9 +77,9 @@ export function SquadReadRail({
 }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
-      <p className="flex items-center gap-2 border-b border-border bg-surface-sunken px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted">
+      <p className="flex items-center gap-2 border-b border-border bg-surface-sunken px-4 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
         Reads
-        <span className="font-mono text-[10px] font-semibold normal-case tracking-normal text-text-muted/70">
+        <span className="font-mono text-xs font-semibold normal-case tracking-normal text-text-muted/70">
           {rows.filter((r) => !r.aside).length}
         </span>
       </p>
@@ -127,7 +127,7 @@ export function SquadReadRail({
                   >
                     {row.label}
                   </span>
-                  <span className="mt-0.5 block truncate text-[11px] leading-snug text-text-secondary">
+                  <span className="mt-0.5 block truncate text-xs leading-snug text-text-secondary">
                     {row.summary}
                   </span>
                 </span>

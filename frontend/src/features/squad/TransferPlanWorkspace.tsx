@@ -407,7 +407,7 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                               <span className="truncate font-medium text-text-primary">
                                 {entry.inPlayer.web_name}
                               </span>
-                              <span className="shrink-0 font-mono text-[11px] text-text-muted">
+                              <span className="shrink-0 font-mono text-xs text-text-muted">
                                 {costDelta >= 0 ? "+" : ""}
                                 £{costDelta.toFixed(1)}m
                               </span>

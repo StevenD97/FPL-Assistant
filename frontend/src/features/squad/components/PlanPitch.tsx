@@ -113,7 +113,7 @@ export function PlanPitch({
       />
 
       <div className="mt-3 rounded-lg border border-border bg-surface-sunken px-4 py-3">
-        <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:text-left">
+        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wide text-text-muted sm:text-left">
           Bench
         </p>
         <div className="flex flex-wrap justify-center gap-4 sm:justify-start">

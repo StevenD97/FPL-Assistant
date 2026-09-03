@@ -11,7 +11,7 @@ export function StatusBadge({ status, news }: { status?: string; news?: string }
   return (
     <span
       title={news || undefined}
-      className="ml-1.5 rounded-sm bg-danger-bg px-1.5 py-0.5 text-[10px] font-semibold text-danger"
+      className="ml-1.5 rounded-sm bg-danger-bg px-1.5 py-0.5 text-xs font-semibold text-danger"
     >
       {STATUS_LABELS[status] ?? status}
     </span>

@@ -87,8 +87,8 @@ export function StatMeter({
           ratingBand. The raw figure is still directly underneath, and the
           exact percentile is still in the accessible label. */}
       <span className="flex min-w-0 flex-col leading-tight">
-        <span className="text-[12px] font-bold text-white">{ratingBand(clamped)}</span>
-        <span className="flex items-center gap-0.5 truncate text-[9px] font-semibold uppercase tracking-wide text-ink-300">
+        <span className="text-xs font-bold text-white">{ratingBand(clamped)}</span>
+        <span className="flex items-center gap-0.5 truncate text-xs font-semibold uppercase tracking-wide text-ink-300">
           {label}
           {tooltip && (
             <InfoTooltip
@@ -97,7 +97,7 @@ export function StatMeter({
             />
           )}
         </span>
-        <span className="truncate font-mono text-[10px] text-white/70">{value}</span>
+        <span className="truncate font-mono text-xs text-white/70">{value}</span>
       </span>
     </div>
   );

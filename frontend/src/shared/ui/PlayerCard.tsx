@@ -74,7 +74,7 @@ export function PlayerCard({
   return (
     <Root
       {...(onClick ? { type: "button" as const, onClick } : {})}
-      className={`group relative w-full shrink-0 overflow-hidden rounded-2xl border border-white/15 text-left text-white shadow-lg ${
+      className={`group relative w-full shrink-0 overflow-hidden rounded-lg border border-white/15 text-left text-white shadow-lg ${
         hero ? "max-w-[340px]" : compact ? "max-w-[168px]" : "max-w-[300px]"
       } ${onClick ? "transition-transform hover:-translate-y-0.5 hover:border-brand/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand" : ""}`}
       style={{ background: "linear-gradient(158deg,var(--ink-700) 0%,var(--ink-800) 55%,var(--ink-900) 100%)" }}
@@ -85,12 +85,12 @@ export function PlayerCard({
         <div className="flex flex-col items-center gap-1">
           <span
             className={`font-mono font-extrabold leading-none tracking-tight text-text-primary ${
-              hero ? "text-[52px]" : compact ? "text-[26px]" : "text-[34px]"
+              hero ? "text-3xl" : compact ? "text-xl" : "text-2xl"
             }`}
           >
             {rating}
           </span>
-          <span className={`font-extrabold ${hero ? "text-sm" : "text-[10px]"}`} style={{ color: posColor }}>
+          <span className={`font-extrabold ${hero ? "text-sm" : "text-xs"}`} style={{ color: posColor }}>
             {position}
           </span>
           {teamBadge ? (
@@ -104,7 +104,7 @@ export function PlayerCard({
             <span className="mt-1.5 text-xs font-bold text-ink-300">{teamShort}</span>
           )}
         </div>
-        <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-300">
+        <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-[0.12em] text-ink-300">
           {windowLabel ? `${ratingLabel} · ${windowLabel}` : ratingLabel}
           {ratingLabel === "xPTS" && (
             <InfoTooltip
@@ -134,7 +134,7 @@ export function PlayerCard({
         {plainStats.length > 0 && (
           <div className={`grid gap-x-3 gap-y-1 ${compact ? "grid-cols-1" : "grid-cols-2"}`}>
             {plainStats.map((s) => (
-              <div key={s.k} className="flex items-center justify-between text-[13px]">
+              <div key={s.k} className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-1 font-semibold text-ink-300">
                   {s.k}
                   {s.tooltip && (

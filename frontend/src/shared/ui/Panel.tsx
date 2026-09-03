@@ -13,13 +13,13 @@ import type { ReactNode } from "react";
 const TONES = {
   hero: {
     box: "rounded-lg border border-white/15 bg-surface/[0.07] p-3.5",
-    title: "text-[10px] font-bold uppercase tracking-[0.1em] text-ink-300",
-    cta: "tap-target inline-flex items-center text-[11px] font-semibold text-text-primary hover:underline",
+    title: "text-xs font-bold uppercase tracking-[0.1em] text-ink-300",
+    cta: "tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline",
   },
   light: {
     box: "rounded-lg border border-border bg-surface p-3.5 shadow-sm",
-    title: "text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted",
-    cta: "text-[11px] font-semibold text-text-primary hover:underline",
+    title: "text-xs font-bold uppercase tracking-[0.1em] text-text-muted",
+    cta: "text-xs font-semibold text-text-primary hover:underline",
   },
 } as const;
 

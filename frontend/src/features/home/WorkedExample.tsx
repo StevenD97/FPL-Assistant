@@ -33,7 +33,7 @@ export async function WorkedExample() {
   return (
     <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
       <div className="flex flex-col gap-1">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-primary/60">
+        <span className="text-xs font-bold uppercase tracking-[0.1em] text-text-primary/60">
           See it work first
         </span>
         <h2 className="text-lg font-bold tracking-tight text-text-primary">
@@ -44,7 +44,7 @@ export async function WorkedExample() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {top && (
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-text-muted">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-text-muted">
               {season?.next_event != null ? `This week's captain call` : "This week's captain call"}
             </p>
             <p className="mt-1 text-md font-semibold text-text-primary">
@@ -66,7 +66,7 @@ export async function WorkedExample() {
 
         {lastGraded && (
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-text-muted">
+            <p className="text-xs font-bold uppercase tracking-[0.08em] text-text-muted">
               Last week&apos;s call, graded
             </p>
             <p

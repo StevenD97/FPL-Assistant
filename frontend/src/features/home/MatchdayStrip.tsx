@@ -19,14 +19,14 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Sc
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary/60">
+        <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-primary/60">
           Gameweek {event} · matchday
         </span>
         <Link href="/matches" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
           Full schedule →
         </Link>
       </div>
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="flex gap-2 scroll-edge overflow-x-auto pb-1">
         {fixtures.map((f, i) => {
           const state = fixtureState(f);
           return (
@@ -43,14 +43,14 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Sc
                 </span>
                 <Badge src={f.team_a_badge} alt={f.team_a} />
               </div>
-              <div className="text-[11px] font-semibold text-text-primary">
+              <div className="text-xs font-semibold text-text-primary">
                 {f.team_h} v {f.team_a}
               </div>
               <div
                 className={
                   state === "live"
-                    ? "text-[11px] font-semibold text-success"
-                    : "text-[11px] text-text-muted"
+                    ? "text-xs font-semibold text-success"
+                    : "text-xs text-text-muted"
                 }
               >
                 {state === "live" ? "LIVE" : state === "result" ? "FT" : kickoffLabel(f.kickoff_time)}

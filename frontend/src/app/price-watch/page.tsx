@@ -62,7 +62,7 @@ export default async function PriceWatchPage() {
 
           {/* One legend covers every row's figures, since net transfers / rate
               / ownership repeat identically down both lists below. */}
-          <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
+          <div className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
             <span className="flex items-center gap-1">
               Net transfers <InfoTooltip term="netTransfers" />
             </span>
