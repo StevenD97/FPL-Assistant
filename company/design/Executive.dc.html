@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; font-family: "Archivo", "Helvetica Neue", Arial, sans-serif; }
+    a { color: #0b5344; text-decoration: none; }
+    a:hover { color: #0e6a55; }
+  </style>
+</helmet>
+
+<div style="width: 1280px; height: 900px; display: flex; background: #f6f8f7; color: #111917; overflow: hidden;">
+
+  <!-- sidebar (collapsed rail) -->
+  <div style="width: 208px; flex-shrink: 0; background: #ffffff; border-right: 1px solid #d9e0dd; display: flex; flex-direction: column; padding: 20px 0;">
+    <div style="display: flex; align-items: center; gap: 9px; padding: 0 18px 20px 18px;">
+      <div style="width: 26px; height: 26px; border-radius: 5px; background: #0e6a55; display: flex; align-items: center; justify-content: center;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"></path><path d="M9 21v-7h6v7"></path></svg>
+      </div>
+      <div style="font-family: 'Newsreader', Georgia, serif; font-size: 18px; font-weight: 600; letter-spacing: -0.01em;">xFPL <span style="color: #5a6a66;">HQ</span></div>
+    </div>
+
+    <div style="padding: 0 10px; display: flex; flex-direction: column; gap: 1px;">
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Dashboard</div>
+      <div style="padding: 9px 10px; border-radius: 5px; background: #d7e9e3; color: #0b5344; font-size: 13.5px; font-weight: 600;">Executives</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Meetings</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Decisions</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Tasks</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Reports</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Company</div>
+      <div style="padding: 9px 10px; border-radius: 5px; color: #33403d; font-size: 13.5px; font-weight: 500;">Settings</div>
+    </div>
+
+    <div style="margin: 18px 10px 0 10px; padding-top: 14px; border-top: 1px solid #e7ecea; display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.13em; color: #8a9995; padding: 0 10px 6px 10px;">THE TEAM</div>
+      <div style="padding: 7px 10px; border-radius: 5px; background: #eef1f0; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #0b5344;">CEO</div>
+      <div style="padding: 7px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5a6a66;">CTO</div>
+      <div style="padding: 7px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5a6a66;">CPO</div>
+      <div style="padding: 7px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5a6a66;">ANALYTICS</div>
+      <div style="padding: 7px 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #5a6a66;">CMO</div>
+    </div>
+  </div>
+
+  <!-- conversation column -->
+  <div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+
+    <div style="padding: 22px 28px 16px 28px; border-bottom: 1px solid #d9e0dd; background: #ffffff; display: flex; align-items: flex-end; justify-content: space-between;">
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #0e6a55; margin-bottom: 5px;">Executive workspace</div>
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 27px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.1;">Chief Executive Officer</div>
+      </div>
+      <div style="display: flex; gap: 7px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; background: #dcefe3; color: #1d7a4f; padding: 5px 9px; border-radius: 3px;">READY</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; background: #eef1f0; color: #5a6a66; padding: 5px 9px; border-radius: 3px;">MANDATE ↗</div>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; padding: 22px 28px; display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
+
+      <!-- human turn -->
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background: #0e6a55; color: #ffffff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; flex-shrink: 0;">S</div>
+        <div style="background: #eef1f0; border-radius: 5px; padding: 11px 15px; font-size: 14.5px; color: #111917;">What should xFPL prioritise this week?</div>
+      </div>
+
+      <!-- executive turn -->
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <div style="width: 26px; height: 26px; border-radius: 5px; background: #d7e9e3; color: #0b5344; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; flex-shrink: 0;">CEO</div>
+
+        <div style="flex-grow: 1; background: #ffffff; border: 1px solid #d9e0dd; border-radius: 5px; overflow: hidden;">
+
+          <div style="padding: 15px 18px 13px 18px; border-bottom: 1px solid #e7ecea;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995; margin-bottom: 7px;">Recommendation</div>
+            <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em;">Ship the accuracy-figure fix and remove the Premium gate first &mdash; four days &mdash; then SEO and analytics before the GW5 deadline on 18 September.</div>
+          </div>
+
+          <div style="padding: 14px 18px; border-bottom: 1px solid #e7ecea;">
+            <div style="font-size: 13.5px; color: #33403d; line-height: 1.6;">The international break gives you three weeks with no football. Search indexing matures through it, so shipping before the gap means arriving at GW6 already discoverable rather than starting the clock then. The two cheap fixes go first because they are what a new visitor would otherwise meet.</div>
+          </div>
+
+          <div style="padding: 14px 18px; border-bottom: 1px solid #e7ecea; display: flex; flex-direction: column; gap: 9px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995;">Evidence</div>
+
+            <div style="display: flex; gap: 11px; align-items: flex-start;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; background: #dcefe3; color: #1d7a4f; padding: 3px 6px; border-radius: 3px; flex-shrink: 0; width: 108px; text-align: center;">VERIFIED</div>
+              <div style="font-size: 13px; color: #33403d; line-height: 1.45;">GW5 is 18 Sep; GW6 is 10 Oct. Three weeks with no fixtures. <span style="color: #8a9995;">— live FPL API</span></div>
+            </div>
+
+            <div style="display: flex; gap: 11px; align-items: flex-start;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; background: #dcefe3; color: #1d7a4f; padding: 3px 6px; border-radius: 3px; flex-shrink: 0; width: 108px; text-align: center;">VERIFIED</div>
+              <div style="font-size: 13px; color: #33403d; line-height: 1.45;">robots.txt and sitemap.xml both 404; no analytics has ever recorded a visit. <span style="color: #8a9995;">— audit, 3 Sep</span></div>
+            </div>
+
+            <div style="display: flex; gap: 11px; align-items: flex-start;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 700; letter-spacing: 0.06em; background: #f4e9d5; color: #8a5a12; padding: 3px 6px; border-radius: 3px; flex-shrink: 0; width: 108px; text-align: center;">UNTESTED</div>
+              <div style="font-size: 13px; color: #33403d; line-height: 1.45;">That indexing matures usefully inside three weeks for this site. <span style="color: #8a9995;">— CMO's expectation</span></div>
+            </div>
+          </div>
+
+          <div style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; background: #f6f8f7;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; color: #8a9995;">CONFIDENCE</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; color: #8a5a12;">MEDIUM&ndash;HIGH</span>
+              <span style="font-size: 12px; color: #5a6a66;">&mdash; every judgement rests on there being no measurement, which the plan fixes first</span>
+            </div>
+          </div>
+
+          <div style="padding: 11px 18px; border-top: 1px solid #e7ecea; display: flex; gap: 8px;">
+            <div style="border: 1px solid #0e6a55; color: #0b5344; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 4px;">Create decision</div>
+            <div style="border: 1px solid #d9e0dd; color: #33403d; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 4px;">Draft tasks (3)</div>
+            <div style="border: 1px solid #d9e0dd; color: #33403d; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 4px;">Save as report</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1;"></div>
+
+      <div style="border: 1px solid #d9e0dd; background: #ffffff; border-radius: 5px; padding: 13px 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 14px; color: #8a9995;">Ask the CEO something&hellip;</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8a9995;">~$0.05</div>
+          <div style="background: #0e6a55; color: #ffffff; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 4px;">Ask</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- context rail -->
+  <div style="width: 300px; flex-shrink: 0; background: #ffffff; border-left: 1px solid #d9e0dd; padding: 22px 20px; display: flex; flex-direction: column; gap: 22px; overflow: hidden;">
+
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995; margin-bottom: 8px;">Current priority</div>
+      <div style="font-size: 13.5px; color: #33403d; line-height: 1.5;">Sequencing Executive HQ against the xFPL 30-day plan &mdash; both need the same attention.</div>
+    </div>
+
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995; margin-bottom: 9px;">Active tasks</div>
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <div style="border: 1px solid #e7ecea; border-radius: 4px; padding: 9px 11px;">
+          <div style="font-size: 12.5px; font-weight: 600; margin-bottom: 3px;">Sequence HQ vs the 30-day plan</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8a5a12; font-weight: 700;">AWAITING APPROVAL</div>
+        </div>
+        <div style="border: 1px solid #e7ecea; border-radius: 4px; padding: 9px 11px;">
+          <div style="font-size: 12.5px; font-weight: 600; margin-bottom: 3px;">Set the GW6 return-visit floor with the CPO</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #5a6a66; font-weight: 700;">PROPOSED</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995; margin-bottom: 9px;">Recent reports</div>
+      <div style="display: flex; flex-direction: column; gap: 7px;">
+        <div style="border-bottom: 1px solid #e7ecea; padding-bottom: 8px;">
+          <div style="font-size: 12.5px; font-weight: 600; color: #0b5344;">Initial company &amp; technical audit</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8a9995; margin-top: 2px;">3 SEP · WITH CTO, ANALYTICS</div>
+        </div>
+        <div style="padding-bottom: 8px;">
+          <div style="font-size: 12.5px; font-weight: 600; color: #0b5344;">Executive HQ architecture</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #8a9995; margin-top: 2px;">3 SEP · AWAITING STEVEN</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a9995; margin-bottom: 9px;">Context this answer read</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: #eef1f0; color: #5a6a66; padding: 3px 7px; border-radius: 3px;">CONTEXT.md</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: #eef1f0; color: #5a6a66; padding: 3px 7px; border-radius: 3px;">CEO.md</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: #eef1f0; color: #5a6a66; padding: 3px 7px; border-radius: 3px;">audit</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: #eef1f0; color: #5a6a66; padding: 3px 7px; border-radius: 3px;">30-day meeting</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: #eef1f0; color: #5a6a66; padding: 3px 7px; border-radius: 3px;">+3 more</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

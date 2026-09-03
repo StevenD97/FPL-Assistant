@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",      "x": 0,    "y": 0,    "w": 1280, "h": 900, "title": "Dashboard" },
+    { "file": "Executive.dc.html", "x": 1380, "y": 0,    "w": 1280, "h": 900, "title": "Executive workspace — CEO" },
+    { "file": "Meeting.dc.html",   "x": 0,    "y": 1040, "w": 1280, "h": 980, "title": "Executive meeting" },
+    { "file": "Decision.dc.html",  "x": 1380, "y": 1040, "w": 1280, "h": 860, "title": "Decision — your approval" },
+    { "file": "Mobile.dc.html",    "x": 0,    "y": 2160, "w": 390,  "h": 844, "title": "On a phone" }
+  ],
+  "annotations": [
+    { "id": "note-honest", "x": 0, "y": -150, "w": 420, "text": "Everything here is real xFPL content, not lorem.\nThe four grey tiles say \"Not connected\" because nothing measures those yet — the dashboard cannot show a number nobody recorded." },
+    { "id": "note-edit", "x": 1380, "y": -150, "w": 420, "text": "Click anything to select it, then edit colours, spacing, type and copy in the properties panel. Double-click text to retype it in place." },
+    { "id": "note-gate", "x": 1380, "y": 1950, "w": 420, "text": "The approval surface is the point of the whole system: an executive can propose this, and only you can advance it." }
+  ],
+  "launch": { "view": "canvas" }
+}

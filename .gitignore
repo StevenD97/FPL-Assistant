@@ -46,3 +46,8 @@ __pycache__/
 
 frontend/node_modules/
 frontend/.next/
+
+# Design canvases are built from company/design/*.dc.html and carry their own
+# ~2.5 MB editor. Regenerate rather than commit.
+company/design/*.html
+!company/design/*.dc.html
