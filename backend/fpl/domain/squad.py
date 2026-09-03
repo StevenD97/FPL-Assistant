@@ -226,7 +226,9 @@ def build_squad_analysis(team_id, event, reference_date, next_event, fixture_sta
     team_code_by_id = {t["id"]: t["code"] for t in live_bootstrap["teams"]}
     squad_rows["team_code"] = squad_rows["team"].map(team_code_by_id)
     squad_rows["team_badge"] = squad_rows["team_code"].apply(team_badge_url)
-    squad_rows["team_kit"] = squad_rows["team_code"].apply(team_kit_url)
+    squad_rows["team_kit"] = [
+        team_kit_url(c, p) for c, p in zip(squad_rows["team_code"], squad_rows["pos"])
+    ]
     squad_rows["player_photo"] = squad_rows["code"].apply(player_photo_url)
     squad_rows = squad_rows.drop(columns=["team", "code", "team_code"])
 

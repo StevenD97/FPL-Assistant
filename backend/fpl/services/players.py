@@ -303,7 +303,7 @@ def player_detail(player_id, ref_date, next_event, gw_count=5):
         "news": live_player["news"],
         "penalties_order": live_player.get("penalties_order") or 0,
         "team_badge": team_badge_url(team["code"]),
-        "team_kit": team_kit_url(team["code"]),
+        "team_kit": team_kit_url(team["code"], positions_by_id[live_player["element_type"]]),
         "player_photo": player_photo_url(live_player["code"]),
         "season_stats": season_stats,
         "gw_history": gw_history,

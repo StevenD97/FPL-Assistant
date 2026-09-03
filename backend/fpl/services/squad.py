@@ -75,7 +75,7 @@ def squad_builder_players(ref_date, next_event, gw_count=5):
     pool = pool.copy()
     pool["team_code"] = pool["team"].map(team_code_by_id)
     pool["team_badge"] = pool["team_code"].apply(team_badge_url)
-    pool["team_kit"] = pool["team_code"].apply(team_kit_url)
+    pool["team_kit"] = [team_kit_url(c, p) for c, p in zip(pool["team_code"], pool["position"])]
     pool["player_photo"] = pool["code"].apply(player_photo_url)
     cols = [
         "id", "web_name", "team_short", "position", "now_cost", "predicted_points", "value",

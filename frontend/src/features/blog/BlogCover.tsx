@@ -4,9 +4,15 @@ import { NavIcon } from "@/shared/layout/icons";
 import type { BlogCover as BlogCoverData } from "@/shared/lib/blog";
 
 const PL_RESOURCES_BASE = "https://resources.premierleague.com/premierleague";
+// Headshots come from the bucket PL actually keeps current; badges still come
+// from the other one. Same split, and the same reasoning, as
+// fpl/domain/media.py's player_photo_url: the legacy /premierleague/ photos
+// were last refreshed in 2023-24 and show summer signings in their old club's
+// kit. 110x140 is the only crop this bucket serves.
+const PL_PHOTOS_BASE = "https://resources.premierleague.com/premierleague25";
 
 function playerPhotoUrl(code: number): string {
-  return `${PL_RESOURCES_BASE}/photos/players/250x250/p${code}.png`;
+  return `${PL_PHOTOS_BASE}/photos/players/110x140/${code}.png`;
 }
 
 function teamBadgeUrl(code: number): string {

@@ -35,6 +35,6 @@ def attach_player_media(rows, team_code_by_id):
         team_id_num = row.pop("team")
         code = row.pop("code")
         row["team_badge"] = team_badge_url(team_code_by_id[team_id_num])
-        row["team_kit"] = team_kit_url(team_code_by_id[team_id_num])
+        row["team_kit"] = team_kit_url(team_code_by_id[team_id_num], row.get("position"))
         row["player_photo"] = player_photo_url(code)
     return rows

@@ -28,6 +28,10 @@ DATA_DIR = Path(os.environ.get("FPL_DATA_DIR") or Path(__file__).resolve().paren
 # FPL public API + the Premier League image CDNs (badges/kits/player photos).
 FPL_API_BASE = "https://fantasy.premierleague.com/api"
 PL_RESOURCES_BASE = "https://resources.premierleague.com/premierleague"
+# Player headshots moved to a second bucket that PL actually keeps current;
+# PL_RESOURCES_BASE still serves the badges. See fpl.domain.media.player_photo_url
+# for the coverage sweep behind the split.
+PL_PHOTOS_BASE = "https://resources.premierleague.com/premierleague25"
 FPL_STATIC_BASE = "https://fantasy.premierleague.com/dist/img"
 
 # Which on-disk snapshot each request reads. The model TRAINS on the archived

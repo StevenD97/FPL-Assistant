@@ -6,35 +6,35 @@
       "assists": [
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 10,
           "web_name": "Saka"
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 9,
           "web_name": "Rice"
         },
         {
           "id": 15,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p184029.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/184029.png",
           "position": "MID",
           "value": 7,
           "web_name": "\u00d8degaard"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 7,
           "web_name": "Bruno G."
         },
         {
           "id": 5,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/445122.png",
           "position": "DEF",
           "value": 6,
           "web_name": "J.Timber"
@@ -43,35 +43,35 @@
       "bonus": [
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 30,
           "web_name": "Gabriel"
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 23,
           "web_name": "Rice"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 22,
           "web_name": "Bruno G."
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 18,
           "web_name": "Saka"
         },
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 16,
           "web_name": "Gy\u00f6keres"
@@ -80,35 +80,35 @@
       "defensive_contribution": [
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 376,
           "web_name": "Rice"
         },
         {
           "id": 19,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p481655.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/481655.png",
           "position": "MID",
           "value": 307,
           "web_name": "Zubimendi"
         },
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 277,
           "web_name": "Gabriel"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 251,
           "web_name": "Bruno G."
         },
         {
           "id": 31,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p199798.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/199798.png",
           "position": "DEF",
           "value": 196,
           "web_name": "Konsa"
@@ -117,35 +117,35 @@
       "expected_assists": [
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 7.32,
           "web_name": "Rice"
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 7.16,
           "web_name": "Saka"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 4.96,
           "web_name": "Bruno G."
         },
         {
           "id": 15,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p184029.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/184029.png",
           "position": "MID",
           "value": 3.65,
           "web_name": "\u00d8degaard"
         },
         {
           "id": 16,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p248857.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/248857.png",
           "position": "MID",
           "value": 2.86,
           "web_name": "Madueke"
@@ -154,35 +154,35 @@
       "expected_goal_involvements": [
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 14.73,
           "web_name": "Saka"
         },
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 14.19,
           "web_name": "Gy\u00f6keres"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 10.55,
           "web_name": "Bruno G."
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 10.47,
           "web_name": "Rice"
         },
         {
           "id": 14,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/232413.png",
           "position": "MID",
           "value": 7.84,
           "web_name": "Eze"
@@ -191,35 +191,35 @@
       "expected_goals": [
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 12.26,
           "web_name": "Gy\u00f6keres"
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 7.57,
           "web_name": "Saka"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 5.59,
           "web_name": "Bruno G."
         },
         {
           "id": 14,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/232413.png",
           "position": "MID",
           "value": 5.18,
           "web_name": "Eze"
         },
         {
           "id": 5,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/445122.png",
           "position": "DEF",
           "value": 4.71,
           "web_name": "J.Timber"
@@ -228,35 +228,35 @@
       "expected_minutes": [
         {
           "id": 1,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
           "position": "GKP",
           "value": 90,
           "web_name": "Raya"
         },
         {
           "id": 2,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p109745.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/109745.png",
           "position": "GKP",
           "value": 90,
           "web_name": "Arrizabalaga"
         },
         {
           "id": 5,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/445122.png",
           "position": "DEF",
           "value": 90,
           "web_name": "J.Timber"
         },
         {
           "id": 6,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p462424.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/462424.png",
           "position": "DEF",
           "value": 90,
           "web_name": "Saliba"
         },
         {
           "id": 8,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
           "position": "DEF",
           "value": 90,
           "web_name": "Calafiori"
@@ -265,35 +265,35 @@
       "goal_involvements": [
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 17,
           "web_name": "Saka"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 16,
           "web_name": "Bruno G."
         },
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 15,
           "web_name": "Gy\u00f6keres"
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 13,
           "web_name": "Rice"
         },
         {
           "id": 14,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/232413.png",
           "position": "MID",
           "value": 10,
           "web_name": "Eze"
@@ -302,35 +302,35 @@
       "goals_scored": [
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 14,
           "web_name": "Gy\u00f6keres"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 9,
           "web_name": "Bruno G."
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 7,
           "web_name": "Saka"
         },
         {
           "id": 14,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/232413.png",
           "position": "MID",
           "value": 7,
           "web_name": "Eze"
         },
         {
           "id": 19,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p481655.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/481655.png",
           "position": "MID",
           "value": 5,
           "web_name": "Zubimendi"
@@ -339,35 +339,35 @@
       "minutes": [
         {
           "id": 1,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
           "position": "GKP",
           "value": 3330,
           "web_name": "Raya"
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 3093,
           "web_name": "Rice"
         },
         {
           "id": 31,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p199798.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/199798.png",
           "position": "DEF",
           "value": 3035,
           "web_name": "Konsa"
         },
         {
           "id": 19,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p481655.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/481655.png",
           "position": "MID",
           "value": 2991,
           "web_name": "Zubimendi"
         },
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 2750,
           "web_name": "Gabriel"
@@ -376,35 +376,35 @@
       "predicted_points": [
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 26.62,
           "web_name": "Rice"
         },
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 25.43,
           "web_name": "Gabriel"
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 23.38,
           "web_name": "Saka"
         },
         {
           "id": 8,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
           "position": "DEF",
           "value": 22.05,
           "web_name": "Calafiori"
         },
         {
           "id": 14,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p232413.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/232413.png",
           "position": "MID",
           "value": 19.6,
           "web_name": "Eze"
@@ -413,7 +413,7 @@
       "red_cards": [
         {
           "id": 31,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p199798.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/199798.png",
           "position": "DEF",
           "value": 1,
           "web_name": "Konsa"
@@ -422,35 +422,35 @@
       "total_points": [
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 209,
           "web_name": "Gabriel"
         },
         {
           "id": 13,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p204480.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/204480.png",
           "position": "MID",
           "value": 184,
           "web_name": "Rice"
         },
         {
           "id": 1,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
           "position": "GKP",
           "value": 162,
           "web_name": "Raya"
         },
         {
           "id": 12,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p223340.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/223340.png",
           "position": "MID",
           "value": 157,
           "web_name": "Saka"
         },
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 154,
           "web_name": "Bruno G."
@@ -459,35 +459,35 @@
       "yellow_cards": [
         {
           "id": 452,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p208706.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/208706.png",
           "position": "MID",
           "value": 6,
           "web_name": "Bruno G."
         },
         {
           "id": 5,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p445122.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/445122.png",
           "position": "DEF",
           "value": 5,
           "web_name": "J.Timber"
         },
         {
           "id": 8,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p466075.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
           "position": "DEF",
           "value": 5,
           "web_name": "Calafiori"
         },
         {
           "id": 25,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p224117.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/224117.png",
           "position": "FWD",
           "value": 5,
           "web_name": "Gy\u00f6keres"
         },
         {
           "id": 4,
-          "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p226597.png",
+          "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/226597.png",
           "position": "DEF",
           "value": 4,
           "web_name": "Gabriel"

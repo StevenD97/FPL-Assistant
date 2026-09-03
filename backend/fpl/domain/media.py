@@ -5,7 +5,11 @@ The exact URLs the FPL site itself uses, built from `team.code`/`element.code`
 (stable across seasons, unlike `id` — see fpl.model.ids.map_player_stats_to_roster).
 No API key, no scraping — these are public static assets.
 """
-from fpl.config import FPL_STATIC_BASE, PL_RESOURCES_BASE
+from fpl.config import FPL_STATIC_BASE, PL_PHOTOS_BASE, PL_RESOURCES_BASE
+
+# The position value that gets a keeper kit rather than the outfield one. Every
+# row in this app that carries a kit URL also carries GKP/DEF/MID/FWD.
+GOALKEEPER = "GKP"
 
 
 def team_badge_url(team_code, size=70):
@@ -13,9 +17,22 @@ def team_badge_url(team_code, size=70):
     return f"{PL_RESOURCES_BASE}/badges/{size}/t{team_code}.png"
 
 
-def team_kit_url(team_code):
-    """The standard (home) kit icon - away/third/GK kits exist too but aren't wired up here."""
-    return f"{FPL_STATIC_BASE}/shirts/standard/shirt_{team_code}-66.png"
+def team_kit_url(team_code, position=None):
+    """
+    The team's standard kit icon, outfield or goalkeeper.
+
+    FPL serves the keeper kit as a `_1` variant of the same team code, and it is
+    a genuinely different image (a side's keeper almost never wears the outfield
+    shirt). Passing `position` is optional only so that a caller with no position
+    in scope still gets the outfield kit rather than an exception; every caller
+    inside this app has it, because every row that carries a kit also carries
+    GKP/DEF/MID/FWD.
+
+    Away/third kits exist too but aren't wired up - which strip a side wears in a
+    given fixture isn't in the bootstrap, so picking one would be a guess.
+    """
+    suffix = "_1" if position == GOALKEEPER else ""
+    return f"{FPL_STATIC_BASE}/shirts/standard/shirt_{team_code}{suffix}-66.png"
 
 
 def team_badge_by_short_name(bootstrap, size=70):
@@ -32,15 +49,35 @@ def team_badge_by_short_name(bootstrap, size=70):
 
 def player_photo_url(player_code, size="110x140"):
     """
-    size: "110x140" (FPL's own default headshot crop) or "250x250" (larger).
-    Default is "110x140" - verified directly against the live CDN across the
-    full 2026/27 roster: every player with a 250x250 image also has a
-    110x140 one, but not vice versa (19 players, e.g. Virgil van Dijk,
-    250x250s a 403 while 110x140 200s - an older/legacy photo only cropped
-    at the smaller size). 110x140 is strictly equal-or-better coverage, and
-    the app never renders these above ~80px, so there's no visible quality
-    cost. The ~1/3 of players with no photo at either size (younger/lesser-
-    known players PL hasn't shot yet) degrade gracefully via each caller's
-    onError handler - nothing fixes those short of PL adding the photo.
+    A player's headshot, in the kit of the club he plays for now.
+
+    The bucket matters more than the size here. Premier League runs two photo
+    buckets, and the older one (`/premierleague/photos/players/<size>/p<code>.png`,
+    with a `p` prefix on the filename) has not been refreshed for this season:
+    swept across the full 2026/27 roster, its images carry last-modified dates
+    from 2023 and 2024, so a player who moved in the summer is served in his
+    previous club's shirt. That is the "why is he still in an Everton kit"
+    complaint, and no amount of cache-busting fixes it - the bytes at that URL
+    really are last season's photo.
+
+    The current bucket is `/premierleague25/photos/players/<size>/<code>.png` -
+    no `p` prefix - and it is both fresher and wider:
+
+        in current bucket   561 / 626    (photos dated Aug 2026)
+        in legacy bucket    390 / 626    (photos dated 2023-2024)
+        current only        192          gains a photo it never had
+        legacy only          21          loses one, falls back to initials
+        neither              44
+
+    The 21 losses are deliberate rather than regrettable: thirteen of them
+    changed clubs in the summer, so the legacy photo we would be falling back to
+    is precisely the wrong-kit image, and the initials avatar PlayerPhoto.tsx
+    renders instead is at least honest. The 192 gains include several of the
+    most-owned players in the game (Cherki 18.9%, Lammens 14.9%, Wirtz 10.7%),
+    all of whom previously showed initials.
+
+    size: "110x140" is the only crop the current bucket serves - 250x250 and the
+    square crops 403 there. The app never renders these above ~80px, so there is
+    no visible cost.
     """
-    return f"{PL_RESOURCES_BASE}/photos/players/{size}/p{player_code}.png"
+    return f"{PL_PHOTOS_BASE}/photos/players/{size}/{player_code}.png"

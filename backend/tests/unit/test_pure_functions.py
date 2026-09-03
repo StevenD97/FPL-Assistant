@@ -103,7 +103,15 @@ def test_media_urls_are_built_from_codes():
     assert team_badge_url(3) == "https://resources.premierleague.com/premierleague/badges/70/t3.png"
     assert team_badge_url(3, size=250).endswith("/badges/250/t3.png")
     assert team_kit_url(3).endswith("/shirts/standard/shirt_3-66.png")
-    assert player_photo_url(12345).endswith("/photos/players/110x140/p12345.png")
+    # A keeper wears his side's keeper kit, which FPL serves as a `_1` variant.
+    assert team_kit_url(3, "GKP").endswith("/shirts/standard/shirt_3_1-66.png")
+    assert team_kit_url(3, "DEF").endswith("/shirts/standard/shirt_3-66.png")
+    # Headshots come from the /premierleague25/ bucket with no `p` prefix - the
+    # legacy /premierleague/photos/.../p<code>.png images are last season's, so
+    # a summer signing is served in his old club's kit there.
+    assert player_photo_url(12345) == (
+        "https://resources.premierleague.com/premierleague25/photos/players/110x140/12345.png"
+    )
 
 
 # --- domain.scoring helpers -------------------------------------------------

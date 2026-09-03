@@ -343,7 +343,7 @@
     "id": 1,
     "news": "",
     "penalties_order": 0,
-    "player_photo": "https://resources.premierleague.com/premierleague/photos/players/110x140/p154561.png",
+    "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
     "position": "GKP",
     "prediction": {
       "appearance_points": 10.0,
@@ -397,7 +397,7 @@
     "selected_by_percent": 38.0,
     "status": "a",
     "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
-    "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3-66.png",
+    "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3_1-66.png",
     "team_name": "Arsenal",
     "team_short": "ARS",
     "web_name": "Raya"
