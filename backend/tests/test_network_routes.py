@@ -81,6 +81,23 @@ _STANDINGS = {
     },
 }
 
+# Picks for the two managers in _STANDINGS, so effective ownership has real
+# multipliers to add up. Alice captains the first starter and benches the last
+# four; Bob captains a different player and owns two Alice does not - which is
+# what makes the differential lists non-empty in both directions.
+def _entry_picks(elements, captain):
+    return {"picks": [
+        {"element": eid, "position": i + 1,
+         "multiplier": 0 if i >= 11 else (2 if eid == captain else 1)}
+        for i, eid in enumerate(elements)
+    ]}
+
+
+_LEAGUE_PICKS = {
+    111: _entry_picks(_SQUAD, captain=_START[0]),
+    222: _entry_picks([*_START[:9], 300, 301, *_BENCH], captain=_START[1]),
+}
+
 _HISTORY = {"current": [
     {"event": 1, "total_points": 55, "points": 55},
     {"event": 2, "total_points": 118, "points": 63},
@@ -104,6 +121,11 @@ class _FakeResp:
 def _fake_requests_get(url, params=None, timeout=None, **kwargs):
     if "/leagues-classic/" in url and "standings" in url:
         return _FakeResp(200, _STANDINGS)
+    if "/event/" in url and url.rstrip("/").endswith("picks"):
+        entry = int(url.split("/entry/")[1].split("/")[0])
+        if entry in _LEAGUE_PICKS:
+            return _FakeResp(200, _LEAGUE_PICKS[entry])
+        return _FakeResp(404, {})
     if url.rstrip("/").endswith("history"):
         return _FakeResp(200, _HISTORY)
     if "/entry/" in url:
@@ -134,6 +156,7 @@ NETWORK_ROUTES = [
     ("squad_planner", "/api/squad/123/planner?reference_date=2025-11-30&next_event=10&gw_count=4"),
     ("manager_leagues", "/api/leagues/123"),
     ("league_standings", "/api/leagues/999/standings"),
+    ("league_ownership", "/api/leagues/999/ownership?event=10&team_id=222"),
 ]
 
 

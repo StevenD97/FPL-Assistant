@@ -201,6 +201,22 @@ export type LeaderboardEntry = {
   web_name: string;
 };
 
+export type LeagueHolding = {
+  captained: number;
+  effective: number;
+  element: number;
+  entries: number;
+  owned: number;
+  owned_count: number;
+  pos: Position;
+  rival_count: number;
+  rivals_owning: number;
+  started: number;
+  team_short: string;
+  verdict: string;
+  web_name: string;
+};
+
 export type Metric = {
   key: string;
   kind: "actual" | "model";
@@ -438,6 +454,21 @@ export type League = {
   entry_rank: number;
   id: number;
   name: string;
+};
+
+/** Response of `GET /api/leagues/{league_id}/ownership`. */
+export type LeagueOwnership = {
+  capped: boolean;
+  event: number;
+  league_id: number;
+  league_name: string;
+  managers_counted: number;
+  managers_in_league: number;
+  rivals_above_you: string[];
+  you_are_counted: boolean;
+  your_differentials: LeagueHolding[];
+  your_exposure: LeagueHolding[];
+  your_rank: number;
 };
 
 /** Response of `GET /api/squad/{team_id}/planner`. */

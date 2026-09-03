@@ -90,6 +90,10 @@ const RESPONSES = {
     "StandingsResponse",
     "GET /api/leagues/{league_id}/standings",
   ],
+  league_ownership: [
+    "LeagueOwnership",
+    "GET /api/leagues/{league_id}/ownership",
+  ],
 };
 
 /**
@@ -106,6 +110,7 @@ const RESPONSES = {
 const RENAME = {
   Assist: "LeaderboardEntry",
   Category: "ReturnCategory",
+  YourDifferential: "LeagueHolding",
   Fixture: "FixtureChip",
   Opponent: "PlannerOpponent",
   PlayerDetailGwHistory: "GwRow",

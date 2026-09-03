@@ -24,6 +24,8 @@ import {
   storeTrackedLeagueName,
 } from "@/shared/lib/team";
 import { apiGet } from "@/shared/lib/api";
+import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
+import { LeagueOwnership } from "@/features/leagues/LeagueOwnership";
 import type { League, StandingsResponse } from "@/shared/types/api";
 
 // The two things the one search box can look up. Values double as the
@@ -36,6 +38,7 @@ type LeagueChoice = { id: number; name: string; tracked: boolean };
 
 export default function LeaguesPage() {
   const { teamId: connectedTeamId } = useTeam();
+  const seasonStatus = useSeasonStatus();
 
   // One search box, two intents. `mode` disambiguates a bare number (is 314 a
   // team or a league?); a pasted FPL URL is auto-detected and overrides it.
@@ -520,6 +523,16 @@ export default function LeaguesPage() {
                   </p>
                 )}
               </>
+            )}
+
+            {/* Below the table, not above it: the standings are what people
+                come here for, and this is the follow-up question. */}
+            {selectedLeague != null && (
+              <LeagueOwnership
+                leagueId={selectedLeague}
+                teamId={rankTeamId}
+                nextEvent={seasonStatus?.next_event ?? null}
+              />
             )}
           </div>
         )}
