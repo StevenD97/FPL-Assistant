@@ -131,6 +131,18 @@ export function SuggestedTransfers({
             <InfoTooltip term="predictedXiWindow" />
           </p>
 
+          {/* The optimiser never proposes a hit, which leaves the question a
+              manager asks themselves next unanswered. This answers it by
+              solving it - the best plan one transfer beyond the free
+              allowance, priced against what that transfer is worth in the week
+              before next week's free one would have bought it anyway. */}
+          {shown.hit_verdict && (
+            <p className="mb-3 rounded-md border border-border bg-surface-sunken px-3 py-2 text-xs leading-relaxed text-text-secondary">
+              <span className="font-semibold text-text-primary">Why not take a hit?</span>{" "}
+              {shown.hit_verdict}
+            </p>
+          )}
+
           {/* Why, before who. The two columns below say what the optimiser
               decided; these sentences say what decided it - the points
               difference, the fixtures behind it, an availability flag, what it

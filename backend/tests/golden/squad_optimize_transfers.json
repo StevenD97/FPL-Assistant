@@ -3,6 +3,7 @@
     "bank": 0.6,
     "free_transfers": 1,
     "gw_count": 5,
+    "hit_verdict": "No: the second move is worth about 2.1 points a gameweek (10.4 over 5), and a 4-point hit needs to be repaid before next week's free transfer would have made the same move for nothing.",
     "next_event": 10,
     "points_hit": 0,
     "predicted_points": 297.55,

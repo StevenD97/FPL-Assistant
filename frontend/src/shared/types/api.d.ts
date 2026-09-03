@@ -99,6 +99,7 @@ export type CaptaincyOption = {
   recommendation_score: number;
   team_short: string;
   web_name: string;
+  why_not: string | null;
 };
 
 export type CategoryScore = {
@@ -123,6 +124,7 @@ export type ChipResponsePeriodBenchBoost = {
   double_count: number;
   event: number;
   reason: string;
+  why_not_now: string;
 };
 
 export type ChipResponsePeriodFreeHit = {
@@ -137,6 +139,7 @@ export type ChipResponsePeriodTripleCaptain = {
   player: string;
   reason: string;
   score: number;
+  why_not_now: string;
 };
 
 export type ChipResponseTable = {
@@ -825,6 +828,7 @@ export type TransferResult = {
   bank: number;
   free_transfers: number;
   gw_count: number;
+  hit_verdict: string;
   next_event: number;
   points_hit: number;
   predicted_points: number;

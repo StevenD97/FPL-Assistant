@@ -18,6 +18,7 @@ from fpl.data.entry import fetch_entry_info, fetch_entry_picks
 from fpl.data.loaders import load_bootstrap, load_fixtures
 from fpl.domain.gameweek import detect_blank_double_gameweeks
 from fpl.domain.rationale import bench_boost_reason, free_hit_reason, triple_captain_reason
+from fpl.domain.why_not import why_not_chip_now
 from fpl.model.predict import predict_by_event
 from fpl.model.rules import CHIP_RESET_EVENT, CROSS_SEASON_HALF_LIFE_DAYS
 
@@ -29,6 +30,9 @@ def _period_recommendation(period_table, doubles, blanks, start_event, end_event
     bb_row = period_table.loc[period_table["bench_score"].idxmax()]
     tc_row = period_table.loc[period_table["best_captain_score"].idxmax()]
     fh_row = period_table.loc[period_table["blank_count"].idxmax()]
+    # The soonest week in this period - the one a manager is deciding about
+    # right now, and therefore the one "why not now?" is asking about.
+    this_week = period_table.loc[period_table["event"].idxmin()]
 
     doubles_here = [d for d in doubles if start_event <= d[0] < end_event]
     blanks_here = [b for b in blanks if start_event <= b[0] < end_event]
@@ -57,11 +61,20 @@ def _period_recommendation(period_table, doubles, blanks, start_event, end_event
             "event": int(bb_row["event"]), "bench_score": bb_row["bench_score"],
             "double_count": int(bb_row["double_count"]),
             "reason": bench_boost_reason(bb_row),
+            # "Why not this week?" - the question the recommendation itself
+            # provokes. `this_week` is the first gameweek in the scan, which is
+            # the one a manager is deciding about right now.
+            "why_not_now": why_not_chip_now(
+                "Bench Boost", float(this_week["bench_score"]),
+                float(bb_row["bench_score"]), int(bb_row["event"])),
         },
         "triple_captain": {
             "event": int(tc_row["event"]), "player": tc_row["best_captain_name"],
             "score": tc_row["best_captain_score"],
             "reason": triple_captain_reason(tc_row),
+            "why_not_now": why_not_chip_now(
+                "Triple Captain", float(this_week["best_captain_score"]),
+                float(tc_row["best_captain_score"]), int(tc_row["event"])),
         },
         "free_hit": {
             "recommended": bool(fh_row["blank_count"] >= 3),

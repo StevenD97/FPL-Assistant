@@ -6,7 +6,8 @@
           "bench_score": 16.136,
           "double_count": 0,
           "event": 12,
-          "reason": "Your bench projects 16.1 pts in GW12, the most of any week scanned."
+          "reason": "Your bench projects 16.1 pts in GW12, the most of any week scanned.",
+          "why_not_now": "Bench Boost is worth 15.3 this week and 16.1 in GW12. Holding it gains you 0.8, and it is only playable once."
         },
         "end_event": 14,
         "free_hit": {
@@ -21,7 +22,8 @@
           "event": 14,
           "player": "B.Fernandes",
           "reason": "B.Fernandes projects 8.6 pts in GW14, the highest single-gameweek score in your squad across the scan.",
-          "score": 8.638
+          "score": 8.638,
+          "why_not_now": "Triple Captain is worth 8.1 this week and 8.6 in GW14. Holding it gains you 0.6, and it is only playable once."
         },
         "wildcard": null
       }

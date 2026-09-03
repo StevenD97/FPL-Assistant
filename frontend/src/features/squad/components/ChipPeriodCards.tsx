@@ -23,6 +23,7 @@ function ChipCard({
   verdict,
   detail,
   why,
+  whyNotNow,
   tone = "hold",
   accentClass,
 }: {
@@ -34,6 +35,8 @@ function ChipCard({
   detail?: ReactNode;
   /** The full reasoning, behind a disclosure. */
   why?: string;
+  /** And the follow-up question that reasoning provokes: why not this week? */
+  whyNotNow?: string;
   tone?: "play" | "hold";
   /** Top-bar colour, one per chip so the row reads as four distinct chips
    * rather than four grey boxes that happen to hold different words. */
@@ -57,6 +60,11 @@ function ChipCard({
             Why <span className="inline-block transition-transform group-open:rotate-90">›</span>
           </summary>
           <p className="mt-1.5 text-xs leading-relaxed text-text-secondary">{why}</p>
+          {whyNotNow && (
+            <p className="mt-1.5 border-t border-border pt-1.5 text-xs leading-relaxed text-text-muted">
+              <span className="font-semibold">Why not now?</span> {whyNotNow}
+            </p>
+          )}
         </details>
       )}
     </Card>
@@ -112,6 +120,7 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
             </>
           }
           why={bb.reason}
+          whyNotNow={bb.why_not_now}
         />
 
         <ChipCard
@@ -131,6 +140,7 @@ export function ChipPeriodCards({ period, squad }: { period: ChipResponsePeriod;
             </span>
           }
           why={tc.reason}
+          whyNotNow={tc.why_not_now}
         />
 
         {fh.recommended ? (

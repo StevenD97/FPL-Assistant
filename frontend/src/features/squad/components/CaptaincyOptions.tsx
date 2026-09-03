@@ -71,6 +71,15 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
                   </span>{" "}
                   · {option.reason}
                 </p>
+                {/* And why not this one - the question a ranked list provokes
+                    and never answers. Only below the top pick: "why not the
+                    recommendation" is not a question. */}
+                {option.why_not && (
+                  <p className="mt-1 text-xs leading-snug text-text-muted">
+                    <span className="font-semibold">Why not {option.web_name}?</span>{" "}
+                    {option.why_not}
+                  </p>
+                )}
               </div>
             </div>
           );

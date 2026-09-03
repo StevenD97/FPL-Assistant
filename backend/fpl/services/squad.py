@@ -17,6 +17,7 @@ from fpl.data.entry import fetch_entry_info
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.chips import build_chip_strategy
 from fpl.domain.rationale import transfer_reason
+from fpl.domain.why_not import why_not_take_a_hit
 from fpl.domain.scoring import rank_desc
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.gameweek import get_gw_context
@@ -152,7 +153,44 @@ def optimize_transfers_compute(current_squad_ids, bank, ref_date, next_event,
         reason = transfer_reason(player_in, player_out, gw_count)
         player_in["reason"] = reason
         player_out["reason"] = reason
+
+    result["hit_verdict"] = _hit_verdict(
+        pool, current_squad_ids, bank, free_transfers, result, gw_count,
+        skip=exact_transfers is not None,
+    )
     return result
+
+
+def _hit_verdict(pool, current_squad_ids, bank, free_transfers, free_result, gw_count, skip=False):
+    """
+    "Why not take a -4?" - answered by solving it rather than asserting it.
+
+    The optimiser deliberately never proposes a hit (see optimize_transfers for
+    why the objective cannot price one), which leaves the most common question a
+    manager asks themselves unanswered. So the same problem is solved once more
+    with one extra transfer forced, and the two totals are compared against the
+    four points it would cost.
+
+    Skipped when the caller already pinned the transfer count - they asked a
+    different question and a second solve would be answering neither.
+
+    A failed solve returns None rather than raising: an unanswerable side
+    question must not take down the answer the page came for.
+    """
+    if skip:
+        return None
+    try:
+        with_hit = optimize_transfers(
+            pool, current_squad_ids, bank=bank, free_transfers=free_transfers,
+            exact_transfers=free_result["transfers_made"] + 1,
+        )
+    except Exception:
+        return None
+    return why_not_take_a_hit(
+        free_gain=free_result["starting_xi_predicted_points"],
+        hit_gain=with_hit["starting_xi_predicted_points"],
+        gw_count=gw_count,
+    )
 
 
 def squad_planner_compute(squad_element_ids, event, ref_date, next_event, gw_count=6):
