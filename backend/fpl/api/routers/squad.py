@@ -63,6 +63,21 @@ def entry_summary(team_id: int):
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
+@router.get("/api/entry/{team_id}/captain-review")
+def captain_review(team_id: int, event: Optional[int] = None):
+    """
+    What the armband cost or saved this manager last gameweek, against the
+    model's own pre-deadline pick from their squad.
+
+    Never raises for the ordinary "we can't answer that" cases - a season that
+    hasn't started, a week we didn't freeze, a manager with no team - so the
+    page can say why rather than showing an error.
+    """
+    from fpl.services import counterfactual
+
+    return counterfactual.captain_review(team_id, event=event)
+
+
 @router.get("/api/squad/{team_id}/chips")
 def chip_strategy(team_id: int, scan_start_event: Optional[int] = None, scan_end_event: Optional[int] = None):
     if scan_start_event is None:

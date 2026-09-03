@@ -94,6 +94,10 @@ const RESPONSES = {
     "LeagueOwnership",
     "GET /api/leagues/{league_id}/ownership",
   ],
+  entry_captain_review: [
+    "CaptainReview",
+    "GET /api/entry/{team_id}/captain-review",
+  ],
 };
 
 /**
@@ -145,6 +149,37 @@ const HAND_WRITTEN = {
   // Both branches are recorded and asserted (player_comparison and
   // player_comparison_best in tests/test_deterministic_routes.py); this only
   // states the union they prove.
+  // Two shapes for one response: a graded review, or a reason there isn't one.
+  // A snapshot can only capture whichever branch it was taken on, and the
+  // ungradeable branch is the one a golden can honestly record - planting a
+  // frozen projection after the fact to capture the other is precisely what
+  // the feature refuses to do. The graded branch is asserted in
+  // tests/unit/test_counterfactual.py instead; this states the union.
+  CaptainReview: `/** Response of \`GET /api/entry/{team_id}/captain-review\`. */
+export type CaptainReview =
+  | {
+      available: false;
+      /** Absent before any gameweek has finished. */
+      event?: number;
+      reason: string;
+    }
+  | {
+      available: true;
+      event: number;
+      /** "frozen" - a graded review only ever comes from a pre-deadline file. */
+      source: string;
+      model_pick: string;
+      model_points: number;
+      your_pick: string;
+      your_points: number;
+      /** 2 normally, 3 in a Triple Captain week. */
+      multiplier: number;
+      /** Positive: following the model would have gained you this much. */
+      points_delta: number;
+      agreed: boolean;
+      verdict: string;
+    };`,
+
   PlayerComparison: `export type ComparisonPlayer = {
   id: number;
   web_name: string;

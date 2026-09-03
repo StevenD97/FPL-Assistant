@@ -157,6 +157,11 @@ NETWORK_ROUTES = [
     ("manager_leagues", "/api/leagues/123"),
     ("league_standings", "/api/leagues/999/standings"),
     ("league_ownership", "/api/leagues/999/ownership?event=10&team_id=222"),
+    # The "we never froze that week" shape. The available:true branch is
+    # covered in tests/unit/test_counterfactual.py, which can plant a frozen
+    # file; a golden cannot, because writing one after the fact is exactly what
+    # the feature refuses to do.
+    ("entry_captain_review", "/api/entry/123/captain-review"),
 ]
 
 

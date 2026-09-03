@@ -428,6 +428,30 @@ export type BestSquadResult = {
   total_cost: number;
 };
 
+/** Response of `GET /api/entry/{team_id}/captain-review`. */
+export type CaptainReview =
+  | {
+      available: false;
+      /** Absent before any gameweek has finished. */
+      event?: number;
+      reason: string;
+    }
+  | {
+      available: true;
+      event: number;
+      /** "frozen" - a graded review only ever comes from a pre-deadline file. */
+      source: string;
+      model_pick: string;
+      model_points: number;
+      your_pick: string;
+      your_points: number;
+      /** 2 normally, 3 in a Triple Captain week. */
+      multiplier: number;
+      /** Positive: following the model would have gained you this much. */
+      points_delta: number;
+      agreed: boolean;
+      verdict: string;
+    };
 /** Response of `GET /api/squad/{team_id}/chips`. */
 export type ChipResponse = {
   periods: ChipResponsePeriod[];

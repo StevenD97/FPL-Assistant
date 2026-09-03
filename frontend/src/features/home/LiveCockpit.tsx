@@ -9,6 +9,7 @@ import { nextChip } from "@/shared/lib/chips";
 import { formatRank } from "@/shared/lib/team";
 import type { SquadPlayer, TeamEntry } from "@/shared/types/api";
 import type { LiveCockpitData } from "./hooks/useCockpit";
+import { CaptainReview } from "./CaptainReview";
 import { CockpitShell, CockpitStat } from "./components/CockpitShell";
 
 /**
@@ -129,6 +130,11 @@ export function LiveCockpit({
           }
         />
       </div>
+
+      {/* Last week's armband, graded against what we committed to before that
+          deadline. Sits directly under this week's numbers because the point of
+          it is the sequence: here is the call, here is how the last one went. */}
+      <CaptainReview teamId={entry?.id ?? null} />
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
         {/* The XI, straight on the landing page - the thing a manager actually
