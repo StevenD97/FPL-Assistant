@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DerivedNote } from "@/shared/ui/DerivedNote";
 import { apiGet } from "@/shared/lib/api";
 import type { AccuracyResponse, PlayerPredictedPoints, SeasonStatus } from "@/shared/types/api";
 
@@ -34,11 +35,16 @@ export async function WorkedExample() {
     <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
       <div className="flex flex-col gap-1">
         <span className="text-xs font-bold uppercase tracking-[0.1em] text-text-primary/60">
-          See it work first
+          See the reasoning first
         </span>
         <h2 className="text-lg font-bold tracking-tight text-text-primary">
-          No Team ID needed to check our homework.
+          Every call, in a sentence you can argue with.
         </h2>
+        <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
+          No Team ID needed. Here is this week&apos;s call and last week&apos;s, graded against
+          what actually happened - including the misses, which are the half that makes the other
+          half worth anything.
+        </p>
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -59,7 +65,8 @@ export async function WorkedExample() {
                 ? ` against ${top.next_opponent}`
                 : ""}
               {season?.next_event != null ? ` in GW${season.next_event}` : ""} — the highest of any
-              player in the game.
+              player in the game. Most weeks {top.floor}-{top.ceiling},{" "}
+              {Math.round(top.haul_probability * 100)}% chance of a haul.
             </p>
           </div>
         )}
@@ -87,6 +94,8 @@ export async function WorkedExample() {
           </div>
         )}
       </div>
+
+      <DerivedNote className="mt-4 border-t border-border pt-3" />
     </section>
   );
 }

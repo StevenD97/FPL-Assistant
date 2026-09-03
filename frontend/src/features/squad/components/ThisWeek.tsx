@@ -1,5 +1,6 @@
 "use client";
 
+import { DerivedNote } from "@/shared/ui/DerivedNote";
 import type { CaptaincyOption, TransferResult } from "@/shared/types/api";
 
 /**
@@ -83,6 +84,11 @@ export function ThisWeek({
           reason={topCaptain?.reason ?? null}
         />
       </div>
+
+      {/* Stated where the recommendations are, not only on the landing page.
+          This is the claim the incumbent's assistant cannot make, and it is
+          worth nothing if a reader never sees it next to a sentence. */}
+      <DerivedNote className="mt-3 border-t border-border pt-2.5" />
     </section>
   );
 }

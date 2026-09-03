@@ -58,13 +58,20 @@ export default async function LandingPage() {
               <span className="text-xs font-bold uppercase tracking-[0.12em] text-text-primary">
                 Fantasy Premier League · 2026/27
               </span>
+              {/* The headline is the differentiator, not the category. "Decisions,
+                  not gut feel" is what every tool in this space claims; being
+                  able to read why, in a sentence assembled from the figures
+                  that decided it, is what none of them offer - including the
+                  official game's own assistant, which writes prose about a
+                  number rather than out of it. */}
               <h1 className="max-w-3xl text-2xl font-bold leading-[1.05] tracking-tight lg:text-3xl">
-                Decisions, not gut feel.
+                Every recommendation, explained in a sentence.
               </h1>
               <p className="max-w-2xl text-sm leading-relaxed text-ink-100 lg:text-base">
-                Transfer, captaincy, and chip recommendations built on two independent prediction approaches - a
-                recommendation score and a full points-per-category model - plus exact optimization for squad and
-                transfer decisions.
+                Transfers, captaincy and chip timing for Fantasy Premier League - each one stated
+                with the reasoning that produced it, the range it might land in, and a public
+                record of how the last call actually went. Nothing here is written by a language
+                model; every number in the sentence is one the model computed.
               </p>
               <HeroActions />
             </div>
