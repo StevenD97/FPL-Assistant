@@ -7,6 +7,8 @@ import { Pagination } from "@/shared/ui/Pagination";
 import { InfoTooltip } from "@/shared/ui/InfoTooltip";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { PlayerListCard, PlayerListCardSkeleton } from "@/features/players/PlayerListCard";
+import { PlayerTable } from "@/features/players/PlayerTable";
+import type { SortKey } from "@/features/players/sort";
 import type { PlayerListItem } from "@/shared/types/api";
 import { useShortlist } from "@/shared/lib/shortlist";
 import { loadSquadDraft } from "@/shared/lib/draft";
@@ -16,7 +18,7 @@ import { apiGet } from "@/shared/lib/api";
 const POSITIONS = ["All", "GKP", "DEF", "MID", "FWD"] as const;
 const PAGE_SIZE = 24;
 
-type SortKey = "predicted_points" | "value" | "selected_by_percent" | "season_points" | "cost";
+
 
 const SORTS: { key: SortKey; label: string }[] = [
   { key: "predicted_points", label: "xPts · 5GW" },
@@ -351,10 +353,21 @@ export default function PlayersPage() {
 
       {players && (
         <>
-          <div className={GRID_CLASS}>
+          {/* Cards below lg, a table above it - see PlayerTable for why. Both
+              render the same page of players, so paging, filters and the
+              shortlist behave identically either side of the breakpoint. */}
+          <div className={`${GRID_CLASS} lg:hidden`}>
             {visible.map((p) => (
               <PlayerListCard key={p.id} p={p} inDraft={draftSet.has(p.id)} />
             ))}
+          </div>
+          <div className="hidden lg:block">
+            <PlayerTable
+              players={visible}
+              sortKey={sortKey}
+              onSort={changeSort}
+              draftIds={draftSet}
+            />
           </div>
 
           {rows.length === 0 &&
