@@ -8,12 +8,12 @@ import {
   type TeamEntry,
   clearStoredTeamId,
   loadStoredTeamId,
-  loadTrackedTeamIds,
-  loadTrackedTeamNames,
   parseTeamId,
   storeTeamId,
   storeTrackedTeamIds,
   storeTrackedTeamName,
+  useTrackedTeamIds,
+  useTrackedTeamNames,
 } from "@/shared/lib/team";
 
 type Status = "idle" | "loading" | "ready" | "error";
@@ -51,14 +51,12 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [trackedTeamIds, setTrackedTeamIds] = useState<number[]>([]);
-  const [trackedTeamNames, setTrackedTeamNames] = useState<Record<string, string>>({});
-
-  // Restore tracked teams on load.
-  useEffect(() => {
-    setTrackedTeamIds(loadTrackedTeamIds());
-    setTrackedTeamNames(loadTrackedTeamNames());
-  }, []);
+  // Read from the store rather than mirrored into provider state. The mount
+  // effect that used to seed these rendered once with empty lists and again
+  // with the stored ones, and any other reader of the same keys could disagree
+  // in between. See useTrackedTeamIds in shared/lib/team.
+  const trackedTeamIds = useTrackedTeamIds();
+  const trackedTeamNames = useTrackedTeamNames();
 
   // Learn the names we don't have yet, one request per unknown id, and cache
   // them on the device so this only ever happens once per tracked team.
@@ -77,8 +75,8 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
           const data = await apiGet<TeamEntry>(`/api/entry/${id}`);
           const name = data.team_name?.trim();
           if (!name || cancelled) continue;
+          // The store notifies every reader, so there is nothing to mirror.
           storeTrackedTeamName(id, name);
-          setTrackedTeamNames((prev) => ({ ...prev, [String(id)]: name }));
         } catch {
           // Ignore - see above.
         }
@@ -96,26 +94,16 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
     (input: string): boolean => {
       const id = parseTeamId(input);
       if (id == null) return false;
-      let added = false;
-      setTrackedTeamIds((prev) => {
-        if (prev.includes(id)) return prev;
-        const next = [...prev, id];
-        storeTrackedTeamIds(next);
-        added = true;
-        return next;
-      });
-      return added || trackedTeamIds.includes(id);
+      if (trackedTeamIds.includes(id)) return true;
+      storeTrackedTeamIds([...trackedTeamIds, id]);
+      return true;
     },
     [trackedTeamIds],
   );
 
   const untrackTeam = useCallback((id: number) => {
-    setTrackedTeamIds((prev) => {
-      const next = prev.filter((n) => n !== id);
-      storeTrackedTeamIds(next);
-      return next;
-    });
-  }, []);
+    storeTrackedTeamIds(trackedTeamIds.filter((n) => n !== id));
+  }, [trackedTeamIds]);
 
   const fetchEntry = useCallback(async (id: number): Promise<boolean> => {
     setStatus("loading");
@@ -134,8 +122,19 @@ export function TeamProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Restore a previously-connected team on load.
+  //
+  // This is the one set-state-in-effect the codebase keeps, and it is kept on
+  // purpose. Fetching on mount is the sanctioned use of an effect - the rule's
+  // own text describes it as subscribing to an external system - and the only
+  // thing it objects to is that fetchEntry flips status to "loading"
+  // synchronously before the first await. Deferring that flip would show an
+  // idle, disconnected header for a frame on every page load, which is the
+  // exact flash the rest of this pass removed. The other eight cases were
+  // genuinely derived state or storage reads and have been restructured; this
+  // one is a network call, and there is nowhere better for it to live.
   useEffect(() => {
     const id = loadStoredTeamId();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (id != null) fetchEntry(id);
   }, [fetchEntry]);
 
@@ -214,9 +213,13 @@ function ConnectTeamDialog({
 }) {
   const [input, setInput] = useState("");
 
-  useEffect(() => {
+  // Cleared when the dialog opens, during render - an effect would show the
+  // previous attempt's text for one frame before wiping it.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (wasOpen !== open) {
+    setWasOpen(open);
     if (open) setInput("");
-  }, [open]);
+  }
 
   if (!open) return null;
   const submitting = status === "loading";

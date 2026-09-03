@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useTeam } from "@/shared/team/TeamProvider";
-import { Countdown } from "@/shared/ui/Countdown";
 
 // Hero call-to-action row, personalised by connection state: a returning
 // manager gets straight into their squad, a new visitor gets the connect /
@@ -45,11 +44,10 @@ export function HeroActions() {
           </Link>
         </>
       )}
-      <span className="flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1.5">
-        <span className="animate-fpl-pulse h-1.5 w-1.5 rounded-full bg-brand" />
-        <span className="text-xs text-ink-300">{name ? `Hi, ${name}` : "Next deadline"}</span>
-        <Countdown className="text-xs font-semibold text-white" />
-      </span>
+      {/* No countdown here. The sidebar carries one on every page, and this sat
+          400px from it on the same screen - the same value, twice, rendered by
+          the same component. A greeting is not a duplicate, so that stays. */}
+      {name && <span className="text-sm text-text-secondary">Hi, {name}</span>}
     </div>
   );
 }

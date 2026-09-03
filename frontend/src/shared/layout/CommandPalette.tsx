@@ -47,13 +47,23 @@ export function CommandPalette() {
     };
   }, []);
 
-  useEffect(() => {
+  // Reset the query and selection when the palette opens, during render rather
+  // than in an effect - opening it and then clearing it a frame later is a
+  // visible flash of the last search. Focus stays in an effect because moving
+  // the caret is a DOM side effect, which is what effects are actually for.
+  const [wasOpen, setWasOpen] = useState(open);
+  if (wasOpen !== open) {
+    setWasOpen(open);
     if (open) {
       setQ("");
       setActive(0);
-      const t = setTimeout(() => inputRef.current?.focus(), 20);
-      return () => clearTimeout(t);
     }
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => inputRef.current?.focus(), 20);
+    return () => clearTimeout(t);
   }, [open]);
 
   const results = useMemo(() => {
@@ -62,7 +72,13 @@ export function CommandPalette() {
     return COMMANDS.filter((c) => `${c.label} ${c.keywords ?? ""}`.toLowerCase().includes(s));
   }, [q]);
 
-  useEffect(() => setActive(0), [q]);
+  // Typing moves the highlight back to the first result. Same reasoning: the
+  // list and the highlight should change in the same paint, not one after it.
+  const [lastQuery, setLastQuery] = useState(q);
+  if (lastQuery !== q) {
+    setLastQuery(q);
+    setActive(0);
+  }
 
   function go(href: string) {
     setOpen(false);

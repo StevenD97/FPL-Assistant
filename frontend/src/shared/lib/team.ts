@@ -1,3 +1,7 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
+
 // Client-side "connected team" helpers: parse a team id from either a raw
 // number or a pasted FPL URL, and persist it on the device (localStorage).
 // No login/credentials - just the public team id, like every reputable FPL
@@ -33,6 +37,8 @@ export function storeTeamId(id: number): void {
   } catch {
     // Ignore (private mode / storage disabled) - the app still works per-session.
   }
+  storedTeamId = id;
+  notifyStoredTeam();
 }
 
 export function clearStoredTeamId(): void {
@@ -41,6 +47,40 @@ export function clearStoredTeamId(): void {
   } catch {
     // Ignore.
   }
+  storedTeamId = null;
+  notifyStoredTeam();
+}
+
+/*
+ * The connected team's id, readable during render.
+ *
+ * Callers need to distinguish "nobody has connected a team" from "a team is
+ * stored and its details are still loading", because those want opposite
+ * defaults - the first opens a draft, the second waits. Reading localStorage
+ * straight from a render would give the server null and the client an id, which
+ * is a hydration mismatch; useSyncExternalStore exists for exactly this and
+ * reconciles after hydration.
+ */
+let storedTeamId: number | null = loadStoredTeamId();
+const storedTeamListeners = new Set<() => void>();
+
+function notifyStoredTeam(): void {
+  storedTeamListeners.forEach((l) => l());
+}
+
+function subscribeStoredTeam(cb: () => void): () => void {
+  storedTeamListeners.add(cb);
+  return () => {
+    storedTeamListeners.delete(cb);
+  };
+}
+
+export function useStoredTeamId(): number | null {
+  return useSyncExternalStore(
+    subscribeStoredTeam,
+    () => storedTeamId,
+    () => null,
+  );
 }
 
 // Other teams the user is tracking in the My Squad workspace (their rivals,
@@ -61,6 +101,8 @@ export function loadTrackedTeamIds(): number[] {
 }
 
 export function storeTrackedTeamIds(ids: number[]): void {
+  trackedTeamIds = ids;
+  notifyTeams();
   try {
     window.localStorage.setItem(TRACKED_TEAMS_KEY, JSON.stringify(ids));
   } catch {
@@ -101,6 +143,8 @@ export function storeTrackedLeagueIds(ids: number[]): void {
   } catch {
     // Ignore (private mode / storage disabled) - the app still works per-session.
   }
+  trackedIds = ids;
+  notify();
 }
 
 // Label cache for tracked leagues, learned when a league's standings load.
@@ -121,12 +165,61 @@ export function loadTrackedLeagueNames(): Record<string, string> {
 }
 
 export function storeTrackedLeagueName(id: number, name: string): void {
+  const next = { ...trackedNames, [String(id)]: name };
   try {
-    const next = { ...loadTrackedLeagueNames(), [String(id)]: name };
     window.localStorage.setItem(LEAGUE_NAMES_KEY, JSON.stringify(next));
   } catch {
     // Ignore.
   }
+  trackedNames = next;
+  notify();
+}
+
+/*
+ * Tracked leagues as an external store rather than component state seeded by an
+ * effect.
+ *
+ * The old shape was `useState([])` plus a mount effect that read localStorage
+ * and set it - which renders once with the wrong (empty) answer, then again
+ * with the right one, and is what react-hooks/set-state-in-effect is pointing
+ * at. It also meant two components could disagree about what was tracked.
+ *
+ * useSyncExternalStore is the same pattern shortlist.ts already uses here: a
+ * module-level value, a subscriber set, and a server snapshot that is stable so
+ * SSR and the first client paint agree before React re-syncs after hydration.
+ */
+let trackedIds: number[] = loadTrackedLeagueIds();
+let trackedNames: Record<string, string> = loadTrackedLeagueNames();
+const trackedListeners = new Set<() => void>();
+
+const EMPTY_IDS: number[] = [];
+const EMPTY_NAMES: Record<string, string> = {};
+
+function notify(): void {
+  trackedListeners.forEach((l) => l());
+}
+
+function subscribeTracked(cb: () => void): () => void {
+  trackedListeners.add(cb);
+  return () => {
+    trackedListeners.delete(cb);
+  };
+}
+
+export function useTrackedLeagueIds(): number[] {
+  return useSyncExternalStore(
+    subscribeTracked,
+    () => trackedIds,
+    () => EMPTY_IDS,
+  );
+}
+
+export function useTrackedLeagueNames(): Record<string, string> {
+  return useSyncExternalStore(
+    subscribeTracked,
+    () => trackedNames,
+    () => EMPTY_NAMES,
+  );
 }
 
 // The last league whose standings you actually opened, so a return visit can
@@ -180,8 +273,11 @@ export function loadTrackedTeamNames(): Record<string, string> {
 }
 
 export function storeTrackedTeamName(id: number, name: string): void {
+  const merged = { ...trackedTeamNames, [String(id)]: name };
+  trackedTeamNames = merged;
+  notifyTeams();
   try {
-    const next = { ...loadTrackedTeamNames(), [String(id)]: name };
+    const next = merged;
     window.localStorage.setItem(TEAM_NAMES_KEY, JSON.stringify(next));
   } catch {
     // Ignore.
@@ -211,4 +307,45 @@ export function initials(name: string | null): string {
   const first = parts[0]?.[0] ?? "";
   const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
   return (first + last).toUpperCase() || "FA";
+}
+
+
+/*
+ * Tracked teams, on the same external-store footing as tracked leagues above.
+ * Declared at the end of the module because the store has to be initialised
+ * after the load helpers it calls; the writers above reference it through
+ * closures, which run later.
+ */
+let trackedTeamIds: number[] = loadTrackedTeamIds();
+let trackedTeamNames: Record<string, string> = loadTrackedTeamNames();
+const teamListeners = new Set<() => void>();
+
+const EMPTY_TEAM_IDS: number[] = [];
+const EMPTY_TEAM_NAMES: Record<string, string> = {};
+
+function notifyTeams(): void {
+  teamListeners.forEach((l) => l());
+}
+
+function subscribeTeams(cb: () => void): () => void {
+  teamListeners.add(cb);
+  return () => {
+    teamListeners.delete(cb);
+  };
+}
+
+export function useTrackedTeamIds(): number[] {
+  return useSyncExternalStore(
+    subscribeTeams,
+    () => trackedTeamIds,
+    () => EMPTY_TEAM_IDS,
+  );
+}
+
+export function useTrackedTeamNames(): Record<string, string> {
+  return useSyncExternalStore(
+    subscribeTeams,
+    () => trackedTeamNames,
+    () => EMPTY_TEAM_NAMES,
+  );
 }

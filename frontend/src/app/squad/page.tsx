@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { useTeam } from "@/shared/team/TeamProvider";
 import { LoadTeamPanel } from "@/features/squad/LoadTeamPanel";
@@ -9,7 +9,7 @@ import { TransferPlanWorkspace } from "@/features/squad/TransferPlanWorkspace";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { Button } from "@/shared/ui/Button";
 import { TextField } from "@/shared/ui/TextField";
-import { loadStoredTeamId, parseTeamId } from "@/shared/lib/team";
+import { parseTeamId, useStoredTeamId } from "@/shared/lib/team";
 import { deleteLocalTeam, useLocalTeams } from "@/shared/lib/localTeams";
 import { useSquadDraftCount } from "@/shared/lib/draft";
 
@@ -37,6 +37,29 @@ function selectionKey(sel: Selection): string {
   return `${sel.kind}-${sel.id}`;
 }
 
+/**
+ * Which workspace to open with, before the reader has chosen one.
+ *
+ * Your own team wins, then anything saved on this device, and only with
+ * nothing at all does the draft open - the page is for the team you already
+ * have, not for starting another one.
+ *
+ * `connectedId` arrives a beat late: TeamProvider restores the id from storage
+ * and then fetches the entry. Returning null while a stored id exists but has
+ * not resolved is what stops the draft flashing up and being replaced on every
+ * visit.
+ */
+function defaultSelection(
+  connectedId: number | null,
+  storedTeamId: number | null,
+  localTeams: { id: string }[],
+): Selection | null {
+  if (connectedId != null) return { kind: "fpl", id: connectedId };
+  if (storedTeamId != null) return null;
+  if (localTeams.length > 0) return { kind: "local", id: localTeams[0].id };
+  return { kind: "draft" };
+}
+
 export default function SquadPage() {
   const {
     teamId: connectedId,
@@ -51,7 +74,6 @@ export default function SquadPage() {
   const localTeams = useLocalTeams();
   const draftCount = useSquadDraftCount();
 
-  const [selection, setSelection] = useState<Selection | null>(null);
   const [adding, setAdding] = useState(false);
   const [addValue, setAddValue] = useState("");
   const [addError, setAddError] = useState<string | null>(null);
@@ -65,23 +87,16 @@ export default function SquadPage() {
   // then swapped to your team once the id landed - a flash of the wrong workspace
   // on every visit. Reading the stored id directly tells us a team is coming, so
   // we can wait for it instead of guessing and correcting.
-  const [chosen, setChosen] = useState(false);
-  useEffect(() => {
-    if (chosen) return;
-    if (connectedId != null) {
-      setSelection({ kind: "fpl", id: connectedId });
-      return;
-    }
-    // A team is stored but hasn't loaded yet - hold rather than mount something
-    // we're about to replace.
-    if (loadStoredTeamId() != null) return;
-    if (localTeams.length > 0) setSelection({ kind: "local", id: localTeams[0].id });
-    else setSelection({ kind: "draft" });
-  }, [connectedId, localTeams, chosen]);
+  // Derived during render rather than written by an effect. Only an explicit
+  // pick is state; the default is a function of what is connected and what is
+  // saved, and computing it where it is read means the page never paints one
+  // workspace and then corrects itself to another.
+  const storedTeamId = useStoredTeamId();
+  const [picked, setPicked] = useState<Selection | null>(null);
+  const selection: Selection | null = picked ?? defaultSelection(connectedId, storedTeamId, localTeams);
 
   function choose(sel: Selection) {
-    setChosen(true);
-    setSelection(sel);
+    setPicked(sel);
   }
 
   const atTrackLimit = trackedTeamIds.length >= FREE_TRACKED_LIMIT;

@@ -100,6 +100,14 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
+      - name: Lint
+        # Gated rather than advisory. The suite carried nine
+        # react-hooks/set-state-in-effect errors for long enough that they had
+        # stopped being noticed; every one is now either restructured or
+        # suppressed with a written reason, so a new one is a real regression
+        # and should fail the build rather than scroll past.
+        run: npx eslint src --max-warnings 0
+
       - name: Build
         # force-dynamic on the data-backed routes keeps this from needing a
         # live backend; anything that regressed into build-time fetching would

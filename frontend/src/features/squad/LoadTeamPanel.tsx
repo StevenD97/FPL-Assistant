@@ -170,28 +170,18 @@ export function LoadTeamPanel({
     return map;
   }, [planner]);
 
-  // The rail is the menu and the overview at once, so each row carries the
-  // readout its summary card used to.
+  // The rail is the menu and the overview at once - except for the two rows
+  // "This week" has already answered directly above it. Those two carried the
+  // same conclusion a second time, 400px lower, which made the page look like
+  // it had two opinions when it had one. They now say what opening them gets
+  // you, which is what a menu row is for. The one exception is a warning: if a
+  // pitch preview has stranded the armband, that is new information and not a
+  // restatement, so it still surfaces here.
   const readRows: ReadRow[] = [
     {
       id: "transfers",
       label: "Suggested transfers",
-      summary: optimizerLoading ? (
-        "Solving…"
-      ) : optimizer && optimizer.transferred_out.length > 0 ? (
-        <>
-          <span className="font-medium text-danger">↓ {optimizer.transferred_out[0]?.web_name}</span>
-          <span className="mx-1 text-text-muted">→</span>
-          <span className="font-medium text-success">↑ {optimizer.transferred_in[0]?.web_name}</span>
-          {optimizer.transfers_made > 1 && (
-            <span className="text-text-muted"> +{optimizer.transfers_made - 1} more</span>
-          )}
-        </>
-      ) : optimizer ? (
-        "Already optimal - no changes"
-      ) : (
-        "Not available"
-      ),
+      summary: optimizerLoading ? "Solving…" : "The full working, and the alternatives considered",
     },
     {
       id: "captaincy",
@@ -200,29 +190,8 @@ export function LoadTeamPanel({
         <span className="font-medium text-warning">
           Your captain isn&apos;t in the previewed XI - reassign the armband
         </span>
-      ) : previewEffect.previewCaptainName ? (
-        // A reassignment on the pitch overrides the real armband this read
-        // would otherwise describe - say whose it is now, not compare a
-        // pick that's no longer current against the model's own favourite.
-        <>
-          <span className="font-medium text-text-primary">{previewEffect.previewCaptainName}</span>{" "}
-          <span className="text-text-primary">· your pick, previewed</span>
-        </>
-      ) : topCaptain ? (
-        <>
-          <span className="font-medium text-text-primary">{topCaptain.web_name}</span> ·{" "}
-          <span className="font-mono font-medium text-text-primary">
-            {topCaptain.predicted_points_next.toFixed(1)}
-          </span>{" "}
-          xP ·{" "}
-          {currentCaptain && currentCaptain.web_name !== topCaptain.web_name ? (
-            <span className="text-warning">you have {currentCaptain.web_name}</span>
-          ) : (
-            <span className="text-success">matches your armband</span>
-          )}
-        </>
       ) : (
-        "No read yet"
+        "The top five, ranked, with the reasoning for each"
       ),
     },
     {
@@ -318,11 +287,21 @@ export function LoadTeamPanel({
   // otherwise fall back to the team connected via the sidebar. Prefill the
   // field and load it automatically - no need to re-type the ID.
   const activeId = initialTeamId ?? connectedId ?? null;
+
+  // The field is user-editable, so it is state seeded from activeId rather than
+  // derived from it - and it is re-seeded during render when activeId changes,
+  // not in an effect. An effect would paint the previous team's id for a frame
+  // first. Only the fetch stays in an effect, which is what an effect is for.
+  const [seededFrom, setSeededFrom] = useState(activeId);
+  if (seededFrom !== activeId) {
+    setSeededFrom(activeId);
+    if (activeId != null) setTeamId(String(activeId));
+  }
+
   useEffect(() => {
-    if (activeId != null) {
-      setTeamId(String(activeId));
-      load(String(activeId), freeTransfers);
-    }
+    if (activeId != null) load(String(activeId), freeTransfers);
+    // freeTransfers is deliberately not a dependency: changing it should not
+    // silently re-run the whole load, the form's submit does that.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId]);
 

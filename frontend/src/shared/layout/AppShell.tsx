@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { Logo } from "@/components/brand/Logo";
 import { NavIcon, type IconName } from "./icons";
@@ -119,10 +119,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [moreOpen, setMoreOpen] = useState(false);
   const current = NAV.find((n) => isActive(pathname, n.href));
 
-  // Close the "More" sheet whenever the route changes.
-  useEffect(() => {
+  // Close the "More" sheet whenever the route changes. Adjusted during render
+  // against the previous pathname rather than in an effect: an effect would
+  // paint the new route once with the sheet still open, and React's own
+  // guidance is to reset derived state this way. Setting state during render
+  // of the same component is the supported form - React re-runs this render
+  // immediately without committing the first pass.
+  const [sheetRoute, setSheetRoute] = useState(pathname);
+  if (sheetRoute !== pathname) {
+    setSheetRoute(pathname);
     setMoreOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <div className="flex min-h-screen">

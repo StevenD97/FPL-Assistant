@@ -15,13 +15,13 @@ import { pickTrendSeries, TREND_SERIES_CAP } from "@/shared/lib/leagueTrend";
 import {
   formatRank,
   loadLastViewedLeagueId,
-  loadTrackedLeagueIds,
-  loadTrackedLeagueNames,
   parseLeagueId,
   parseTeamId,
   storeLastViewedLeagueId,
   storeTrackedLeagueIds,
   storeTrackedLeagueName,
+  useTrackedLeagueIds,
+  useTrackedLeagueNames,
 } from "@/shared/lib/team";
 import { apiGet } from "@/shared/lib/api";
 import { useSeasonStatus } from "@/shared/lib/useSeasonStatus";
@@ -52,8 +52,11 @@ export default function LeaguesPage() {
   const [standingsLoading, setStandingsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [trackedIds, setTrackedIds] = useState<number[]>([]);
-  const [trackedNames, setTrackedNames] = useState<Record<string, string>>({});
+  // Read from the store rather than mirrored into local state: the mount
+  // effect that used to seed these rendered once with an empty list and then
+  // again with the real one, and two components could disagree meanwhile.
+  const trackedIds = useTrackedLeagueIds();
+  const trackedNames = useTrackedLeagueNames();
   const [showAllTrend, setShowAllTrend] = useState(false);
   // The manual team/league lookup, collapsed by default now that a connected
   // team loads its own leagues - see the disclosure below.
@@ -62,11 +65,6 @@ export default function LeaguesPage() {
   // Whose perspective "your rank" is computed from: the last team id searched,
   // falling back to whatever team is connected app-wide (sidebar).
   const rankTeamId = parseTeamId(rankTeamInput) ?? connectedTeamId ?? null;
-
-  useEffect(() => {
-    setTrackedIds(loadTrackedLeagueIds());
-    setTrackedNames(loadTrackedLeagueNames());
-  }, []);
 
   // Connecting a team is the only identity this page needs, so a connected team
   // loads its own leagues rather than asking for the ID it already has. This is
@@ -154,15 +152,10 @@ export default function LeaguesPage() {
   // Pin a league to this device. Names are cached separately from the id list,
   // so a league tracked before we ever saw its standings still gets a label.
   function trackLeague(leagueId: number, name?: string) {
-    setTrackedIds((prev) => {
-      const next = prev.includes(leagueId) ? prev : [...prev, leagueId];
-      storeTrackedLeagueIds(next);
-      return next;
-    });
-    if (name) {
-      storeTrackedLeagueName(leagueId, name);
-      setTrackedNames((prev) => ({ ...prev, [String(leagueId)]: name }));
+    if (!trackedIds.includes(leagueId)) {
+      storeTrackedLeagueIds([...trackedIds, leagueId]);
     }
+    if (name) storeTrackedLeagueName(leagueId, name);
   }
 
   function trackAndLoad(leagueId: number) {
@@ -219,7 +212,6 @@ export default function LeaguesPage() {
       // label it properly the moment it is.
       if (res.league_name) {
         storeTrackedLeagueName(leagueId, res.league_name);
-        setTrackedNames((prev) => ({ ...prev, [String(leagueId)]: res.league_name }));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -230,7 +222,6 @@ export default function LeaguesPage() {
 
   function untrackLeague(id: number) {
     const next = trackedIds.filter((x) => x !== id);
-    setTrackedIds(next);
     storeTrackedLeagueIds(next);
     // Only close the standings if untracking drops the league off the list
     // entirely - one of the team's own leagues stays selectable either way.
