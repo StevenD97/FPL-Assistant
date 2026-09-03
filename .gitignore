@@ -18,6 +18,12 @@ data/*
 !data/gw_history_2025_26.csv
 !data/bootstrap_static.json
 !data/fixtures.json
+# The public track record. Tracked for the same reason as the snapshots above:
+# /api/accuracy has a golden, and a golden computed from an untracked file is
+# not reproducible - CI would either regrade over the network or diff against
+# grades it has no way to produce. The refresh workflow rebuilds and commits
+# this alongside the snapshots.
+!data/accuracy.json
 __pycache__/
 *.pyc
 

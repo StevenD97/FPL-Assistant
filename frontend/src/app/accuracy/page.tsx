@@ -1,7 +1,7 @@
 import { Alert } from "@/shared/ui/Alert";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { apiGet } from "@/shared/lib/api";
-import type { AccuracyResponse, AccuracyResponseEvent } from "@/shared/types/api";
+import type { AccuracyResponse, AccuracyResponseEvent, ReturnCategory } from "@/shared/types/api";
 
 // Grades change whenever a gameweek finishes, and the backend caches them
 // anyway, so this is per-request. force-dynamic also keeps `next build` from
@@ -74,6 +74,8 @@ export default async function AccuracyPage() {
             flatters any model and tells a manager nothing.
           </p>
 
+          {summary.categories.length > 0 && <CategoryTable rows={summary.categories} />}
+
           <div className="flex flex-col gap-3">
             {events.map((e) => (
               <GameweekCard key={e.event} e={e} />
@@ -82,6 +84,67 @@ export default async function AccuracyPage() {
         </>
       )}
     </PageContainer>
+  );
+}
+
+// What each category means in plain words, and why a reader should care about
+// it separately. A single pooled error figure hides the only distinction that
+// matters: knowing who will blank is easy and nearly worthless, knowing who
+// will haul is hard and decides gameweeks.
+const CATEGORY_COPY: Record<string, { label: string; meaning: string }> = {
+  Blanks: { label: "Blanks", meaning: "played, returned 2 or fewer" },
+  Tickers: { label: "Tickers", meaning: "3 or 4 points" },
+  Haulers: { label: "Haulers", meaning: "5 or more - the weeks that decide things" },
+  All: { label: "Everyone", meaning: "every player who appeared" },
+};
+
+function CategoryTable({ rows }: { rows: ReturnCategory[] }) {
+  return (
+    <section className="rounded-lg border border-border bg-white p-4 shadow-sm">
+      <h2 className="text-md font-semibold text-text-primary">Against the obvious alternative</h2>
+      <p className="mt-1 max-w-3xl text-sm leading-relaxed text-text-secondary">
+        A projection is only worth having if it beats what you could do without one. The bar
+        here is the simplest thing that works: assume a player scores what they averaged over
+        their last five matches. Lower is better, and the numbers are average error in points.
+      </p>
+
+      {/* Deliberately not a table. The verdict is the column a reader came for,
+          and at 390px a table wide enough to hold five columns puts it behind a
+          horizontal scroll - which is the same as not showing it. */}
+      <ul className="mt-3 flex flex-col">
+        {rows.map((row) => {
+          const beats = row.rmse < row.baseline_rmse;
+          const margin = Math.round(Math.abs(1 - row.rmse / row.baseline_rmse) * 100);
+          const copy = CATEGORY_COPY[row.category] ?? { label: row.category, meaning: "" };
+          return (
+            <li
+              key={row.category}
+              className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-border/60 py-2.5 last:border-0"
+            >
+              <div className="min-w-0">
+                <span className="text-sm font-semibold text-text-primary">{copy.label}</span>
+                <span className="block text-xs leading-snug text-text-muted">{copy.meaning}</span>
+              </div>
+              <div className="text-right">
+                <span className={`text-sm font-semibold ${beats ? "text-success" : "text-danger"}`}>
+                  {beats ? `${margin}% better` : `${margin}% worse`}
+                </span>
+                <span className="block font-mono text-xs leading-snug text-text-muted">
+                  {row.rmse.toFixed(2)} vs {row.baseline_rmse.toFixed(2)} · {row.n} players
+                </span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <p className="mt-3 max-w-3xl text-xs leading-relaxed text-text-muted">
+        Haulers is the hard row, and the one to watch. Predicting a player&apos;s average week
+        is a different problem from predicting their best one, and every model in this space -
+        including the published state of the art - closes far less of the gap there than it
+        does elsewhere.
+      </p>
+    </section>
   );
 }
 

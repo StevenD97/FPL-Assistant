@@ -105,6 +105,7 @@ const RESPONSES = {
  */
 const RENAME = {
   Assist: "LeaderboardEntry",
+  Category: "ReturnCategory",
   Fixture: "FixtureChip",
   Opponent: "PlannerOpponent",
   PlayerDetailGwHistory: "GwRow",

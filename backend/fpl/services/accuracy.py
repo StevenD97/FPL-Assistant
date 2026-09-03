@@ -21,7 +21,7 @@ from pathlib import Path
 from fpl.config import DATA_DIR
 from fpl.data.loaders import load_bootstrap
 from fpl.config import LIVE_BOOTSTRAP_FILE
-from fpl.domain.accuracy import finished_events, grade_event, summarise
+from fpl.domain.accuracy import baseline_history, finished_events, grade_event, summarise
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +75,10 @@ def accuracy_report(max_new=MAX_GRADED_PER_REQUEST, bootstrap=None):
     graded_now = 0
     for event in to_grade:
         try:
-            result = grade_event(event, bootstrap=bootstrap)
+            # Fetched per gameweek rather than once for the batch: the baseline
+            # window slides, so GW9 and GW10 do not read the same five weeks.
+            history = baseline_history(event, bootstrap=bootstrap)
+            result = grade_event(event, bootstrap=bootstrap, history=history)
         except Exception:
             # One unreachable gameweek shouldn't hide the rest of the record.
             log.warning("could not grade GW%s", event, exc_info=True)

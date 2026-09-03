@@ -26,8 +26,9 @@ def main():
         return 0
     print(f"Graded {summary['events_graded']} gameweek(s) -> {ACCURACY_FILE}")
     print(json.dumps(summary, indent=2))
-    if report["pending_events"]:
-        print(f"Still ungraded: {report['pending_events']}", file=sys.stderr)
+    pending = report["coverage"]["pending"]
+    if pending:
+        print(f"Still ungraded: {pending}", file=sys.stderr)
     return 0
 
 

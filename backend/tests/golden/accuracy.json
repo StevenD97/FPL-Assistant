@@ -18,6 +18,40 @@
           "predicted": 7.7,
           "rank_of_pick": 1
         },
+        "categories": [
+          {
+            "baseline_mae": 1.762,
+            "baseline_rmse": 3.081,
+            "category": "Blanks",
+            "mae": 1.087,
+            "n": 206,
+            "rmse": 1.332
+          },
+          {
+            "baseline_mae": 2.744,
+            "baseline_rmse": 3.517,
+            "category": "Tickers",
+            "mae": 1.841,
+            "n": 43,
+            "rmse": 2.155
+          },
+          {
+            "baseline_mae": 4.984,
+            "baseline_rmse": 6.149,
+            "category": "Haulers",
+            "mae": 5.608,
+            "n": 63,
+            "rmse": 6.241
+          },
+          {
+            "baseline_mae": 2.548,
+            "baseline_rmse": 3.95,
+            "category": "All",
+            "mae": 2.104,
+            "n": 312,
+            "rmse": 3.11
+          }
+        ],
         "event": 2,
         "players_graded": 312,
         "rank_correlation": 0.257,
@@ -48,6 +82,7 @@
           "predicted": 6.2,
           "rank_of_pick": 148
         },
+        "categories": [],
         "event": 1,
         "players_graded": 310,
         "rank_correlation": 0.2,
@@ -72,6 +107,40 @@
     "summary": {
       "captain_average": 12.5,
       "captain_best_possible_average": 20.0,
+      "categories": [
+        {
+          "baseline_mae": 1.762,
+          "baseline_rmse": 3.081,
+          "category": "Blanks",
+          "mae": 1.087,
+          "n": 206,
+          "rmse": 1.332
+        },
+        {
+          "baseline_mae": 2.744,
+          "baseline_rmse": 3.517,
+          "category": "Tickers",
+          "mae": 1.841,
+          "n": 43,
+          "rmse": 2.155
+        },
+        {
+          "baseline_mae": 4.984,
+          "baseline_rmse": 6.149,
+          "category": "Haulers",
+          "mae": 5.608,
+          "n": 63,
+          "rmse": 6.241
+        },
+        {
+          "baseline_mae": 2.548,
+          "baseline_rmse": 3.95,
+          "category": "All",
+          "mae": 2.104,
+          "n": 312,
+          "rmse": 3.11
+        }
+      ],
       "events_graded": 2,
       "field_average": 2.96,
       "rank_correlation": 0.229,

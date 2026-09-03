@@ -1,0 +1,99 @@
+{
+ "events": {
+  "1": {
+   "categories": [],
+   "event": 1,
+   "players_graded": 310,
+   "captain": {
+    "pick": "B.Fernandes",
+    "pick_team": "MUN",
+    "predicted": 6.2,
+    "actual": 2,
+    "best_actual": 17,
+    "best_actual_player": "De Cuyper",
+    "rank_of_pick": 148
+   },
+   "top_ten": {
+    "average_actual": 3.2,
+    "field_average": 3.06,
+    "names": [
+     "B.Fernandes",
+     "Haaland",
+     "Gibbs-White",
+     "Anderson",
+     "Thiago",
+     "Szoboszlai",
+     "Gabriel",
+     "E.Le F\u00e9e",
+     "Gro\u00df",
+     "Kelleher"
+    ]
+   },
+   "rank_correlation": 0.2
+  },
+  "2": {
+   "categories": [
+    {
+     "category": "Blanks",
+     "n": 206,
+     "rmse": 1.332,
+     "mae": 1.087,
+     "baseline_rmse": 3.081,
+     "baseline_mae": 1.762
+    },
+    {
+     "category": "Tickers",
+     "n": 43,
+     "rmse": 2.155,
+     "mae": 1.841,
+     "baseline_rmse": 3.517,
+     "baseline_mae": 2.744
+    },
+    {
+     "category": "Haulers",
+     "n": 63,
+     "rmse": 6.241,
+     "mae": 5.608,
+     "baseline_rmse": 6.149,
+     "baseline_mae": 4.984
+    },
+    {
+     "category": "All",
+     "n": 312,
+     "rmse": 3.11,
+     "mae": 2.104,
+     "baseline_rmse": 3.95,
+     "baseline_mae": 2.548
+    }
+   ],
+   "event": 2,
+   "players_graded": 312,
+   "captain": {
+    "pick": "B.Fernandes",
+    "pick_team": "MUN",
+    "predicted": 7.7,
+    "actual": 23,
+    "best_actual": 23,
+    "best_actual_player": "B.Fernandes",
+    "rank_of_pick": 1
+   },
+   "top_ten": {
+    "average_actual": 8.3,
+    "field_average": 2.86,
+    "names": [
+     "B.Fernandes",
+     "Szoboszlai",
+     "Haaland",
+     "Anderson",
+     "Gibbs-White",
+     "Truffert",
+     "Calvert-Lewin",
+     "Mbeumo",
+     "Virgil",
+     "E.Le F\u00e9e"
+    ]
+   },
+   "rank_correlation": 0.257
+  }
+ }
+}

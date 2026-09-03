@@ -23,12 +23,22 @@ the ones that flatter the model:
     these are the same number.
   - Rank correlation across the whole list (Spearman), which says whether the
     ordering holds up beyond the top of it.
+  - Error by return category, against the bar anyone could clear without a
+    model at all: predict that a player scores what they averaged over their
+    last five matches. Splitting by what actually happened is the only way to
+    see whether a model knows who will haul or merely knows who will blank,
+    and the two are worth very different amounts to a manager. See
+    fpl.domain.baseline for where the categories and the bar come from.
 
 Deliberately not here: any measure computed over players who did not play.
 Six hundred zeroes correlate beautifully with six hundred predicted-near-zero
 and would make any model look excellent. Everything below is computed over
-players who actually appeared.
+players who actually appeared - which is also why the categories reported here
+are Blanks, Tickers and Haulers but never Zeros: a Zero is by definition
+someone who did not play, so grading one here would be grading the thing this
+page refuses to take credit for.
 """
+import logging
 from datetime import datetime
 
 import pandas as pd
@@ -41,8 +51,11 @@ from fpl.config import (
 )
 from fpl.data.ingest import client
 from fpl.data.loaders import load_bootstrap
+from fpl.domain.baseline import LAST_N_MATCHES, categorise, last_n_baseline, score_by_category
 from fpl.model.predict import predict_multi_gw_points
 from fpl.model.rules import CROSS_SEASON_HALF_LIFE_DAYS
+
+log = logging.getLogger(__name__)
 
 TOP_N = 10
 # A prediction is only honest if it could have been made before kick-off, so
@@ -91,10 +104,46 @@ def actual_points(event, live=None):
     }
 
 
-def grade_event(event, live=None, bootstrap=None):
+def baseline_history(event, bootstrap=None, lookback=LAST_N_MATCHES):
+    """
+    The gameweeks just before `event`, as a frame the last-five baseline can
+    read: one row per player per gameweek, with what they actually scored.
+
+    Only `lookback` gameweeks are fetched, because that is all the baseline
+    looks at - it takes the last five appearances and nothing earlier. Pulling
+    the whole season to compute a five-week average would cost thirty-odd API
+    calls to reach the same number.
+
+    A gameweek that cannot be fetched is skipped rather than fatal. The
+    baseline is a comparison, not a projection: a slightly shorter window makes
+    it a marginally different bar, while failing the whole grading because one
+    historical gameweek 404'd would lose the model's own record too.
+    """
+    bootstrap = bootstrap or load_bootstrap(LIVE_BOOTSTRAP_FILE)
+    previous = [e for e in finished_events(bootstrap) if e < event][-lookback:]
+    rows = []
+    for earlier in previous:
+        try:
+            results = actual_points(earlier)
+        except Exception:
+            log.warning("could not read GW%s for the baseline", earlier, exc_info=True)
+            continue
+        rows.extend(
+            {"element": element, "GW": earlier, "total_points": points}
+            for element, (points, _minutes) in results.items()
+        )
+    return pd.DataFrame(rows, columns=["element", "GW", "total_points"])
+
+
+def grade_event(event, live=None, bootstrap=None, history=None):
     """
     One finished gameweek, graded. Returns None if nobody played in it, which
     is what an unplayed or abandoned gameweek looks like.
+
+    `history` is the prior-gameweeks frame the last-five baseline is computed
+    from; it is a parameter rather than a fetch so a caller grading several
+    gameweeks pays for it once, and so the tests can hand in a fixture instead
+    of the internet.
     """
     bootstrap = bootstrap or load_bootstrap(LIVE_BOOTSTRAP_FILE)
     reference_date = _reference_date(bootstrap, event)
@@ -127,6 +176,7 @@ def grade_event(event, live=None, bootstrap=None):
     pick_rank = int(actual_order.index[actual_order["id"] == pick["id"]][0]) + 1
 
     return {
+        "categories": _grade_categories(played, event, history, bootstrap),
         "event": event,
         "players_graded": int(len(played)),
         "captain": {
@@ -149,6 +199,36 @@ def grade_event(event, live=None, bootstrap=None):
     }
 
 
+def _grade_categories(played, event, history, bootstrap):
+    """
+    Error within each return category, model against baseline.
+
+    Returns an empty list when there is no prior history to build a baseline
+    from - the opening gameweeks of a season - rather than comparing the model
+    against a column of zeroes and declaring a landslide.
+    """
+    if history is None:
+        history = baseline_history(event, bootstrap)
+    if history.empty:
+        return []
+    baseline = last_n_baseline(history, event)
+    if not baseline:
+        return []
+
+    scored = played.copy()
+    scored["baseline_points"] = scored["id"].map(baseline).fillna(0.0)
+    scored["category"] = [
+        categorise(points, minutes)
+        for points, minutes in zip(scored["actual_points"], scored["minutes"])
+    ]
+    model = {row["category"]: row for row in score_by_category(scored)}
+    bar = {row["category"]: row for row in score_by_category(scored, predicted="baseline_points")}
+    return [
+        {**model[name], "baseline_rmse": bar[name]["rmse"], "baseline_mae": bar[name]["mae"]}
+        for name in model
+    ]
+
+
 def summarise(events):
     """The headline a reader wants first: how it has gone across every graded week."""
     if not events:
@@ -162,7 +242,42 @@ def summarise(events):
         "top_ten_average": round(sum(e["top_ten"]["average_actual"] for e in events) / len(events), 2),
         "field_average": round(sum(e["top_ten"]["field_average"] for e in events) / len(events), 2),
         "rank_correlation": _mean_or_none([e["rank_correlation"] for e in events]),
+        "categories": _pool_categories(events),
     }
+
+
+def _pool_categories(events):
+    """
+    Category errors across every graded gameweek, weighted by how many players
+    each week contributed.
+
+    Weighting matters: a gameweek with eleven Haulers and one with sixty should
+    not count equally toward the Haulers figure, and averaging the per-week
+    RMSEs would let a quiet week drag the number around. RMSE pools through the
+    mean square, not the mean, so the squares are recombined before the root.
+    """
+    pooled = {}
+    for event in events:
+        for row in event.get("categories") or []:
+            bucket = pooled.setdefault(row["category"], {"n": 0, "sq": 0.0, "abs": 0.0,
+                                                         "baseline_sq": 0.0, "baseline_abs": 0.0})
+            bucket["n"] += row["n"]
+            bucket["sq"] += row["rmse"] ** 2 * row["n"]
+            bucket["abs"] += row["mae"] * row["n"]
+            bucket["baseline_sq"] += row["baseline_rmse"] ** 2 * row["n"]
+            bucket["baseline_abs"] += row["baseline_mae"] * row["n"]
+    order = ("Blanks", "Tickers", "Haulers", "All")
+    return [
+        {
+            "category": name,
+            "n": pooled[name]["n"],
+            "rmse": round((pooled[name]["sq"] / pooled[name]["n"]) ** 0.5, 3),
+            "mae": round(pooled[name]["abs"] / pooled[name]["n"], 3),
+            "baseline_rmse": round((pooled[name]["baseline_sq"] / pooled[name]["n"]) ** 0.5, 3),
+            "baseline_mae": round(pooled[name]["baseline_abs"] / pooled[name]["n"], 3),
+        }
+        for name in order if pooled.get(name, {}).get("n")
+    ]
 
 
 def _mean_or_none(values):

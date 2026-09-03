@@ -33,6 +33,7 @@ export type AccuracyResponseCoverage = {
 
 export type AccuracyResponseEvent = {
   captain: AccuracyResponseEventCaptain;
+  categories: ReturnCategory[];
   event: number;
   players_graded: number;
   rank_correlation: number;
@@ -58,6 +59,7 @@ export type AccuracyResponseEventTopTen = {
 export type AccuracyResponseSummary = {
   captain_average: number;
   captain_best_possible_average: number;
+  categories: ReturnCategory[];
   events_graded: number;
   field_average: number;
   rank_correlation: number;
@@ -235,6 +237,15 @@ export type Prediction = {
   save_points: number;
   team_short: string;
   web_name: string;
+};
+
+export type ReturnCategory = {
+  baseline_mae: number;
+  baseline_rmse: number;
+  category: string;
+  mae: number;
+  n: number;
+  rmse: number;
 };
 
 export type SeasonStats = {
@@ -533,11 +544,13 @@ export type PlayerPredictedPoints = {
   assist_points: number;
   bonus_points: number;
   card_points: number;
+  ceiling: number;
   clean_sheet_points: number;
   clean_sheet_prob: number;
   defensive_contribution_points: number;
   goal_points: number;
   goals_conceded_points: number;
+  haul_probability: number;
   id: number;
   next_opponent: string;
   own_goal_points: number;

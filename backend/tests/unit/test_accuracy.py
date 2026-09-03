@@ -6,7 +6,7 @@ Spearman substitute matches the definition.
 """
 import pandas as pd
 
-from fpl.domain.accuracy import _spearman, grade_event, summarise
+from fpl.domain.accuracy import _pool_categories, _spearman, grade_event, summarise
 
 
 def _live(points_by_id, minutes=90):
@@ -73,3 +73,78 @@ def test_players_who_did_not_play_are_excluded():
 
 def test_summarise_is_none_with_nothing_graded():
     assert summarise([]) is None
+
+
+def test_categories_are_graded_against_the_baseline_and_never_include_zeros():
+    """
+    The page grades only players who appeared, so a Zero - which is defined by
+    not appearing - can never show up here. If one ever did, the record would
+    be taking credit for correctly predicting that a dropped player scored
+    nothing, which is exactly the flattery the page exists to avoid.
+    """
+    from fpl.data.loaders import load_bootstrap
+
+    bootstrap = load_bootstrap()
+    live_ids = [p["id"] for p in bootstrap["elements"][:60]]
+    # A spread across the three categories, plus some who never played.
+    points = {}
+    for i, pid in enumerate(live_ids):
+        points[pid] = [0, 3, 9][i % 3]
+    payload = {
+        "elements": [
+            {"id": pid, "stats": {"total_points": pts, "minutes": 0 if i >= 45 else 90}}
+            for i, (pid, pts) in enumerate(points.items())
+        ]
+    }
+    history = pd.DataFrame(
+        [{"element": pid, "GW": 0, "total_points": 4} for pid in live_ids],
+        columns=["element", "GW", "total_points"],
+    )
+    graded = grade_event(1, live=payload, bootstrap=bootstrap, history=history)
+
+    categories = {row["category"]: row for row in graded["categories"]}
+    assert "Zeros" not in categories
+    assert set(categories) <= {"Blanks", "Tickers", "Haulers", "All"}
+    # Every row carries the bar it is being judged against, not just the score.
+    assert all("baseline_rmse" in row for row in graded["categories"])
+    assert categories["All"]["n"] == graded["players_graded"]
+
+
+def test_categories_are_empty_rather_than_compared_against_nothing():
+    """
+    In the opening gameweek there is no history to average, and the honest
+    answer is to report no comparison - not to score the model against a
+    column of zeroes and call it a landslide.
+    """
+    from fpl.data.loaders import load_bootstrap
+
+    bootstrap = load_bootstrap()
+    live_ids = [p["id"] for p in bootstrap["elements"][:20]]
+    payload = {"elements": [{"id": pid, "stats": {"total_points": 5, "minutes": 90}}
+                            for pid in live_ids]}
+    empty = pd.DataFrame(columns=["element", "GW", "total_points"])
+    graded = grade_event(1, live=payload, bootstrap=bootstrap, history=empty)
+    assert graded["categories"] == []
+
+
+def test_pooling_weights_by_players_not_by_gameweeks():
+    """
+    A week with sixty Haulers and a week with two should not count equally.
+    Pooling through the mean square reproduces the figure you would get from
+    scoring both weeks' players together in one pile.
+    """
+    events = [
+        {"categories": [{"category": "Haulers", "n": 1, "rmse": 4.0, "mae": 4.0,
+                         "baseline_rmse": 5.0, "baseline_mae": 5.0}]},
+        {"categories": [{"category": "Haulers", "n": 3, "rmse": 2.0, "mae": 2.0,
+                         "baseline_rmse": 1.0, "baseline_mae": 1.0}]},
+    ]
+    pooled = {row["category"]: row for row in _pool_categories(events)}["Haulers"]
+    assert pooled["n"] == 4
+    # sqrt((1*16 + 3*4) / 4) = sqrt(7)
+    assert pooled["rmse"] == round(7 ** 0.5, 3)
+    assert pooled["mae"] == 2.5
+
+
+def test_pooling_skips_gameweeks_that_had_no_baseline():
+    assert _pool_categories([{"categories": []}, {}]) == []
