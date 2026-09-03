@@ -45,6 +45,14 @@ ARCHIVED_FIXTURES_FILE = "fixtures_2025_26_final.json"
 LIVE_BOOTSTRAP_FILE = "bootstrap_static.json"
 LIVE_FIXTURES_FILE = "fixtures.json"
 
+# The two seasons by name, for the loaders that take one (load_gw_history) and
+# for anything that has to say which season a number belongs to. ARCHIVE_SEASON
+# is what the model trains on; CURRENT_SEASON is what a published statistic is
+# about. Mixing those up is how a page ends up captioning last season's totals
+# as this season's form - see fpl.services.players.season_stats_by_live_id.
+ARCHIVE_SEASON = "2025_26"
+CURRENT_SEASON = "2026_27"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
@@ -81,8 +89,8 @@ class Settings(BaseSettings):
     # Seasons: the model trains on the archive; the live roster/predictions
     # target the current season. Stored as first-class rows so the same DB
     # holds both (see README's live/archived split).
-    archive_season: str = "2025_26"
-    current_season: str = "2026_27"
+    archive_season: str = ARCHIVE_SEASON
+    current_season: str = CURRENT_SEASON
 
     # If the DB is empty or unreachable, fall back to the on-disk JSON/CSV
     # snapshots so local dev, tests, and cold deploys still work.

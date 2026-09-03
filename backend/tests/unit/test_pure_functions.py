@@ -9,6 +9,11 @@ import math
 import pandas as pd
 import pytest
 
+from fpl.domain.transfers import (
+    MAX_FREE_TRANSFERS,
+    describe_free_transfers,
+    free_transfers_for_event,
+)
 from fpl.domain.fixtures import build_fixtures_by_team_event, compute_congestion
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
 from fpl.domain.scoring import (
@@ -173,3 +178,59 @@ def test_compute_congestion_counts_extra_games_in_window():
     assert congestion[1] == 1  # one extra game beyond the first
     assert congestion[2] == 0
     assert congestion[4] == 0
+
+
+# --- domain.transfers -------------------------------------------------------
+
+def _history(made_by_event, chips=()):
+    return {
+        "current": [{"event": e, "event_transfers": n} for e, n in sorted(made_by_event.items())],
+        "chips": [{"name": name, "event": e} for name, e in chips],
+    }
+
+
+def test_free_transfers_start_at_one_and_do_not_roll_out_of_gw1():
+    # GW1 is the free pre-season build and banks nothing: a manager who made no
+    # transfers in GW1 still has exactly one for GW2, not two. Established
+    # against real managers' GW2 hits - see the module docstring.
+    h = _history({1: 0, 2: 0})
+    assert free_transfers_for_event(h, 1) == 1
+    assert free_transfers_for_event(h, 2) == 1
+    assert free_transfers_for_event(h, 3) == 2
+    assert free_transfers_for_event(h, 4) == 3
+
+
+def test_free_transfers_spend_and_reaccrue():
+    h = _history({2: 1, 3: 0, 4: 2})
+    assert free_transfers_for_event(h, 3) == 1   # spent the one, earned one back
+    assert free_transfers_for_event(h, 4) == 2   # rolled
+    assert free_transfers_for_event(h, 5) == 1   # spent both, earned one back
+
+
+def test_free_transfers_bank_is_capped():
+    h = _history({e: 0 for e in range(2, 20)})
+    assert free_transfers_for_event(h, 19) == MAX_FREE_TRANSFERS
+
+
+def test_a_hit_does_not_push_the_bank_negative():
+    # Four transfers on one free one is a -12 hit, not a -3 balance carried
+    # into next week.
+    h = _history({2: 4})
+    assert free_transfers_for_event(h, 3) == 1
+
+
+def test_wildcard_week_spends_nothing_from_the_bank():
+    plain = _history({2: 0, 3: 8})
+    wild = _history({2: 0, 3: 8}, chips=[("wildcard", 3)])
+    assert free_transfers_for_event(plain, 4) == 1   # eight moves emptied it
+    assert free_transfers_for_event(wild, 4) == 3    # unlimited week, bank untouched
+
+
+def test_bench_boost_is_not_a_transfer_chip():
+    h = _history({2: 1}, chips=[("bboost", 2)])
+    assert free_transfers_for_event(h, 3) == 1
+
+
+def test_describe_free_transfers_pluralises():
+    assert describe_free_transfers(1) == "1 free transfer"
+    assert describe_free_transfers(3) == "3 free transfers"

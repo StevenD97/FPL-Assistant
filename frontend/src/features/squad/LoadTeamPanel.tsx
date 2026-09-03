@@ -92,7 +92,12 @@ export function LoadTeamPanel({
   // load - which left the ID field blank and anything keyed on it (the
   // sequence solver) with nothing to work from.
   const [teamId, setTeamId] = useState(initialTeamId != null ? String(initialTeamId) : "");
-  const [freeTransfers, setFreeTransfers] = useState(1);
+  // null means "we haven't been told, so let the backend derive it from this
+  // manager's own history". It used to be a hard 1, which is wrong for most
+  // managers most weeks and wrong in the expensive direction - someone sitting
+  // on three banked transfers was shown one move and told the rest cost four
+  // points each. A number here is an explicit override by the reader.
+  const [freeTransfers, setFreeTransfers] = useState<number | null>(null);
   const [read, setRead] = useState<SquadRead | null>(null);
   // Formation edits are local state inside SquadPitch (it's the only place
   // that needs them), so its net effect on the predicted score - and whether
@@ -136,6 +141,11 @@ export function LoadTeamPanel({
   // from has moved.
   const { data, loading, error } = squadRes;
   const { data: optimizer, loading: optimizerLoading, error: optimizerError } = optimizerRes;
+
+  // What to show and what to hand the children. The reader's own number wins;
+  // otherwise it is whatever the backend derived on the last load, and only if
+  // neither exists does it fall back to the old assumption of one.
+  const effectiveFreeTransfers = freeTransfers ?? optimizer?.free_transfers ?? 1;
   const { data: planner } = plannerRes;
   const { data: chips, loading: chipsLoading, error: chipsError } = chipsRes;
 
@@ -290,8 +300,13 @@ export function LoadTeamPanel({
       aside: true,
       summary: (
         <>
-          <span className="font-mono font-medium text-text-primary">{freeTransfers}</span> free
-          transfer{freeTransfers === 1 ? "" : "s"} assumed
+          <span className="font-mono font-medium text-text-primary">{effectiveFreeTransfers}</span>{" "}
+          free transfer{effectiveFreeTransfers === 1 ? "" : "s"}{" "}
+          {freeTransfers != null
+            ? "set by you"
+            : optimizer?.free_transfers_source === "derived"
+              ? "from your history"
+              : "assumed"}
         </>
       ),
     },
@@ -350,8 +365,10 @@ export function LoadTeamPanel({
               type="number"
               min={0}
               max={5}
-              value={freeTransfers}
-              onChange={(e) => setFreeTransfers(Number(e.target.value))}
+              value={freeTransfers ?? effectiveFreeTransfers}
+              onChange={(e) =>
+                setFreeTransfers(e.target.value === "" ? null : Number(e.target.value))
+              }
               wrapperClassName="w-28"
             />
             <Button type="submit" disabled={loading || !teamId}>
@@ -479,7 +496,7 @@ export function LoadTeamPanel({
             onClose={() => setRead(null)}
           >
             {read === "plan" && teamId && (
-              <TransferPlan teamId={Number(teamId)} gwCount={PLAN_WINDOW} freeTransfers={freeTransfers} />
+              <TransferPlan teamId={Number(teamId)} gwCount={PLAN_WINDOW} freeTransfers={effectiveFreeTransfers} />
             )}
 
             {read === "transfers" && (
@@ -488,7 +505,7 @@ export function LoadTeamPanel({
                 loading={optimizerLoading}
                 error={optimizerError}
                 teamId={teamId}
-                freeTransfers={freeTransfers}
+                freeTransfers={effectiveFreeTransfers}
               />
             )}
 
@@ -594,8 +611,10 @@ export function LoadTeamPanel({
                     type="number"
                     min={0}
                     max={5}
-                    value={freeTransfers}
-                    onChange={(e) => setFreeTransfers(Number(e.target.value))}
+                    value={freeTransfers ?? effectiveFreeTransfers}
+                    onChange={(e) =>
+                      setFreeTransfers(e.target.value === "" ? null : Number(e.target.value))
+                    }
                     wrapperClassName="w-28"
                   />
                   <Button type="submit" disabled={loading || !teamId}>

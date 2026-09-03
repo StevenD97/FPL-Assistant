@@ -8,6 +8,7 @@ resolution) and returns plain dict/list JSON structures.
 from fpl.config import (
     ARCHIVED_BOOTSTRAP_FILE,
     ARCHIVED_FIXTURES_FILE,
+    CURRENT_SEASON,
     LIVE_BOOTSTRAP_FILE,
     LIVE_FIXTURES_FILE,
 )
@@ -29,11 +30,8 @@ from fpl.domain.rationale import comparison_reason
 from fpl.domain.scoring import (
     rank_desc,
     compute_player_scores,
-    map_archived_ids_to_live,
-    nullable_int_column,
     top_differentials,
 )
-from fpl.model.ids import map_player_stats_to_roster, resolve_live_to_training_id
 from fpl.model.predict import predict_multi_gw_breakdown, predict_multi_gw_points, predict_player_points
 from fpl.model.rules import CROSS_SEASON_HALF_LIFE_DAYS
 from fpl.optimize.squad import build_player_pool
@@ -82,11 +80,26 @@ PLANNER_DIP_RATIO = 0.6  # flag a gameweek at <60% of this player's own average 
 
 
 def season_stats_by_live_id():
-    """training-season (archived) totals, remapped to live element ids by code."""
-    archived = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    """
+    THIS season's totals, straight off the live roster.
+
+    These are published as a player's statistics, so they have to be about the
+    season the reader is playing. They used to be read from the archive and
+    remapped by code, which was right for exactly as long as the live bootstrap
+    was still full of pre-season zeros; the moment a ball was kicked it meant
+    every page captioned last season's numbers as if they were this season's -
+    B.Fernandes reading 235 points and 3,065 minutes in September.
+
+    No remapping needed now: the ids are already the live ones.
+
+    Nothing here feeds the model. What the model trains on is a separate
+    question with a separate answer (the archive, blended with this season as
+    it accrues - see fpl.model.strengths.blended_team_strengths), and the two
+    must not be conflated: a projection needs a full season behind it, a
+    published statistic needs to be about the season it claims.
+    """
     live = load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    stats_by_training_id = {p["id"]: {f: p.get(f) for f in SEASON_STAT_FIELDS} for p in archived["elements"]}
-    return map_player_stats_to_roster(stats_by_training_id, archived["elements"], live["elements"])
+    return {p["id"]: {f: p.get(f) for f in SEASON_STAT_FIELDS} for p in live["elements"]}
 
 
 def player_scores(ref_date, next_event, max_ownership=None, limit=50):
@@ -249,17 +262,13 @@ def player_detail(player_id, ref_date, next_event, gw_count=5):
     teams_by_id = {t["id"]: t for t in live["teams"]}
     positions_by_id = {p["id"]: p["singular_name_short"] for p in live["element_types"]}
 
-    archived = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
-    training_id = resolve_live_to_training_id(player_id, live["elements"], archived["elements"])
-
-    season_stats = None
-    gw_history = []
-    if training_id is not None:
-        archived_player = next(p for p in archived["elements"] if p["id"] == training_id)
-        season_stats = {f: archived_player.get(f) for f in SEASON_STAT_FIELDS}
-        history = load_gw_history("2025_26")
-        rows = history[history["element"] == training_id].sort_values("GW")
-        gw_history = rows[["GW", "total_points", "minutes", "goals_scored", "assists", "bonus"]].to_dict(orient="records")
+    # This season's totals and this season's gameweek-by-gameweek record - both
+    # from the live roster, both about the season the reader is playing. See
+    # season_stats_by_live_id for why these must not come from the archive.
+    season_stats = {f: live_player.get(f) for f in SEASON_STAT_FIELDS}
+    history = load_gw_history(CURRENT_SEASON)
+    rows = history[history["element"] == player_id].sort_values("GW")
+    gw_history = rows[["GW", "total_points", "minutes", "goals_scored", "assists", "bonus"]].to_dict(orient="records")
 
     breakdown = predict_multi_gw_breakdown(
         ref_date, next_events,

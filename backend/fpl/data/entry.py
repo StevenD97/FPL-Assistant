@@ -18,3 +18,8 @@ def fetch_entry_info(team_id):
 def fetch_entry_picks(team_id, event):
     """Live lookup of a manager's 15 picks for a specific (locked) gameweek."""
     return client.get_entry_picks(team_id, event)
+
+
+def fetch_entry_history(team_id):
+    """Live lookup of a manager's gameweek-by-gameweek history and played chips."""
+    return client.get_entry_history(team_id)

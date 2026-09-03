@@ -13,7 +13,9 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
+from fpl.api.caching import CacheControlMiddleware
 from fpl.api.routers import fixtures, health, leagues, optimizer, players, squad, teams
 from fpl.api.warmup import start_warmup
 from fpl.data.loaders import ensure_data_fetched
@@ -63,6 +65,18 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Cache-Control first (added first = innermost), so the header is on the
+    # response before anything downstream looks at it. See fpl.api.caching for
+    # the policy table and why an unlisted route is no-store.
+    app.add_middleware(CacheControlMiddleware)
+
+    # Compress on the way out. The edge already brotlis what it forwards to a
+    # browser, but the origin was shipping /api/players as 861 kB of
+    # uncompressed JSON on every single miss; this is the same bytes at about a
+    # sixteenth the size, and it is what a reader gets directly whenever the
+    # CDN is not in the path at all.
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
 
     for module in _ROUTERS:
         app.include_router(module.router)

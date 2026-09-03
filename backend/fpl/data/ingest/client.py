@@ -56,3 +56,15 @@ def get_entry(team_id: int) -> dict:
 
 def get_entry_picks(team_id: int, event: int) -> dict:
     return _get(f"/entry/{team_id}/event/{event}/picks/")
+
+
+def get_entry_history(team_id: int) -> dict:
+    """
+    A manager's season so far: per-gameweek points, transfers made and hits
+    paid, plus the chips they have played and when.
+
+    This is the only unauthenticated source for how many free transfers someone
+    actually has - FPL publishes the balance itself only on the logged-in
+    my-team endpoint. See fpl.domain.transfers.free_transfers_for_event.
+    """
+    return _get(f"/entry/{team_id}/history/")

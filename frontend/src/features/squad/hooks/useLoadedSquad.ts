@@ -39,11 +39,17 @@ export function useLoadedSquad() {
   // whatever the form held at submit time, matching the previous behaviour:
   // editing the field alone doesn't re-run anything.
   const load = useCallback(
-    async (id: string, freeTransfers: number) => {
+    async (id: string, freeTransfers: number | null) => {
       if (!id) return;
       const loaded = await runSquad(() => getSquad(id));
       if (!loaded) return;
-      runOptimizer(() => optimizeTransfers(id, { free_transfers: freeTransfers }));
+      // null means "you work it out": the backend derives the real count from
+      // the manager's own transfer history rather than assuming one. Sending
+      // the param at all is an override, so it is omitted unless the reader
+      // actually set a number.
+      runOptimizer(() =>
+        optimizeTransfers(id, freeTransfers == null ? {} : { free_transfers: freeTransfers }),
+      );
       runPlanner(() => getPlanner(id));
       runChips(() => getChips(id));
     },

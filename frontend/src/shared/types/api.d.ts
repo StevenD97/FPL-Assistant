@@ -845,8 +845,10 @@ export type TeamSummary = {
 /** Response of `GET /api/squad/{team_id}/transfer-plan`. */
 export type TransferPlan = {
   events: number[];
+  free_transfers_source: string;
   gw_count: number;
   next_event: number;
+  starting_free_transfers: number;
   total_points_hit: number;
   total_predicted_points: number;
   weeks: PlanWeek[];
@@ -856,6 +858,7 @@ export type TransferPlan = {
 export type TransferResult = {
   bank: number;
   free_transfers: number;
+  free_transfers_source: string;
   gw_count: number;
   hit_verdict: string;
   next_event: number;

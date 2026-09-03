@@ -58,11 +58,16 @@ TOP_N = 5
 
 
 def _season_stats_by_live_id():
-    """training-season (archived) TEAM_STAT_FIELDS totals, remapped to live element ids by code."""
-    archived = load_bootstrap(ARCHIVED_BOOTSTRAP_FILE)
+    """
+    THIS season's TEAM_STAT_FIELDS totals, straight off the live roster.
+
+    The "actual" half of every leaderboard on the team page, so it has to be
+    about the season being played - see fpl.services.players' equivalent for
+    the archive-shaped bug this replaces. The "model" half is a forward
+    projection and is unaffected.
+    """
     live = load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    stats_by_training_id = {p["id"]: {f: p.get(f) for f in TEAM_STAT_FIELDS} for p in archived["elements"]}
-    return map_player_stats_to_roster(stats_by_training_id, archived["elements"], live["elements"])
+    return {p["id"]: {f: p.get(f) for f in TEAM_STAT_FIELDS} for p in live["elements"]}
 
 
 def _expected_minutes_by_live_id(ref_date, next_event):

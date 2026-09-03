@@ -7,9 +7,13 @@ and optimize_transfers, so they matter for the reorg — but their inputs are li
 and unstable. We make them deterministic by stubbing the two network seams with
 fixed, realistic payloads and freezing the output:
 
-  * entry / picks  -> ingest.client.get_entry / get_entry_picks (what
-    fetch_entry_info / fetch_entry_picks delegate to, imported at call time,
-    so patching the client module always intercepts).
+  * entry / picks / history -> ingest.client.get_entry / get_entry_picks /
+    get_entry_history (what fetch_entry_info / fetch_entry_picks /
+    fetch_entry_history delegate to, imported at call time, so patching the
+    client module always intercepts). History matters as much as the other two
+    now that the transfer routes derive a manager's free-transfer count from
+    it - unstubbed, entry 123 is a real manager and the golden would move with
+    their season.
   * leagues         -> requests.get (the leagues routes call it directly; the
     ingest client uses its own Session, so this patch is independent).
 
@@ -103,6 +107,21 @@ _HISTORY = {"current": [
     {"event": 2, "total_points": 118, "points": 63},
 ]}
 
+# The manager's own season, for the free-transfer count the transfer routes now
+# derive rather than assume (fpl.domain.transfers). Deliberately not all zeros:
+# nothing until GW8, so the bank fills and hits the cap of 5, then two moves in
+# GW8 and one in GW9. Going into GW10 - the event the goldens below pin - that
+# is 5 -> spend 2, +1 -> 4 -> spend 1, +1 -> 4. So the golden exercises the cap
+# and the spending, and would notice either being dropped.
+ENTRY_HISTORY = {
+    "current": [
+        {"event": e, "event_transfers": {8: 2, 9: 1}.get(e, 0), "event_transfers_cost": 0}
+        for e in range(1, 10)
+    ],
+    "chips": [],
+    "past": [],
+}
+
 
 class _FakeResp:
     def __init__(self, status_code, payload):
@@ -142,6 +161,7 @@ def _patch_all(monkeypatch):
             continue
         monkeypatch.setattr(mod, "get_entry", lambda team_id: ENTRY_INFO, raising=False)
         monkeypatch.setattr(mod, "get_entry_picks", lambda team_id, event: PICKS, raising=False)
+        monkeypatch.setattr(mod, "get_entry_history", lambda team_id: ENTRY_HISTORY, raising=False)
     # leagues seam — patch the requests library function itself (stable name).
     import requests
     monkeypatch.setattr(requests, "get", _fake_requests_get)

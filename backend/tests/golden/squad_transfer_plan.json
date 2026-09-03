@@ -4,27 +4,50 @@
       10,
       11
     ],
+    "free_transfers_source": "derived",
     "gw_count": 2,
     "next_event": 10,
+    "starting_free_transfers": 4,
     "total_points_hit": 0,
-    "total_predicted_points": 125.02,
+    "total_predicted_points": 132.48,
     "weeks": [
       {
         "captain": "Haaland",
         "event": 10,
-        "free_transfers": 1,
+        "free_transfers": 4,
         "points_hit": 0,
-        "predicted_points": 60.52,
+        "predicted_points": 65.31,
         "transfers_in": [
+          {
+            "cost": 8.0,
+            "id": 106,
+            "position": "FWD",
+            "team_short": "BRE",
+            "web_name": "Thiago"
+          },
           {
             "cost": 7.5,
             "id": 13,
             "position": "MID",
             "team_short": "ARS",
             "web_name": "Rice"
+          },
+          {
+            "cost": 6.9,
+            "id": 155,
+            "position": "MID",
+            "team_short": "CHE",
+            "web_name": "Enzo"
+          },
+          {
+            "cost": 4.5,
+            "id": 269,
+            "position": "DEF",
+            "team_short": "FUL",
+            "web_name": "Sessegnon"
           }
         ],
-        "transfers_made": 1,
+        "transfers_made": 4,
         "transfers_out": [
           {
             "cost": 9.6,
@@ -32,6 +55,27 @@
             "position": "MID",
             "team_short": "CHE",
             "web_name": "Palmer"
+          },
+          {
+            "cost": 4.0,
+            "id": 259,
+            "position": "DEF",
+            "team_short": "IPS",
+            "web_name": "Diop"
+          },
+          {
+            "cost": 6.0,
+            "id": 346,
+            "position": "FWD",
+            "team_short": "LEE",
+            "web_name": "Calvert-Lewin"
+          },
+          {
+            "cost": 8.5,
+            "id": 397,
+            "position": "MID",
+            "team_short": "MCI",
+            "web_name": "Semenyo"
           }
         ]
       },
@@ -40,24 +84,24 @@
         "event": 11,
         "free_transfers": 1,
         "points_hit": 0,
-        "predicted_points": 64.5,
+        "predicted_points": 67.17,
         "transfers_in": [
           {
-            "cost": 8.0,
-            "id": 106,
-            "position": "FWD",
-            "team_short": "BRE",
-            "web_name": "Thiago"
+            "cost": 6.0,
+            "id": 498,
+            "position": "DEF",
+            "team_short": "TOT",
+            "web_name": "Senesi"
           }
         ],
         "transfers_made": 1,
         "transfers_out": [
           {
-            "cost": 6.0,
-            "id": 346,
-            "position": "FWD",
-            "team_short": "LEE",
-            "web_name": "Calvert-Lewin"
+            "cost": 5.6,
+            "id": 8,
+            "position": "DEF",
+            "team_short": "ARS",
+            "web_name": "Calafiori"
           }
         ]
       }

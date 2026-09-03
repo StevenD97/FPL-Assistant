@@ -15,8 +15,9 @@ import requests
 from fastapi import APIRouter, HTTPException
 
 from fpl.api.errors import not_found_detail
-from fpl.data.entry import fetch_entry_info, fetch_entry_picks
+from fpl.data.entry import fetch_entry_history, fetch_entry_info, fetch_entry_picks
 from fpl.domain.gameweek import get_gw_context
+from fpl.domain.transfers import INITIAL_FREE_TRANSFERS, free_transfers_for_event
 from fpl.services import squad as service
 from fpl.services.common import resolve_gw_params
 
@@ -63,10 +64,34 @@ def entry_summary(team_id: int):
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
+def resolve_free_transfers(team_id, event, requested):
+    """
+    How many free transfers to plan with.
+
+    An explicit `free_transfers` query param always wins - a manager wanting to
+    ask "what if I had three?" is a legitimate question and the caller has said
+    what they mean. Otherwise it is derived from the manager's own history
+    (fpl.domain.transfers), because assuming one is wrong for most managers most
+    weeks and wrong in the expensive direction: someone sitting on three gets
+    shown one move and told the others cost four points each.
+
+    A failed lookup falls back to the old assumption rather than erroring. The
+    number improves the advice; it is not worth failing the page over, and the
+    response says which of the two it used so the UI never claims a derived
+    figure it didn't get.
+    """
+    if requested is not None:
+        return requested, "requested"
+    try:
+        return free_transfers_for_event(fetch_entry_history(team_id), event), "derived"
+    except Exception:
+        return INITIAL_FREE_TRANSFERS, "assumed"
+
+
 @router.get("/api/squad/{team_id}/transfer-plan")
 def transfer_plan(team_id: int, reference_date: Optional[str] = None,
                   next_event: Optional[int] = None, gw_count: int = 5,
-                  free_transfers: int = 1):
+                  free_transfers: Optional[int] = None):
     """
     A transfer plan across the next few gameweeks, solved as one problem rather
     than a gameweek at a time - so a free transfer can roll and a hit can be
@@ -75,12 +100,16 @@ def transfer_plan(team_id: int, reference_date: Optional[str] = None,
     ref_date, resolved_event = resolve_gw_params(reference_date, next_event)
     entry = service.entry_summary(team_id)
     picks = fetch_entry_picks(team_id, entry["gameweek"])["picks"]
-    return service.transfer_plan_compute(
+    starting_free, source = resolve_free_transfers(team_id, resolved_event, free_transfers)
+    plan = service.transfer_plan_compute(
         [p["element"] for p in picks],
         bank=(entry.get("bank") or 0.0),
         ref_date=ref_date, next_event=resolved_event,
-        gw_count=gw_count, free_transfers=free_transfers,
+        gw_count=gw_count, free_transfers=starting_free,
     )
+    plan["starting_free_transfers"] = starting_free
+    plan["free_transfers_source"] = source
+    return plan
 
 
 @router.get("/api/entry/{team_id}/captain-review")
@@ -120,7 +149,7 @@ def squad_optimize_transfers(
     reference_date: Optional[str] = None,
     next_event: Optional[int] = None,
     gw_count: int = 5,
-    free_transfers: int = 1,
+    free_transfers: Optional[int] = None,
     max_transfers: Optional[int] = None,
     transfers: Optional[int] = None,
 ):
@@ -145,12 +174,16 @@ def squad_optimize_transfers(
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
     current_squad_ids = [pick["element"] for pick in picks_data["picks"]]
     bank = picks_data["entry_history"]["bank"]
+    starting_free, source = resolve_free_transfers(team_id, next_event, free_transfers)
     try:
-        return service.optimize_transfers_compute(
+        result = service.optimize_transfers_compute(
             current_squad_ids, bank, ref_date, next_event,
-            gw_count=gw_count, free_transfers=free_transfers, max_transfers=max_transfers,
+            gw_count=gw_count, free_transfers=starting_free, max_transfers=max_transfers,
             exact_transfers=transfers,
         )
+        result["free_transfers"] = starting_free
+        result["free_transfers_source"] = source
+        return result
     except ValueError as e:
         if transfers is not None:
             raise HTTPException(

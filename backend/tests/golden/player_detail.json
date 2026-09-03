@@ -38,10 +38,10 @@
       {
         "GW": 1,
         "assists": 0,
-        "bonus": 3,
+        "bonus": 0,
         "goals_scored": 0,
         "minutes": 90,
-        "total_points": 10
+        "total_points": 6
       },
       {
         "GW": 2,
@@ -50,294 +50,6 @@
         "goals_scored": 0,
         "minutes": 90,
         "total_points": 6
-      },
-      {
-        "GW": 3,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 4,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 5,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 6,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 7,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 8,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 9,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 10,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 11,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 12,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 13,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 3
-      },
-      {
-        "GW": 14,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 15,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 16,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 17,
-        "assists": 0,
-        "bonus": 1,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 7
-      },
-      {
-        "GW": 18,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 19,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 20,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 21,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 22,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 23,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 24,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 25,
-        "assists": 0,
-        "bonus": 1,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 7
-      },
-      {
-        "GW": 26,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 2
-      },
-      {
-        "GW": 26,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 27,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 3
-      },
-      {
-        "GW": 28,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 3
-      },
-      {
-        "GW": 29,
-        "assists": 0,
-        "bonus": 1,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 7
-      },
-      {
-        "GW": 30,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 7
-      },
-      {
-        "GW": 32,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 33,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 1
-      },
-      {
-        "GW": 34,
-        "assists": 0,
-        "bonus": 3,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 10
-      },
-      {
-        "GW": 35,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 36,
-        "assists": 0,
-        "bonus": 2,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 9
-      },
-      {
-        "GW": 37,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 90,
-        "total_points": 6
-      },
-      {
-        "GW": 38,
-        "assists": 0,
-        "bonus": 0,
-        "goals_scored": 0,
-        "minutes": 0,
-        "total_points": 0
       }
     ],
     "id": 1,
@@ -371,27 +83,27 @@
     },
     "season_stats": {
       "assists": 0,
-      "bonus": 11,
-      "clean_sheets": 19,
+      "bonus": 0,
+      "clean_sheets": 1,
       "defensive_contribution_per_90": 0.0,
-      "expected_assists": "0.07",
+      "expected_assists": "0.00",
       "expected_assists_per_90": 0.0,
-      "expected_goal_involvements": "0.07",
+      "expected_goal_involvements": "0.00",
       "expected_goal_involvements_per_90": 0.0,
       "expected_goals": "0.00",
-      "expected_goals_conceded_per_90": 0.74,
+      "expected_goals_conceded_per_90": 0.2,
       "expected_goals_per_90": 0.0,
-      "goals_conceded": 26,
+      "goals_conceded": 0,
       "goals_scored": 0,
-      "ict_index": "57.5",
-      "minutes": 3330,
+      "ict_index": "1.2",
+      "minutes": 90,
       "red_cards": 0,
-      "saves": 60,
-      "starts": 37,
+      "saves": 1,
+      "starts": 1,
       "starts_per_90": 1.0,
       "threat": "0.0",
-      "total_points": 162,
-      "yellow_cards": 1
+      "total_points": 6,
+      "yellow_cards": 0
     },
     "second_name": "Raya Mart\u00edn",
     "selected_by_percent": 38.0,

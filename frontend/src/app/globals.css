@@ -537,12 +537,28 @@ button.gw-tile:focus-visible {
 /* --- Blog post body ---
    Markdown-rendered HTML has no classes of its own, so tag selectors here
    carry the typography instead of a typography plugin dependency. */
-.blog-prose { color: var(--ink-700); font-size: 0.9375rem; line-height: 1.7; }
+/* Blog body copy.
+
+   Every colour here is a SEMANTIC token (--fg-*, --surface-*, --border-*), not
+   a step on the raw --ink-* ramp. That distinction is the whole bug this block
+   used to have: --ink-* is a fixed physical scale where 900 is the darkest
+   swatch, and the two themes swap which end is which, so `color: var(--ink-700)`
+   meant "dark grey" in one theme and "near-white" in the other. Since the
+   surface flips with it, the text landed on a background of its own lightness
+   both ways round - measured 1.10:1 in dark and 1.09:1 in light, against the
+   4.5:1 that AA asks for, and bold text in light mode came out at 1.00:1, which
+   is white on white. The article was invisible in every theme.
+
+   The --fg-* tokens are defined per theme precisely so this cannot happen: they
+   mean "primary text", not "this grey", and every pairing below clears AA
+   (lowest is muted at 4.74:1). Reach for the ramp for a decorative fill; never
+   for text. */
+.blog-prose { color: var(--fg-secondary); font-size: 0.9375rem; line-height: 1.7; }
 .blog-prose > * + * { margin-top: 1em; }
 .blog-prose h2 { margin-top: 1.75em; font-size: 1.2rem; font-weight: 700; color: var(--brand); }
 .blog-prose h3 { margin-top: 1.5em; font-size: 1.05rem; font-weight: 600; color: var(--brand); }
 .blog-prose a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
-.blog-prose strong { font-weight: 600; color: var(--ink-900); }
+.blog-prose strong { font-weight: 600; color: var(--fg-primary); }
 .blog-prose ul, .blog-prose ol { padding-left: 1.4em; }
 .blog-prose ul { list-style: disc; }
 .blog-prose ol { list-style: decimal; }
@@ -550,16 +566,20 @@ button.gw-tile:focus-visible {
 .blog-prose blockquote {
   border-left: 3px solid var(--brand);
   padding: 0.25em 0 0.25em 1em;
-  color: var(--ink-600);
+  color: var(--fg-muted);
   font-style: italic;
 }
+/* Sunken surface plus an explicit colour: inheriting the body colour onto a
+   background that moves with the theme is what broke the rest of this block. */
 .blog-prose code {
-  background: var(--ink-100);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-default);
+  color: var(--fg-primary);
   border-radius: 4px;
   padding: 0.15em 0.4em;
   font-size: 0.85em;
 }
-.blog-prose hr { border: none; border-top: 1px solid var(--ink-200); margin: 1.75em 0; }
+.blog-prose hr { border: none; border-top: 1px solid var(--border-default); margin: 1.75em 0; }
 
 /* --- Touch targets ---
    A control can be the right size to look at and the wrong size to hit. The
