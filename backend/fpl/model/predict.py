@@ -36,6 +36,7 @@ from fpl.model.involvement import (
     compute_player_involvement_shares,
     compute_player_involvement_shares_blended,
 )
+from fpl.model.distribution import convolve, fixture_outcome_distribution, summarise
 from fpl.model.rules import (
     APPEARANCE_POINTS_60_PLUS,
     APPEARANCE_POINTS_ANY,
@@ -112,6 +113,7 @@ def _fixture_points(position, team_xg, opp_xg, share, appearance, history_rates,
     own_goal_points = OWN_GOAL_POINTS * history_rates["own_goals"] * p_any
 
     defensive_contribution_points = 0.0
+    dc_prob = 0.0
     threshold = DEFENSIVE_CONTRIBUTION_THRESHOLD.get(position)
     if threshold is not None:
         dc_prob = _poisson_prob_at_least(history_rates["defensive_contribution"], threshold)
@@ -123,8 +125,25 @@ def _fixture_points(position, team_xg, opp_xg, share, appearance, history_rates,
         + own_goal_points + defensive_contribution_points
     )
 
+    # The same components, kept as a distribution rather than collapsed to
+    # their mean. A haul is a tail event and an expectation cannot express one
+    # - see fpl.model.distribution for the backtest evidence and the reasoning.
+    minor = (
+        goals_conceded_points + save_points + penalty_save_points
+        + penalty_miss_points + card_points + own_goal_points
+    )
+    outcome = fixture_outcome_distribution(
+        position, predicted_goals, predicted_assists, appearance, cs_prob,
+        dc_prob if threshold is not None else 0.0,
+        expected_bonus=bonus_points, expected_minor_points=minor,
+    )
+
     return {
         "predicted_points": total_points,
+        # Carried out rather than summarised here: across a double gameweek
+        # the two fixtures' distributions have to be convolved before the
+        # haul threshold means anything. See convolve().
+        "outcome_distribution": outcome,
         "predicted_goals": predicted_goals,
         "predicted_assists": predicted_assists,
         "clean_sheet_prob": cs_prob,
@@ -358,6 +377,7 @@ def _predict_for_event(context, next_event):
         if not fx_list:
             rows.append({
                 **base_row, "next_opponent": "BLANK", "fixture_count": 0,
+                "haul_probability": 0.0, "ceiling": 0,
                 **{k: 0.0 for k in _BREAKDOWN_KEYS},
             })
             continue
@@ -392,6 +412,7 @@ def _predict_for_event(context, next_event):
                 share["assist_share"] = min(1.0, share["assist_share"] + CORNER_TAKER_ASSIST_SHARE_BOOST)
 
         totals = {k: 0.0 for k in _BREAKDOWN_KEYS}
+        combined_distribution = {}
         opponent_labels = []
         for fx in fx_list:
             if fx["is_home"]:
@@ -405,6 +426,7 @@ def _predict_for_event(context, next_event):
             )
             for key in _BREAKDOWN_KEYS:
                 totals[key] += fixture_result[key]
+            combined_distribution = convolve(combined_distribution, fixture_result["outcome_distribution"])
             opponent_labels.append(f"{team_short_lookup[fx['opponent']]}({'H' if fx['is_home'] else 'A'})")
 
         # clean_sheet_prob is an average across fixtures, not a sum.
@@ -418,9 +440,13 @@ def _predict_for_event(context, next_event):
         # string. The multi-gameweek wrapper below computes its own
         # window-level fixture_count and overwrites this, so its meaning
         # there ("gameweeks with a fixture") is unchanged.
+        shape = summarise(combined_distribution)
         rows.append({
             **base_row, "next_opponent": " & ".join(opponent_labels),
-            "fixture_count": len(fx_list), **totals,
+            "fixture_count": len(fx_list),
+            "haul_probability": shape["haul_probability"],
+            "ceiling": shape["ceiling"],
+            **totals,
         })
 
     return pd.DataFrame(rows)

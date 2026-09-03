@@ -45,6 +45,7 @@ import pandas as pd
 
 from fpl.config import DATA_DIR
 from fpl.data.loaders import load_bootstrap, load_gw_history
+from fpl.domain.baseline import categorise, last_n_baseline, score_by_category
 from fpl.model.predict import predict_player_points
 from fpl.model.rules import (
     BONUS_FIXTURE_SENSITIVITY,
@@ -65,6 +66,11 @@ HALF_LIFE_DAYS = 21
 def _actual_points_by_gw(history, gw):
     """element -> total_points actually scored in this GW (summed across fixtures, for DGWs)."""
     return history[history["GW"] == gw].groupby("element")["total_points"].sum()
+
+
+def _actual_minutes_by_gw(history, gw):
+    """element -> minutes played in this GW. Needed to tell a Zero from a Blank."""
+    return history[history["GW"] == gw].groupby("element")["minutes"].sum()
 
 
 def _spearman(a, b):
@@ -129,11 +135,23 @@ def run_backtest(min_gw=MIN_GW, max_gw=MAX_GW, half_life_days=HALF_LIFE_DAYS,
             bonus_fixture_sensitivity=bonus_fixture_sensitivity,
         )
         actual = _actual_points_by_gw(history, gw).rename("actual_points")
+        minutes = _actual_minutes_by_gw(history, gw).rename("actual_minutes")
 
         merged = predicted.merge(actual, left_on="id", right_index=True, how="left")
+        merged = merged.merge(minutes, left_on="id", right_index=True, how="left")
         merged["actual_points"] = merged["actual_points"].fillna(0)
+        merged["actual_minutes"] = merged["actual_minutes"].fillna(0)
         merged["gw"] = gw
         merged["error"] = merged["predicted_points"] - merged["actual_points"]
+        # The bar: what you'd have predicted by averaging each player's last
+        # five appearances. Computed from history strictly before this
+        # gameweek, exactly like the model's own inputs. See fpl.domain.baseline.
+        baseline = last_n_baseline(history, gw)
+        merged["baseline_points"] = merged["id"].map(baseline).fillna(0.0)
+        merged["baseline_error"] = merged["baseline_points"] - merged["actual_points"]
+        merged["category"] = [
+            categorise(p, m) for p, m in zip(merged["actual_points"], merged["actual_minutes"])
+        ]
         compiled.append(merged)
 
         if merged["predicted_points"].std() == 0:
@@ -176,6 +194,63 @@ def summarize(per_gw, compiled_df):
 
     print("\n=== Calibration: mean predicted vs mean actual, by predicted-points decile (pooled) ===")
     print(calibration_table(compiled_df).to_string(index=False))
+
+    print("\n=== Model vs the Last-5 baseline, by return category (RMSE, lower is better) ===")
+    model = {r["category"]: r for r in score_by_category(compiled_df)}
+    base = {r["category"]: r for r in score_by_category(
+        compiled_df, predicted="baseline_points")}
+    print(f"{'category':<9}{'n':>7}{'model':>9}{'baseline':>10}{'delta':>9}  verdict")
+    for name in ("Zeros", "Blanks", "Tickers", "Haulers", "All"):
+        if name not in model:
+            continue
+        m, b = model[name]["rmse"], base[name]["rmse"]
+        delta = (m - b) / b * 100
+        verdict = "BEATS baseline" if m < b else "loses to baseline"
+        print(f"{name:<9}{model[name]['n']:>7}{m:>9.3f}{b:>10.3f}{delta:>8.1f}%  {verdict}")
+
+    if "haul_probability" in compiled_df.columns:
+        print("\n=== Haul probability calibration: is a stated 30% actually 30%? ===")
+        cal = compiled_df[compiled_df["haul_probability"] > 0].copy()
+        cal["band"] = pd.cut(cal["haul_probability"], [0, .05, .1, .2, .3, .4, .5, 1.0])
+        rel = cal.groupby("band", observed=True).agg(
+            n=("haul_probability", "size"),
+            stated=("haul_probability", "mean"),
+            actual=("actual_points", lambda s: (s >= 5).mean()),
+        ).reset_index()
+        rel["gap"] = (rel["stated"] - rel["actual"]).round(3)
+        print(rel.round(3).to_string(index=False))
+
+        # Recorded because it is a negative result, and negative results get
+        # re-derived by whoever next has the idea. Ranking captaincy by haul
+        # probability is worse than ranking by the plain expectation. Blending
+        # the ceiling in scores better, but see the disagreement count below
+        # before believing it: the two rankings pick the same player almost
+        # every week, so the margin rests on a handful of gameweeks.
+        print("\n=== Captaincy: does anything beat ranking by the expectation? ===")
+        rankings = {
+            "predicted_points": compiled_df["predicted_points"],
+            "haul_probability": compiled_df["haul_probability"],
+            "ceiling": compiled_df["ceiling"],
+            "ceiling*0.5 + mean": compiled_df["predicted_points"] + 0.5 * compiled_df["ceiling"],
+        }
+        for label, score in rankings.items():
+            picks = compiled_df.loc[score.groupby(compiled_df["gw"]).idxmax()]
+            print(f"  top pick by {label:<20} mean actual = {picks['actual_points'].mean():.2f} pts"
+                  f"   hauled {(picks['actual_points'] >= 5).mean() * 100:.0f}% of weeks")
+        perfect = compiled_df.groupby("gw")["actual_points"].max().mean()
+        print(f"  {'(a perfect picker)':<32} mean actual = {perfect:.2f} pts")
+
+        weeks = compiled_df["gw"].nunique()
+        baseline_pick = compiled_df["predicted_points"].groupby(compiled_df["gw"]).idxmax()
+        blend = (compiled_df["predicted_points"] + 0.5 * compiled_df["ceiling"])
+        blend_pick = blend.groupby(compiled_df["gw"]).idxmax()
+        agree = (compiled_df.loc[baseline_pick, "id"].values
+                 == compiled_df.loc[blend_pick, "id"].values).sum()
+        diff = (compiled_df.loc[blend_pick, "actual_points"].values
+                - compiled_df.loc[baseline_pick, "actual_points"].values)
+        se = diff.std() / (len(diff) ** 0.5)
+        print(f"  the ceiling blend picks the same player in {agree}/{weeks} gameweeks;"
+              f" mean gain {diff.mean():+.2f} pts (se {se:.2f}, t={diff.mean() / se:.2f})")
 
     print("\n=== Mean absolute error by position ===")
     print(compiled_df.groupby("position")["error"].apply(lambda e: e.abs().mean()).round(3))
