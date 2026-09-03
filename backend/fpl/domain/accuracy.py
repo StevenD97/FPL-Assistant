@@ -147,7 +147,7 @@ def grade_event(event, live=None, bootstrap=None, history=None):
     of the internet.
     """
     bootstrap = bootstrap or load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    predicted, source, frozen_at = _projections_for(event, bootstrap)
+    predicted, source, frozen_at = projections_for(event, bootstrap)
 
     results = actual_points(event, live)
     predicted["actual_points"] = predicted["id"].map(lambda i: results.get(i, (0, 0))[0])
@@ -198,9 +198,14 @@ def grade_event(event, live=None, bootstrap=None, history=None):
     }
 
 
-def _projections_for(event, bootstrap):
+def projections_for(event, bootstrap):
     """
     (frame, source, frozen_at) for one gameweek.
+
+    Public because the season replay (fpl.domain.season_run) has to make each
+    week's decisions from exactly the projection this page grades - if the two
+    could drift apart, the replay would stop being evidence about the model
+    this page is about.
 
     Prefers the file written before the deadline. Falls back to re-predicting
     from a reference date just before it - which uses no post-deadline data

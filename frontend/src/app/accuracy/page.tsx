@@ -1,7 +1,14 @@
 import { Alert } from "@/shared/ui/Alert";
 import { PageContainer, PageHeader } from "@/shared/layout/PageContainer";
 import { apiGet } from "@/shared/lib/api";
-import type { AccuracyResponse, AccuracyResponseEvent, ReturnCategory } from "@/shared/types/api";
+import { AccuracyTabs } from "@/features/accuracy/AccuracyTabs";
+import { SeasonRun } from "@/features/accuracy/SeasonRun";
+import type {
+  AccuracyResponse,
+  AccuracyResponseEvent,
+  ReturnCategory,
+  SeasonRun as SeasonRunResponse,
+} from "@/shared/types/api";
 
 // Grades change whenever a gameweek finishes, and the backend caches them
 // anyway, so this is per-request. force-dynamic also keeps `next build` from
@@ -21,6 +28,16 @@ export default async function AccuracyPage() {
     data = await apiGet<AccuracyResponse>("/api/accuracy");
   } catch (err) {
     error = err instanceof Error ? err.message : "Something went wrong";
+  }
+
+  // The replay is a separate record and a separate failure. If it can't be
+  // fetched the two new tabs say so; the grading above still renders, because
+  // one missing panel should not take the page's main argument down with it.
+  let run: SeasonRunResponse | null = null;
+  try {
+    run = await apiGet<SeasonRunResponse>("/api/accuracy/season-run");
+  } catch {
+    run = null;
   }
 
   const summary = data?.summary ?? null;
@@ -44,7 +61,23 @@ export default async function AccuracyPage() {
       )}
 
       {summary && (
-        <>
+        <AccuracyTabs
+          team={
+            run ? (
+              <SeasonRun run={run} view="team" />
+            ) : (
+              <Alert kind="info">The season replay isn&apos;t available right now.</Alert>
+            )
+          }
+          season={
+            run ? (
+              <SeasonRun run={run} view="season" />
+            ) : (
+              <Alert kind="info">The season replay isn&apos;t available right now.</Alert>
+            )
+          }
+          record={
+            <>
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Headline
               label="Captain pick"
@@ -82,12 +115,14 @@ export default async function AccuracyPage() {
 
           {summary.categories.length > 0 && <CategoryTable rows={summary.categories} />}
 
-          <div className="flex flex-col gap-3">
-            {events.map((e) => (
-              <GameweekCard key={e.event} e={e} />
-            ))}
-          </div>
-        </>
+              <div className="flex flex-col gap-3">
+                {events.map((e) => (
+                  <GameweekCard key={e.event} e={e} />
+                ))}
+              </div>
+            </>
+          }
+        />
       )}
     </PageContainer>
   );

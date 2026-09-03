@@ -104,6 +104,23 @@ jobs:
           # Runs before the goldens below, because /api/accuracy has one.
           python tools/build_accuracy.py
 
+      - name: Replay the model's own season
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          # data/season_run.json is the other half of the public record: not
+          # "were the projections well ranked" but "what would following them
+          # have actually scored", played under the real budget, transfer and
+          # auto-substitution rules. A gameweek costs a projection plus an
+          # integer program, and the overall-rank lookup walks the Overall
+          # table, so it belongs here rather than on a page load.
+          #
+          # Not fatal. A failed replay should cost the site one stale panel,
+          # not the whole snapshot refresh that keeps the rest of it current.
+          python tools/build_season_run.py || echo "::warning::season replay failed - season_run.json left as it was"
+
       - name: Regenerate goldens and run the suite
         working-directory: backend
         run: |

@@ -58,6 +58,16 @@ def get_entry_picks(team_id: int, event: int) -> dict:
     return _get(f"/entry/{team_id}/event/{event}/picks/")
 
 
+def get_league_standings(league_id: int, page: int = 1) -> dict:
+    """
+    One page of a classic league's standings, fifty entries, ordered by total
+    points. League 314 is the Overall table - every entry in the game - which is
+    what fpl.services.overall_rank binary searches to turn a points total into a
+    real rank.
+    """
+    return _get(f"/leagues-classic/{league_id}/standings/?page_standings={page}")
+
+
 def get_entry_history(team_id: int) -> dict:
     """
     A manager's season so far: per-gameweek points, transfers made and hits

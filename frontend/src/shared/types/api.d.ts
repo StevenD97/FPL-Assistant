@@ -292,6 +292,60 @@ export type ReturnCategory = {
   rmse: number;
 };
 
+export type SeasonRunGameweek = {
+  bank: number;
+  bench_points: number;
+  captain: string;
+  captain_changed: boolean;
+  chips_played: unknown[];
+  event: number;
+  free_transfers: number;
+  frozen_at: null;
+  net_points: number;
+  points: number;
+  points_hit: number;
+  source: string;
+  squad: SeasonRunGameweekSquad[];
+  squad_value: number;
+  substitutions: SeasonRunGameweekSubstitution[];
+  total_points: number;
+  transfers_in: string[];
+  transfers_made: number;
+  transfers_out: string[];
+};
+
+export type SeasonRunGameweekSquad = {
+  actual_points: number;
+  captain: boolean;
+  cost: number;
+  id: number;
+  minutes: number;
+  position: Position;
+  predicted_points: number;
+  started: boolean;
+  team_short: string;
+  web_name: string;
+};
+
+export type SeasonRunGameweekSubstitution = {
+  off: string;
+  on: string;
+};
+
+export type SeasonRunSummary = {
+  all_reconstructed: boolean;
+  chips_available: boolean;
+  events_played: number;
+  field_total: number;
+  first_event: number;
+  last_event: number;
+  overall_entries: number;
+  overall_rank: number;
+  points_vs_field: number;
+  total_hits: number;
+  total_points: number;
+};
+
 export type SeasonStats = {
   assists: number;
   bonus: number;
@@ -761,6 +815,13 @@ export type ScheduleFixture = {
   team_h_badge: string;
   team_h_difficulty: number;
   team_h_score: number | null;
+};
+
+/** Response of `GET /api/accuracy/season-run`. */
+export type SeasonRun = {
+  available: boolean;
+  gameweeks: SeasonRunGameweek[];
+  summary: SeasonRunSummary;
 };
 
 /** Response of `GET /api/season-status`. */

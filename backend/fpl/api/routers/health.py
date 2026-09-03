@@ -148,3 +148,28 @@ def accuracy():
     from fpl.services.accuracy import accuracy_report
 
     return accuracy_report()
+
+
+@router.get("/api/accuracy/season-run")
+def season_run():
+    """
+    The model's own season, played by the game's rules.
+
+    The other half of the record. /api/accuracy answers "were the projections
+    well ranked"; this answers the question a manager actually has, which is
+    what following them would have scored - built to a GBP100.0m budget, one
+    free transfer a week, hits charged, auto-substitutions applied, and the
+    total looked up in the game's Overall table for a real rank.
+
+    Served from the file the refresh workflow commits after each gameweek (see
+    tools/build_season_run.py). Replaying on demand would mean an integer
+    program per gameweek and a binary search through ten million league
+    entries, so a missing file returns an empty record rather than building
+    one - the panel disappears, the page does not hang.
+    """
+    from fpl.services.season_run import load_run
+
+    run = load_run()
+    if run is None:
+        return {"gameweeks": [], "summary": None, "available": False}
+    return {**run, "available": True}

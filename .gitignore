@@ -29,6 +29,12 @@ data/*
 # grades it has no way to produce. The refresh workflow rebuilds and commits
 # this alongside the snapshots.
 !data/accuracy.json
+# The model's own season, replayed under the game's rules (see /accuracy).
+# Tracked for the same reason as accuracy.json: it is public evidence, it is
+# rebuilt by the refresh workflow after each gameweek, and rebuilding it on a
+# page load would mean an integer program per gameweek plus a binary search
+# through ten million league entries.
+!data/season_run.json
 # Projections frozen before each deadline. These are the evidence behind the
 # accuracy page's pre-commitment claim, so they are tracked by pattern rather
 # than by gameweek - a freeze that failed to get committed because nobody

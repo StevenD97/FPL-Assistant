@@ -9,6 +9,24 @@ import math
 import pandas as pd
 import pytest
 
+from fpl.domain.season_run import (
+    auto_substitute,
+    captain_multiplier_target,
+    free_transfers_after,
+    order_bench,
+    points_hit,
+    score_gameweek,
+    selling_price,
+)
+from fpl.domain.season_run import (
+    auto_substitute,
+    captain_multiplier_target,
+    free_transfers_after,
+    order_bench,
+    points_hit,
+    score_gameweek,
+    selling_price,
+)
 from fpl.domain.transfers import (
     MAX_FREE_TRANSFERS,
     describe_free_transfers,
@@ -234,3 +252,118 @@ def test_bench_boost_is_not_a_transfer_chip():
 def test_describe_free_transfers_pluralises():
     assert describe_free_transfers(1) == "1 free transfer"
     assert describe_free_transfers(3) == "3 free transfers"
+
+
+# --- domain.season_run ------------------------------------------------------
+
+def test_selling_price_returns_half_the_rise_rounded_down():
+    assert selling_price(50, 50) == 50   # unchanged
+    assert selling_price(50, 51) == 50   # 0.1 rise, half of it rounds to nothing
+    assert selling_price(50, 52) == 51   # 0.2 rise -> 0.1 back
+    assert selling_price(50, 57) == 53   # 0.7 rise -> 0.3 back
+    assert selling_price(50, 45) == 45   # a fall is taken in full
+
+
+def test_free_transfers_accrue_and_cap_going_forward():
+    assert free_transfers_after(1, 1, 2) == 1    # spent it, earned one back
+    assert free_transfers_after(1, 0, 2) == 2    # rolled
+    assert free_transfers_after(5, 0, 6) == 5    # capped
+    assert free_transfers_after(1, 4, 3) == 1    # a hit is not a negative bank
+
+
+def test_points_hit_charges_only_beyond_the_free_allowance():
+    assert points_hit(1, 1) == 0
+    assert points_hit(2, 1) == 4
+    assert points_hit(3, 1) == 8
+    assert points_hit(1, 3) == 0
+
+
+def _p(pid, position):
+    return {"id": pid, "web_name": f"P{pid}", "team_short": "XXX", "position": position}
+
+
+def _legal_xi():
+    return ([_p(1, "GKP")]
+            + [_p(i, "DEF") for i in (2, 3, 4)]
+            + [_p(i, "MID") for i in (5, 6, 7, 8, 9)]
+            + [_p(i, "FWD") for i in (10, 11)])
+
+
+def test_auto_substitute_brings_on_a_bench_player_who_played():
+    starters = _legal_xi()
+    bench = [_p(12, "MID"), _p(13, "DEF"), _p(14, "FWD"), _p(15, "GKP")]
+    minutes = {p["id"]: 90 for p in starters + bench}
+    minutes[5] = 0   # a starting midfielder did not play
+    final, subs = auto_substitute(starters, bench, minutes)
+    assert subs == [{"off": 5, "on": 12}]
+    assert {p["id"] for p in final} == {1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12}
+
+
+def test_auto_substitute_refuses_a_swap_that_would_break_the_formation():
+    starters = _legal_xi()
+    # Only a forward on the bench, and the blanking starter is the third
+    # defender - bringing him on would leave two at the back.
+    bench = [_p(14, "FWD")]
+    minutes = {p["id"]: 90 for p in starters + bench}
+    minutes[4] = 0
+    final, subs = auto_substitute(starters, bench, minutes)
+    assert subs == []
+    assert [p["id"] for p in final] == [p["id"] for p in starters]
+
+
+def test_auto_substitute_only_replaces_a_keeper_with_the_other_keeper():
+    starters = _legal_xi()
+    bench = [_p(12, "MID"), _p(15, "GKP")]
+    minutes = {p["id"]: 90 for p in starters + bench}
+    minutes[1] = 0
+    final, subs = auto_substitute(starters, bench, minutes)
+    assert subs == [{"off": 1, "on": 15}]
+
+
+def test_auto_substitute_leaves_a_starter_on_when_nobody_on_the_bench_played():
+    starters = _legal_xi()
+    bench = [_p(12, "MID")]
+    minutes = {p["id"]: 90 for p in starters}
+    minutes[5] = 0
+    minutes[12] = 0
+    _, subs = auto_substitute(starters, bench, minutes)
+    assert subs == []
+
+
+def test_armband_passes_to_the_vice_when_the_captain_does_not_play():
+    assert captain_multiplier_target(1, 2, {1: 90, 2: 90}) == 1
+    assert captain_multiplier_target(1, 2, {1: 0, 2: 90}) == 2
+    # Neither played: it stays put and is worth nothing, same as the real game.
+    assert captain_multiplier_target(1, 2, {1: 0, 2: 0}) == 1
+
+
+def test_score_gameweek_doubles_the_captain_and_counts_the_final_eleven():
+    starters = _legal_xi()
+    bench = [_p(12, "MID"), _p(13, "DEF"), _p(14, "FWD"), _p(15, "GKP")]
+    minutes = {p["id"]: 90 for p in starters + bench}
+    points = {p["id"]: 2 for p in starters + bench}
+    points[6] = 10  # the captain hauled
+    scored = score_gameweek(starters, bench, captain_id=6, vice_id=7,
+                            points=points, minutes=minutes)
+    assert scored["points"] == 10 * 2 + 20   # ten starters on 2, captain's 10 doubled
+    assert scored["captain_changed"] is False
+    assert scored["bench_points"] == 8
+
+
+def test_score_gameweek_scores_the_substitute_not_the_starter_who_blanked():
+    starters = _legal_xi()
+    bench = [_p(12, "MID"), _p(13, "DEF"), _p(14, "FWD"), _p(15, "GKP")]
+    minutes = {p["id"]: 90 for p in starters + bench}
+    minutes[5] = 0
+    points = {p["id"]: 0 for p in starters + bench}
+    points[12] = 9
+    scored = score_gameweek(starters, bench, captain_id=1, vice_id=2,
+                            points=points, minutes=minutes)
+    assert scored["points"] == 9
+    assert scored["substitutions"] == [{"off": 5, "on": 12}]
+
+
+def test_order_bench_puts_the_keeper_last_and_sorts_outfield_by_projection():
+    bench = [_p(15, "GKP"), _p(12, "MID"), _p(13, "DEF")]
+    order = order_bench(bench, {12: 1.0, 13: 4.0, 15: 3.0})
+    assert [p["id"] for p in order] == [13, 12, 15]

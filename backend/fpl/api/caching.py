@@ -72,6 +72,7 @@ POLICY_BY_ROUTE = {
     "/api/data-status": STATUS,
     "/api/season-status": STATUS,
     "/api/accuracy": STATUS,
+    "/api/accuracy/season-run": INGEST_DRIVEN,
 
     # --- per-manager ---
     "/api/entry/{team_id}": PER_MANAGER,
