@@ -646,3 +646,67 @@ Nothing starts without 1 and 2. The rest shape the build.
 
 **Nothing has been built. No xFPL code, configuration, infrastructure or model behaviour
 has been touched by this proposal.**
+
+---
+
+# ADDENDUM — the free operating routes (4 September 2026)
+
+**This corrects an omission in §5 above.** The proposal presented Tier 0 as "the AI work
+happens in Claude Code sessions", which is true but incomplete. There is a route where
+the executives answer **inside a web page, on a phone, with no terminal and no Anthropic
+API key** — and it changes which option is recommended first.
+
+## What was missed: a published Artifact can call Claude itself
+
+An Artifact page can declare a `sample` capability. The page then calls Claude directly,
+**billed to the Claude subscription of whoever is viewing the page** — not to an API key,
+and not to a separate Anthropic bill. Structured JSON output is supported, which is
+exactly the shape an executive position needs.
+
+Combined with the `db` capability the owners' desk already uses for persistence, a single
+Artifact can be a genuinely working Executive HQ: company memory, executive conversations,
+meetings with independent positions, CEO synthesis, decisions and approvals — for **£0 in
+new spend**.
+
+## The four routes, honestly costed
+
+| Route | Where it runs | New money | What it spends instead |
+|---|---|---|---|
+| **F0 — today, used externally** | Claude Code on the web or phone (`claude.ai/code`) + the owners' desk | **£0** | Claude Pro usage |
+| **F1 — the desk becomes the HQ** | One Artifact with `db` + `sample` | **£0** | The *viewer's* Claude usage, per question |
+| **F2 — scheduled** | A Routine fires a Claude Code session on a schedule; it commits its output to the repo | **£0** | Claude Pro usage |
+| **P1 — the built app** | The Next.js app in this proposal | ~$3–5/mo | An Anthropic API key |
+
+## What F1 genuinely cannot do
+
+Stated plainly, because "free" is not the same as "unconstrained":
+
+- **It spends Pro usage, not money.** A five-executive meeting is five calls against the
+  viewer's own Claude allowance — the same allowance the development sessions draw on.
+  The scarce resource does not change, it just stops being a separate bill.
+- **The partner needs their own Claude account.** Sharing one is not an option. On a free
+  plan their allowance will be small; whether the shared-page access works across two
+  personal accounts needs testing, not assuming.
+- **Model choice is coarse.** A tier (quick / default / complex), not a specific model per
+  executive.
+- **Memory lives in the page's own store, not the repository.** The company context has to
+  be seeded into it and kept in step deliberately, rather than read from `company/` on each
+  call.
+- **No custom auth or audit beyond what the platform gives.** Access is claude.ai identity
+  and org sharing; the audit trail is what the page records for itself.
+- **No repository access.** The CTO executive cannot read xFPL's code from inside a page.
+  Code analysis stays in a Claude Code session.
+
+## Revised recommendation
+
+**Do F1 before P1.** Extend the existing owners' desk into a working HQ — memory,
+executive conversations, meetings, synthesis, decisions — at £0. Use it for a month. If
+it turns out the constraints above genuinely bite (usage limits, model choice, the CTO
+needing repo access, a real audit trail), P1 is the upgrade, and the schema and workflows
+in this proposal are what it upgrades *to* — none of that design is wasted.
+
+This also resolves decision #4 in the table above: F1 does not compete with the xFPL
+30-day plan for build sessions the way a full application does.
+
+**Decision #1 changes accordingly.** Setting up API billing is no longer a
+start-blocker — it becomes a later question, asked only if F1's limits are reached.
