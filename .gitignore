@@ -15,7 +15,12 @@ venv/
 data/*
 !data/bootstrap_static_2025_26_final.json
 !data/fixtures_2025_26_final.json
-!data/gw_history_2025_26.csv
+# Every season's gameweek history, not just the archived one: the model
+# blends the season being played into the archive as results accrue, and it
+# reads that from here whenever there is no database (see
+# backend/tools/build_gw_history.py). A per-season line would mean the blend
+# silently stays switched off every August until someone remembered.
+!data/gw_history_*.csv
 !data/bootstrap_static.json
 !data/fixtures.json
 # The public track record. Tracked for the same reason as the snapshots above:

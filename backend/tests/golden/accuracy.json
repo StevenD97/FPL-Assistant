@@ -15,7 +15,7 @@
           "best_actual_player": "B.Fernandes",
           "pick": "B.Fernandes",
           "pick_team": "MUN",
-          "predicted": 7.7,
+          "predicted": 6.8,
           "rank_of_pick": 1
         },
         "categories": [
@@ -23,52 +23,52 @@
             "baseline_mae": 1.762,
             "baseline_rmse": 3.081,
             "category": "Blanks",
-            "mae": 1.087,
+            "mae": 0.999,
             "n": 206,
-            "rmse": 1.332
+            "rmse": 1.293
           },
           {
             "baseline_mae": 2.744,
             "baseline_rmse": 3.517,
             "category": "Tickers",
-            "mae": 1.841,
+            "mae": 1.561,
             "n": 43,
-            "rmse": 2.155
+            "rmse": 1.805
           },
           {
             "baseline_mae": 4.984,
             "baseline_rmse": 6.149,
             "category": "Haulers",
-            "mae": 5.608,
+            "mae": 5.44,
             "n": 63,
-            "rmse": 6.241
+            "rmse": 6.134
           },
           {
             "baseline_mae": 2.548,
             "baseline_rmse": 3.95,
             "category": "All",
-            "mae": 2.104,
+            "mae": 1.973,
             "n": 312,
-            "rmse": 3.11
+            "rmse": 3.025
           }
         ],
         "event": 2,
         "players_graded": 312,
-        "rank_correlation": 0.257,
+        "rank_correlation": 0.318,
         "top_ten": {
-          "average_actual": 8.3,
+          "average_actual": 6.6,
           "field_average": 2.86,
           "names": [
             "B.Fernandes",
             "Szoboszlai",
-            "Haaland",
-            "Anderson",
-            "Gibbs-White",
+            "Tavernier",
+            "Virgil",
+            "Palmer",
+            "Mbeumo",
             "Truffert",
             "Calvert-Lewin",
-            "Mbeumo",
-            "Virgil",
-            "E.Le F\u00e9e"
+            "Rogers",
+            "Justin"
           ]
         }
       },
@@ -112,39 +112,39 @@
           "baseline_mae": 1.762,
           "baseline_rmse": 3.081,
           "category": "Blanks",
-          "mae": 1.087,
+          "mae": 0.999,
           "n": 206,
-          "rmse": 1.332
+          "rmse": 1.293
         },
         {
           "baseline_mae": 2.744,
           "baseline_rmse": 3.517,
           "category": "Tickers",
-          "mae": 1.841,
+          "mae": 1.561,
           "n": 43,
-          "rmse": 2.155
+          "rmse": 1.805
         },
         {
           "baseline_mae": 4.984,
           "baseline_rmse": 6.149,
           "category": "Haulers",
-          "mae": 5.608,
+          "mae": 5.44,
           "n": 63,
-          "rmse": 6.241
+          "rmse": 6.134
         },
         {
           "baseline_mae": 2.548,
           "baseline_rmse": 3.95,
           "category": "All",
-          "mae": 2.104,
+          "mae": 1.973,
           "n": 312,
-          "rmse": 3.11
+          "rmse": 3.025
         }
       ],
       "events_graded": 2,
       "field_average": 2.96,
-      "rank_correlation": 0.229,
-      "top_ten_average": 5.75
+      "rank_correlation": 0.259,
+      "top_ten_average": 4.9
     }
   },
   "status": 200

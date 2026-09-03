@@ -74,6 +74,21 @@ jobs:
               print(f"wrote {path}")
           PY
 
+      - name: Rebuild the season-to-date gameweek history
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          # The model blends the season being played into the archive as
+          # results accrue, and with no database it reads that season from
+          # data/gw_history_<season>.csv. Without this step the file never
+          # appears, the blend weight stays pinned at zero all season, and
+          # every projection is trained purely on last year - which is what
+          # was happening. Runs before grading below, because the grades are
+          # produced by the model this file feeds.
+          python -m tools.build_gw_history
+
       - name: Grade any newly finished gameweeks
         working-directory: backend
         env:
@@ -134,8 +149,9 @@ jobs:
             chore(data): refresh the fallback snapshot
 
             Automated refresh of data/bootstrap_static.json and
-            data/fixtures.json from the live FPL API, plus grades for any
-            newly finished gameweeks in data/accuracy.json, with goldens and
+            data/fixtures.json from the live FPL API, the season-to-date
+            data/gw_history_<season>.csv the model blends in, plus grades for
+            any newly finished gameweeks in data/accuracy.json, with goldens and
             frontend API types regenerated to match.
           body: |
             Automated weekly refresh of the on-disk fallback snapshot — what

@@ -36,32 +36,32 @@
     {
      "category": "Blanks",
      "n": 206,
-     "rmse": 1.332,
-     "mae": 1.087,
+     "rmse": 1.293,
+     "mae": 0.999,
      "baseline_rmse": 3.081,
      "baseline_mae": 1.762
     },
     {
      "category": "Tickers",
      "n": 43,
-     "rmse": 2.155,
-     "mae": 1.841,
+     "rmse": 1.805,
+     "mae": 1.561,
      "baseline_rmse": 3.517,
      "baseline_mae": 2.744
     },
     {
      "category": "Haulers",
      "n": 63,
-     "rmse": 6.241,
-     "mae": 5.608,
+     "rmse": 6.134,
+     "mae": 5.44,
      "baseline_rmse": 6.149,
      "baseline_mae": 4.984
     },
     {
      "category": "All",
      "n": 312,
-     "rmse": 3.11,
-     "mae": 2.104,
+     "rmse": 3.025,
+     "mae": 1.973,
      "baseline_rmse": 3.95,
      "baseline_mae": 2.548
     }
@@ -71,29 +71,29 @@
    "captain": {
     "pick": "B.Fernandes",
     "pick_team": "MUN",
-    "predicted": 7.7,
+    "predicted": 6.8,
     "actual": 23,
     "best_actual": 23,
     "best_actual_player": "B.Fernandes",
     "rank_of_pick": 1
    },
    "top_ten": {
-    "average_actual": 8.3,
+    "average_actual": 6.6,
     "field_average": 2.86,
     "names": [
      "B.Fernandes",
      "Szoboszlai",
-     "Haaland",
-     "Anderson",
-     "Gibbs-White",
+     "Tavernier",
+     "Virgil",
+     "Palmer",
+     "Mbeumo",
      "Truffert",
      "Calvert-Lewin",
-     "Mbeumo",
-     "Virgil",
-     "E.Le F\u00e9e"
+     "Rogers",
+     "Justin"
     ]
    },
-   "rank_correlation": 0.257
+   "rank_correlation": 0.318
   }
  }
 }
