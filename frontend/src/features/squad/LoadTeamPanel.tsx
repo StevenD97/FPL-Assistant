@@ -15,6 +15,7 @@ import { nextChip } from "@/shared/lib/chips";
 import { DEFAULT_RISK_KEY, riskCeilingFor, type OwnershipKey } from "@/shared/lib/ownership";
 import { CaptaincyOptions } from "./components/CaptaincyOptions";
 import { ThisWeek } from "./components/ThisWeek";
+import { TransferPlan } from "./components/TransferPlan";
 import { ChipPeriodCards } from "./components/ChipPeriodCards";
 import { FixtureOutlook, fixtureOutlookSummary } from "./components/FixtureOutlook";
 import { SquadDifferentials, differentialsSummary } from "./components/SquadDifferentials";
@@ -33,8 +34,14 @@ import { useSwapPreview } from "./hooks/useSwapPreview";
 // which threw the pitch away whenever you looked at anything. Now the pitch
 // never unmounts - so a formation edit or a swap preview survives opening a
 // read - and only one deep thing is on screen at a time.
+// How many gameweeks the transfer plan solves over. Five is the same horizon
+// every other projection on this page uses, so the plan and the numbers beside
+// it are answering the question over the same window.
+const PLAN_WINDOW = 5;
+
 const READ_TITLES: Record<SquadRead, string> = {
   transfers: "Suggested transfers",
+  plan: "Best sequence",
   captaincy: "Captaincy options",
   chips: "Chip strategy",
   fixtures: "Fixture outlook",
@@ -79,7 +86,12 @@ export function LoadTeamPanel({
   /** Workspace mode: the switcher labels the team, so hide the intro + team-ID input. */
   embedded?: boolean;
 }) {
-  const [teamId, setTeamId] = useState("");
+  // Seeded from the team this panel was opened for, not left empty and filled
+  // in later. The render-time re-seed further down only fires when activeId
+  // *changes*, so an empty initial value stayed empty for the whole first
+  // load - which left the ID field blank and anything keyed on it (the
+  // sequence solver) with nothing to work from.
+  const [teamId, setTeamId] = useState(initialTeamId != null ? String(initialTeamId) : "");
   const [freeTransfers, setFreeTransfers] = useState(1);
   const [read, setRead] = useState<SquadRead | null>(null);
   // Formation edits are local state inside SquadPitch (it's the only place
@@ -182,6 +194,13 @@ export function LoadTeamPanel({
       id: "transfers",
       label: "Suggested transfers",
       summary: optimizerLoading ? "Solving…" : "The full working, and the alternatives considered",
+    },
+    {
+      id: "plan",
+      label: "Best sequence",
+      // Named to distinguish it from the Transfer Plan workspace above, which
+      // is where *you* plan. This is what the solver would do.
+      summary: `The next ${PLAN_WINDOW} gameweeks solved together, so a free transfer can roll`,
     },
     {
       id: "captaincy",
@@ -292,7 +311,7 @@ export function LoadTeamPanel({
   // derived from it - and it is re-seeded during render when activeId changes,
   // not in an effect. An effect would paint the previous team's id for a frame
   // first. Only the fetch stays in an effect, which is what an effect is for.
-  const [seededFrom, setSeededFrom] = useState(activeId);
+  const [seededFrom, setSeededFrom] = useState<number | null>(initialTeamId ?? null);
   if (seededFrom !== activeId) {
     setSeededFrom(activeId);
     if (activeId != null) setTeamId(String(activeId));
@@ -459,6 +478,10 @@ export function LoadTeamPanel({
             eyebrow={data.entry_name}
             onClose={() => setRead(null)}
           >
+            {read === "plan" && teamId && (
+              <TransferPlan teamId={Number(teamId)} gwCount={PLAN_WINDOW} freeTransfers={freeTransfers} />
+            )}
+
             {read === "transfers" && (
               <SuggestedTransfers
                 optimizer={optimizer}

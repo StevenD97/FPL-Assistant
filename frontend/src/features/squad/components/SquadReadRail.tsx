@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 export type SquadRead =
   | "transfers"
+  | "plan"
   | "captaincy"
   | "chips"
   | "fixtures"
@@ -37,6 +38,7 @@ const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: 
     bar: "bg-ink-700",
   },
   // danger, the boldest accent in the palette, for the row about bold picks.
+  plan: { icon: "text-brand", text: "text-brand", tint: "bg-brand-wash", bar: "bg-brand" },
   differentials: { icon: "text-danger", text: "text-danger", tint: "bg-danger/10", bar: "bg-danger" },
   strength: { icon: "text-info", text: "text-info", tint: "bg-info-bg", bar: "bg-info" },
   detail: { icon: "text-ink-600", text: "text-ink-600", tint: "bg-ink-100", bar: "bg-ink-600" },

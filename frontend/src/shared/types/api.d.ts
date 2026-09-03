@@ -233,6 +233,25 @@ export type OutlookFixture = {
   opponent_badge: string;
 };
 
+export type PlanPlayer = {
+  cost: number;
+  id: number;
+  position: Position;
+  team_short: string;
+  web_name: string;
+};
+
+export type PlanWeek = {
+  captain: string;
+  event: number;
+  free_transfers: number;
+  points_hit: number;
+  predicted_points: number;
+  transfers_in: PlanPlayer[];
+  transfers_made: number;
+  transfers_out: PlanPlayer[];
+};
+
 export type PlannerOpponent = {
   difficulty: number;
   is_home: boolean;
@@ -821,6 +840,16 @@ export type TeamSummary = {
   name: string;
   short_name: string;
   team_badge: string;
+};
+
+/** Response of `GET /api/squad/{team_id}/transfer-plan`. */
+export type TransferPlan = {
+  events: number[];
+  gw_count: number;
+  next_event: number;
+  total_points_hit: number;
+  total_predicted_points: number;
+  weeks: PlanWeek[];
 };
 
 /** Response of `GET /api/squad/{team_id}/optimize-transfers`. */

@@ -1,0 +1,67 @@
+{
+  "body": {
+    "events": [
+      10,
+      11
+    ],
+    "gw_count": 2,
+    "next_event": 10,
+    "total_points_hit": 0,
+    "total_predicted_points": 125.02,
+    "weeks": [
+      {
+        "captain": "Haaland",
+        "event": 10,
+        "free_transfers": 1,
+        "points_hit": 0,
+        "predicted_points": 60.52,
+        "transfers_in": [
+          {
+            "cost": 7.5,
+            "id": 13,
+            "position": "MID",
+            "team_short": "ARS",
+            "web_name": "Rice"
+          }
+        ],
+        "transfers_made": 1,
+        "transfers_out": [
+          {
+            "cost": 9.6,
+            "id": 154,
+            "position": "MID",
+            "team_short": "CHE",
+            "web_name": "Palmer"
+          }
+        ]
+      },
+      {
+        "captain": "Haaland",
+        "event": 11,
+        "free_transfers": 1,
+        "points_hit": 0,
+        "predicted_points": 64.5,
+        "transfers_in": [
+          {
+            "cost": 8.0,
+            "id": 106,
+            "position": "FWD",
+            "team_short": "BRE",
+            "web_name": "Thiago"
+          }
+        ],
+        "transfers_made": 1,
+        "transfers_out": [
+          {
+            "cost": 6.0,
+            "id": 346,
+            "position": "FWD",
+            "team_short": "LEE",
+            "web_name": "Calvert-Lewin"
+          }
+        ]
+      }
+    ]
+  },
+  "status": 200
+}

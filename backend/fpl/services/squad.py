@@ -18,12 +18,13 @@ from fpl.data.loaders import load_bootstrap
 from fpl.domain.chips import build_chip_strategy
 from fpl.domain.rationale import transfer_reason
 from fpl.domain.why_not import why_not_take_a_hit
+from fpl.optimize.horizon import plan_horizon, prune_pool
 from fpl.domain.scoring import rank_desc
 from fpl.domain.fixtures import compute_fixture_difficulty
 from fpl.domain.gameweek import get_gw_context
 from fpl.domain.media import player_photo_url, team_badge_url, team_kit_url
 from fpl.domain.squad import build_squad_analysis
-from fpl.model.predict import predict_multi_gw_breakdown, predict_multi_gw_points
+from fpl.model.predict import predict_by_event, predict_multi_gw_breakdown, predict_multi_gw_points
 from fpl.model.rules import CROSS_SEASON_HALF_LIFE_DAYS
 from fpl.optimize.squad import build_player_pool, optimize_transfers
 from fpl.services.common import attach_player_media
@@ -200,3 +201,52 @@ def squad_planner_compute(squad_element_ids, event, ref_date, next_event, gw_cou
     players = [row for pid in squad_element_ids if (row := player_trajectory_row(pid, ctx)) is not None]
     players.sort(key=lambda p: p["average_predicted_points"], reverse=True)
     return {"event": event, "next_events": next_events, "players": players}
+
+
+def transfer_plan_compute(current_squad_ids, bank, ref_date, next_event,
+                          gw_count=5, free_transfers=1):
+    """
+    A transfer plan across the next `gw_count` gameweeks, solved as one problem.
+
+    The single-gameweek optimiser is still the right answer to "what do I do
+    before this deadline". This answers the different question - what is the
+    sequence - and the two can disagree: a move that is second-best this week
+    can be the first step of the better plan. See fpl.optimize.horizon.
+
+    Per-gameweek points come from predict_by_event rather than the window
+    total, because a plan needs to know which week each player's points land
+    in. That call shares its cache with the rest of the page, so the extra
+    horizon is the solve, not the prediction.
+    """
+    next_events = list(range(next_event, next_event + gw_count))
+    bootstrap = load_bootstrap(LIVE_BOOTSTRAP_FILE)
+
+    per_event = predict_by_event(
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )
+    points_by_event = {
+        event: dict(zip(frame["id"], frame["predicted_points"]))
+        for event, frame in per_event.items()
+    }
+
+    window = predict_multi_gw_breakdown(
+        ref_date, next_events,
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )[["id", "web_name", "team_short", "position", "predicted_points",
+       "appearance_points", "fixture_count", "fixture_ticker"]]
+    pool = prune_pool(build_player_pool(window, bootstrap), current_squad_ids)
+
+    plan = plan_horizon(
+        pool, points_by_event, current_squad_ids,
+        bank=bank, free_transfers=free_transfers, events=next_events,
+    )
+    plan["gw_count"] = gw_count
+    plan["next_event"] = next_event
+    return plan

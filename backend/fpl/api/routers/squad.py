@@ -63,6 +63,26 @@ def entry_summary(team_id: int):
         raise HTTPException(status_code=502, detail=f"FPL API error: {e}")
 
 
+@router.get("/api/squad/{team_id}/transfer-plan")
+def transfer_plan(team_id: int, reference_date: Optional[str] = None,
+                  next_event: Optional[int] = None, gw_count: int = 5,
+                  free_transfers: int = 1):
+    """
+    A transfer plan across the next few gameweeks, solved as one problem rather
+    than a gameweek at a time - so a free transfer can roll and a hit can be
+    paid for by the weeks that follow it. See fpl.optimize.horizon.
+    """
+    ref_date, resolved_event = resolve_gw_params(reference_date, next_event)
+    entry = service.entry_summary(team_id)
+    picks = fetch_entry_picks(team_id, entry["gameweek"])["picks"]
+    return service.transfer_plan_compute(
+        [p["element"] for p in picks],
+        bank=(entry.get("bank") or 0.0),
+        ref_date=ref_date, next_event=resolved_event,
+        gw_count=gw_count, free_transfers=free_transfers,
+    )
+
+
 @router.get("/api/entry/{team_id}/captain-review")
 def captain_review(team_id: int, event: Optional[int] = None):
     """

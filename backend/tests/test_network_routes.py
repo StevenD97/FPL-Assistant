@@ -162,6 +162,11 @@ NETWORK_ROUTES = [
     # file; a golden cannot, because writing one after the fact is exactly what
     # the feature refuses to do.
     ("entry_captain_review", "/api/entry/123/captain-review"),
+    # Two gameweeks rather than five: the golden is here to pin the response
+    # shape and the free-transfer accounting, and a five-week solve over the
+    # full pool is not something to run on every test invocation.
+    ("squad_transfer_plan",
+     "/api/squad/123/transfer-plan?reference_date=2025-11-30&next_event=10&gw_count=2"),
 ]
 
 

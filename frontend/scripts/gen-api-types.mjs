@@ -98,6 +98,10 @@ const RESPONSES = {
     "CaptainReview",
     "GET /api/entry/{team_id}/captain-review",
   ],
+  squad_transfer_plan: [
+    "TransferPlan",
+    "GET /api/squad/{team_id}/transfer-plan",
+  ],
 };
 
 /**
@@ -114,6 +118,8 @@ const RESPONSES = {
 const RENAME = {
   Assist: "LeaderboardEntry",
   Category: "ReturnCategory",
+  TransferPlanWeek: "PlanWeek",
+  TransfersIn: "PlanPlayer",
   YourDifferential: "LeagueHolding",
   Fixture: "FixtureChip",
   Opponent: "PlannerOpponent",
