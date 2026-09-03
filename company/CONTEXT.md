@@ -146,6 +146,13 @@ in the meeting minute, not resolved by deletion.
 - 21 blog posts exist, hand-authored as Markdown files and committed.
 - A Discord invite is linked from the home page and every blog post.
 
+**Deployment (resolved 3 Sep 2026)**
+- **The frontend is hosted on Vercel.** Established from the live response headers of
+  `xfpl.co.uk`: `server: Vercel`, `x-vercel-id: iad1::...`, `x-powered-by: Next.js`.
+  Region `iad1` (US East). This was previously carried as an UNKNOWN because
+  `DEPLOYMENT.md` says only "its own host" and the repository holds no `vercel.json` —
+  the answer was in the response headers all along.
+
 **Product**
 - No user accounts. Identity is an FPL entry ID in `localStorage`. No PII stored
   server-side.
@@ -174,7 +181,6 @@ Each of these blocks a real decision. None may be filled in by assumption.
 |---|---|
 | Current traffic; whether any measurement property already exists (Search Console, host dashboard) | Every growth decision |
 | Whether any manager other than Steven has ever used the app, and what they said | Product prioritisation |
-| Where the frontend is actually hosted (`DEPLOYMENT.md` says only "its own host") | Analytics and redirect configuration |
 | Discord community size and activity | Community strategy |
 | Steven's monthly spend ceiling, if any | Infrastructure decisions; any paid tool |
 | Whether collecting email addresses is acceptable | The retention loop — the largest product gap |
