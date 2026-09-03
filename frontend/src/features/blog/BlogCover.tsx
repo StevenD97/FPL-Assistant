@@ -31,7 +31,7 @@ export function BlogCover({ cover, size = "card" }: { cover: BlogCoverData; size
 
   return (
     <div className={`relative flex items-end justify-center overflow-hidden rounded-lg ${bgClass} ${heightClass}`}>
-      <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(0,255,135,0.28),transparent_70%)]" />
+      <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(255,176,32,0.16),transparent_70%)]" />
 
       {cover.type === "player" && (
         <div className="relative flex items-end gap-2 pt-4">

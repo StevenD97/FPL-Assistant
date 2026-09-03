@@ -36,7 +36,7 @@ export default async function PriceWatchPage() {
         subtitle="How close each player is to a £0.1m price change at tonight's update (~2:30am UK), using FPL's own progress figure - refreshed every fifteen minutes. Anything at 100% is over the line; FPL can still change its mind."
         action={
           aboutToChange > 0 ? (
-            <span className="font-mono text-sm font-semibold text-pl-purple">
+            <span className="font-mono text-sm font-semibold text-text-primary">
               {aboutToChange} changing tonight
             </span>
           ) : undefined

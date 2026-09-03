@@ -238,7 +238,7 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
           {/* Proactive, not on-request: the data already exists server-side,
               so the model's own pick for right now is simply here. */}
           {optimizer && optimizer.transferred_out.length > 0 && (
-            <Card className="border-pl-purple/25 bg-pl-purple/[0.03]">
+            <Card className="border-brand/25 bg-ink-900/[0.03]">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h3 className="font-semibold text-text-primary">Recommended right now</h3>
                 <span className="text-xs text-text-muted">
@@ -264,13 +264,13 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                   return (
                     <li
                       key={outP.id}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm"
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm"
                     >
                       <div className="flex min-w-0 flex-wrap items-center gap-1.5">
                         <PlayerPhoto
                           src={outP.player_photo}
                           name={outP.web_name}
-                          className="h-7 w-7 shrink-0 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-3xs"
+                          className="h-7 w-7 shrink-0 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-xs"
                         />
                         <span className="truncate text-text-muted line-through decoration-danger/60">
                           {outP.web_name}
@@ -281,7 +281,7 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                         <PlayerPhoto
                           src={inP.player_photo}
                           name={inP.web_name}
-                          className="h-7 w-7 shrink-0 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-3xs"
+                          className="h-7 w-7 shrink-0 rounded-full border border-border-strong bg-surface-sunken object-cover object-top text-xs"
                         />
                         <span className="truncate font-medium text-text-primary">{inP.web_name}</span>
                       </div>
@@ -289,7 +289,7 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                         type="button"
                         disabled={already || original?.live_id == null || !pool}
                         onClick={() => addRecommended(outP.id, inP.id, targetGw)}
-                        className="shrink-0 rounded-md border border-pl-purple/40 px-2.5 py-1 text-xs font-semibold text-pl-purple hover:bg-pl-purple/10 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="shrink-0 rounded-md border border-brand/40 px-2.5 py-1 text-xs font-semibold text-brand hover:bg-ink-900/10 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {already ? "Added ✓" : `+ Add to GW${targetGw}`}
                       </button>
@@ -357,7 +357,7 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                       <button
                         type="button"
                         onClick={clearAll}
-                        className="font-semibold text-pl-purple hover:underline"
+                        className="font-semibold text-text-primary hover:underline"
                       >
                         Clear plan ({entries.length})
                       </button>
@@ -392,10 +392,10 @@ export function TransferPlanWorkspace({ teamId, teamName }: { teamId: number; te
                         return (
                           <li
                             key={entry.key}
-                            className="flex items-center justify-between gap-2 rounded-md border border-pl-purple/25 bg-pl-purple/5 px-2 py-1.5 text-sm"
+                            className="flex items-center justify-between gap-2 rounded-md border border-brand/25 bg-ink-900/5 px-2 py-1.5 text-sm"
                           >
                             <span className="flex min-w-0 flex-1 items-center gap-1.5">
-                              <span className="shrink-0 text-2xs font-bold uppercase tracking-wide text-pl-purple">
+                              <span className="shrink-0 text-xs font-bold uppercase tracking-wide text-text-primary">
                                 Planned
                               </span>
                               <span className="truncate text-text-muted line-through decoration-danger/60">

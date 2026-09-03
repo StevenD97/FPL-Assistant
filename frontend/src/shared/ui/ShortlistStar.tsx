@@ -26,7 +26,7 @@ export function ShortlistStar({ id, className = "" }: { id: number; className?: 
       aria-label={active ? "Remove from shortlist" : "Add to shortlist"}
       title={active ? "On your shortlist" : "Add to shortlist"}
       className={`tap-target leading-none transition-colors ${
-        active ? "text-pl-yellow" : "text-slate-300 hover:text-pl-yellow"
+        active ? "text-warning" : "text-ink-300 hover:text-warning"
       } ${className}`}
     >
       <span aria-hidden="true" className={`inline-block ${isFlashed(id) ? "animate-fpl-pop" : ""}`}>

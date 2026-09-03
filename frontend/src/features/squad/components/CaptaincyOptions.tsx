@@ -32,7 +32,7 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
             <div
               key={`${option.web_name}-${option.team_short}`}
               className={`flex items-center gap-3 rounded-lg border-l-4 border-y border-r p-3 ${
-                i === 0 ? "border-y-pl-green/40 border-r-pl-green/40 bg-pl-green/5" : "border-y-border border-r-border bg-white"
+                i === 0 ? "border-y-brand/40 border-r-brand/40 bg-brand/5" : "border-y-border border-r-border bg-surface"
               }`}
               style={{ borderLeftColor: teamColorVar(option.team_short) }}
             >
@@ -46,7 +46,7 @@ export function CaptaincyOptions({ options, squad }: { options: CaptaincyOption[
                   <span className="font-semibold text-text-primary">{option.web_name}</span>
                   <PositionBadge position={option.pos} />
                   {isCurrentCaptain && (
-                    <span className="rounded-sm bg-pl-purple px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                    <span className="rounded-sm bg-ink-900 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
                       Your captain
                     </span>
                   )}

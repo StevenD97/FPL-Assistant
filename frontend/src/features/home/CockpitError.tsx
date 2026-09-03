@@ -28,8 +28,8 @@ export function CockpitError({
       title={teamName ? `We're having trouble, ${teamName}` : "We're having trouble"}
       subtitle="This is on us, not your team. The rest of the site still works."
     >
-      <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+      <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3.5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">
           What went wrong
         </p>
         <p className="mt-1.5 text-sm text-white">{message}</p>
@@ -39,13 +39,13 @@ export function CockpitError({
         <button
           type="button"
           onClick={onRetry}
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-transform hover:scale-[1.02]"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-ink-900 transition-transform hover:scale-[1.02]"
         >
           Try again
         </button>
         <Link
           href="/players"
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-white/20 bg-surface/10 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/15"
         >
           Browse players →
         </Link>

@@ -25,10 +25,10 @@ function playersFor(club: string, squad: SquadPlayer[]): SquadPlayer[] {
 }
 
 function toneFor(avg: number | null): { label: string; text: string; dot: string } {
-  if (avg == null) return { label: "Unknown", text: "text-text-muted", dot: "bg-slate-300" };
+  if (avg == null) return { label: "Unknown", text: "text-text-muted", dot: "bg-ink-300" };
   if (avg <= EASY_FIXTURE_THRESHOLD) return { label: "Kind", text: "text-success", dot: "bg-success" };
   if (avg >= TOUGH_FIXTURE_THRESHOLD) return { label: "Tough", text: "text-danger", dot: "bg-danger" };
-  return { label: "Average", text: "text-text-secondary", dot: "bg-slate-400" };
+  return { label: "Average", text: "text-text-secondary", dot: "bg-ink-400" };
 }
 
 /**
@@ -105,20 +105,20 @@ export function FixtureOutlook({
 
       {picks.length > 0 && (
         <div className="mb-4 rounded-lg border border-success/30 bg-success-bg/40 px-3 py-2.5">
-          <p className="text-2xs font-bold uppercase tracking-[0.1em] text-success">
+          <p className="text-xs font-bold uppercase tracking-[0.1em] text-success">
             Back these through the good run
           </p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {picks.map(({ player, club, avg, xp }) => (
               <span
                 key={player.id}
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-white px-2 py-1 text-xs"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2 py-1 text-xs"
                 title={`${club} average FDR ${avg.toFixed(1)} across the ${windowLabel}`}
               >
                 <span className="font-semibold text-text-primary">{player.web_name}</span>
                 <span className="font-mono text-text-muted">{club}</span>
                 {xp != null && (
-                  <span className="font-mono font-semibold text-pl-purple">{xp.toFixed(1)} xP/GW</span>
+                  <span className="font-mono font-semibold text-text-primary">{xp.toFixed(1)} xP/GW</span>
                 )}
               </span>
             ))}
@@ -139,7 +139,7 @@ export function FixtureOutlook({
                 )}
                 <span className="min-w-0">
                   <span className="block text-sm font-semibold text-text-primary">{row.team_short}</span>
-                  <span className="block truncate text-2xs text-text-muted">
+                  <span className="block truncate text-xs text-text-muted">
                     {owned.map((p) => p.web_name).join(", ") || "—"}
                   </span>
                 </span>
@@ -150,7 +150,7 @@ export function FixtureOutlook({
                 <span className={`font-mono text-sm font-semibold ${tone.text}`}>
                   {row.avg_difficulty?.toFixed(1) ?? "—"}
                 </span>
-                <span className={`text-2xs font-bold uppercase tracking-wide ${tone.text}`}>{tone.label}</span>
+                <span className={`text-xs font-bold uppercase tracking-wide ${tone.text}`}>{tone.label}</span>
               </span>
 
               <span className="flex flex-wrap gap-1">

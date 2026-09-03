@@ -19,8 +19,8 @@ export function ConnectTeamPrompt({
 }) {
   const { promptConnect, connect, status } = useTeam();
   return (
-    <div className="rounded-lg border border-border bg-white p-6 text-center shadow-sm">
-      <h2 className="text-md font-bold text-pl-purple">{title}</h2>
+    <div className="rounded-lg border border-border bg-surface p-6 text-center shadow-sm">
+      <h2 className="text-md font-bold text-text-primary">{title}</h2>
       <p className="mx-auto mt-1.5 max-w-md text-sm text-text-secondary">{body}</p>
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         <Button variant="accent" onClick={promptConnect}>

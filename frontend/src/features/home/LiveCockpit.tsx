@@ -105,12 +105,12 @@ export function LiveCockpit({
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
         {/* The XI, straight on the landing page - the thing a manager actually
             wants to look at. */}
-        <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3">
+        <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">
+            <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">
               Your starting XI
             </p>
-            <Link href="/squad" className="tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline">
+            <Link href="/squad" className="tap-target inline-flex items-center text-[11px] font-semibold text-text-primary hover:underline">
               Open workspace →
             </Link>
           </div>
@@ -124,17 +124,17 @@ export function LiveCockpit({
           {topTransfer && (
             <Panel tone="hero" title="Suggested transfer" href="/squad" cta="See all">
               <div className="flex items-center gap-2 text-sm">
-                {/* pl-pink, not the --danger token: that one is tuned for text
+                {/* danger, not the --danger token: that one is tuned for text
                     on white and drops to unreadable on the purple hero. */}
-                <span className="min-w-0 flex-1 truncate text-pl-pink">
+                <span className="min-w-0 flex-1 truncate text-danger">
                   ↓ {topTransfer.out?.web_name}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-right font-semibold text-pl-green">
+                <span className="min-w-0 flex-1 truncate text-right font-semibold text-text-primary">
                   ↑ {topTransfer.in?.web_name}
                 </span>
               </div>
               {transfers && (
-                <p className="mt-1 text-[11px] text-[#c9a9d1]">
+                <p className="mt-1 text-[11px] text-ink-300">
                   {transfers.transfers_made} transfer
                   {transfers.transfers_made === 1 ? "" : "s"}
                   {transfers.points_hit > 0 ? ` · -${transfers.points_hit} hit` : " · no hit"}
@@ -146,9 +146,9 @@ export function LiveCockpit({
           {chip && (
             <Panel tone="hero" title="Chip timing" href="/squad" cta="Full scan">
               <p className="text-sm font-semibold text-white">
-                {chip.name} <span className="text-pl-green">· GW{chip.event}</span>
+                {chip.name} <span className="text-text-primary">· GW{chip.event}</span>
               </p>
-              <p className="mt-0.5 truncate text-[11px] text-[#c9a9d1]">{chip.detail}</p>
+              <p className="mt-0.5 truncate text-[11px] text-ink-300">{chip.detail}</p>
             </Panel>
           )}
 
@@ -161,7 +161,7 @@ export function LiveCockpit({
                     className="flex items-center justify-between gap-3 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
                   >
                     <span className="min-w-0 truncate text-white">{l.name}</span>
-                    <span className="shrink-0 font-mono text-xs font-semibold text-pl-green">
+                    <span className="shrink-0 font-mono text-xs font-semibold text-text-primary">
                       {l.entry_rank > 0 ? formatRank(l.entry_rank) : "—"}
                     </span>
                   </li>
@@ -181,10 +181,10 @@ export function LiveCockpit({
                     <PlayerPhoto
                       src={p.player_photo}
                       name={p.web_name}
-                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-white/10 object-cover object-top text-[8px]"
+                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-[8px]"
                     />
                     <span className="min-w-0 flex-1 truncate text-white">{p.web_name}</span>
-                    <span className="shrink-0 text-[11px] text-[#c9a9d1]">
+                    <span className="shrink-0 text-[11px] text-ink-300">
                       {p.pos} · {p.team_short}
                     </span>
                   </li>
@@ -204,7 +204,7 @@ export function LiveCockpit({
                     <TeamBadge teamShort={m.team_short} name={m.web_name} badgeUrl={m.team_badge} />
                     <span
                       className={`shrink-0 font-mono text-xs font-semibold ${
-                        m.direction === "rising" ? "text-pl-green" : "text-pl-pink"
+                        m.direction === "rising" ? "text-text-primary" : "text-danger"
                       }`}
                     >
                       {m.direction === "rising" ? "+" : "-"}

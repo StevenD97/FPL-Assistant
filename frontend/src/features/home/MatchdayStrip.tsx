@@ -19,10 +19,10 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Sc
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-purple/60">
+        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary/60">
           Gameweek {event} · matchday
         </span>
-        <Link href="/matches" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
+        <Link href="/matches" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
           Full schedule →
         </Link>
       </div>
@@ -32,7 +32,7 @@ export function MatchdayStrip({ event, fixtures }: { event: number; fixtures: Sc
           return (
             <div
               key={i}
-              className="flex min-w-[136px] shrink-0 flex-col items-center gap-1.5 rounded-lg border border-border bg-white p-3 shadow-sm"
+              className="flex min-w-[136px] shrink-0 flex-col items-center gap-1.5 rounded-lg border border-border bg-surface p-3 shadow-sm"
             >
               <div className="flex items-center gap-2">
                 <Badge src={f.team_h_badge} alt={f.team_h} />

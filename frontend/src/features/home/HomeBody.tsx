@@ -30,7 +30,7 @@ export function HomeBody({ workedExample }: { workedExample?: React.ReactNode })
       {shortlist.length > 0 && (
         <Card className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="text-lg text-pl-yellow" aria-hidden="true">
+            <span className="text-lg text-warning" aria-hidden="true">
               ★
             </span>
             <span className="text-sm text-text-secondary">
@@ -38,7 +38,7 @@ export function HomeBody({ workedExample }: { workedExample?: React.ReactNode })
               {shortlist.length === 1 ? "" : "s"} on your shortlist
             </span>
           </div>
-          <Link href="/players?view=shortlist" className="text-sm font-semibold text-pl-purple hover:underline">
+          <Link href="/players?view=shortlist" className="text-sm font-semibold text-text-primary hover:underline">
             View shortlist →
           </Link>
         </Card>

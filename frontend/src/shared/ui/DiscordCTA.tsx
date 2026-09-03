@@ -52,7 +52,7 @@ export function DiscordCTA({
         href={DISCORD_INVITE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className={`flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 p-3 text-[11px] font-semibold text-[#d9c4de] transition-colors hover:bg-white/10 hover:text-white ${className}`}
+        className={`flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-surface/5 p-3 text-[11px] font-semibold text-ink-200 transition-colors hover:bg-surface/10 hover:text-white ${className}`}
       >
         <DiscordIcon className="h-5 w-5" style={{ color: DISCORD_BLURPLE }} />
         <span className="text-center leading-tight">Discord</span>

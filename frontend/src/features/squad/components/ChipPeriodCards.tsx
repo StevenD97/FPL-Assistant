@@ -42,18 +42,18 @@ function ChipCard({
   return (
     <Card className="relative overflow-hidden">
       <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1 ${accentClass}`} />
-      <p className="flex items-center gap-1 text-2xs font-semibold uppercase tracking-wide text-text-muted">
+      <p className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text-muted">
         {label} <InfoTooltip term={tooltip} />
       </p>
       <p
-        className={`mt-1 text-md font-bold ${tone === "play" ? "text-pl-purple" : "text-text-secondary"}`}
+        className={`mt-1 text-md font-bold ${tone === "play" ? "text-text-primary" : "text-text-secondary"}`}
       >
         {verdict}
       </p>
       {detail && <p className="mt-0.5 text-xs text-text-secondary">{detail}</p>}
       {why && (
         <details className="group mt-2">
-          <summary className="cursor-pointer list-none text-2xs font-semibold uppercase tracking-wide text-pl-purple hover:underline">
+          <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-wide text-text-primary hover:underline">
             Why <span className="inline-block transition-transform group-open:rotate-90">›</span>
           </summary>
           <p className="mt-1.5 text-xs leading-relaxed text-text-secondary">{why}</p>
@@ -65,7 +65,7 @@ function ChipCard({
 
 const CHIP_ACCENT = {
   benchBoost: "bg-success",
-  tripleCaptain: "bg-pl-purple",
+  tripleCaptain: "bg-ink-900",
   freeHit: "bg-warning",
   wildcard: "bg-info",
 } as const;

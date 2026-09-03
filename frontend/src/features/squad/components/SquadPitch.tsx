@@ -237,7 +237,7 @@ export function SquadPitch({
           onClick={() => onUndoSwap(originalLiveId)}
           aria-label={`Undo swap - restore ${original.web_name}`}
           title={`Undo - restore ${original.web_name}`}
-          className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-pl-purple shadow ring-2 ring-pl-purple transition-transform hover:scale-110"
+          className="flex h-5 w-5 items-center justify-center rounded-full bg-surface text-brand shadow ring-2 ring-brand transition-transform hover:scale-110"
         >
           <span aria-hidden="true" className="text-xs leading-none">
             ↺
@@ -247,7 +247,7 @@ export function SquadPitch({
     }
     if (swapLoading[originalLiveId]) {
       return (
-        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[9px] text-text-muted shadow ring-2 ring-border">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface text-[9px] text-text-muted shadow ring-2 ring-border">
           …
         </span>
       );
@@ -287,12 +287,12 @@ export function SquadPitch({
         </p>
         <div className="flex items-center gap-3 text-xs">
           {isDirty && (
-            <button type="button" onClick={reset} className="text-pl-purple underline">
+            <button type="button" onClick={reset} className="text-brand underline">
               Reset formation
             </button>
           )}
           {captainEditor.isDirty && (
-            <button type="button" onClick={captainEditor.reset} className="text-pl-purple underline">
+            <button type="button" onClick={captainEditor.reset} className="text-brand underline">
               Reset captain
             </button>
           )}
@@ -301,8 +301,8 @@ export function SquadPitch({
             onClick={toggleEdit}
             className={`tap-target rounded-md border px-2.5 py-1 font-medium ${
               editingFormation
-                ? "border-pl-purple bg-pl-purple text-white"
-                : "border-border text-text-secondary hover:border-pl-purple hover:text-pl-purple"
+                ? "border-brand bg-ink-900 text-white"
+                : "border-border text-text-secondary hover:border-brand hover:text-brand"
             }`}
           >
             {editingFormation ? "Done" : "Edit formation"}
@@ -321,7 +321,7 @@ export function SquadPitch({
         <div className="mb-2 flex flex-col gap-1 text-xs text-text-muted">
           <p className="flex flex-wrap items-center gap-2">
             {pendingCount > 0 && (
-              <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 font-medium text-pl-purple">
+              <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 font-medium text-text-primary">
                 {pendingCount} transfer{pendingCount === 1 ? "" : "s"} previewed
               </span>
             )}
@@ -341,7 +341,7 @@ export function SquadPitch({
             )}
             not submitted to FPL - make the real change on the official app before your deadline.
             {pendingCount > 0 && (
-              <button type="button" onClick={onResetSwaps} className="text-pl-purple underline">
+              <button type="button" onClick={onResetSwaps} className="text-brand underline">
                 Reset all
               </button>
             )}
@@ -401,13 +401,13 @@ export function SquadPitch({
                     <PlayerPhoto
                       src={p.player_photo}
                       name={p.web_name}
-                      className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
+                      className={`size-10 rounded-full border-2 bg-surface object-cover object-top text-xs ${
                         selectedId === p.id
-                          ? "border-pl-green ring-4 ring-pl-green ring-offset-2"
+                          ? "border-brand ring-4 ring-brand ring-offset-2"
                           : "border-border-strong"
                       }`}
                     />
-                    <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
+                    <span className="whitespace-nowrap text-xs font-medium text-text-primary">{p.web_name}</span>
                   </button>
                 ) : (
                   // Bench players peek too - the same tap doing two different
@@ -422,11 +422,11 @@ export function SquadPitch({
                     <PlayerPhoto
                       src={p.player_photo}
                       name={p.web_name}
-                      className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
-                        swapped ? "border-pl-purple ring-4 ring-pl-purple ring-offset-2" : "border-border-strong"
+                      className={`size-10 rounded-full border-2 bg-surface object-cover object-top text-xs ${
+                        swapped ? "border-brand ring-4 ring-brand ring-offset-2" : "border-border-strong"
                       }`}
                     />
-                    <span className="whitespace-nowrap text-2xs font-medium text-text-primary">{p.web_name}</span>
+                    <span className="whitespace-nowrap text-xs font-medium text-text-primary">{p.web_name}</span>
                   </button>
                 )}
               </div>

@@ -28,10 +28,10 @@ export function StatBar({ items, className = "" }: { items: StatBarItem[]; class
       className={`grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border shadow-sm sm:grid-cols-4 ${className}`}
     >
       {items.map((item, i) => (
-        <div key={item.label} className="relative bg-white px-4 pb-3 pt-3.5">
+        <div key={item.label} className="relative bg-surface px-4 pb-3 pt-3.5">
           {/* Accent on the headline only - it establishes which number to read
               first without colour-coding all four into noise. */}
-          {i === 0 && <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-pl-purple" />}
+          {i === 0 && <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-ink-900" />}
           <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.09em] text-text-muted">
             {item.label}
             {(item.tooltip || item.tooltipText) && (
@@ -39,7 +39,7 @@ export function StatBar({ items, className = "" }: { items: StatBarItem[]; class
             )}
           </dt>
           <dd
-            className={`mt-1 font-mono font-bold tabular-nums text-pl-purple ${
+            className={`mt-1 font-mono font-bold tabular-nums text-text-primary ${
               i === 0 ? "text-2xl leading-none" : "text-md leading-tight"
             }`}
           >

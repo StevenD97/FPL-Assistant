@@ -14,7 +14,7 @@ import type { Insight, Tone } from "../diagnostics";
 const TONE_META: Record<Tone, { label: string; barClass: string; textClass: string }> = {
   positive: { label: "Strength", barClass: "bg-success", textClass: "text-success" },
   warning: { label: "Needs attention", barClass: "bg-warning", textClass: "text-warning" },
-  info: { label: "Worth knowing", barClass: "bg-pl-purple", textClass: "text-pl-purple" },
+  info: { label: "Worth knowing", barClass: "bg-ink-900", textClass: "text-text-primary" },
 };
 
 // Minutes-share readout for rotation-risk cards - a filled bar reads faster
@@ -54,7 +54,7 @@ function InsightStat({ stat }: { stat: NonNullable<Insight["stat"]> }) {
 function InsightCard({ insight, onAddPlayer }: { insight: Insight; onAddPlayer: (id: number) => void }) {
   const meta = TONE_META[insight.tone];
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border bg-white p-5 shadow-sm">
+    <div className="relative overflow-hidden rounded-lg border border-border bg-surface p-5 shadow-sm">
       <span className={`absolute inset-x-0 top-0 h-1 ${meta.barClass}`} aria-hidden="true" />
       <div className="flex items-start gap-3">
         {insight.badgeUrl && (
@@ -81,7 +81,7 @@ function InsightCard({ insight, onAddPlayer }: { insight: Insight; onAddPlayer: 
                   key={p.id}
                   type="button"
                   onClick={() => onAddPlayer(p.id)}
-                  className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                  className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-ink-050"
                 >
                   + {p.web_name} ({p.team_short}, £{p.cost.toFixed(1)}m, {p.predicted_points.toFixed(1)} pts)
                 </button>

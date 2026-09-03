@@ -103,15 +103,15 @@ export function WaitingCockpit({
                 <PlayerPhoto
                   src={p.player_photo}
                   name={p.web_name}
-                  className="h-7 w-7 shrink-0 rounded-full border border-white/20 bg-white/10 object-cover object-top text-[8px]"
+                  className="h-7 w-7 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-[8px]"
                 />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
                   {p.web_name}
                 </span>
-                <span className="shrink-0 text-[11px] text-[#c9a9d1]">
+                <span className="shrink-0 text-[11px] text-ink-300">
                   {p.team_short} · £{p.cost.toFixed(1)}m
                 </span>
-                <span className="shrink-0 font-mono text-sm font-bold text-pl-green">
+                <span className="shrink-0 font-mono text-sm font-bold text-text-primary">
                   {p.predicted_points.toFixed(1)}
                 </span>
               </li>
@@ -146,7 +146,7 @@ export function WaitingCockpit({
 
       <Link
         href="/squad"
-        className="inline-flex w-fit items-center gap-2 rounded-lg bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-transform hover:scale-[1.02]"
+        className="inline-flex w-fit items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-bold text-ink-900 transition-transform hover:scale-[1.02]"
       >
         {drafted > 0
           ? "Continue your draft"
@@ -171,10 +171,10 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/15 bg-white/[0.07] p-3.5">
+    <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3.5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#c9a9d1]">{title}</p>
-        <Link href={href} className="tap-target inline-flex items-center text-[11px] font-semibold text-pl-green hover:underline">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink-300">{title}</p>
+        <Link href={href} className="tap-target inline-flex items-center text-[11px] font-semibold text-text-primary hover:underline">
           {cta} →
         </Link>
       </div>

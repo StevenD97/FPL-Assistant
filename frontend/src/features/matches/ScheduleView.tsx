@@ -56,7 +56,7 @@ export function ScheduleView({ fixtures }: { fixtures: ScheduleFixture[] }) {
                 return (
                   <div
                     key={i}
-                    className="flex items-center gap-2 rounded-lg border border-border bg-white px-4 py-3 text-sm shadow-sm"
+                    className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-sm shadow-sm"
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-2">
                       <TeamBadge teamShort={fx.team_h} name={fx.team_h} badgeUrl={fx.team_h_badge} />

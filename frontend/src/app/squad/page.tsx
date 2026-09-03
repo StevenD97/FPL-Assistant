@@ -151,7 +151,7 @@ export default function SquadPage() {
             <button
               type="button"
               onClick={promptConnect}
-              className="shrink-0 rounded-xl border border-dashed border-pl-purple/40 bg-white px-3.5 py-2 text-left text-sm font-semibold text-pl-purple transition-colors hover:bg-pl-purple/5"
+              className="shrink-0 rounded-xl border border-dashed border-brand/40 bg-surface px-3.5 py-2 text-left text-sm font-semibold text-brand transition-colors hover:bg-ink-900/5"
             >
               ＋ Connect your team
             </button>
@@ -227,7 +227,7 @@ export default function SquadPage() {
               setAddError(null);
             }}
             aria-expanded={adding}
-            className="tap-target min-h-[44px] shrink-0 rounded-xl border border-border bg-white px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+            className="tap-target min-h-[44px] shrink-0 rounded-xl border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-brand/40 hover:text-brand"
           >
             ＋ Add
           </button>
@@ -244,9 +244,9 @@ export default function SquadPage() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="grid gap-4 rounded-xl border border-border bg-white p-3 shadow-sm md:grid-cols-2">
+            <div className="grid gap-4 rounded-xl border border-border bg-surface p-3 shadow-sm md:grid-cols-2">
               <form onSubmit={handleTrack}>
-                <p className="mb-2 text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
                   Track a team from FPL
                 </p>
                 {atTrackLimit ? (
@@ -274,7 +274,7 @@ export default function SquadPage() {
               </form>
 
               <div className="md:border-l md:border-border md:pl-4">
-                <p className="mb-2 text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
                   Build one yourself
                 </p>
                 <p className="mb-2 text-xs text-text-secondary">
@@ -353,20 +353,20 @@ function TeamChip({
         onClick={onClick}
         className={`relative flex shrink-0 items-center gap-2.5 rounded-xl border px-3.5 py-2 text-left transition-colors ${
           active
-            ? "border-pl-purple bg-pl-purple text-white"
-            : "border-border bg-white text-text-primary hover:border-pl-purple/40"
+            ? "border-brand bg-ink-900 text-white"
+            : "border-border bg-surface text-text-primary hover:border-brand/40"
         } ${onRemove ? "pr-8" : ""}`}
       >
         {active && (
           <motion.span
             layoutId="squad-active-chip"
-            className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-pl-green"
+            className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-brand"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}
         <span
           className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-sm ${
-            active ? "bg-white/15 text-pl-green" : "bg-surface-sunken text-pl-purple"
+            active ? "bg-surface/15 text-brand" : "bg-surface-sunken text-brand"
           }`}
           aria-hidden="true"
         >
@@ -375,7 +375,7 @@ function TeamChip({
         <span className="flex flex-col leading-tight">
           <span className="max-w-[160px] truncate text-sm font-semibold">{label}</span>
           <span
-            className={`text-3xs font-bold uppercase tracking-wide ${active ? "text-white/60" : "text-text-muted"}`}
+            className={`text-xs font-bold uppercase tracking-wide ${active ? "text-white/60" : "text-text-muted"}`}
           >
             {sublabel}
           </span>
@@ -388,7 +388,7 @@ function TeamChip({
           aria-label={`${removeLabel} ${label}`}
           className={`absolute right-1.5 top-1/2 grid h-5 w-5 -translate-y-1/2 place-items-center rounded-full text-xs transition-colors ${
             active
-              ? "text-white/70 hover:bg-white/20 hover:text-white"
+              ? "text-white/70 hover:bg-surface/20 hover:text-white"
               : "text-text-muted hover:bg-surface-sunken hover:text-danger"
           }`}
         >

@@ -32,11 +32,11 @@ function hardestDifficulty(cell: PlanCell): number | null {
  */
 function difficultyClass(difficulty: number | null, isBlank: boolean): string {
   if (isBlank) return "bg-danger text-white";
-  if (difficulty == null) return "bg-black/20 text-white";
+  if (difficulty == null) return "bg-ink-900/20 text-white";
   if (difficulty >= 5) return "bg-danger text-white";
   if (difficulty === 4) return "bg-danger/70 text-white";
   if (difficulty <= 2) return "bg-success text-white";
-  return "bg-black/25 text-white";
+  return "bg-ink-900/25 text-white";
 }
 
 function toPitchPlayer(row: SlotRow, cell: PlanCell): PitchPlayer {
@@ -95,7 +95,7 @@ export function PlanPitch({
           if (!isBlank && (difficulty == null || difficulty < 4)) return null;
           return (
             <span
-              className={`flex size-5 items-center justify-center rounded-full text-3xs font-bold shadow ring-2 ring-white ${
+              className={`flex size-5 items-center justify-center rounded-full text-xs font-bold shadow ring-2 ring-white ${
                 isBlank ? "bg-danger text-white" : "bg-warning text-white"
               }`}
               title={
@@ -131,16 +131,16 @@ export function PlanPitch({
                 <PlayerPhoto
                   src={cell.occupant.player_photo}
                   name={cell.occupant.web_name}
-                  className={`size-10 rounded-full border-2 bg-white object-cover object-top text-3xs ${
-                    cell.isOriginalOccupant ? "" : "ring-4 ring-pl-purple ring-offset-2"
+                  className={`size-10 rounded-full border-2 bg-surface object-cover object-top text-xs ${
+                    cell.isOriginalOccupant ? "" : "ring-4 ring-brand ring-offset-2"
                   }`}
                   style={{ borderColor: teamColorVar(cell.occupant.team_short) }}
                 />
-                <span className="whitespace-nowrap text-2xs font-medium text-text-primary">
+                <span className="whitespace-nowrap text-xs font-medium text-text-primary">
                   {cell.occupant.web_name}
                 </span>
                 <span
-                  className={`whitespace-nowrap rounded-sm px-1.5 py-0.5 font-mono text-3xs ${difficultyClass(
+                  className={`whitespace-nowrap rounded-sm px-1.5 py-0.5 font-mono text-xs ${difficultyClass(
                     difficulty,
                     isBlank,
                   )}`}

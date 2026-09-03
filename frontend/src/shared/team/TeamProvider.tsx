@@ -223,9 +223,9 @@ function ConnectTeamDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="animate-fpl-fade absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
-      <div className="animate-fpl-fade relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-        <h2 className="text-md font-bold text-pl-purple">Connect your team</h2>
+      <div className="animate-fpl-fade absolute inset-0 bg-ink-900/50" onClick={onClose} aria-hidden="true" />
+      <div className="animate-fpl-fade relative w-full max-w-md rounded-lg bg-surface p-6 shadow-lg">
+        <h2 className="text-md font-bold text-text-primary">Connect your team</h2>
         <p className="mt-1 text-sm text-text-secondary">
           Paste your FPL team URL or ID. It&apos;s saved on this device only — no login or password.
         </p>

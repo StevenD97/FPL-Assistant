@@ -12,7 +12,7 @@ export function Card({ padded = true, active = false, className = "", children, 
   return (
     <div
       {...rest}
-      className={`rounded-lg border bg-white shadow-sm ${active ? "border-pl-purple" : "border-border"} ${
+      className={`rounded-lg border bg-surface shadow-sm ${active ? "border-brand" : "border-border"} ${
         padded ? "p-5" : ""
       } ${className}`}
     >
@@ -42,7 +42,7 @@ export function StatTile({
         {label}
         {(tooltip || tooltipText) && <InfoTooltip term={tooltip} text={tooltipText} />}
       </span>
-      <span className="font-mono text-md font-bold text-pl-purple">{value}</span>
+      <span className="font-mono text-md font-bold text-text-primary">{value}</span>
     </div>
   );
 }

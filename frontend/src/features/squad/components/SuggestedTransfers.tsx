@@ -85,7 +85,7 @@ export function SuggestedTransfers({
             <button
               type="button"
               onClick={() => applyTransferCount("")}
-              className="text-pl-purple underline"
+              className="text-text-primary underline"
             >
               Reset to auto
             </button>

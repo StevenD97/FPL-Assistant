@@ -158,7 +158,7 @@ export function PitchFormation({
         <div className="pointer-events-none absolute inset-4 rounded-lg border-2 border-white/25" />
         <div className="pointer-events-none absolute left-4 right-4 top-1/2 -translate-y-1/2 border-t-2 border-white/25" />
         <div className="pointer-events-none absolute left-1/2 top-1/2 size-[clamp(5rem,21.5cqw,7rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/25" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-surface/40" />
         <div className="pointer-events-none absolute left-1/2 top-4 h-[clamp(3.5rem,15.4cqw,5rem)] w-[clamp(9rem,43cqw,14rem)] -translate-x-1/2 border-2 border-t-0 border-white/25" />
         <div className="pointer-events-none absolute bottom-4 left-1/2 h-[clamp(3.5rem,15.4cqw,5rem)] w-[clamp(9rem,43cqw,14rem)] -translate-x-1/2 border-2 border-b-0 border-white/25" />
 
@@ -195,11 +195,11 @@ function EmptySlot({ position, onClick }: { position: Position; onClick?: (posit
   const inner = (
     <>
       <span
-        className={`${DISC} flex items-center justify-center rounded-full border-2 border-dashed border-white/45 bg-white/5 text-3xs font-bold text-white/70 transition-colors group-hover:border-pl-green group-hover:bg-white/10 @[520px]/pitch:text-xs`}
+        className={`${DISC} flex items-center justify-center rounded-full border-2 border-dashed border-white/45 bg-surface/5 text-xs font-bold text-white/70 transition-colors group-hover:border-brand group-hover:bg-surface/10 @[520px]/pitch:text-xs`}
       >
         {position}
       </span>
-      <span className="whitespace-nowrap rounded-sm bg-white/[0.14] px-2 py-0.5 text-2xs font-medium text-white/70">
+      <span className="whitespace-nowrap rounded-sm bg-surface/[0.14] px-2 py-0.5 text-xs font-medium text-white/70">
         Add {position}
       </span>
     </>
@@ -230,13 +230,13 @@ function PitchPlayerCard({
   const badge = (
     <div
       className={`relative rounded-full ${
-        p.selected ? "ring-4 ring-pl-green ring-offset-2" : p.swapped ? "ring-4 ring-pl-purple ring-offset-2" : ""
+        p.selected ? "ring-4 ring-brand ring-offset-2" : p.swapped ? "ring-4 ring-brand ring-offset-2" : ""
       } ${p.burst ? BURST_CLASS[p.burst] : ""}`}
     >
       <PlayerPhoto
         src={p.photo}
         name={p.name}
-        className={`${DISC} rounded-full border-[3px] bg-white object-cover object-top text-2xs shadow-md @[520px]/pitch:text-sm`}
+        className={`${DISC} rounded-full border-[3px] bg-surface object-cover object-top text-xs shadow-md @[520px]/pitch:text-sm`}
         style={{ borderColor: teamColorVar(p.teamShort) }}
       />
       {p.teamKit && (
@@ -244,11 +244,11 @@ function PitchPlayerCard({
         <img
           src={p.teamKit}
           alt={p.teamShort}
-          className="absolute -bottom-1 -right-1 size-[clamp(1.25rem,4.6cqw,1.5rem)] rounded-full border border-white bg-white object-contain shadow"
+          className="absolute -bottom-1 -right-1 size-[clamp(1.25rem,4.6cqw,1.5rem)] rounded-full border border-white bg-surface object-contain shadow"
         />
       )}
       {(p.isCaptain || p.isViceCaptain) && (
-        <span className="absolute -left-1 -top-1 flex size-[clamp(1.125rem,3.85cqw,1.25rem)] items-center justify-center rounded-full bg-pl-green text-3xs font-bold text-pl-purple shadow">
+        <span className="absolute -left-1 -top-1 flex size-[clamp(1.125rem,3.85cqw,1.25rem)] items-center justify-center rounded-full bg-brand text-xs font-bold text-ink-900 shadow">
           {p.isCaptain ? "C" : "V"}
         </span>
       )}
@@ -258,13 +258,13 @@ function PitchPlayerCard({
   const content = (
     <>
       {badge}
-      <span className="whitespace-nowrap rounded-sm bg-white/[0.92] px-2 py-0.5 text-2xs font-medium text-text-primary">
+      <span className="whitespace-nowrap rounded-sm bg-surface/[0.92] px-2 py-0.5 text-xs font-medium text-text-primary">
         {p.name}
       </span>
       {p.subtitle && (
         <span
-          className={`whitespace-nowrap rounded-sm px-1.5 py-0.5 font-mono text-3xs ${
-            p.subtitleClassName ?? "bg-black/20 text-white"
+          className={`whitespace-nowrap rounded-sm px-1.5 py-0.5 font-mono text-xs ${
+            p.subtitleClassName ?? "bg-ink-900/20 text-white"
           }`}
         >
           {p.subtitle}

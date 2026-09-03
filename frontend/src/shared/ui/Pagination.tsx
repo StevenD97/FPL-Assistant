@@ -39,8 +39,8 @@ function PageButton({
       aria-current={active ? "page" : undefined}
       className={`min-w-9 rounded-md border px-2.5 py-1.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
         active
-          ? "border-pl-purple bg-pl-purple text-white"
-          : "border-border bg-white text-text-secondary hover:border-pl-purple/40 hover:text-pl-purple"
+          ? "border-brand bg-ink-900 text-white"
+          : "border-border bg-surface text-text-secondary hover:border-brand/40 hover:text-brand"
       }`}
     >
       {children}

@@ -38,7 +38,7 @@ export function PageHeader({
         {eyebrow && (
           <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-muted">{eyebrow}</span>
         )}
-        <h1 className="text-lg font-bold tracking-tight text-pl-purple">{title}</h1>
+        <h1 className="text-lg font-bold tracking-tight text-text-primary">{title}</h1>
         {/* Hidden on a phone. A page subtitle is orientation copy for someone
             deciding whether they are in the right place; on a 390px screen it
             is a paragraph between the reader and the thing they came for, and

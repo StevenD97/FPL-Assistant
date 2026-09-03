@@ -59,12 +59,12 @@ export function PlanGameweekBar({
             onClick={() => onSelect(w.event)}
             className={`flex min-w-[7rem] flex-1 flex-col items-center gap-0.5 rounded-lg border px-2 py-2.5 transition-colors duration-fast ease-standard ${
               isSelected
-                ? "border-pl-purple bg-pl-purple text-white shadow-sm"
-                : "border-border bg-white hover:border-pl-purple/40"
+                ? "border-brand bg-ink-900 text-white shadow-sm"
+                : "border-border bg-surface hover:border-brand/40"
             }`}
           >
             <span
-              className={`text-2xs font-bold uppercase tracking-[0.08em] ${
+              className={`text-xs font-bold uppercase tracking-[0.08em] ${
                 isSelected ? "text-white/70" : "text-text-muted"
               }`}
             >
@@ -83,8 +83,8 @@ export function PlanGameweekBar({
             <span className="flex min-h-[16px] flex-wrap items-center justify-center gap-1">
               {transfers > 0 && (
                 <span
-                  className={`rounded-sm px-1 py-0.5 text-3xs font-bold ${
-                    isSelected ? "bg-white/20 text-white" : "bg-pl-purple/10 text-pl-purple"
+                  className={`rounded-sm px-1 py-0.5 text-xs font-bold ${
+                    isSelected ? "bg-surface/20 text-white" : "bg-ink-900/10 text-text-primary"
                   }`}
                   title={`${transfers} transfer${transfers === 1 ? "" : "s"} planned`}
                 >
@@ -93,7 +93,7 @@ export function PlanGameweekBar({
               )}
               {hit > 0 && (
                 <span
-                  className={`font-mono text-3xs font-bold ${isSelected ? "text-white" : "text-danger"}`}
+                  className={`font-mono text-xs font-bold ${isSelected ? "text-white" : "text-danger"}`}
                   title={`${hit}-point hit for transfers beyond your free ones`}
                 >
                   -{hit}
@@ -101,7 +101,7 @@ export function PlanGameweekBar({
               )}
               {w.flagged && (
                 <span
-                  className={`font-mono text-3xs font-bold ${isSelected ? "text-white" : "text-warning"}`}
+                  className={`font-mono text-xs font-bold ${isSelected ? "text-white" : "text-warning"}`}
                   title={
                     w.flagged.blankCount >= w.flagged.doubleCount
                       ? `${w.flagged.blankCount} of your squad blank this week`
@@ -115,7 +115,7 @@ export function PlanGameweekBar({
               )}
               {w.delta !== 0 && (
                 <span
-                  className={`font-mono text-3xs font-bold ${
+                  className={`font-mono text-xs font-bold ${
                     isSelected ? "text-white/90" : w.delta > 0 ? "text-success" : "text-danger"
                   }`}
                   title="Change against this week with no plan at all"

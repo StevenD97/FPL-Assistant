@@ -99,13 +99,13 @@ export function SquadDetailTable({
             const expanded = openRow === original.position;
             return (
               <Fragment key={original.position}>
-                <tr className={`border-t border-border ${preview ? "bg-pl-purple/5" : ""}`}>
+                <tr className={`border-t border-border ${preview ? "bg-ink-900/5" : ""}`}>
                   <td className={`cell-primary border-l-4 px-3 py-2.5 ${POSITION_BORDER[p.pos]}`}>
                     <span className="flex flex-wrap items-center gap-2">
                       <PlayerPhoto
                         src={p.player_photo}
                         name={p.web_name}
-                        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+                        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-surface object-cover object-top text-xs"
                       />
                       <span className="font-medium">
                         <PlayerLink id={p.live_id}>{p.web_name}</PlayerLink> {p.captain_flag}
@@ -113,7 +113,7 @@ export function SquadDetailTable({
                       <PositionBadge position={p.pos} />
                       <TeamBadge teamShort={p.team_short} name={p.team_short} badgeUrl={p.team_badge} />
                       {preview && (
-                        <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pl-purple">
+                        <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-text-primary">
                           Preview
                         </span>
                       )}
@@ -122,7 +122,7 @@ export function SquadDetailTable({
                   <td data-label="Role" className="px-3 py-2.5">
                     {p.role}
                   </td>
-                  <td data-label="Score" className="px-3 py-2.5 font-mono font-semibold text-pl-purple">
+                  <td data-label="Score" className="px-3 py-2.5 font-mono font-semibold text-text-primary">
                     {preview ? "—" : p.recommendation_score.toFixed(3)}
                   </td>
                   <td data-label="EP next" className="px-3 py-2.5 font-mono">
@@ -134,7 +134,7 @@ export function SquadDetailTable({
                         type="button"
                         onClick={() => setOpenRow(expanded ? null : original.position)}
                         aria-expanded={expanded}
-                        className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                        className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
                       >
                         {expanded ? "Hide" : "More"}
                       </button>
@@ -142,7 +142,7 @@ export function SquadDetailTable({
                         <button
                           type="button"
                           onClick={() => onUndoSwap(original.live_id!)}
-                          className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                          className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
                         >
                           Reset
                         </button>
@@ -160,7 +160,7 @@ export function SquadDetailTable({
                               onReplace(original.live_id!, candidateId, candidate.cost)
                             }
                             trigger="Swap"
-                            triggerClassName="text-xs text-pl-purple hover:underline"
+                            triggerClassName="text-xs text-text-primary hover:underline"
                           />
                         )
                       )}
@@ -173,7 +173,7 @@ export function SquadDetailTable({
                       {preview ? (
                         <p className="text-xs text-text-muted">
                           Deeper stats aren&apos;t shown for a previewed player -{" "}
-                          <PlayerLink id={p.live_id} className="text-pl-purple hover:underline">
+                          <PlayerLink id={p.live_id} className="text-text-primary hover:underline">
                             see their full profile
                           </PlayerLink>
                           .

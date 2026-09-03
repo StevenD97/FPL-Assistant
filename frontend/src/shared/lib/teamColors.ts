@@ -30,7 +30,7 @@ const TEAM_SLUGS: Record<string, string> = {
 };
 
 export function teamSlug(teamShort: string): string {
-  return TEAM_SLUGS[teamShort] ?? "slate-400";
+  return TEAM_SLUGS[teamShort] ?? "ink-400";
 }
 
 export function teamColorVar(teamShort: string): string {

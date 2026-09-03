@@ -51,7 +51,7 @@ function PlayerRow({
         <PlayerLink id={player.live_id} className="text-sm font-semibold text-text-primary">
           {player.web_name}
         </PlayerLink>
-        <span className="ml-1.5 font-mono text-2xs text-text-muted">
+        <span className="ml-1.5 font-mono text-xs text-text-muted">
           {player.team_short} · {player.pos}
         </span>
       </span>
@@ -107,7 +107,7 @@ export function SquadDifferentials({
       {/* Risk appetite as the control the feedback asked for: a ceiling, framed as
           boldness rather than as a filter, because that's the decision being made. */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+        <span className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
           Risk appetite
         </span>
         {RISK_BANDS.map((b) => (
@@ -120,14 +120,14 @@ export function SquadDifferentials({
 
       <div className="grid gap-4 md:grid-cols-2">
         <section>
-          <h4 className="mb-1.5 text-2xs font-bold uppercase tracking-[0.1em] text-pl-purple">
+          <h4 className="mb-1.5 text-xs font-bold uppercase tracking-[0.1em] text-text-primary">
             Your edge · under {max}%
           </h4>
           {edge.length === 0 ? (
             <p className="rounded-lg border border-border bg-surface-sunken px-3 py-2.5 text-xs text-text-secondary">
               Nothing under {max}% - this is a consensus squad at this risk setting. Loosen the ceiling,
               or browse{" "}
-              <Link href="/players" className="font-semibold text-pl-purple hover:underline">
+              <Link href="/players" className="font-semibold text-text-primary hover:underline">
                 differentials
               </Link>{" "}
               for a punt.
@@ -135,14 +135,14 @@ export function SquadDifferentials({
           ) : (
             <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border">
               {edge.map((p) => (
-                <PlayerRow key={p.id} player={p} planner={planner} accent="text-pl-purple" />
+                <PlayerRow key={p.id} player={p} planner={planner} accent="text-text-primary" />
               ))}
             </ul>
           )}
         </section>
 
         <section>
-          <h4 className="mb-1.5 text-2xs font-bold uppercase tracking-[0.1em] text-text-muted">
+          <h4 className="mb-1.5 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
             The crowd · {CROWD_OWNERSHIP}%+ owned
           </h4>
           {crowd.length === 0 ? (
@@ -156,7 +156,7 @@ export function SquadDifferentials({
                   <PlayerRow key={p.id} player={p} planner={planner} accent="text-text-secondary" />
                 ))}
               </ul>
-              <p className="mt-1.5 text-2xs text-text-muted">
+              <p className="mt-1.5 text-xs text-text-muted">
                 Not a problem in itself - popular players are popular for a reason. It&apos;s where you
                 gain nothing on your rivals if they score.
               </p>
@@ -167,7 +167,7 @@ export function SquadDifferentials({
 
       <p className="mt-4 text-xs text-text-muted">
         Looking for differentials you don&apos;t own yet?{" "}
-        <Link href="/players" className="font-semibold text-pl-purple hover:underline">
+        <Link href="/players" className="font-semibold text-text-primary hover:underline">
           The players browser
         </Link>{" "}
         ranks the whole game by projected points under the same ownership ceilings.

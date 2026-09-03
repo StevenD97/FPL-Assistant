@@ -165,12 +165,12 @@ export function TransferSuggestions({
             onSelect(c.id, c);
             closeModal();
           }}
-          className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-2 text-sm hover:border-pl-purple/40 hover:bg-pl-purple/5"
+          className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-2 text-sm hover:border-brand/40 hover:bg-ink-900/5"
         >
           <PlayerPhoto
             src={c.player_photo}
             name={c.web_name}
-            className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+            className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-surface object-cover object-top text-xs"
           />
           <span className="min-w-0 flex-1 text-left">
             <span className="flex items-center gap-1">
@@ -186,7 +186,7 @@ export function TransferSuggestions({
             >
               £{c.cost.toFixed(1)}m
             </span>
-            <span className="block font-mono font-semibold text-pl-purple">{c.predicted_points.toFixed(1)}</span>
+            <span className="block font-mono font-semibold text-text-primary">{c.predicted_points.toFixed(1)}</span>
           </span>
         </button>
       </li>
@@ -204,7 +204,7 @@ export function TransferSuggestions({
           type="button"
           onClick={openModal}
           aria-label={`Find a replacement for ${playerName}`}
-          className={`tap-target flex items-center justify-center rounded-full bg-pl-purple text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
+          className={`tap-target flex items-center justify-center rounded-full bg-ink-900 text-white shadow ring-2 ring-white transition-transform hover:scale-110 ${triggerClassName}`}
         >
           <TransferGlyph className="h-3 w-3" />
         </button>
@@ -214,7 +214,7 @@ export function TransferSuggestions({
         createPortal(
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div
-              className="animate-fpl-fade absolute inset-0 bg-black/50"
+              className="animate-fpl-fade absolute inset-0 bg-ink-900/50"
               onClick={closeModal}
               aria-hidden="true"
             />
@@ -223,7 +223,7 @@ export function TransferSuggestions({
               role="dialog"
               aria-modal="true"
               aria-labelledby={titleId}
-              className="animate-fpl-fade relative flex max-h-[80vh] w-full max-w-sm flex-col rounded-lg border border-border bg-white p-4 shadow-lg"
+              className="animate-fpl-fade relative flex max-h-[80vh] w-full max-w-sm flex-col rounded-lg border border-border bg-surface p-4 shadow-lg"
             >
               <div className="mb-3 flex items-center justify-between gap-2">
                 <span id={titleId} className="text-sm font-semibold text-text-primary">
@@ -272,7 +272,7 @@ export function TransferSuggestions({
                     )}
                     {!loading && !error && candidates && candidates.length > 0 && (
                       <>
-                        <p className="mb-1.5 text-2xs font-bold uppercase tracking-[0.08em] text-text-muted">
+                        <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.08em] text-text-muted">
                           Top picks in your budget
                         </p>
                         <ul className="flex flex-col gap-1.5">{candidates.map(renderRow)}</ul>

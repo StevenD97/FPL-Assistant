@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
         <div className="flex flex-col gap-3">
           {posts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
-              <Card padded={false} className="overflow-hidden transition-colors group-hover:border-pl-purple/40">
+              <Card padded={false} className="overflow-hidden transition-colors group-hover:border-brand/40">
                 <BlogCover cover={post.cover} />
                 <div className="p-5">
                   <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted">
@@ -44,7 +44,7 @@ export default function BlogIndexPage() {
                       </span>
                     ))}
                   </div>
-                  <h2 className="mt-1.5 text-md font-semibold text-pl-purple group-hover:underline">{post.title}</h2>
+                  <h2 className="mt-1.5 text-md font-semibold text-text-primary group-hover:underline">{post.title}</h2>
                   <p className="mt-1 text-sm text-text-secondary">{post.excerpt}</p>
                 </div>
               </Card>

@@ -53,15 +53,15 @@ export default async function LandingPage() {
       <HomeLanding
         hero={
           <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 text-white lg:p-8">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(0,255,135,0.28),transparent_70%)]" />
+            <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,176,32,0.16),transparent_70%)]" />
             <div className="relative flex flex-col gap-4">
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">
+              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">
                 Fantasy Premier League · 2026/27
               </span>
               <h1 className="max-w-3xl text-2xl font-bold leading-[1.05] tracking-tight lg:text-3xl">
                 Decisions, not gut feel.
               </h1>
-              <p className="max-w-2xl text-sm leading-relaxed text-[#e6d4ea] lg:text-base">
+              <p className="max-w-2xl text-sm leading-relaxed text-ink-100 lg:text-base">
                 Transfer, captaincy, and chip recommendations built on two independent prediction approaches - a
                 recommendation score and a full points-per-category model - plus exact optimization for squad and
                 transfer decisions.
@@ -83,8 +83,8 @@ export default async function LandingPage() {
       {posts.length > 0 && (
         <section>
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-pl-green">From the blog</span>
-            <Link href="/blog" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
+            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-text-primary">From the blog</span>
+            <Link href="/blog" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
               All posts →
             </Link>
           </div>
@@ -93,12 +93,12 @@ export default async function LandingPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className="group card-lift block overflow-hidden rounded-lg border border-border bg-white shadow-sm"
+                className="group card-lift block overflow-hidden rounded-lg border border-border bg-surface shadow-sm"
               >
                 <BlogCover cover={post.cover} size="card" />
                 <div className="p-3.5">
                   <div className="text-[11px] text-text-muted">{formatDate(post.date)}</div>
-                  <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-pl-purple group-hover:underline">
+                  <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-text-primary group-hover:underline">
                     {post.title}
                   </h3>
                   <p className="mt-1.5 line-clamp-3 text-xs text-text-secondary">{post.excerpt}</p>

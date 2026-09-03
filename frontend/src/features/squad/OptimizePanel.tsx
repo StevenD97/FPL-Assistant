@@ -53,7 +53,7 @@ function IdealXI({ squad }: { squad: SquadRow[] }) {
             <PlayerPhoto
               src={p.player_photo}
               name={p.web_name}
-              className="h-10 w-10 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
+              className="h-10 w-10 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-[10px]"
             />
             <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
           </PlayerLink>
@@ -110,7 +110,7 @@ function SquadTable({ squad }: { squad: SquadRow[] }) {
                     type="button"
                     onClick={() => setOpenRow(expanded ? null : p.id)}
                     aria-expanded={expanded}
-                    className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                    className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
                   >
                     {expanded ? "Hide" : "More"}
                   </button>
@@ -472,7 +472,7 @@ export function OptimizePanel() {
           onClick={() => setSubMode("best-squad")}
           className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
             subMode === "best-squad"
-              ? "border-b-2 border-pl-purple text-pl-purple"
+              ? "border-b-2 border-brand text-text-primary"
               : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
           }`}
         >
@@ -482,7 +482,7 @@ export function OptimizePanel() {
           onClick={() => setSubMode("transfers")}
           className={`px-4 py-2 text-sm font-medium transition-colors duration-base ease-standard ${
             subMode === "transfers"
-              ? "border-b-2 border-pl-purple text-pl-purple"
+              ? "border-b-2 border-brand text-text-primary"
               : "border-b-2 border-transparent text-text-muted hover:text-text-primary"
           }`}
         >

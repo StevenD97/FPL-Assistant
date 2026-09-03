@@ -17,13 +17,13 @@ export function HeroActions() {
         <>
           <Link
             href="/squad"
-            className="rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] hover:brightness-95"
+            className="rounded-md bg-brand px-4 py-2.5 text-sm font-bold text-ink-900 transition-[filter] hover:brightness-95"
           >
             View my squad
           </Link>
           <Link
             href="/players"
-            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/10"
           >
             Research players
           </Link>
@@ -33,21 +33,21 @@ export function HeroActions() {
           <button
             type="button"
             onClick={promptConnect}
-            className="rounded-md bg-pl-green px-4 py-2.5 text-sm font-bold text-pl-purple transition-[filter] hover:brightness-95"
+            className="rounded-md bg-brand px-4 py-2.5 text-sm font-bold text-ink-900 transition-[filter] hover:brightness-95"
           >
             Connect your team
           </button>
           <Link
             href="/squad"
-            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/10"
           >
             Build a squad
           </Link>
         </>
       )}
-      <span className="flex items-center gap-2 rounded-full border border-pl-green/40 bg-pl-green/10 px-3 py-1.5">
-        <span className="animate-fpl-pulse h-1.5 w-1.5 rounded-full bg-pl-green" />
-        <span className="text-xs text-[#c9a9d1]">{name ? `Hi, ${name}` : "Next deadline"}</span>
+      <span className="flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1.5">
+        <span className="animate-fpl-pulse h-1.5 w-1.5 rounded-full bg-brand" />
+        <span className="text-xs text-ink-300">{name ? `Hi, ${name}` : "Next deadline"}</span>
         <Countdown className="text-xs font-semibold text-white" />
       </span>
     </div>

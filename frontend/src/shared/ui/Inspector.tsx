@@ -71,7 +71,7 @@ export function Inspector({
           animate={{ opacity: 1, y: 0 }}
           exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
-          className="flex w-full flex-col overflow-hidden rounded-lg border border-border bg-white shadow-md outline-none"
+          className="flex w-full flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-md outline-none"
         >
           {/* The panel is chrome, not a second heading: every read already
               titles itself, so a title here would say it twice. `title` still

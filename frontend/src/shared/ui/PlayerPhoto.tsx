@@ -28,7 +28,7 @@ export function PlayerPhoto({
   if (!src || errored) {
     return (
       <div
-        className={`flex items-center justify-center font-mono font-semibold text-pl-purple ${className}`}
+        className={`flex items-center justify-center font-mono font-semibold text-text-primary ${className}`}
         style={style}
       >
         {initials(name)}

@@ -75,8 +75,8 @@ export function PlanSquadTable({
                     onClick={() => onSelectEvent(gw)}
                     className={`w-full rounded-md px-2 py-1 text-xs font-semibold uppercase tracking-wide transition-colors ${
                       gw === selectedEvent
-                        ? "bg-pl-purple text-white"
-                        : "text-text-muted hover:bg-pl-purple/10 hover:text-pl-purple"
+                        ? "bg-ink-900 text-white"
+                        : "text-text-muted hover:bg-ink-900/10 hover:text-brand"
                     }`}
                   >
                     GW{gw}
@@ -94,7 +94,7 @@ export function PlanSquadTable({
                 }`}
               >
                 <td
-                  className={`sticky left-0 whitespace-nowrap border-l-4 bg-white px-3 py-2 font-medium ${
+                  className={`sticky left-0 whitespace-nowrap border-l-4 bg-surface px-3 py-2 font-medium ${
                     POSITION_BORDER[row.original.pos]
                   }`}
                 >
@@ -108,7 +108,7 @@ export function PlanSquadTable({
                       />
                     </span>
                     {row.role !== "Starting XI" && (
-                      <span className="rounded-sm bg-surface-sunken px-1.5 py-0.5 text-3xs font-semibold uppercase text-text-muted">
+                      <span className="rounded-sm bg-surface-sunken px-1.5 py-0.5 text-xs font-semibold uppercase text-text-muted">
                         Bench
                       </span>
                     )}
@@ -122,13 +122,13 @@ export function PlanSquadTable({
                     : hasFlag
                       ? "bg-warning-bg"
                       : !cell.isOriginalOccupant
-                        ? "bg-pl-purple/5"
+                        ? "bg-ink-900/5"
                         : "";
                   return (
                     <td
                       key={cell.event}
                       className={`px-2 py-1.5 text-center ${tone} ${
-                        cell.event === selectedEvent ? "ring-1 ring-inset ring-pl-purple/30" : ""
+                        cell.event === selectedEvent ? "ring-1 ring-inset ring-brand/30" : ""
                       } ${hasFlag ? "cursor-help" : ""}`}
                       title={cell.flags.length > 0 ? cell.flags.join(" · ") : undefined}
                     >
@@ -136,7 +136,7 @@ export function PlanSquadTable({
                           repeating it in every cell would bury the one week
                           the row actually changes. */}
                       {cell.transferStartsHere && (
-                        <span className="mb-0.5 block truncate text-3xs font-semibold text-pl-purple">
+                        <span className="mb-0.5 block truncate text-xs font-semibold text-text-primary">
                           ↳ {cell.occupant.web_name}
                         </span>
                       )}
@@ -160,14 +160,14 @@ export function PlanSquadTable({
                   <td
                     key={event}
                     className={`px-2 py-2 text-center ${
-                      event === selectedEvent ? "ring-1 ring-inset ring-pl-purple/30" : ""
+                      event === selectedEvent ? "ring-1 ring-inset ring-brand/30" : ""
                     }`}
                   >
                     <span className="block font-mono text-sm font-bold text-text-primary">
                       {(totalsByEvent.get(event) ?? 0).toFixed(0)}
                     </span>
                     {proj && proj.hitPoints > 0 && (
-                      <span className="block font-mono text-3xs font-semibold text-danger">
+                      <span className="block font-mono text-xs font-semibold text-danger">
                         -{proj.hitPoints} hit
                       </span>
                     )}

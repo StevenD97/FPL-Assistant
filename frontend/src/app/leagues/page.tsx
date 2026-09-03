@@ -244,7 +244,7 @@ export default function LeaguesPage() {
   return (
     <main className="px-4 py-5 lg:px-6 lg:py-6">
       <div className="mx-auto max-w-6xl">
-        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-pl-purple">
+        <h1 className="mb-1 font-sans text-lg font-bold tracking-tight text-text-primary">
           Leagues
         </h1>
         <p className="mb-6 text-sm text-text-secondary">
@@ -281,7 +281,7 @@ export default function LeaguesPage() {
               <button
                 type="button"
                 onClick={() => findLeagues(connectedTeamId)}
-                className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
               >
                 Refresh
               </button>
@@ -308,7 +308,7 @@ export default function LeaguesPage() {
               setError(null);
             }}
             aria-expanded={lookupOpen}
-            className="flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-pl-purple/40 hover:text-pl-purple"
+            className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-brand/40 hover:text-brand"
           >
             <span aria-hidden="true" className="text-text-muted">
               {lookupOpen ? "−" : "＋"}
@@ -324,7 +324,7 @@ export default function LeaguesPage() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="mt-3 rounded-xl border border-border bg-white p-3 shadow-sm">
+                <div className="mt-3 rounded-xl border border-border bg-surface p-3 shadow-sm">
                   {/* One search row for both intents. The selector only
                       disambiguates a bare number (is 314 a team or a league?) -
                       a pasted FPL URL is auto-detected and overrides it either
@@ -379,8 +379,8 @@ export default function LeaguesPage() {
                     key={lg.id}
                     className={`flex items-center gap-1.5 rounded-md border pl-3 pr-2 py-1.5 text-sm font-medium transition-colors duration-fast ease-standard ${
                       selected
-                        ? "border-pl-purple bg-pl-purple text-white"
-                        : "border-border-strong bg-white text-text-primary hover:bg-slate-50"
+                        ? "border-brand bg-ink-900 text-white"
+                        : "border-border-strong bg-surface text-text-primary hover:bg-ink-050"
                     }`}
                   >
                     <button onClick={() => loadStandings(lg.id)} className="hover:underline">
@@ -430,16 +430,16 @@ export default function LeaguesPage() {
             <div className="mb-3 flex items-center gap-3">
               <h2 className="font-semibold text-text-primary">{standings.league_name}</h2>
               {selectedLeague != null && trackedIds.includes(selectedLeague) && (
-                <span className="text-xs font-medium text-pl-purple">Tracked</span>
+                <span className="text-xs font-medium text-text-primary">Tracked</span>
               )}
             </div>
 
             {standings.your_rank && (
-              <div className="mb-4 rounded-lg border border-pl-purple/30 bg-pl-purple/5 px-4 py-3 text-sm">
+              <div className="mb-4 rounded-lg border border-brand/30 bg-ink-900/5 px-4 py-3 text-sm">
                 {standings.your_rank.found_exact ? (
                   <>
                     Your <span className="font-mono font-semibold">{standings.your_rank.total_points}</span> points
-                    would rank you <span className="font-semibold text-pl-purple">#{formatRank(standings.your_rank.rank)}</span> in
+                    would rank you <span className="font-semibold text-text-primary">#{formatRank(standings.your_rank.rank)}</span> in
                     this league.
                   </>
                 ) : (
@@ -502,7 +502,7 @@ export default function LeaguesPage() {
                     <button
                       type="button"
                       onClick={() => setShowAllTrend((v) => !v)}
-                      className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                      className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
                     >
                       {showAllTrend
                         ? `Show top ${TREND_SERIES_CAP}`

@@ -20,7 +20,7 @@ export function TransferPlayerRow({ p, tone }: { p: TransferPlayer; tone: "out" 
       <PlayerPhoto
         src={p.player_photo}
         name={p.web_name}
-        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+        className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-surface object-cover object-top text-xs"
       />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-1">

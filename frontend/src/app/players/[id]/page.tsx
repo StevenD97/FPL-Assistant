@@ -220,7 +220,7 @@ function UnderlyingStats({ stats }: { stats: NonNullable<PlayerDetail["season_st
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-2 font-semibold text-text-primary hover:text-pl-purple"
+        className="flex items-center gap-2 font-semibold text-text-primary hover:text-brand"
       >
         <span aria-hidden="true" className={`text-text-muted transition-transform ${open ? "rotate-90" : ""}`}>
           ▸
@@ -252,8 +252,8 @@ function UnderlyingStats({ stats }: { stats: NonNullable<PlayerDetail["season_st
 // so the key predictions read as the focal point around the card.
 function HeroStat({ label, value, tooltip }: { label: string; value: string; tooltip?: StatGlossaryKey }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-white px-3 py-4 text-center shadow-sm">
-      <span className="font-mono text-2xl font-bold text-pl-purple">{value}</span>
+    <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-surface px-3 py-4 text-center shadow-sm">
+      <span className="font-mono text-2xl font-bold text-text-primary">{value}</span>
       <span className="mt-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
         {label}
         {tooltip && <InfoTooltip term={tooltip} />}
@@ -340,14 +340,14 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
   const chartSeries = comparing
     ? allSelected.map((player, i) => ({
         label: player.web_name,
-        // seriesColor(0) is pl-purple, the same hardcoded color as the
+        // seriesColor(0) is brand, the same hardcoded color as the
         // primary player below - start compare players at seriesColor(i)
         // (not i-1) so the first one never collides with it.
-        color: i === 0 ? "#37003c" : seriesColor(i),
+        color: i === 0 ? "var(--brand)" : seriesColor(i),
         points: player.gw_history.map((row) => ({ x: row.GW, y: row.total_points })),
       }))
     : [
-        { label: p.web_name, color: "#37003c", points: p.gw_history.map((row) => ({ x: row.GW, y: row.total_points })) },
+        { label: p.web_name, color: "var(--brand)", points: p.gw_history.map((row) => ({ x: row.GW, y: row.total_points })) },
         {
           label: "Trend",
           color: "#71717f",
@@ -398,7 +398,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
 
           <div className="mt-6 flex flex-col items-center gap-2 text-center">
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <h1 className="font-sans text-2xl font-bold tracking-tight text-pl-purple">
+              <h1 className="font-sans text-2xl font-bold tracking-tight text-text-primary">
                 {p.first_name} {p.second_name}
               </h1>
               <PositionBadge position={p.position} />
@@ -474,7 +474,7 @@ export default function PlayerDetailPage({ params }: { params: Promise<{ id: str
                 <button
                   key={s.id}
                   onClick={() => addCompare(s.id)}
-                  className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-slate-50"
+                  className="rounded-sm border border-border-strong px-2 py-1 text-xs text-text-primary hover:bg-ink-050"
                 >
                   + {s.web_name} ({s.team_short}, {s.position})
                 </button>

@@ -30,14 +30,14 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <PageContainer>
-      <Link href="/teams" className="text-xs font-medium text-pl-purple hover:underline">
+      <Link href="/teams" className="text-xs font-medium text-text-primary hover:underline">
         &larr; All teams
       </Link>
 
       <div className="flex flex-wrap items-center gap-4">
         <ClubCrest src={data.team_badge} className="h-14 w-14" />
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-pl-purple">{data.name}</h1>
+          <h1 className="text-xl font-bold tracking-tight text-text-primary">{data.name}</h1>
           <p className="text-sm text-text-secondary">
             {data.manager && <>Manager: {data.manager} &middot; </>}
             {data.squad_size} players in the live 2026/27 squad

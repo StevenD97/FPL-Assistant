@@ -47,9 +47,9 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
   return (
     <Link
       href={`/players/${p.id}`}
-      className="group card-lift relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-white p-3 shadow-sm hover:border-pl-purple/40 sm:block sm:p-3.5"
+      className="group card-lift relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-surface p-3 shadow-sm hover:border-brand/40 sm:block sm:p-3.5"
     >
-      <span className={`absolute inset-x-0 top-0 h-1 ${POS_ACCENT[p.position] ?? "bg-slate-300"}`} />
+      <span className={`absolute inset-x-0 top-0 h-1 ${POS_ACCENT[p.position] ?? "bg-ink-300"}`} />
 
       {/* Tile-only: club, position and availability get their own row. On a
           phone they ride in the meta line under the name instead. */}
@@ -67,7 +67,7 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
           <span className="font-mono text-[11px] text-text-muted">{p.team_short}</span>
           <PositionBadge position={p.position} />
           {inDraft && (
-            <span className="rounded-sm bg-pl-purple/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-pl-purple">
+            <span className="rounded-sm bg-ink-900/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-text-primary">
               In draft
             </span>
           )}
@@ -85,7 +85,7 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
       />
 
       <div className="min-w-0 flex-1 sm:mt-2 sm:flex sm:items-center sm:gap-2.5">
-        <span className="block truncate text-md font-semibold text-pl-purple group-hover:underline">
+        <span className="block truncate text-md font-semibold text-text-primary group-hover:underline">
           {p.web_name}
         </span>
         {/* Phone-only meta line: club, position, price, and availability if
@@ -103,7 +103,7 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
           on a tile it sits above the price block. */}
       <div className="shrink-0 text-right leading-none sm:mt-2 sm:flex sm:items-end sm:justify-between sm:gap-2 sm:text-left">
         <div className="leading-none">
-          <span className="font-mono text-xl font-bold text-pl-purple sm:text-2xl">
+          <span className="font-mono text-xl font-bold text-text-primary sm:text-2xl">
             {p.predicted_points.toFixed(1)}
           </span>
           <span className="ml-1 hidden text-[11px] font-semibold uppercase tracking-wide text-text-muted sm:inline">
@@ -151,8 +151,8 @@ export function PlayerListCard({ p, inDraft = false }: { p: PlayerListItem; inDr
 // swaps in.
 export function PlayerListCardSkeleton() {
   return (
-    <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-white p-3 shadow-sm sm:block sm:p-3.5">
-      <span className="absolute inset-x-0 top-0 h-1 bg-slate-200" />
+    <div className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-surface p-3 shadow-sm sm:block sm:p-3.5">
+      <span className="absolute inset-x-0 top-0 h-1 bg-ink-200" />
       <div className="hidden items-center justify-between gap-2 sm:flex">
         <div className="flex items-center gap-2">
           <Skeleton className="h-6 w-6 rounded-full" />

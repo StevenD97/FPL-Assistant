@@ -80,12 +80,12 @@ export function TransferPlanPicker({
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="animate-fpl-fade absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
+      <div className="animate-fpl-fade absolute inset-0 bg-ink-900/50" onClick={onClose} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="animate-fpl-fade relative flex max-h-[80vh] w-full max-w-md flex-col rounded-lg border border-border bg-white shadow-lg"
+        className="animate-fpl-fade relative flex max-h-[80vh] w-full max-w-md flex-col rounded-lg border border-border bg-surface shadow-lg"
       >
         <div className="flex items-center justify-between gap-2 border-b border-border p-3">
           <div className="min-w-0">
@@ -97,7 +97,7 @@ export function TransferPlanPicker({
               {outgoing.position} only
             </p>
             {replacingPlanned && (
-              <p className="text-xs text-pl-purple">
+              <p className="text-xs text-text-primary">
                 Changes your planned {replacingPlanned} for this week
               </p>
             )}
@@ -134,12 +134,12 @@ export function TransferPlanPicker({
                 <button
                   type="button"
                   onClick={() => onSelect(c)}
-                  className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-1.5 text-sm hover:border-pl-purple/40 hover:bg-pl-purple/5"
+                  className="flex w-full items-center gap-2 rounded-md border border-border bg-surface-sunken/60 px-2 py-1.5 text-sm hover:border-brand/40 hover:bg-ink-900/5"
                 >
                   <PlayerPhoto
                     src={c.player_photo}
                     name={c.web_name}
-                    className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-white object-cover object-top text-3xs"
+                    className="h-8 w-8 shrink-0 rounded-full border border-border-strong bg-surface object-cover object-top text-xs"
                   />
                   <span className="min-w-0 flex-1 text-left">
                     <span className="flex items-center gap-1">
@@ -150,7 +150,7 @@ export function TransferPlanPicker({
                   </span>
                   <span className="shrink-0 text-right">
                     <span className="block font-mono text-text-secondary">£{c.cost.toFixed(1)}m</span>
-                    <span className="block font-mono font-semibold text-pl-purple">
+                    <span className="block font-mono font-semibold text-text-primary">
                       {c.predicted_points.toFixed(1)}
                     </span>
                   </span>

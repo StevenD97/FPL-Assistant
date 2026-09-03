@@ -1,48 +1,75 @@
 @import "tailwindcss";
 
+/*
+  The palette is ours, not the Premier League's.
+
+  Every colour in here used to be a literal brand hex: #37003c purple, #00ff87
+  green, #04f5ff cyan, #e90052 pink. Four problems with that, in ascending
+  order of how much they cost. It looks like the incumbent, which is a strange
+  thing for a challenger to choose. It makes the footer's "not affiliated with"
+  disclaimer work harder than a disclaimer should have to. Those four hues were
+  carrying brand, state, and player position all at once, so neon green meant
+  "us", "good", "active", and "midfielder" simultaneously. And it was somebody
+  else's decision.
+
+  So: graphite grounds and a single amber accent. Amber because it is legible
+  on dark at small sizes, it is nobody's club colour, and it leaves green and
+  red free to mean only what they should mean - better and worse.
+
+  Dark is the default rather than an option. FPL is played at eleven at night
+  on a phone, every serious competitor is dark, and a white page with a purple
+  header is the wrong ambient light for the use case. Light is still available
+  and complete; it is just not what you get first.
+*/
 :root {
-  /* Premier League brand */
-  --pl-purple: #37003c;
-  --pl-purple-light: #5f2a66;
-  --pl-purple-dark: #240028;
-  --pl-green: #00ff87;
-  --pl-cyan: #04f5ff;
-  --pl-pink: #e90052;
-  --pl-yellow: #ffdd3c;
+  color-scheme: dark;
 
-  /* Neutral scale */
-  --slate-50: #f7f7f9;
-  --slate-100: #eeeef2;
-  --slate-200: #dfdfe6;
-  --slate-300: #c7c7d1;
-  --slate-400: #9c9caa;
-  --slate-500: #71717f;
-  --slate-600: #52525e;
-  --slate-700: #3a3a44;
-  --slate-800: #252530;
-  --slate-900: #16161f;
+  /* Ground and surfaces. Elevation is carried by lightness, not by shadow -
+     see the note on --shadow-* below. */
+  --ink-900: #0c0e12;
+  --ink-850: #12151b;
+  --ink-800: #171b22;
+  --ink-700: #1e232c;
+  --ink-600: #2a3039;
+  --ink-500: #3a424e;
+  --ink-400: #5b6572;
+  --ink-300: #8b95a3;
+  --ink-200: #b6bec9;
+  --ink-100: #dde2e8;
+  --ink-050: #f2f4f7;
 
-  /* Semantic */
-  --success: #00a651;
-  --success-bg: #e5f7ec;
-  --warning: #b9770e;
-  --warning-bg: #fff6e5;
-  --danger: #d6003a;
-  --danger-bg: #fde7ed;
-  --info: #0057b8;
-  --info-bg: #e6f0fc;
+  /* Brand. One accent, used for identity and interaction and nothing else. */
+  --brand: #ffb020;
+  --brand-strong: #ffc24d;
+  --brand-deep: #7a5000;
+  --brand-wash: rgba(255, 176, 32, 0.12);
 
-  /* Squad Builder pitch */
-  --pitch-green-1: #0c8a3e;
-  --pitch-green-2: #0a7534;
+  /* State. Deliberately not the brand colour, so "this is us" and "this is
+     good" can never be confused for each other. */
+  --success: #3dd68c;
+  --success-bg: rgba(61, 214, 140, 0.13);
+  --warning: #f5a524;
+  --warning-bg: rgba(245, 165, 36, 0.13);
+  --danger: #ff6b6b;
+  --danger-bg: rgba(255, 107, 107, 0.13);
+  --info: #5aa9ff;
+  --info-bg: rgba(90, 169, 255, 0.13);
 
-  /* Position colors - shared between PositionBadge and pitch player rings */
-  --pos-gkp: #ffdd3c;
-  --pos-def: #04f5ff;
-  --pos-mid: #00ff87;
-  --pos-fwd: #e90052;
+  /* Pitch. Desaturated well below a real broadcast green: it is a backdrop for
+     fifteen names, not the subject of the page. */
+  --pitch-green-1: #14342a;
+  --pitch-green-2: #0f271f;
 
-  /* Club colors - widely-known kit colors, not licensed assets */
+  /* Position. Tints of one hue family rather than four saturated primaries -
+     these label a player, they do not compete with the accent for attention. */
+  --pos-gkp: #d8b45c;
+  --pos-def: #6fa8dc;
+  --pos-mid: #5fc9a0;
+  --pos-fwd: #d97f8c;
+
+  /* Club colours - widely-known kit colours, not licensed assets. These stay
+     literal: they identify a club on its badge, which is the one place a real
+     brand colour belongs. */
   --team-arsenal: #ef0107;
   --team-aston-villa: #95bfe5;
   --team-bournemouth: #da291c;
@@ -52,50 +79,105 @@
   --team-coventry: #78d0f2;
   --team-crystal-palace: #1b458f;
   --team-everton: #003399;
-  --team-fulham: #000000;
+  --team-fulham: #f5f5f5;
   --team-hull: #f18a00;
   --team-ipswich: #0044a9;
   --team-leeds: #ffcd00;
   --team-liverpool: #c8102e;
   --team-man-city: #6cabdd;
   --team-man-united: #da291c;
-  --team-newcastle: #241f20;
+  --team-newcastle: #b8b3b4;
   --team-nottm-forest: #dd0000;
   --team-sunderland: #eb172b;
-  --team-tottenham: #132257;
-  --team-west-ham: #7a263a;
+  --team-tottenham: #7b8db5;
+  --team-west-ham: #a54360;
   --team-wolves: #fdb913;
-  --team-burnley: #6c1d45;
+  --team-burnley: #9c4a72;
 
-  /* Semantic aliases */
+  /* Semantic aliases. Everything in the app reads these, not the scale above. */
+  --surface-default: var(--ink-800);
+  --surface-sunken: var(--ink-900);
+  --surface-raised: var(--ink-700);
+  --border-default: var(--ink-600);
+  --border-strong: var(--ink-500);
+  --fg-primary: var(--ink-050);
+  --fg-secondary: var(--ink-200);
+  --fg-muted: var(--ink-300);
+}
+
+/*
+  Light, for people who want it. Complete rather than an afterthought: every
+  token the dark theme defines is redefined here, so nothing falls back to a
+  dark value on a white ground.
+
+  Applied on an explicit choice only. The default stays dark regardless of the
+  system setting, because the ambient this product is used in - late, on a
+  phone - is not the ambient the operating system is guessing about.
+*/
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --ink-900: #ffffff;
+  --ink-850: #fbfbfc;
+  --ink-800: #ffffff;
+  --ink-700: #f4f5f7;
+  --ink-600: #e3e6ea;
+  --ink-500: #cbd1d9;
+  --ink-400: #9aa3af;
+  --ink-300: #6b7480;
+  --ink-200: #444c57;
+  --ink-100: #2a313a;
+  --ink-050: #12161c;
+
+  --brand: #a86800;
+  --brand-strong: #8a5500;
+  --brand-deep: #ffe0a3;
+  --brand-wash: rgba(168, 104, 0, 0.1);
+
+  --success: #128a52;
+  --success-bg: rgba(18, 138, 82, 0.1);
+  --warning: #a8690a;
+  --warning-bg: rgba(168, 105, 10, 0.1);
+  --danger: #c72c2c;
+  --danger-bg: rgba(199, 44, 44, 0.1);
+  --info: #1f6fd0;
+  --info-bg: rgba(31, 111, 208, 0.1);
+
+  --pitch-green-1: #d8e6dd;
+  --pitch-green-2: #c8dbd0;
+
+  --pos-gkp: #8a6a12;
+  --pos-def: #23608f;
+  --pos-mid: #17795a;
+  --pos-fwd: #a83c4d;
+
   --surface-default: #ffffff;
-  --surface-sunken: var(--slate-50);
-  --border-default: var(--slate-200);
-  --border-strong: var(--slate-300);
-  --fg-primary: var(--slate-900);
-  --fg-secondary: var(--slate-600);
-  --fg-muted: var(--slate-500);
+  --surface-sunken: #f4f5f7;
+  --surface-raised: #ffffff;
+  --border-default: #e3e6ea;
+  --border-strong: #cbd1d9;
+  --fg-primary: #12161c;
+  --fg-secondary: #444c57;
+  --fg-muted: #6b7480;
 }
 
 @theme inline {
-  --color-pl-purple: var(--pl-purple);
-  --color-pl-purple-light: var(--pl-purple-light);
-  --color-pl-purple-dark: var(--pl-purple-dark);
-  --color-pl-green: var(--pl-green);
-  --color-pl-cyan: var(--pl-cyan);
-  --color-pl-pink: var(--pl-pink);
-  --color-pl-yellow: var(--pl-yellow);
+  --color-ink-900: var(--ink-900);
+  --color-ink-850: var(--ink-850);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ink-300: var(--ink-300);
+  --color-ink-200: var(--ink-200);
+  --color-ink-100: var(--ink-100);
+  --color-ink-050: var(--ink-050);
 
-  --color-slate-50: var(--slate-50);
-  --color-slate-100: var(--slate-100);
-  --color-slate-200: var(--slate-200);
-  --color-slate-300: var(--slate-300);
-  --color-slate-400: var(--slate-400);
-  --color-slate-500: var(--slate-500);
-  --color-slate-600: var(--slate-600);
-  --color-slate-700: var(--slate-700);
-  --color-slate-800: var(--slate-800);
-  --color-slate-900: var(--slate-900);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-wash: var(--brand-wash);
 
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
@@ -142,58 +224,58 @@
   --color-border-strong: var(--border-strong);
   --color-surface: var(--surface-default);
   --color-surface-sunken: var(--surface-sunken);
+  --color-surface-raised: var(--surface-raised);
   --color-text-primary: var(--fg-primary);
   --color-text-secondary: var(--fg-secondary);
   --color-text-muted: var(--fg-muted);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 
-  /* Type scale.
-     Body steps (3xs -> xl) stay fixed: data-dense UI wants a stable rhythm, and
-     a table cell that resizes with the window is harder to scan, not easier.
-     Display steps (2xl -> 4xl) are fluid, because the fixed jumps 32 -> 44 -> 60
-     left nothing between them: a 44px heading is oversized in a 900px window and
-     undersized at 1600px.
+  /* Type scale: six body steps and two display steps.
+     There were nineteen. Some of them - 11.04px, 13.68px - were not chosen at
+     all; they were what happened when a relatively-sized element nested inside
+     another one. Six is enough to build a hierarchy with and few enough that a
+     reviewer can tell when one is being misused.
 
-     Each clamp is solved for its endpoints rather than eyeballed - it hits the
-     min at a 375px viewport and the max at 1280px:
-       slope = (max - min) / (W2 - W1)      vw part = slope * 100
-       fixed part = min - slope * W1
-     The maxima are the previous fixed values (32/44/60), and 1280px is where
-     they're reached, so a laptop and anything wider renders exactly as it did
-     before - desktop loses no size. Only the range *below* a laptop changes,
-     which is the gap this was for: the old fixed steps jumped 32 -> 44 -> 60
-     with nothing between, so a 44px heading was oversized in a 900px window.
-     Topping out at 1440px instead (the first attempt) quietly shrank every
-     desktop heading, which is the opposite of the point.
+     The floor is 12px and it is for micro-labels only: a table's column header,
+     a unit after a number. 62% of the desktop text on this site used to be 12px
+     or smaller, which is not a hierarchy, it is a whisper. Body is 15px and
+     secondary text is 14px, so there is a middle to fall back to.
 
-     The fixed part is in `rem`, not `px`, so the whole value still scales with
-     the reader's browser font-size setting. A pure-vw interpolant ignores that
-     preference (WCAG 1.4.4); mixing in rem keeps it honoured. */
-  --text-3xs: 10px;
-  --text-2xs: 11px;
+     Display steps stay fluid, solved for their endpoints rather than eyeballed:
+     each hits its minimum at 375px and its maximum at 1280px, so a laptop and
+     anything wider renders at the maximum. The fixed part is in rem so the
+     whole value still honours a reader's browser font-size setting (WCAG
+     1.4.4), which a pure-vw interpolant would ignore. */
   --text-xs: 12px;
-  --text-sm: 13px;
+  --text-sm: 14px;
   --text-base: 15px;
-  --text-md: 17px;
-  --text-lg: 20px;
-  --text-xl: 24px;
-  --text-2xl: clamp(1.625rem, 0.663vw + 1.47rem, 2rem); /* 26 -> 32px by 1280 */
-  --text-3xl: clamp(2rem, 1.326vw + 1.689rem, 2.75rem); /* 32 -> 44px by 1280 */
-  --text-4xl: clamp(2.375rem, 2.431vw + 1.805rem, 3.75rem); /* 38 -> 60px by 1280 */
+  --text-md: 18px;
+  --text-lg: 22px;
+  --text-xl: 28px;
+  --text-2xl: clamp(2rem, 1.326vw + 1.689rem, 2.75rem); /* 32 -> 44px by 1280 */
+  --text-3xl: clamp(2.375rem, 2.431vw + 1.805rem, 3.75rem); /* 38 -> 60px by 1280 */
   --tracking-wide: 0.04em;
 
-  /* Radius */
+  /* Three radii, and components use these rather than Tailwind's rounded-*
+     scale. Eight different corner radii on one page is not a system, it is
+     whatever each component's author reached for. */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-lg: 16px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(22, 22, 31, 0.06);
-  --shadow-md: 0 4px 12px rgba(22, 22, 31, 0.08);
-  --shadow-lg: 0 12px 32px rgba(22, 22, 31, 0.14);
-  --shadow-focus: 0 0 0 3px rgba(4, 245, 255, 0.35);
+  /* Elevation is carried by surface lightness, not by shadow.
+     The old system had three shadow tokens and used exactly one of them, so
+     depth was really being done by borders - which is why every block on every
+     page read as a box inside a box. On a dark ground a shadow is close to
+     invisible anyway, so the commitment here is the other direction: a raised
+     surface is a lighter surface, separation is a hairline rule, and the two
+     shadows that remain are for things that genuinely float above the page.
+     Nothing else gets one. */
+  --shadow-overlay: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-focus: 0 0 0 3px var(--brand-wash);
 
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --duration-fast: 120ms;
@@ -203,7 +285,15 @@
 body {
   background: var(--surface-sunken);
   color: var(--fg-primary);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--text-base);
+}
+
+/* Headings take the display face. Set here rather than per-component so a new
+   page cannot quietly opt out of the type system by forgetting a class. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  letter-spacing: -0.01em;
 }
 
 /* --- Motion (mirrors the design prototype) --- */
@@ -219,13 +309,15 @@ body {
 .animate-fpl-fade { animation: fplFade 0.3s var(--ease-standard); }
 .animate-fpl-pulse { animation: fplPulse 2s infinite; }
 
-/* --- Brand gradient surfaces ---
-   Bright green/cyan are fills, borders and chart strokes; dark type sits
-   on top of them. These keep the signature "accent on deep purple" look
-   out of the JSX. */
-.bg-fpl-sidebar { background: linear-gradient(180deg, #37003c, #240028); }
-.bg-fpl-hero { background: linear-gradient(125deg, #37003c 0%, #5f2a66 60%, #37003c 100%); }
-.bg-fpl-panel { background: linear-gradient(120deg, #37003c, #5f2a66); }
+/* --- Chrome surfaces ---
+   These used to be purple gradients built from the Premier League's own hex
+   values. They are now flat graphite, one step apart, because on a dark ground
+   a gradient reads as a smudge and the separation is doing all the work
+   anyway. Kept as classes rather than inlined so the chrome can be restyled in
+   one place. */
+.bg-fpl-sidebar { background: var(--ink-900); }
+.bg-fpl-hero { background: var(--ink-850); }
+.bg-fpl-panel { background: var(--ink-800); }
 
 /* Mowed-stripe pitch texture: alternating horizontal bands (like a real
    groundskeeper's mowing pattern) over the base green gradient, plus a
@@ -243,28 +335,31 @@ body {
 }
 
 /* --- Elevated xFPL "cockpit" surfaces (dark, glassy - flagship pages) --- */
+/* The flagship surface. It used to be three neon radial glows - green, cyan
+   and pink, all Premier League brand hues - layered over a purple gradient.
+   One warm wash from the accent is enough to say "this is the important
+   surface" without the page looking like a nightclub flyer. */
 .bg-fpl-cockpit {
   background:
-    radial-gradient(900px 500px at 12% -8%, rgba(0, 255, 135, 0.14), transparent 60%),
-    radial-gradient(800px 520px at 96% 2%, rgba(4, 245, 255, 0.11), transparent 55%),
-    radial-gradient(1200px 800px at 50% 120%, rgba(233, 0, 82, 0.09), transparent 60%),
-    linear-gradient(160deg, #2c0030 0%, var(--pl-purple) 45%, var(--pl-purple-dark) 100%);
+    radial-gradient(1100px 600px at 15% -10%, var(--brand-wash), transparent 62%),
+    var(--ink-850);
   background-attachment: fixed;
 }
 .glass {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--border-default);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 .glass-strong {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-strong);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
-.glow-green { box-shadow: 0 0 24px rgba(0, 255, 135, 0.45); }
-.glow-cyan { box-shadow: 0 0 24px rgba(4, 245, 255, 0.4); }
+/* One glow, in the accent. There were two - neon green and neon cyan - which
+   between them meant nothing in particular. */
+.glow-brand { box-shadow: 0 0 24px rgba(255, 176, 32, 0.35); }
 /* Subtle dot grain; put on a `relative` element. */
 .fpl-grain::before {
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
@@ -272,12 +367,14 @@ body {
   background-size: 3px 3px;
 }
 .card-lift { transition: transform var(--duration-base) var(--ease-standard), box-shadow var(--duration-base) var(--ease-standard); }
-.card-lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+/* Hover lift without a shadow: on a dark ground the shadow was invisible and
+   the border was doing the work, so the border does it explicitly. */
+.card-lift:hover { transform: translateY(-2px); border-color: var(--border-strong); }
 
 /* --- More motion primitives --- */
 @keyframes fplShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
 .fpl-skeleton {
-  background-color: var(--slate-100);
+  background-color: var(--ink-100);
   background-image: linear-gradient(90deg, transparent 25%, rgba(255, 255, 255, 0.85) 50%, transparent 75%);
   background-size: 800px 100%;
   background-repeat: no-repeat;
@@ -290,7 +387,7 @@ body {
 }
 @keyframes fplPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
 .animate-fpl-pop { animation: fplPop 0.4s var(--ease-standard); }
-@keyframes fplRing { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 135, 0.5); } 100% { box-shadow: 0 0 0 16px rgba(0, 255, 135, 0); } }
+@keyframes fplRing { 0% { box-shadow: 0 0 0 0 rgba(255, 176, 32, 0.5); } 100% { box-shadow: 0 0 0 16px rgba(255, 176, 32, 0); } }
 .animate-fpl-ring { animation: fplRing 0.7s ease-out; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -349,16 +446,18 @@ body {
    step drops one rung and the padding tightens, so a 6-gameweek planner fits a
    phone without either scrolling sideways or losing the comparison.
 
-   Nothing here goes below --text-3xs (10px), which is the floor for this app. */
+   Nothing here goes below 12px, which is the floor for this app - a dense table
+   is a reason to tighten spacing, not a licence to shrink type past legibility.
+   That is why this only steps 15px down to 14px and stops: the old version
+   bottomed out at 10px, which is where "dense" stopped meaning readable. */
 @media (max-width: 767px) {
-  table.table-dense { font-size: var(--text-xs); }
+  table.table-dense { font-size: var(--text-sm); }
 
-  /* Step the utility classes the cells actually use down one rung. These sit
-     outside @layer, so they beat Tailwind's layered utilities regardless of
-     specificity - same mechanism table-cards above relies on. */
-  table.table-dense .text-sm { font-size: var(--text-xs); }
-  table.table-dense .text-xs { font-size: var(--text-2xs); }
-  table.table-dense .text-2xs { font-size: var(--text-3xs); }
+  /* Step the one utility that has room to move. These sit outside @layer, so
+     they beat Tailwind's layered utilities regardless of specificity - the
+     same mechanism table-cards above relies on. */
+  table.table-dense .text-base { font-size: var(--text-sm); }
+  table.table-dense .text-sm { font-size: var(--text-sm); }
 
   table.table-dense th,
   table.table-dense td { padding-left: 6px; padding-right: 6px; }
@@ -411,17 +510,14 @@ body {
 /* The soonest gameweek, whatever its shape - a left edge rather than a colour,
    so it stacks with the dgw/bgw tone instead of competing with it. */
 .gw-tile-next {
-  box-shadow:
-    inset 3px 0 0 0 var(--pl-purple),
-    var(--shadow-sm);
-  border-color: color-mix(in srgb, var(--pl-purple) 40%, transparent);
+  box-shadow: inset 3px 0 0 0 var(--brand);
+  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
 }
 /* Interactive tiles only - a plain readout shouldn't invite a click. */
 a.gw-tile:hover,
 button.gw-tile:hover {
   transform: translateY(-2px);
   border-color: var(--gw-accent);
-  box-shadow: var(--shadow-md);
 }
 button.gw-tile:focus-visible {
   outline: 2px solid var(--gw-accent);
@@ -436,34 +532,34 @@ button.gw-tile:focus-visible {
 
 /* --- Scrollbar --- */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 8px; }
+::-webkit-scrollbar-thumb { background: var(--ink-300); border-radius: 8px; }
 
 /* --- Blog post body ---
    Markdown-rendered HTML has no classes of its own, so tag selectors here
    carry the typography instead of a typography plugin dependency. */
-.blog-prose { color: var(--slate-700); font-size: 0.9375rem; line-height: 1.7; }
+.blog-prose { color: var(--ink-700); font-size: 0.9375rem; line-height: 1.7; }
 .blog-prose > * + * { margin-top: 1em; }
-.blog-prose h2 { margin-top: 1.75em; font-size: 1.2rem; font-weight: 700; color: var(--pl-purple); }
-.blog-prose h3 { margin-top: 1.5em; font-size: 1.05rem; font-weight: 600; color: var(--pl-purple); }
-.blog-prose a { color: var(--pl-purple); text-decoration: underline; text-underline-offset: 2px; }
-.blog-prose strong { font-weight: 600; color: var(--slate-900); }
+.blog-prose h2 { margin-top: 1.75em; font-size: 1.2rem; font-weight: 700; color: var(--brand); }
+.blog-prose h3 { margin-top: 1.5em; font-size: 1.05rem; font-weight: 600; color: var(--brand); }
+.blog-prose a { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+.blog-prose strong { font-weight: 600; color: var(--ink-900); }
 .blog-prose ul, .blog-prose ol { padding-left: 1.4em; }
 .blog-prose ul { list-style: disc; }
 .blog-prose ol { list-style: decimal; }
 .blog-prose li + li { margin-top: 0.35em; }
 .blog-prose blockquote {
-  border-left: 3px solid var(--pl-green);
+  border-left: 3px solid var(--brand);
   padding: 0.25em 0 0.25em 1em;
-  color: var(--slate-600);
+  color: var(--ink-600);
   font-style: italic;
 }
 .blog-prose code {
-  background: var(--slate-100);
+  background: var(--ink-100);
   border-radius: 4px;
   padding: 0.15em 0.4em;
   font-size: 0.85em;
 }
-.blog-prose hr { border: none; border-top: 1px solid var(--slate-200); margin: 1.75em 0; }
+.blog-prose hr { border: none; border-top: 1px solid var(--ink-200); margin: 1.75em 0; }
 
 /* --- Touch targets ---
    A control can be the right size to look at and the wrong size to hit. The

@@ -24,10 +24,10 @@ function Step({
 }) {
   return (
     <div className="relative flex flex-col gap-2.5 p-5">
-      <span className="pointer-events-none absolute right-4 top-3 font-mono text-3xl font-extrabold text-pl-purple/10">
+      <span className="pointer-events-none absolute right-4 top-3 font-mono text-3xl font-extrabold text-text-primary/10">
         {number}
       </span>
-      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-pl-purple text-pl-green">
+      <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink-900 text-text-primary">
         <NavIcon name={icon} className="h-4 w-4" />
       </span>
       <span className="text-sm font-bold text-text-primary">{title}</span>
@@ -42,8 +42,8 @@ export function GetStartedSteps() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-pl-purple/60">Get started</span>
-        <h2 className="text-lg font-bold tracking-tight text-pl-purple">Three steps from sign-up to matchday.</h2>
+        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-primary/60">Get started</span>
+        <h2 className="text-lg font-bold tracking-tight text-text-primary">Three steps from sign-up to matchday.</h2>
       </div>
 
       <Card padded={false} className="overflow-hidden">
@@ -58,7 +58,7 @@ export function GetStartedSteps() {
                   </span>
                   .
                 </p>
-                <Link href="/squad" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
+                <Link href="/squad" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
                   View my squad →
                 </Link>
               </>
@@ -70,7 +70,7 @@ export function GetStartedSteps() {
                 <button
                   type="button"
                   onClick={promptConnect}
-                  className="text-left tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline"
+                  className="text-left tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline"
                 >
                   Connect your team →
                 </button>
@@ -82,7 +82,7 @@ export function GetStartedSteps() {
             <p className="text-xs leading-relaxed text-text-secondary">
               Predicted points, suggested transfers, and captaincy picks - recomputed every gameweek.
             </p>
-            <Link href="/players" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/players" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
               See predictions →
             </Link>
           </Step>
@@ -95,7 +95,7 @@ export function GetStartedSteps() {
               Watch your score update through the gameweek, get nudged on chip timing, and follow
               your mini-leagues.
             </p>
-            <Link href="/leagues" className="tap-target inline-flex items-center text-xs font-semibold text-pl-purple hover:underline">
+            <Link href="/leagues" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
               Track leagues →
             </Link>
           </Step>

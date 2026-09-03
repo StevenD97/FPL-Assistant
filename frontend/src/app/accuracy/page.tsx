@@ -106,7 +106,7 @@ const CATEGORY_COPY: Record<string, { label: string; meaning: string }> = {
 
 function CategoryTable({ rows }: { rows: ReturnCategory[] }) {
   return (
-    <section className="rounded-lg border border-border bg-white p-4 shadow-sm">
+    <section className="rounded-lg border border-border bg-surface p-4 shadow-sm">
       <h2 className="text-md font-semibold text-text-primary">Against the obvious alternative</h2>
       <p className="mt-1 max-w-3xl text-sm leading-relaxed text-text-secondary">
         A projection is only worth having if it beats what you could do without one. The bar
@@ -157,7 +157,7 @@ function CategoryTable({ rows }: { rows: ReturnCategory[] }) {
 function GameweekCard({ e }: { e: AccuracyResponseEvent }) {
   const captainNailed = e.captain.rank_of_pick === 1;
   return (
-    <article className="rounded-lg border border-border bg-white p-4 shadow-sm">
+    <article className="rounded-lg border border-border bg-surface p-4 shadow-sm">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-md font-semibold text-text-primary">Gameweek {e.event}</h2>
         <span className="flex items-center gap-2">
@@ -218,9 +218,9 @@ function SourceBadge({ source, frozenAt }: { source: string; frozenAt: string | 
 
 function Headline({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className="rounded-lg border border-border bg-white px-3.5 py-3 shadow-sm">
+    <div className="rounded-lg border border-border bg-surface px-3.5 py-3 shadow-sm">
       <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">{label}</p>
-      <p className="mt-1 font-mono text-xl font-extrabold text-pl-purple">{value}</p>
+      <p className="mt-1 font-mono text-xl font-extrabold text-text-primary">{value}</p>
       <p className="mt-1 text-[11px] leading-4 text-text-muted">{hint}</p>
     </div>
   );

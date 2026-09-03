@@ -164,11 +164,11 @@ export function PlayerPeek({
       aria-modal="true"
       aria-label={`${player.name} at a glance`}
     >
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-ink-900/50" onClick={onClose} aria-hidden="true" />
       <div
         ref={panelRef}
         tabIndex={-1}
-        className={`relative z-[1] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-4 shadow-lg outline-none sm:rounded-2xl sm:p-5 ${
+        className={`relative z-[1] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-surface p-4 shadow-lg outline-none sm:rounded-2xl sm:p-5 ${
           // The replace view needs room for three cards abreast; the player view
           // sizes to its own content (see hasAside).
           //
@@ -187,7 +187,7 @@ export function PlayerPeek({
                 <button
                   type="button"
                   onClick={() => setView("player")}
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-pl-purple hover:underline"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-text-primary hover:underline"
                 >
                   ← {player.name}
                 </button>
@@ -195,7 +195,7 @@ export function PlayerPeek({
               </>
             ) : (
               <>
-                <h3 className="text-md font-bold text-pl-purple">{player.name}</h3>
+                <h3 className="text-md font-bold text-text-primary">{player.name}</h3>
                 {player.status && <StatusBadge status={player.status} news={player.news ?? ""} />}
               </>
             )}
@@ -234,7 +234,7 @@ export function PlayerPeek({
                 fixture rather than a separate panel of its own. */}
             {(player.fixtures?.length || player.fixtureTicker) && (
               <div className="rounded-lg border border-border bg-surface-sunken px-3 py-2">
-                <p className="mb-1 flex items-center gap-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                <p className="mb-1 flex items-center gap-1 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
                   Next {player.fixtures?.length ?? player.fixtureCount ?? ""}{" "}
                   <InfoTooltip term="fdr" />
                 </p>
@@ -265,14 +265,14 @@ export function PlayerPeek({
                   noise. */}
               {shownDuties.length > 0 && (
                 <div>
-                  <p className="mb-1 text-3xs font-bold uppercase tracking-[0.1em] text-text-muted">
+                  <p className="mb-1 text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
                     Set pieces
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {shownDuties.map((d) => (
                       <span
                         key={d.label}
-                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-2xs font-semibold ${
+                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${
                           d.order === 1
                             ? "border-success/40 bg-success-bg text-success"
                             : "border-border bg-surface-sunken text-text-secondary"
@@ -348,7 +348,7 @@ export function PlayerPeek({
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-3">
           <PlayerLink
             id={player.id}
-            className="inline-flex h-8 items-center rounded-md border border-border-strong px-3 text-sm font-medium text-text-primary hover:bg-slate-50"
+            className="inline-flex h-8 items-center rounded-md border border-border-strong px-3 text-sm font-medium text-text-primary hover:bg-ink-050"
           >
             Full profile →
           </PlayerLink>

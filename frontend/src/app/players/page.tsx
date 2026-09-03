@@ -194,7 +194,7 @@ export default function PlayersPage() {
           />
 
           {/* View segmented - lens tooltip carries the blurb */}
-          <div className="flex items-center gap-0.5 rounded-lg border border-border bg-white p-0.5">
+          <div className="flex items-center gap-0.5 rounded-lg border border-border bg-surface p-0.5">
             {LENSES.map((l) => (
               <button
                 key={l.key}
@@ -202,7 +202,7 @@ export default function PlayersPage() {
                 onClick={() => applyLens(l.key)}
                 title={l.blurb}
                 className={`rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors ${
-                  lens === l.key ? "bg-pl-purple text-white" : "text-text-secondary hover:text-pl-purple"
+                  lens === l.key ? "bg-ink-900 text-white" : "text-text-secondary hover:text-brand"
                 }`}
               >
                 {l.label}
@@ -218,13 +218,13 @@ export default function PlayersPage() {
               aria-expanded={filtersOpen}
               className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                 activeFilterCount > 0
-                  ? "border-pl-purple text-pl-purple"
-                  : "border-border bg-white text-text-secondary hover:border-pl-purple/40"
+                  ? "border-brand text-text-primary"
+                  : "border-border bg-surface text-text-secondary hover:border-brand/40"
               }`}
             >
               Filters
               {activeFilterCount > 0 && (
-                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[11px] font-bold text-white">
+                <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-[11px] font-bold text-white">
                   {activeFilterCount}
                 </span>
               )}
@@ -232,7 +232,7 @@ export default function PlayersPage() {
             {filtersOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setFiltersOpen(false)} aria-hidden="true" />
-                <div className="absolute right-0 z-20 mt-2 w-64 rounded-lg border border-border bg-white p-3 shadow-lg">
+                <div className="absolute right-0 z-20 mt-2 w-64 rounded-lg border border-border bg-surface p-3 shadow-lg">
                   <div>
                     <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-text-muted">
                       Owned
@@ -261,16 +261,16 @@ export default function PlayersPage() {
             title="Show only your shortlisted players"
             className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
               shortlistOnly
-                ? "border-pl-yellow bg-pl-yellow/15 text-text-primary"
-                : "border-border bg-white text-text-secondary hover:border-pl-purple/40"
+                ? "border-warning bg-warning/15 text-text-primary"
+                : "border-border bg-surface text-text-secondary hover:border-brand/40"
             }`}
           >
-            <span className={shortlistOnly ? "text-pl-yellow" : "text-slate-300"} aria-hidden="true">
+            <span className={shortlistOnly ? "text-warning" : "text-ink-300"} aria-hidden="true">
               ★
             </span>
             Shortlist
             {shortlist.length > 0 && (
-              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-pl-purple px-1 text-[11px] font-bold text-white">
+              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-ink-900 px-1 text-[11px] font-bold text-white">
                 {shortlist.length}
               </span>
             )}
@@ -282,7 +282,7 @@ export default function PlayersPage() {
             <select
               value={sortKey}
               onChange={(e) => changeSort(e.target.value as SortKey)}
-              className="rounded-lg border border-border bg-white px-2.5 py-2 text-sm font-medium normal-case tracking-normal text-text-primary outline-none focus:border-pl-cyan focus:shadow-focus"
+              className="rounded-lg border border-border bg-surface px-2.5 py-2 text-sm font-medium normal-case tracking-normal text-text-primary outline-none focus:border-info focus:shadow-focus"
             >
               {SORTS.map((s) => (
                 <option key={s.key} value={s.key}>

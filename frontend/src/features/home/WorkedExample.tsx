@@ -31,12 +31,12 @@ export async function WorkedExample() {
   if (!top && !lastGraded) return null;
 
   return (
-    <section className="rounded-lg border border-border bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-border bg-surface p-5 shadow-sm">
       <div className="flex flex-col gap-1">
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-pl-purple/60">
+        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-primary/60">
           See it work first
         </span>
-        <h2 className="text-lg font-bold tracking-tight text-pl-purple">
+        <h2 className="text-lg font-bold tracking-tight text-text-primary">
           No Team ID needed to check our homework.
         </h2>
       </div>
@@ -80,7 +80,7 @@ export async function WorkedExample() {
               {lastGraded.captain.rank_of_pick === 1
                 ? `The highest-scoring player in the game in GW${lastGraded.event}.`
                 : `${lastGraded.captain.rank_of_pick}th best that week — ${lastGraded.captain.best_actual_player} got ${lastGraded.captain.best_actual}. We publish the misses too.`}{" "}
-              <Link href="/accuracy" className="font-semibold text-pl-purple hover:underline">
+              <Link href="/accuracy" className="font-semibold text-text-primary hover:underline">
                 Full record →
               </Link>
             </p>

@@ -116,7 +116,7 @@ export function BlankGameweekAdvisor({
               <button
                 type="button"
                 onClick={() => planForWeek(week.event, nextEvent)}
-                className="rounded-md border border-pl-purple/40 px-2.5 py-1 text-xs font-semibold text-pl-purple hover:bg-pl-purple/10"
+                className="rounded-md border border-brand/40 px-2.5 py-1 text-xs font-semibold text-brand hover:bg-ink-900/10"
               >
                 Plan for GW{week.event}
               </button>

@@ -4,10 +4,10 @@ import { StatMeter } from "@/shared/ui/StatMeter";
 import type { StatGlossaryKey } from "@/shared/lib/statGlossary";
 
 const POS_COLOR: Record<string, string> = {
-  GKP: "#ffdd3c",
-  DEF: "#04f5ff",
-  MID: "#00ff87",
-  FWD: "#e90052",
+  GKP: "var(--pos-gkp)",
+  DEF: "var(--pos-def)",
+  MID: "var(--pos-mid)",
+  FWD: "var(--pos-fwd)",
 };
 
 export type CardStat = {
@@ -76,15 +76,15 @@ export function PlayerCard({
       {...(onClick ? { type: "button" as const, onClick } : {})}
       className={`group relative w-full shrink-0 overflow-hidden rounded-2xl border border-white/15 text-left text-white shadow-lg ${
         hero ? "max-w-[340px]" : compact ? "max-w-[168px]" : "max-w-[300px]"
-      } ${onClick ? "transition-transform hover:-translate-y-0.5 hover:border-pl-green/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pl-green" : ""}`}
-      style={{ background: "linear-gradient(158deg,#5a1a63 0%,#37003c 42%,#0f7a3d 155%)" }}
+      } ${onClick ? "transition-transform hover:-translate-y-0.5 hover:border-brand/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand" : ""}`}
+      style={{ background: "linear-gradient(158deg,var(--ink-700) 0%,var(--ink-800) 55%,var(--ink-900) 100%)" }}
     >
       <span className="pointer-events-none absolute inset-0 -translate-x-[110%] bg-[linear-gradient(115deg,transparent_32%,rgba(255,255,255,0.22)_50%,transparent_68%)] transition-transform duration-700 group-hover:translate-x-[110%]" />
 
       <div className={`relative flex items-start justify-between pb-0 ${compact ? "p-2.5" : "p-4"}`}>
         <div className="flex flex-col items-center gap-1">
           <span
-            className={`font-mono font-extrabold leading-none tracking-tight text-pl-green ${
+            className={`font-mono font-extrabold leading-none tracking-tight text-text-primary ${
               hero ? "text-[52px]" : compact ? "text-[26px]" : "text-[34px]"
             }`}
           >
@@ -101,15 +101,15 @@ export function PlayerCard({
               className={`mt-1.5 object-contain ${hero ? "h-12 w-12" : compact ? "h-7 w-7" : "h-10 w-10"}`}
             />
           ) : (
-            <span className="mt-1.5 text-xs font-bold text-[#c9a9d1]">{teamShort}</span>
+            <span className="mt-1.5 text-xs font-bold text-ink-300">{teamShort}</span>
           )}
         </div>
-        <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#c9a9d1]">
+        <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.12em] text-ink-300">
           {windowLabel ? `${ratingLabel} · ${windowLabel}` : ratingLabel}
           {ratingLabel === "xPTS" && (
             <InfoTooltip
               term="xPts"
-              className="border-white/40 text-white/70 hover:border-white hover:bg-white/20 hover:text-white"
+              className="border-white/40 text-white/70 hover:border-white hover:bg-surface/20 hover:text-white"
             />
           )}
         </span>
@@ -119,7 +119,7 @@ export function PlayerCard({
         <PlayerPhoto
           src={photo}
           name={name}
-          className={`rounded-full border-2 border-white/25 bg-black/20 object-cover object-top ${
+          className={`rounded-full border-2 border-white/25 bg-ink-900/20 object-cover object-top ${
             hero ? "h-44 w-44 text-4xl" : compact ? "h-16 w-16 text-lg" : "h-28 w-28 text-2xl"
           }`}
         />
@@ -127,7 +127,7 @@ export function PlayerCard({
 
       <div className={`relative ${compact ? "px-2.5 pb-3" : "px-4 pb-4"}`}>
         <div className={`truncate text-center font-extrabold tracking-wide ${compact ? "text-sm" : "text-lg"}`}>{name}</div>
-        <div className="my-3 h-px bg-white/15" />
+        <div className="my-3 h-px bg-surface/15" />
         {/* Figures and dials are separated rather than interleaved. Sharing one
             grid put a one-line text row beside a 42px ring, so rows came out
             uneven and the last dial was orphaned in a row of its own. */}
@@ -135,12 +135,12 @@ export function PlayerCard({
           <div className={`grid gap-x-3 gap-y-1 ${compact ? "grid-cols-1" : "grid-cols-2"}`}>
             {plainStats.map((s) => (
               <div key={s.k} className="flex items-center justify-between text-[13px]">
-                <span className="flex items-center gap-1 font-semibold text-[#c9a9d1]">
+                <span className="flex items-center gap-1 font-semibold text-ink-300">
                   {s.k}
                   {s.tooltip && (
                     <InfoTooltip
                       term={s.tooltip}
-                      className="border-white/40 text-white/70 hover:border-white hover:bg-white/20 hover:text-white"
+                      className="border-white/40 text-white/70 hover:border-white hover:bg-surface/20 hover:text-white"
                     />
                   )}
                 </span>

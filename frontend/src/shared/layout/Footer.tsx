@@ -5,7 +5,7 @@ import { DiscordCTA } from "@/shared/ui/DiscordCTA";
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-border bg-white px-4 py-6 pb-24 lg:px-6 lg:pb-6">
+    <footer className="border-t border-border bg-surface px-4 py-6 pb-24 lg:px-6 lg:pb-6">
       <div className="mx-auto flex max-w-6xl flex-col gap-4">
         <div className="tap-target flex items-center gap-2">
           <Logo size={24} tone="light" />
@@ -19,11 +19,11 @@ export function Footer() {
             only — not betting, gambling, or financial advice.
           </p>
           <div className="flex shrink-0 items-center gap-x-5 gap-y-1 text-xs">
-            <DiscordCTA variant="inline" className="text-text-secondary hover:text-pl-purple" />
-            <Link href="/privacy" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-pl-purple">
+            <DiscordCTA variant="inline" className="text-text-secondary hover:text-brand" />
+            <Link href="/privacy" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-brand">
               Privacy
             </Link>
-            <Link href="/terms" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-pl-purple">
+            <Link href="/terms" className="tap-target inline-flex items-center text-text-secondary transition-colors hover:text-brand">
               Terms
             </Link>
             <span className="text-text-muted">© {year} xFPL</span>

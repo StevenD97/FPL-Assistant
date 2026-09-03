@@ -25,22 +25,22 @@ export type SquadRead =
  */
 const TONES: Record<SquadRead, { icon: string; text: string; tint: string; bar: string }> = {
   transfers: { icon: "text-success", text: "text-success", tint: "bg-success-bg", bar: "bg-success" },
-  captaincy: { icon: "text-pl-purple", text: "text-pl-purple", tint: "bg-pl-purple/10", bar: "bg-pl-purple" },
+  captaincy: { icon: "text-text-primary", text: "text-text-primary", tint: "bg-ink-900/10", bar: "bg-ink-900" },
   chips: { icon: "text-warning", text: "text-warning", tint: "bg-warning-bg", bar: "bg-warning" },
   // A muted plum for the schedule: fixture difficulty is the one read whose
   // *content* is colour-coded (green-to-red FDR chips), so the row itself takes a
   // neutral brand tone rather than competing with the scale inside it.
   fixtures: {
-    icon: "text-pl-purple-light",
-    text: "text-pl-purple-light",
-    tint: "bg-pl-purple-light/10",
-    bar: "bg-pl-purple-light",
+    icon: "text-brand-strong",
+    text: "text-brand-strong",
+    tint: "bg-ink-700/10",
+    bar: "bg-ink-700",
   },
-  // pl-pink, the boldest accent in the palette, for the row about bold picks.
-  differentials: { icon: "text-pl-pink", text: "text-pl-pink", tint: "bg-pl-pink/10", bar: "bg-pl-pink" },
+  // danger, the boldest accent in the palette, for the row about bold picks.
+  differentials: { icon: "text-danger", text: "text-danger", tint: "bg-danger/10", bar: "bg-danger" },
   strength: { icon: "text-info", text: "text-info", tint: "bg-info-bg", bar: "bg-info" },
-  detail: { icon: "text-slate-600", text: "text-slate-600", tint: "bg-slate-100", bar: "bg-slate-600" },
-  setup: { icon: "text-slate-500", text: "text-slate-500", tint: "bg-slate-100", bar: "bg-slate-400" },
+  detail: { icon: "text-ink-600", text: "text-ink-600", tint: "bg-ink-100", bar: "bg-ink-600" },
+  setup: { icon: "text-ink-500", text: "text-ink-500", tint: "bg-ink-100", bar: "bg-ink-400" },
 };
 
 export type ReadRow = {
@@ -76,7 +76,7 @@ export function SquadReadRail({
   onSelect: (id: SquadRead) => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
       <p className="flex items-center gap-2 border-b border-border bg-surface-sunken px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-text-muted">
         Reads
         <span className="font-mono text-[10px] font-semibold normal-case tracking-normal text-text-muted/70">
@@ -102,7 +102,7 @@ export function SquadReadRail({
                 onClick={() => onSelect(row.id)}
                 aria-expanded={isActive}
                 className={`group flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-fast ease-standard ${
-                  isActive ? "bg-pl-purple/[0.06]" : "hover:bg-surface-sunken"
+                  isActive ? "bg-ink-900/[0.06]" : "hover:bg-surface-sunken"
                 }`}
               >
                 {/* Active marker as a filled bar rather than a colour swap: it
@@ -122,7 +122,7 @@ export function SquadReadRail({
                 <span className="min-w-0 flex-1">
                   <span
                     className={`block text-sm font-semibold ${
-                      isActive ? "text-pl-purple" : "text-text-primary"
+                      isActive ? "text-brand" : "text-text-primary"
                     }`}
                   >
                     {row.label}
@@ -141,7 +141,7 @@ export function SquadReadRail({
                   strokeLinejoin="round"
                   aria-hidden="true"
                   className={`h-4 w-4 shrink-0 transition-transform duration-base ease-standard group-hover:translate-x-0.5 ${
-                    isActive ? "text-pl-purple" : "text-slate-300"
+                    isActive ? "text-brand" : "text-ink-300"
                   }`}
                 >
                   <path d="M9 6l6 6-6 6" />

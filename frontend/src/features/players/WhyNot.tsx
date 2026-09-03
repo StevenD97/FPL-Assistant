@@ -54,7 +54,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
   if (state.kind === "error") return null;
 
   return (
-    <section className="rounded-lg border border-border bg-white p-4 shadow-sm">
+    <section className="rounded-lg border border-border bg-surface p-4 shadow-sm">
       <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
         The model&apos;s verdict
       </h2>
@@ -77,7 +77,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
           {state.data.better && (
             <Link
               href={`/players/${state.data.better.id}`}
-              className="tap-target mt-3 flex items-center gap-2.5 rounded-md border border-border p-2 transition-colors hover:border-pl-purple/40 hover:bg-surface-sunken"
+              className="tap-target mt-3 flex items-center gap-2.5 rounded-md border border-border p-2 transition-colors hover:border-brand/40 hover:bg-surface-sunken"
             >
               <PlayerPhoto
                 src={state.data.better.player_photo}
@@ -85,7 +85,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
                 className="h-9 w-9 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-[11px]"
               />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-pl-purple">
+                <span className="block truncate text-sm font-semibold text-text-primary">
                   {state.data.better.web_name}
                 </span>
                 <span className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
@@ -95,7 +95,7 @@ export function WhyNot({ playerId }: { playerId: number }) {
                 </span>
               </span>
               <span className="shrink-0 text-right leading-none">
-                <span className="block font-mono text-md font-bold text-pl-purple">
+                <span className="block font-mono text-md font-bold text-text-primary">
                   {state.data.better.predicted_points.toFixed(1)}
                 </span>
                 <span className="mt-0.5 block text-[11px] uppercase tracking-wide text-text-muted">

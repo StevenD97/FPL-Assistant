@@ -448,7 +448,7 @@ export function BuildSquadPanel({
                 type="button"
                 onClick={() => setSettingsOpen((v) => !v)}
                 aria-expanded={settingsOpen}
-                className="rounded text-xs text-text-muted transition-colors hover:text-pl-purple"
+                className="rounded text-xs text-text-muted transition-colors hover:text-brand"
                 title="Change the assumed budget"
               >
                 <span className="font-mono">£{budget.toFixed(1)}m</span> budget &middot;{" "}
@@ -592,7 +592,7 @@ export function BuildSquadPanel({
                             <PlayerPhoto
                               src={p.player_photo}
                               name={p.web_name}
-                              className="h-11 w-11 rounded-full border-2 border-border-strong bg-white object-cover object-top text-[10px]"
+                              className="h-11 w-11 rounded-full border-2 border-border-strong bg-surface object-cover object-top text-[10px]"
                             />
                           </button>
                           <span className="whitespace-nowrap text-[11px] font-medium text-text-primary">{p.web_name}</span>
@@ -609,7 +609,7 @@ export function BuildSquadPanel({
                         aria-label={`Add a bench ${pos}`}
                         className="group flex h-[76px] flex-col items-center gap-1"
                       >
-                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-border-strong text-[10px] font-bold text-text-muted transition-colors group-hover:border-pl-purple group-hover:text-pl-purple">
+                        <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-border-strong text-[10px] font-bold text-text-muted transition-colors group-hover:border-brand group-hover:text-brand">
                           {pos}
                         </span>
                         <span className="text-[11px] font-medium text-text-muted">Add {pos}</span>
@@ -685,7 +685,7 @@ export function BuildSquadPanel({
                           title={!clickable ? reason : inSquad ? "Click to remove" : "Click to add"}
                           className={`border-t border-border transition-colors duration-fast ease-standard ${
                             inSquad
-                              ? "cursor-pointer bg-pl-green/10 hover:bg-pl-green/15"
+                              ? "cursor-pointer bg-brand/10 hover:bg-brand/15"
                               : clickable
                               ? "cursor-pointer hover:bg-surface-sunken"
                               : "cursor-not-allowed opacity-45"
@@ -695,7 +695,7 @@ export function BuildSquadPanel({
                             <span
                               className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${
                                 inSquad
-                                  ? "bg-pl-green text-pl-purple"
+                                  ? "bg-brand text-ink-900"
                                   : "border border-border-strong text-text-muted"
                               }`}
                               aria-hidden="true"

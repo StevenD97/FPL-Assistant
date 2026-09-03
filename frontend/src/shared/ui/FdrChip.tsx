@@ -4,7 +4,7 @@
 const DIFFICULTY_CLASSES: Record<number, string> = {
   1: "bg-success text-white",
   2: "bg-success-bg text-success",
-  3: "bg-slate-100 text-text-secondary",
+  3: "bg-ink-100 text-text-secondary",
   4: "bg-danger-bg text-danger",
   5: "bg-danger text-white",
 };
@@ -23,7 +23,7 @@ export function FdrChip({
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[11px] font-semibold ${
-        DIFFICULTY_CLASSES[difficulty] ?? "bg-slate-100 text-text-secondary"
+        DIFFICULTY_CLASSES[difficulty] ?? "bg-ink-100 text-text-secondary"
       }`}
     >
       {badgeUrl && (

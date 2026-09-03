@@ -4,10 +4,10 @@ type Variant = "primary" | "accent" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const VARIANT_CLASSES: Record<Variant, string> = {
-  primary: "bg-pl-purple text-white border border-transparent hover:bg-pl-purple-light",
-  accent: "bg-pl-green text-pl-purple border border-transparent hover:brightness-95",
-  secondary: "bg-white text-text-primary border border-border-strong hover:bg-slate-50",
-  ghost: "bg-transparent text-text-primary border border-transparent hover:bg-slate-50",
+  primary: "bg-ink-900 text-white border border-transparent hover:bg-ink-700",
+  accent: "bg-brand text-ink-900 border border-transparent hover:brightness-95",
+  secondary: "bg-surface text-text-primary border border-border-strong hover:bg-ink-050",
+  ghost: "bg-transparent text-text-primary border border-transparent hover:bg-ink-050",
   danger: "bg-danger text-white border border-transparent hover:brightness-95",
 };
 

@@ -40,7 +40,7 @@ export function ThisWeek({
   const captainMatches = topCaptain != null && topCaptain.web_name === currentCaptainName;
 
   return (
-    <section className="rounded-lg border border-border bg-white p-4 shadow-sm">
+    <section className="rounded-lg border border-border bg-surface p-4 shadow-sm">
       <h2 className="text-[11px] font-bold uppercase tracking-[0.1em] text-text-muted">
         {nextEvent != null ? `Before the GW${nextEvent} deadline` : "Before the deadline"}
       </h2>

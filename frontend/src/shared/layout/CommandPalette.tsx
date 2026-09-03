@@ -92,7 +92,7 @@ export function CommandPalette() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} aria-hidden="true" />
+          <div className="absolute inset-0 bg-ink-900/50" onClick={() => setOpen(false)} aria-hidden="true" />
           <motion.div
             className="bg-fpl-sidebar relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 shadow-lg"
             initial={{ y: -12, opacity: 0, scale: 0.98 }}
@@ -103,20 +103,20 @@ export function CommandPalette() {
             aria-label="Command palette"
           >
             <div className="flex items-center gap-2 border-b border-white/10 px-4">
-              <span className="text-[#c9a9d1]" aria-hidden="true">⌕</span>
+              <span className="text-ink-300" aria-hidden="true">⌕</span>
               <input
                 ref={inputRef}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={onInputKey}
                 placeholder="Jump to…  (players, chips, differentials)"
-                className="w-full bg-transparent py-3.5 text-sm text-white outline-none placeholder:text-[#9a86a4]"
+                className="w-full bg-transparent py-3.5 text-sm text-white outline-none placeholder:text-ink-400"
               />
-              <kbd className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-[#c9a9d1]">esc</kbd>
+              <kbd className="rounded bg-surface/10 px-1.5 py-0.5 font-mono text-[10px] text-ink-300">esc</kbd>
             </div>
             <div className="max-h-[50vh] overflow-y-auto p-2">
               {results.length === 0 && (
-                <p className="px-3 py-6 text-center text-sm text-[#9a86a4]">No matches.</p>
+                <p className="px-3 py-6 text-center text-sm text-ink-400">No matches.</p>
               )}
               {results.map((c, i) => (
                 <button
@@ -125,7 +125,7 @@ export function CommandPalette() {
                   onClick={() => go(c.href)}
                   onMouseEnter={() => setActive(i)}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-                    i === active ? "bg-pl-green font-semibold text-pl-purple" : "text-[#d9c4de]"
+                    i === active ? "bg-brand font-semibold text-ink-900" : "text-ink-200"
                   }`}
                 >
                   <NavIcon name={c.icon} className="h-[18px] w-[18px]" />

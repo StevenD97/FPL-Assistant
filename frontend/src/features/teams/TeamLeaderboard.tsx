@@ -41,7 +41,7 @@ function formatValue(key: string, value: number): string {
 // is built from (see fpl/services/teams.py).
 export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: LeaderboardEntry[] }) {
   return (
-    <div className="rounded-lg border border-border bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-1 text-sm font-semibold text-text-primary">
           {metric.label}
@@ -49,7 +49,7 @@ export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: Leader
         </h3>
         <span
           className={`shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wide ${
-            metric.kind === "model" ? "bg-pl-purple/10 text-pl-purple" : "bg-surface-sunken text-text-muted"
+            metric.kind === "model" ? "bg-ink-900/10 text-text-primary" : "bg-surface-sunken text-text-muted"
           }`}
         >
           {metric.kind === "model" ? "Model" : "2025/26"}
@@ -71,7 +71,7 @@ export function TeamLeaderboard({ metric, rows }: { metric: Metric; rows: Leader
                 {r.web_name}
               </PlayerLink>
               <PositionBadge position={r.position} />
-              <span className="w-11 shrink-0 text-right font-mono text-sm font-bold text-pl-purple">
+              <span className="w-11 shrink-0 text-right font-mono text-sm font-bold text-text-primary">
                 {formatValue(metric.key, r.value)}
               </span>
             </li>

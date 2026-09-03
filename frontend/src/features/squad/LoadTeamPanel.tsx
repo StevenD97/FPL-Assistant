@@ -206,7 +206,7 @@ export function LoadTeamPanel({
         // pick that's no longer current against the model's own favourite.
         <>
           <span className="font-medium text-text-primary">{previewEffect.previewCaptainName}</span>{" "}
-          <span className="text-pl-purple">· your pick, previewed</span>
+          <span className="text-text-primary">· your pick, previewed</span>
         </>
       ) : topCaptain ? (
         <>
@@ -261,7 +261,7 @@ export function LoadTeamPanel({
       label: "Differentials",
       summary: diffSummary ? (
         <>
-          <span className="font-mono font-medium text-pl-pink">{diffSummary.edgeCount}</span> under{" "}
+          <span className="font-mono font-medium text-danger">{diffSummary.edgeCount}</span> under{" "}
           {riskMax}% ·{" "}
           <span className="font-mono font-medium text-text-primary">{diffSummary.crowdCount}</span> owned by
           the crowd
@@ -402,7 +402,7 @@ export function LoadTeamPanel({
               {
                 label: "In the bank",
                 value: (
-                  <span className={swapCostDelta !== 0 ? (effectiveBank < 0 ? "text-danger" : "text-pl-purple") : ""}>
+                  <span className={swapCostDelta !== 0 ? (effectiveBank < 0 ? "text-danger" : "text-text-primary") : ""}>
                     £{effectiveBank}m
                   </span>
                 ),

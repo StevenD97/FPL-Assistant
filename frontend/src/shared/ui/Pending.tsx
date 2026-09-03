@@ -55,7 +55,7 @@ function Spinner() {
   return (
     <span
       aria-hidden="true"
-      className="mt-0.5 inline-block h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-border-strong border-t-pl-purple motion-reduce:animate-none"
+      className="mt-0.5 inline-block h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-border-strong border-t-brand motion-reduce:animate-none"
     />
   );
 }

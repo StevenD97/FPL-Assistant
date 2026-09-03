@@ -35,23 +35,23 @@ export function HomeCockpit() {
 function CockpitSkeleton() {
   return (
     <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 lg:p-8">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(0,255,135,0.28),transparent_70%)]" />
+      <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,176,32,0.16),transparent_70%)]" />
       <div className="relative flex flex-col gap-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <Skeleton className="h-3 w-32 bg-white/20" />
-            <Skeleton className="h-7 w-56 bg-white/20" />
+            <Skeleton className="h-3 w-32 bg-surface/20" />
+            <Skeleton className="h-7 w-56 bg-surface/20" />
           </div>
-          <Skeleton className="h-16 w-36 rounded-lg bg-white/20" />
+          <Skeleton className="h-16 w-36 rounded-lg bg-surface/20" />
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-[68px] rounded-lg bg-white/20" />
+            <Skeleton key={i} className="h-[68px] rounded-lg bg-surface/20" />
           ))}
         </div>
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <Skeleton className="h-40 rounded-lg bg-white/20" />
-          <Skeleton className="h-40 rounded-lg bg-white/20" />
+          <Skeleton className="h-40 rounded-lg bg-surface/20" />
+          <Skeleton className="h-40 rounded-lg bg-surface/20" />
         </div>
       </div>
     </div>
