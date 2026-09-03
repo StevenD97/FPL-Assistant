@@ -29,6 +29,12 @@ data/*
 # grades it has no way to produce. The refresh workflow rebuilds and commits
 # this alongside the snapshots.
 !data/accuracy.json
+# Projections frozen before each deadline. These are the evidence behind the
+# accuracy page's pre-commitment claim, so they are tracked by pattern rather
+# than by gameweek - a freeze that failed to get committed because nobody
+# added a line for GW17 would silently downgrade that week to a reconstruction.
+!data/projections/
+!data/projections/*.json
 __pycache__/
 *.pyc
 

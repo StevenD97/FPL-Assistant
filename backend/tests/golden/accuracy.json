@@ -53,8 +53,10 @@
           }
         ],
         "event": 2,
+        "frozen_at": null,
         "players_graded": 312,
         "rank_correlation": 0.318,
+        "source": "reconstructed",
         "top_ten": {
           "average_actual": 6.6,
           "field_average": 2.86,
@@ -84,8 +86,10 @@
         },
         "categories": [],
         "event": 1,
+        "frozen_at": null,
         "players_graded": 310,
         "rank_correlation": 0.2,
+        "source": "reconstructed",
         "top_ten": {
           "average_actual": 3.2,
           "field_average": 3.06,
@@ -141,6 +145,7 @@
           "rmse": 3.025
         }
       ],
+      "events_frozen": 0,
       "events_graded": 2,
       "field_average": 2.96,
       "rank_correlation": 0.259,

@@ -74,6 +74,12 @@ export default async function AccuracyPage() {
             flatters any model and tells a manager nothing.
           </p>
 
+          <p className="max-w-3xl text-sm leading-relaxed text-text-secondary">
+            {summary.events_frozen > 0
+              ? `${summary.events_frozen} of these ${summary.events_graded} weeks were written down and committed before the deadline, so the numbers below are a forecast that was made, not one reconstructed afterwards.`
+              : "Weeks marked reconstructed were re-predicted after the fact from data available before that deadline. That is honest, but it is weaker evidence than a forecast published in advance - so from now on each gameweek's projections are committed to the repository before its deadline, and graded against that file."}
+          </p>
+
           {summary.categories.length > 0 && <CategoryTable rows={summary.categories} />}
 
           <div className="flex flex-col gap-3">
@@ -154,7 +160,10 @@ function GameweekCard({ e }: { e: AccuracyResponseEvent }) {
     <article className="rounded-lg border border-border bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-md font-semibold text-text-primary">Gameweek {e.event}</h2>
-        <span className="font-mono text-xs text-text-muted">{e.players_graded} players appeared</span>
+        <span className="flex items-center gap-2">
+          <SourceBadge source={e.source} frozenAt={e.frozen_at} />
+          <span className="font-mono text-xs text-text-muted">{e.players_graded} players appeared</span>
+        </span>
       </div>
 
       <dl className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -186,6 +195,24 @@ function GameweekCard({ e }: { e: AccuracyResponseEvent }) {
         Ten highest projected: {e.top_ten.names.join(", ")}
       </p>
     </article>
+  );
+}
+
+function SourceBadge({ source, frozenAt }: { source: string; frozenAt: string | null }) {
+  const frozen = source === "frozen";
+  return (
+    <span
+      className={`rounded px-1.5 py-0.5 text-[11px] font-semibold ${
+        frozen ? "bg-success/10 text-success" : "bg-surface-sunken text-text-muted"
+      }`}
+      title={
+        frozen
+          ? `Projections committed to the repository at ${frozenAt ?? "the deadline"}, before kick-off.`
+          : "Re-predicted after the fact from data available before the deadline. No hindsight, but not a pre-commitment either."
+      }
+    >
+      {frozen ? "Called in advance" : "Reconstructed"}
+    </span>
   );
 }
 

@@ -52,6 +52,7 @@ from fpl.config import (
 from fpl.data.ingest import client
 from fpl.data.loaders import load_bootstrap
 from fpl.domain.baseline import LAST_N_MATCHES, categorise, last_n_baseline, score_by_category
+from fpl.domain.projections import SOURCE_FROZEN, SOURCE_RECONSTRUCTED, load_frozen
 from fpl.model.predict import predict_multi_gw_points
 from fpl.model.rules import CROSS_SEASON_HALF_LIFE_DAYS
 
@@ -146,15 +147,7 @@ def grade_event(event, live=None, bootstrap=None, history=None):
     of the internet.
     """
     bootstrap = bootstrap or load_bootstrap(LIVE_BOOTSTRAP_FILE)
-    reference_date = _reference_date(bootstrap, event)
-
-    predicted = predict_multi_gw_points(
-        reference_date, [event],
-        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
-        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
-        apply_live_signals=True,
-        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
-    )[["id", "web_name", "team_short", "position", "predicted_points"]]
+    predicted, source, frozen_at = _projections_for(event, bootstrap)
 
     results = actual_points(event, live)
     predicted["actual_points"] = predicted["id"].map(lambda i: results.get(i, (0, 0))[0])
@@ -178,6 +171,12 @@ def grade_event(event, live=None, bootstrap=None, history=None):
     return {
         "categories": _grade_categories(played, event, history, bootstrap),
         "event": event,
+        # Where the predictions came from. A gameweek frozen before its
+        # deadline is a pre-commitment; one reconstructed afterwards is an
+        # honest re-run that a reader is entitled to trust less. Saying which
+        # is the difference between a track record and an assertion.
+        "source": source,
+        "frozen_at": frozen_at,
         "players_graded": int(len(played)),
         "captain": {
             "pick": pick["web_name"],
@@ -197,6 +196,32 @@ def grade_event(event, live=None, bootstrap=None, history=None):
         # 0 is a coin toss, 1 is a perfect ordering.
         "rank_correlation": _spearman(played["predicted_points"], played["actual_points"]),
     }
+
+
+def _projections_for(event, bootstrap):
+    """
+    (frame, source, frozen_at) for one gameweek.
+
+    Prefers the file written before the deadline. Falls back to re-predicting
+    from a reference date just before it - which uses no post-deadline data
+    and is a fair reconstruction, but is not a commitment, and is labelled so.
+    """
+    frozen = load_frozen(event)
+    if frozen is not None:
+        frame = pd.DataFrame(frozen["players"])
+        columns = [c for c in ("id", "web_name", "team_short", "position", "predicted_points")
+                   if c in frame.columns]
+        return frame[columns], SOURCE_FROZEN, frozen.get("frozen_at")
+
+    reference_date = _reference_date(bootstrap, event)
+    frame = predict_multi_gw_points(
+        reference_date, [event],
+        half_life_days=CROSS_SEASON_HALF_LIFE_DAYS,
+        bootstrap_file=ARCHIVED_BOOTSTRAP_FILE, fixtures_file=ARCHIVED_FIXTURES_FILE,
+        apply_live_signals=True,
+        roster_bootstrap_file=LIVE_BOOTSTRAP_FILE, roster_fixtures_file=LIVE_FIXTURES_FILE,
+    )[["id", "web_name", "team_short", "position", "predicted_points"]]
+    return frame, SOURCE_RECONSTRUCTED, None
 
 
 def _grade_categories(played, event, history, bootstrap):
@@ -243,6 +268,10 @@ def summarise(events):
         "field_average": round(sum(e["top_ten"]["field_average"] for e in events) / len(events), 2),
         "rank_correlation": _mean_or_none([e["rank_correlation"] for e in events]),
         "categories": _pool_categories(events),
+        # How much of the record is a pre-commitment rather than a re-run.
+        # A reader deciding how much to trust this page should not have to
+        # count the badges themselves.
+        "events_frozen": sum(1 for e in events if e.get("source") == SOURCE_FROZEN),
     }
 
 

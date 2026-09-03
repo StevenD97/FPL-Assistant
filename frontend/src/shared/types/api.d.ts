@@ -35,8 +35,10 @@ export type AccuracyResponseEvent = {
   captain: AccuracyResponseEventCaptain;
   categories: ReturnCategory[];
   event: number;
+  frozen_at: null;
   players_graded: number;
   rank_correlation: number;
+  source: string;
   top_ten: AccuracyResponseEventTopTen;
 };
 
@@ -60,6 +62,7 @@ export type AccuracyResponseSummary = {
   captain_average: number;
   captain_best_possible_average: number;
   categories: ReturnCategory[];
+  events_frozen: number;
   events_graded: number;
   field_average: number;
   rank_correlation: number;

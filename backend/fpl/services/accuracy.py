@@ -22,6 +22,7 @@ from fpl.config import DATA_DIR
 from fpl.data.loaders import load_bootstrap
 from fpl.config import LIVE_BOOTSTRAP_FILE
 from fpl.domain.accuracy import baseline_history, finished_events, grade_event, summarise
+from fpl.domain.projections import SOURCE_RECONSTRUCTED
 
 log = logging.getLogger(__name__)
 
@@ -37,9 +38,15 @@ def _read_store():
     try:
         with open(ACCURACY_FILE, encoding="utf-8") as f:
             data = json.load(f)
-        return {int(k): v for k, v in data.get("events", {}).items()}
+        store = {int(k): v for k, v in data.get("events", {}).items()}
     except (FileNotFoundError, json.JSONDecodeError, ValueError, AttributeError):
         return {}
+    # Grades written before freezing existed were all reconstructions, so say
+    # so rather than leaving the field absent and letting the page guess.
+    for graded in store.values():
+        graded.setdefault("source", SOURCE_RECONSTRUCTED)
+        graded.setdefault("frozen_at", None)
+    return store
 
 
 def _write_store(graded_by_event):
