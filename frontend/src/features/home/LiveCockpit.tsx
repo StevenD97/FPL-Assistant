@@ -59,10 +59,38 @@ export function LiveCockpit({
       ? { out: transfers.transferred_out[0], in: transfers.transferred_in[0] }
       : null;
 
+  // The one thing to do this week, in a sentence, at the top of the page.
+  // Ordered by how much it changes: a transfer moves a player, the armband
+  // doubles one, a chip is a season decision. Only the first that applies is
+  // shown - the panels below carry the rest, and a bar with three
+  // recommendations in it is a summary, not a recommendation.
+  const headline = topTransfer ? (
+    <>
+      This week: bring in{" "}
+      <span className="font-semibold text-text-primary">{topTransfer.in?.web_name}</span> for{" "}
+      <span className="font-semibold text-text-primary">{topTransfer.out?.web_name}</span>
+      {transfers && transfers.points_hit > 0 ? `, taking a -${transfers.points_hit} hit` : ", no hit needed"}.
+    </>
+  ) : bestCaptain && bestCaptain.web_name !== captain?.web_name ? (
+    <>
+      This week: the armband is better on{" "}
+      <span className="font-semibold text-text-primary">{bestCaptain.web_name}</span> than on{" "}
+      <span className="font-semibold text-text-primary">{captain?.web_name}</span>.
+    </>
+  ) : chip ? (
+    <>
+      This week: nothing to change. The next chip worth playing is{" "}
+      <span className="font-semibold text-text-primary">{chip.name}</span> in GW{chip.event}.
+    </>
+  ) : (
+    <>This week: nothing to change - the squad already matches the model.</>
+  );
+
   return (
     <CockpitShell
       eyebrow={`Gameweek ${squad.event} · your dashboard`}
       title={squad.entry_name}
+      headline={headline}
     >
       {/* Four info triggers in a four-tile grid is not four explanations, it
           is visual noise - and the one that most needed explaining, "bench
@@ -105,9 +133,9 @@ export function LiveCockpit({
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
         {/* The XI, straight on the landing page - the thing a manager actually
             wants to look at. */}
-        <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3">
+        <div className="rounded-lg border border-border bg-surface p-3">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink-300">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
               Your starting XI
             </p>
             <Link href="/squad" className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
@@ -122,19 +150,17 @@ export function LiveCockpit({
 
         <div className="flex flex-col gap-3">
           {topTransfer && (
-            <Panel tone="hero" title="Suggested transfer" href="/squad" cta="See all">
+            <Panel tone="light" title="Suggested transfer" href="/squad" cta="See all">
               <div className="flex items-center gap-2 text-sm">
-                {/* danger, not the --danger token: that one is tuned for text
-                    on white and drops to unreadable on the purple hero. */}
                 <span className="min-w-0 flex-1 truncate text-danger">
                   ↓ {topTransfer.out?.web_name}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-right font-semibold text-text-primary">
+                <span className="min-w-0 flex-1 truncate text-right font-semibold text-success">
                   ↑ {topTransfer.in?.web_name}
                 </span>
               </div>
               {transfers && (
-                <p className="mt-1 text-xs text-ink-300">
+                <p className="mt-1 text-xs text-text-muted">
                   {transfers.transfers_made} transfer
                   {transfers.transfers_made === 1 ? "" : "s"}
                   {transfers.points_hit > 0 ? ` · -${transfers.points_hit} hit` : " · no hit"}
@@ -144,23 +170,23 @@ export function LiveCockpit({
           )}
 
           {chip && (
-            <Panel tone="hero" title="Chip timing" href="/squad" cta="Full scan">
-              <p className="text-sm font-semibold text-white">
+            <Panel tone="light" title="Chip timing" href="/squad" cta="Full scan">
+              <p className="text-sm font-semibold text-text-primary">
                 {chip.name} <span className="text-text-primary">· GW{chip.event}</span>
               </p>
-              <p className="mt-0.5 truncate text-xs text-ink-300">{chip.detail}</p>
+              <p className="mt-0.5 truncate text-xs text-text-muted">{chip.detail}</p>
             </Panel>
           )}
 
           {leagues.length > 0 && (
-            <Panel tone="hero" title="Mini-leagues" href="/leagues" cta="Standings">
+            <Panel tone="light" title="Mini-leagues" href="/leagues" cta="Standings">
               <ul className="flex flex-col">
                 {leagues.slice(0, 3).map((l) => (
                   <li
                     key={l.id}
-                    className="flex items-center justify-between gap-3 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                    className="flex items-center justify-between gap-3 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
                   >
-                    <span className="min-w-0 truncate text-white">{l.name}</span>
+                    <span className="min-w-0 truncate text-text-primary">{l.name}</span>
                     <span className="shrink-0 font-mono text-xs font-semibold text-text-primary">
                       {l.entry_rank > 0 ? formatRank(l.entry_rank) : "—"}
                     </span>
@@ -171,20 +197,20 @@ export function LiveCockpit({
           )}
 
           {bench.length > 0 && (
-            <Panel tone="hero" title="Bench" href="/squad" cta="Reorder">
+            <Panel tone="light" title="Bench" href="/squad" cta="Reorder">
               <ul className="flex flex-col">
                 {bench.map((p) => (
                   <li
                     key={p.id}
-                    className="flex items-center gap-2.5 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                    className="flex items-center gap-2.5 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
                   >
                     <PlayerPhoto
                       src={p.player_photo}
                       name={p.web_name}
-                      className="h-6 w-6 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-xs"
+                      className="h-6 w-6 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-xs"
                     />
-                    <span className="min-w-0 flex-1 truncate text-white">{p.web_name}</span>
-                    <span className="shrink-0 text-xs text-ink-300">
+                    <span className="min-w-0 flex-1 truncate text-text-primary">{p.web_name}</span>
+                    <span className="shrink-0 text-xs text-text-muted">
                       {p.pos} · {p.team_short}
                     </span>
                   </li>
@@ -194,17 +220,17 @@ export function LiveCockpit({
           )}
 
           {movers.length > 0 && (
-            <Panel tone="hero" title="Price watch · your players" href="/price-watch" cta="All movers">
+            <Panel tone="light" title="Price watch · your players" href="/price-watch" cta="All movers">
               <ul className="flex flex-col">
                 {movers.slice(0, 3).map((m) => (
                   <li
                     key={m.id}
-                    className="flex items-center justify-between gap-3 border-t border-white/10 py-1 text-sm first:border-t-0 first:pt-0"
+                    className="flex items-center justify-between gap-3 border-t border-border py-1 text-sm first:border-t-0 first:pt-0"
                   >
                     <TeamBadge teamShort={m.team_short} name={m.web_name} badgeUrl={m.team_badge} />
                     <span
                       className={`shrink-0 font-mono text-xs font-semibold ${
-                        m.direction === "rising" ? "text-text-primary" : "text-danger"
+                        m.direction === "rising" ? "text-success" : "text-danger"
                       }`}
                     >
                       {m.direction === "rising" ? "+" : "-"}

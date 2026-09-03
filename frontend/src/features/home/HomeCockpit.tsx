@@ -34,26 +34,26 @@ export function HomeCockpit() {
 /** Mirrors the hero's shape so the page doesn't jump when the data lands. */
 function CockpitSkeleton() {
   return (
-    <div className="bg-fpl-hero relative overflow-hidden rounded-lg p-6 lg:p-8">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(255,176,32,0.16),transparent_70%)]" />
-      <div className="relative flex flex-col gap-5">
-        <div className="flex items-start justify-between gap-4">
+    <>
+      <div className="rounded-lg border border-border bg-surface px-4 py-3.5 lg:px-5">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <Skeleton className="h-3 w-32 bg-surface/20" />
-            <Skeleton className="h-7 w-56 bg-surface/20" />
+            <Skeleton className="h-3 w-32" />
+            <Skeleton className="h-5 w-56" />
           </div>
-          <Skeleton className="h-16 w-36 rounded-lg bg-surface/20" />
+          <Skeleton className="h-5 w-36" />
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-[68px] rounded-lg bg-surface/20" />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          <Skeleton className="h-40 rounded-lg bg-surface/20" />
-          <Skeleton className="h-40 rounded-lg bg-surface/20" />
-        </div>
+        <Skeleton className="mt-3 h-4 w-full max-w-lg" />
       </div>
-    </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-[68px] rounded-lg" />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.35fr_1fr]">
+        <Skeleton className="h-80 rounded-lg" />
+        <Skeleton className="h-80 rounded-lg" />
+      </div>
+    </>
   );
 }

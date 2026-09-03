@@ -22,7 +22,7 @@ export function HeroActions() {
           </Link>
           <Link
             href="/players"
-            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/10"
+            className="rounded-md border border-border-strong px-4 py-2.5 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-sunken"
           >
             Research players
           </Link>
@@ -38,7 +38,7 @@ export function HeroActions() {
           </button>
           <Link
             href="/squad"
-            className="rounded-md border border-white/30 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/10"
+            className="rounded-md border border-border-strong px-4 py-2.5 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-sunken"
           >
             Build a squad
           </Link>

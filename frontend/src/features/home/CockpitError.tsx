@@ -28,8 +28,8 @@ export function CockpitError({
       title={teamName ? `We're having trouble, ${teamName}` : "We're having trouble"}
       subtitle="This is on us, not your team. The rest of the site still works."
     >
-      <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3.5">
-        <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink-300">
+      <div className="rounded-lg border border-border bg-surface p-3.5">
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">
           What went wrong
         </p>
         <p className="mt-1.5 text-sm text-white">{message}</p>
@@ -45,7 +45,7 @@ export function CockpitError({
         </button>
         <Link
           href="/players"
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-white/20 bg-surface/10 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-surface/15"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border bg-surface-sunken px-4 py-2.5 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-sunken"
         >
           Browse players →
         </Link>

@@ -142,14 +142,22 @@ export function PitchFormation({
 
   return (
     <div className={PITCH_CONTAINER}>
-      {/* `min-h` stays a fixed 480px rather than scaling with the container. The
-          interior (kits, markings, gaps) is what needed to follow the container;
-          the pitch's *height* is the canvas those sit on, and making it fluid
-          only took height away - a 549px-wide workspace pitch lost ~50px of
-          vertical room for no gain. */}
+      {/* Height is a fixed floor plus a cap, not a fluid value. The interior -
+          kits, markings, gaps - follows the container; the pitch's height is
+          the canvas those sit on, and making that fluid only took height away
+          (a 549px-wide workspace pitch lost ~50px of vertical room for no
+          gain).
+
+          Height comes down by tightening the vertical rhythm, not by capping
+          it. This ran to nearly 700px on a desktop to show eleven names, which
+          is most of a screen spent on a diagram the reader already understands
+          - eleven circles in four rows. A max-height was the obvious fix and
+          the wrong one: with overflow hidden it simply cut the goalkeeper's
+          name off the bottom. Smaller gaps and less padding get the same
+          reduction while every name still fits. */}
       <div
-        className={`bg-fpl-pitch relative flex min-h-[480px] flex-col justify-between gap-[clamp(1.25rem,4.6cqw,1.5rem)] overflow-hidden rounded-lg px-[clamp(0.75rem,4.6cqw,1.5rem)] ${
-          inset ? "py-[clamp(3.5rem,13cqw,4rem)]" : "py-[clamp(1.5rem,6cqw,2rem)]"
+        className={`bg-fpl-pitch relative flex min-h-[420px] flex-col justify-between gap-[clamp(0.75rem,3.2cqw,1.125rem)] overflow-hidden rounded-lg px-[clamp(0.75rem,4.6cqw,1.5rem)] ${
+          inset ? "py-[clamp(1.25rem,5cqw,1.75rem)]" : "py-[clamp(1rem,4cqw,1.5rem)]"
         }`}
       >
         {/* Pitch markings. These scale with the pitch too - at the old fixed sizes

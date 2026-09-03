@@ -98,17 +98,17 @@ export function WaitingCockpit({
             {data.topPicks.map((p) => (
               <li
                 key={p.id}
-                className="flex items-center gap-2.5 border-t border-white/10 py-1.5 first:border-t-0 first:pt-0"
+                className="flex items-center gap-2.5 border-t border-border py-1.5 first:border-t-0 first:pt-0"
               >
                 <PlayerPhoto
                   src={p.player_photo}
                   name={p.web_name}
-                  className="h-7 w-7 shrink-0 rounded-full border border-white/20 bg-surface/10 object-cover object-top text-xs"
+                  className="h-7 w-7 shrink-0 rounded-full border border-border bg-surface-sunken object-cover object-top text-xs"
                 />
                 <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
                   {p.web_name}
                 </span>
-                <span className="shrink-0 text-xs text-ink-300">
+                <span className="shrink-0 text-xs text-text-muted">
                   {p.team_short} · £{p.cost.toFixed(1)}m
                 </span>
                 <span className="shrink-0 font-mono text-sm font-bold text-text-primary">
@@ -124,7 +124,7 @@ export function WaitingCockpit({
             {data.kindestOpeners.map((row) => (
               <li
                 key={row.team_id}
-                className="flex items-center gap-2.5 border-t border-white/10 py-1.5 first:border-t-0 first:pt-0"
+                className="flex items-center gap-2.5 border-t border-border py-1.5 first:border-t-0 first:pt-0"
               >
                 <TeamBadge teamShort={row.team} name={row.team} badgeUrl={row.team_badge} />
                 <span className="ml-auto flex shrink-0 flex-wrap justify-end gap-1">
@@ -171,9 +171,9 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/15 bg-surface/[0.07] p-3.5">
+    <div className="rounded-lg border border-border bg-surface p-3.5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-xs font-bold uppercase tracking-[0.1em] text-ink-300">{title}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-text-muted">{title}</p>
         <Link href={href} className="tap-target inline-flex items-center text-xs font-semibold text-text-primary hover:underline">
           {cta} →
         </Link>
