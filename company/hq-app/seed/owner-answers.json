@@ -1,0 +1,10 @@
+{
+ "title": "Facts the owners have supplied",
+ "kind": "facts",
+ "tags": [
+  "context",
+  "owners"
+ ],
+ "updated": "2026-09-04",
+ "body": "FACTS SUPPLIED DIRECTLY BY THE OWNERS on 4 September 2026. Treat these as facts, not opinions.\n- Existing measurement: the owners are NOT SURE whether any analytics property (Search Console, a Vercel dashboard) is already collecting. This remains unconfirmed and must not be assumed either way.\n- Discord: EMPTY / INACTIVE. Community growth through Discord is not a live channel and should not be proposed as one without a reason to revive it.\n- Real users: the app was sent to friends and family for feedback, but MONTHS AGO and on an earlier demo version. So there is no current user feedback on what is live now, and any older reaction should not be treated as evidence about today's product.\n- Owner time budget: 10+ hours a week. Plans may be sized accordingly.\n- Monthly spending ceiling: £0. Paid infrastructure is closed until this is revisited, which makes the Render keep-alive capacity problem a design problem rather than a purchasing one.\n- Hosting: the frontend is on VERCEL (confirmed 3 September from live response headers: server Vercel, x-vercel-id iad1, Next.js). The partner has Vercel, GitHub and Render access in his own right."
+}

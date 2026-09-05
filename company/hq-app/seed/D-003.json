@@ -1,0 +1,22 @@
+{
+ "id": "D-003",
+ "status": "DEFERRED",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "Email capture — yes, no, or later?",
+ "question": "Is collecting an email address acceptable, so a deadline reminder becomes possible?",
+ "context": "The CPO holds that nothing brings a manager back after the deadline, and calls this the largest product gap. A reminder needs an email address, which means holding personal data. The owners deferred rather than refusing.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "DEFER",
+ "humanWhy": "",
+ "decidedAt": "2026-09-04T12:06:57.415Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}

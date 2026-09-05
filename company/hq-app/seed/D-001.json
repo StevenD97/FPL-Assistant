@@ -1,0 +1,22 @@
+{
+ "id": "D-001",
+ "status": "APPROVED",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "Adopt the 30-day focus",
+ "question": "Should we adopt the CEO's recommended 30-day plan?",
+ "context": "From the 3 September executive meeting on what to focus on over the next 30 days. Seated the CMO, CPO and Head of FPL Analytics. Days 1-4 clear the ground (accuracy figures state their population, remove the Premium gate, drop the unbacktested score, fix the README); days 4-14 SEO and analytics live before the GW5 deadline on 18 September; then observe through the three-week international break and read the data at GW6. The CPO dissented on ordering and that dissent is on the record with a reopening trigger.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "APPROVE",
+ "humanWhy": "",
+ "decidedAt": "2026-09-04T12:06:43.909Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}

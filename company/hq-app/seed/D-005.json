@@ -1,0 +1,22 @@
+{
+ "id": "D-005",
+ "status": "APPROVED",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "Monthly spending ceiling",
+ "question": "Is there a monthly spend ceiling for xFPL?",
+ "context": "Everything runs at zero today. Roughly £7–14 a month would remove the Render cold start and the free-database expiry risk. The answer sets the boundary for every infrastructure recommendation that follows.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "APPROVE",
+ "humanWhy": "Stay at £0. This closes the paid-hosting option for the keep-alive capacity problem until it is revisited.",
+ "decidedAt": "2026-09-04T12:07:05.178Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}

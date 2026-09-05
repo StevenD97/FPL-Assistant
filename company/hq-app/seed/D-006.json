@@ -1,0 +1,22 @@
+{
+ "id": "D-006",
+ "status": "APPROVED",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "Blog cadence through the international break",
+ "question": "What should the blog cadence be during the three weeks with no football?",
+ "context": "Twenty-one posts exist at a near-daily in-season rhythm, which is the largest recurring human cost in the business. There are no fixtures between 20 September and 10 October.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "APPROVE",
+ "humanWhy": "Reduce during the break.",
+ "decidedAt": "2026-09-04T12:07:10.095Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}

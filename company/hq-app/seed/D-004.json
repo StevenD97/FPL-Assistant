@@ -1,0 +1,22 @@
+{
+ "id": "D-004",
+ "status": "UNDER ANALYSIS",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "Which analytics tool?",
+ "question": "Which analytics should we install, given nothing has ever recorded a page view?",
+ "context": "Delegated to the CMO to recommend. Since this was asked, the hosting question has been answered: the frontend runs on Vercel (confirmed from live response headers), so Vercel Analytics is free on the hobby tier and needs no new vendor, script or DNS change. The partner already has Vercel access. Whether measurement is ALREADY collecting is still unconfirmed — the owners answered “not sure”.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "REQUEST MORE ANALYSIS",
+ "humanWhy": "",
+ "decidedAt": "2026-09-04T12:07:02.685Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}

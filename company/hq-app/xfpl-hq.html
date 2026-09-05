@@ -1,0 +1,1103 @@
+<title>xFPL Executive HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root{
+    --void:#070b0d; --panel:#0c1315; --raised:#121b1e; --sunk:#090f11;
+    --line:#1b262a; --lineHot:#26383e;
+    --tx:#dbe9e8; --tx2:#8ba3a4; --tx3:#536a6c; --dead:#33464a;
+    --live:#2ee6a8; --liveDim:#143a30;
+    --s1:#00a578; --s2:#6f7bf7;
+    --warn:#f5a524; --warnDim:#3a2c10;
+    --crit:#ff5d5d; --critDim:#3a1618;
+    --glow:0 0 14px rgba(46,230,168,.30);
+    --disp:"Chakra Petch","Segoe UI",sans-serif;
+    --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+    --tab:60px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    background:var(--void);color:var(--tx);font-family:var(--body);font-size:14.5px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:56px 56px;background-position:-1px -1px;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 80% at 50% 0%,rgba(46,230,168,.05),transparent 60%)}
+  p{margin:0 0 10px} strong{font-weight:600;color:var(--tx)}
+  button{font-family:var(--body);cursor:pointer;border:0;background:none;color:inherit;font-size:inherit}
+  :focus-visible{outline:1px solid var(--live);outline-offset:2px}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+  .app{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:var(--tab)}
+
+  /* ---- header ---- */
+  header{position:sticky;top:0;z-index:20;background:rgba(7,11,13,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:9px;min-width:0}
+  .mark{width:26px;height:26px;border:1px solid var(--live);display:flex;align-items:center;justify-content:center;flex:none;
+    box-shadow:inset 0 0 12px rgba(46,230,168,.16)}
+  .wm{font-family:var(--disp);font-size:16px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;white-space:nowrap}
+  .wm span{color:var(--live);text-shadow:var(--glow)}
+  .who{display:flex;gap:2px;border:1px solid var(--line);padding:2px}
+  .who button{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.08em;padding:6px 9px;color:var(--tx3);min-height:32px}
+  .who button[aria-pressed="true"]{background:var(--liveDim);color:var(--live)}
+
+  /* ---- nav ---- */
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(9,15,17,.97);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom)}
+  nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:7px 2px;min-height:var(--tab);
+    color:var(--tx3);font-family:var(--disp);font-size:9.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;position:relative}
+  nav button[aria-selected="true"]{color:var(--live)}
+  nav button[aria-selected="true"]::before{content:"";position:absolute;top:0;left:18%;right:18%;height:1px;background:var(--live);box-shadow:var(--glow)}
+  nav .pip{position:absolute;top:5px;right:calc(50% - 24px);min-width:15px;height:15px;background:var(--crit);color:#fff;
+    font-family:var(--mono);font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 3px}
+
+  main{flex:1;padding:14px;max-width:1160px;width:100%;margin:0 auto}
+  .panel[hidden]{display:none!important}
+
+  /* ---- sub nav ---- */
+  .subnav{display:flex;gap:5px;overflow-x:auto;padding:0 0 12px;margin:0 -14px 4px;padding-left:14px;padding-right:14px;
+    scrollbar-width:none}
+  .subnav::-webkit-scrollbar{display:none}
+  .subnav button{font-family:var(--disp);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    padding:8px 13px;border:1px solid var(--line);color:var(--tx3);white-space:nowrap;min-height:36px}
+  .subnav button[aria-pressed="true"]{border-color:var(--live);color:var(--live);background:var(--liveDim)}
+
+  /* ---- headings ---- */
+  h2{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 3px}
+  .lede{color:var(--tx2);font-size:12.5px;margin:0 0 14px;max-width:70ch}
+  h3{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);
+    margin:20px 0 9px;display:flex;align-items:center;gap:9px}
+  h3::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ---- panels ---- */
+  .box{background:var(--panel);border:1px solid var(--line);padding:13px 15px;position:relative}
+  .box::before,.box::after{content:"";position:absolute;width:6px;height:6px;border-color:var(--lineHot);border-style:solid}
+  .box::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+  .box::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+  .stack{display:flex;flex-direction:column;gap:8px}
+  .grid{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid3{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  /* ---- metric cell ---- */
+  .m{background:var(--panel);border:1px solid var(--line);padding:12px 13px;display:flex;flex-direction:column;gap:5px;position:relative;overflow:hidden}
+  .m.off{border-style:dashed;border-color:var(--dead);background:var(--sunk)}
+  .m .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);display:flex;align-items:center;gap:6px}
+  .m .v{font-family:var(--mono);font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.05;color:var(--tx)}
+  .m.live .v{color:var(--live);text-shadow:var(--glow)}
+  .m.warn .v{color:var(--warn)} .m.crit .v{color:var(--crit)}
+  .m.off .v{font-size:12px;color:var(--dead);letter-spacing:.06em;text-shadow:none;font-weight:500}
+  .m .s{font-size:10.5px;color:var(--tx2);line-height:1.35}
+  .m .u{font-size:11px;font-weight:400;color:var(--tx3);margin-left:2px}
+  .sig{width:5px;height:5px;border-radius:50%;background:var(--live);box-shadow:0 0 6px var(--live);animation:bl 2.4s ease-in-out infinite}
+  .sig.dead{background:var(--dead);box-shadow:none;animation:none}
+  @keyframes bl{0%,100%{opacity:.35}50%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.sig{animation:none;opacity:.8}}
+
+  /* ---- chips / status ---- */
+  .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;padding:3px 7px;border:1px solid var(--line);color:var(--tx3);white-space:nowrap}
+  .chip.ok{border-color:var(--s1);color:var(--live)}
+  .chip.warn{border-color:var(--warn);color:var(--warn)}
+  .chip.crit{border-color:var(--crit);color:var(--crit)}
+  .chip.off{border-style:dashed;border-color:var(--dead);color:var(--dead)}
+
+  /* ---- rows ---- */
+  .row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row .lbl{flex:1;min-width:0;font-size:12.5px}
+  .row .lbl b{display:block;font-weight:500;color:var(--tx)}
+  .row .lbl i{font-style:normal;font-size:11px;color:var(--tx3)}
+  .row .val{font-family:var(--mono);font-size:13px;font-weight:700;white-space:nowrap}
+
+  /* ---- chart ---- */
+  figure{margin:0}
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .ax{stroke:var(--line);stroke-width:1}
+  .gl{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+  .tk{font-family:var(--mono);font-size:9px;fill:var(--tx3)}
+  .lb{font-family:var(--mono);font-size:9.5px;fill:var(--tx2)}
+  .vl{font-family:var(--mono);font-size:9.5px;font-weight:700;fill:var(--tx)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-family:var(--mono);font-size:9.5px;color:var(--tx2);margin-bottom:10px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:9px;height:9px;display:inline-block}
+  figcaption{font-size:11px;color:var(--tx3);line-height:1.5;margin-top:9px}
+
+  /* ---- connect prompt ---- */
+  .connect{border:1px dashed var(--dead);background:var(--sunk);padding:12px 14px;font-size:12px;color:var(--tx2);line-height:1.5}
+  .connect b{color:var(--warn);font-weight:600;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px}
+
+  /* ---- decisions ---- */
+  .item{background:var(--panel);border:1px solid var(--line);border-left:2px solid var(--tone,var(--line));padding:12px 14px}
+  .item.dec{--tone:var(--crit)} .item.que{--tone:var(--warn)} .item.done{--tone:var(--s1)}
+  .item h4{margin:5px 0 4px;font-size:13.5px;font-weight:600;line-height:1.35}
+  .item .sub{font-size:11.5px;color:var(--tx3)}
+  .opts{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .opt{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    border:1px solid var(--line);color:var(--tx2);padding:8px 11px;min-height:38px}
+  .opt[aria-pressed="true"]{border-color:var(--live);background:var(--liveDim);color:var(--live)}
+  .note{width:100%;margin-top:8px;font-family:var(--body);font-size:12.5px;background:var(--sunk);color:var(--tx);
+    border:1px solid var(--line);padding:8px 10px;resize:vertical;min-height:40px;line-height:1.5}
+  .note::placeholder{color:var(--tx3)}
+  .stamp{font-family:var(--mono);font-size:9.5px;color:var(--tx3);margin-top:7px;min-height:12px}
+  .stamp b{color:var(--live)}
+
+  /* ---- pulse strip ---- */
+  .pulse{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:12px;overflow:hidden}
+  .pulse div{flex:1;background:var(--panel);padding:9px 10px;min-width:0}
+  .pulse .k{font-family:var(--mono);font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pulse .v{font-family:var(--mono);font-size:14px;font-weight:700;line-height:1.1}
+  .pulse .v.ok{color:var(--live)} .pulse .v.warn{color:var(--warn)} .pulse .v.crit{color:var(--crit)} .pulse .v.off{color:var(--dead);font-size:11px}
+
+  /* ---- starters ---- */
+  .starters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .starters button{font-size:12px;border:1px solid var(--line);color:var(--tx2);padding:9px 12px;min-height:38px;text-align:left;line-height:1.3}
+  .starters button:hover{border-color:var(--live);color:var(--live)}
+
+  /* ---- chat ---- */
+  .turns{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+  .ask{align-self:flex-end;max-width:88%;background:var(--liveDim);border:1px solid var(--s1);color:var(--tx);padding:9px 13px;font-size:13.5px}
+  .ans{background:var(--panel);border:1px solid var(--line)}
+  .ans-hd{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--sunk)}
+  .ans-hd .role{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--live)}
+  .ans-body{padding:13px 14px;font-size:13.5px;line-height:1.6;color:var(--tx2)}
+  .ans-body p:last-child{margin-bottom:0}
+  .sect{border-top:1px solid var(--line);padding:11px 14px}
+  .sect .h{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin-bottom:7px}
+  .ev{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px;font-size:11.5px;line-height:1.45;color:var(--tx2)}
+  .ev:last-child{margin-bottom:0}
+  .ev .lab{flex:none;width:88px;text-align:center;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.06em;padding:3px 3px;border:1px solid}
+  .pos{border-top:1px solid var(--line);padding:11px 14px}
+  .pos-role{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.12em;color:var(--s2)}
+  .pos-line{font-size:14px;font-weight:600;line-height:1.35;margin:4px 0;color:var(--tx)}
+  .pos-body{font-size:11.5px;color:var(--tx2);line-height:1.5}
+  .metrics{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+  .metrics span{font-family:var(--mono);font-size:8.5px;border:1px solid var(--line);color:var(--tx3);padding:3px 6px}
+  .foot{border-top:1px solid var(--line);padding:9px 14px;background:var(--sunk);display:flex;flex-wrap:wrap;gap:7px;
+    align-items:center;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--tx3)}
+  .composer{position:sticky;bottom:calc(var(--tab) + 8px);background:var(--panel);border:1px solid var(--lineHot);padding:9px}
+  .composer textarea{width:100%;border:0;background:none;color:var(--tx);font-family:var(--body);font-size:14px;resize:none;min-height:42px;padding:3px 5px}
+  .composer textarea:focus{outline:none}
+  .composer textarea::placeholder{color:var(--tx3)}
+  .crow{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:5px}
+  .btn{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--live);color:#04120d;padding:10px 16px;min-height:42px}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--tx2)}
+  .btn[disabled]{opacity:.4;cursor:not-allowed}
+  .thinking{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--tx2);padding:12px 14px;font-family:var(--mono)}
+  .banner{border:1px solid;padding:10px 12px;font-size:12px;line-height:1.5;margin-bottom:12px}
+  .banner.warn{border-color:var(--warn);color:var(--warn);background:var(--warnDim)}
+  .banner.crit{border-color:var(--crit);color:var(--crit);background:var(--critDim)}
+
+  .doc{border-bottom:1px solid var(--line);padding:11px 0}
+  .doc:last-child{border-bottom:0}
+  .doc summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-family:var(--disp);font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .doc summary::-webkit-details-marker{display:none}
+  .doc summary::after{content:"+";font-family:var(--mono);color:var(--live);font-size:15px}
+  .doc[open] summary::after{content:"\2212"}
+  .doc .body{font-size:12px;color:var(--tx2);line-height:1.6;margin-top:8px;white-space:pre-wrap}
+
+  .fn{font-family:var(--mono);font-size:9.5px;color:var(--tx3);line-height:1.7;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
+
+  @media (min-width:560px){ .grid{grid-template-columns:repeat(3,minmax(0,1fr))} .grid3{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media (min-width:900px){
+    :root{--tab:0px}
+    .app{flex-direction:row;padding-bottom:0}
+    header{position:fixed;top:0;left:0;bottom:0;width:196px;flex-direction:column;align-items:stretch;gap:16px;
+      border-bottom:0;border-right:1px solid var(--line);padding:16px 12px;backdrop-filter:none}
+    nav{position:static;grid-template-columns:1fr;border-top:0;background:none;padding:0;gap:1px;backdrop-filter:none}
+    nav button{flex-direction:row;justify-content:flex-start;gap:10px;min-height:38px;padding:8px 10px;font-size:11px}
+    nav button[aria-selected="true"]{background:var(--liveDim)}
+    nav button[aria-selected="true"]::before{top:0;bottom:0;left:0;right:auto;width:1px;height:auto}
+    nav .pip{position:static;margin-left:auto}
+    main{margin-left:196px;padding:22px 26px 50px}
+    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .composer{bottom:14px}
+  }
+</style><style>
+  /* ===== Phase 2 additions — same system, new components ===== */
+  .h2{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--tx3);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .h2.sep{margin-top:22px}
+  .fld{width:100%;margin-top:7px;font-family:var(--body);font-size:13px;background:var(--sunk);color:var(--tx);
+    border:1px solid var(--line);padding:9px 11px;line-height:1.5;resize:vertical}
+  .fld::placeholder{color:var(--tx3)}
+  .fld:focus{outline:none;border-color:var(--live)}
+  input.fld{min-height:40px}
+  .back{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);
+    padding:6px 0;margin-bottom:10px;min-height:34px}
+  .back:hover{color:var(--live)}
+  .opt.on{border-color:var(--live);background:var(--liveDim);color:var(--live)}
+  .opt.go{border-color:var(--live);background:var(--live);color:#04120d}
+  .opt.go:hover{filter:brightness(1.08)}
+  .box.approve{border-color:var(--live);box-shadow:inset 0 0 24px rgba(46,230,168,.05)}
+  .analysis{margin-top:10px;padding:10px 12px;border-left:2px solid var(--s2);background:var(--sunk);
+    font-size:12px;color:var(--tx2);line-height:1.55}
+  .analysis p:last-child{margin-bottom:0}
+  .item[data-open],.item[data-goto],.item[data-sig]{cursor:pointer}
+  .item[data-open]:hover,.item[data-goto]:hover{border-color:var(--lineHot)}
+  /* timeline */
+  .tl{position:relative;padding-left:18px}
+  .tl::before{content:"";position:absolute;left:4px;top:6px;bottom:10px;width:1px;background:var(--line)}
+  .tl-i{position:relative;padding:0 0 14px}
+  .tl-i.last{padding-bottom:0}
+  .tl-d{position:absolute;left:-18px;top:4px;width:9px;height:9px;border:1px solid var(--live);background:var(--void)}
+  .tl-i.last .tl-d{background:var(--live);box-shadow:0 0 8px var(--live)}
+  .tl-t{font-family:var(--disp);font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--tx)}
+  .tl-m{font-family:var(--mono);font-size:10px;color:var(--tx3);margin-top:2px;line-height:1.5}
+  .pos-role{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.12em;color:var(--s2)}
+  .pos-line{font-size:14px;font-weight:600;line-height:1.35;margin:4px 0;color:var(--tx)}
+  .pos-body{font-size:11.5px;color:var(--tx2);line-height:1.5}
+  .runlog{font-family:var(--mono);font-size:10.5px;color:var(--tx2);padding:10px 12px;border:1px solid var(--line);
+    background:var(--sunk);display:flex;align-items:center;gap:9px;margin-bottom:8px}
+</style>
+
+<div class="app">
+
+<header>
+  <div class="brand">
+    <div class="mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2ee6a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"></path><path d="M9 21v-7h6v7"></path></svg></div>
+    <div class="wm">xFPL <span>HQ</span></div>
+  </div>
+  <div class="who"><button id="whoS" aria-pressed="false">STEVEN</button><button id="whoP" aria-pressed="false">PARTNER</button></div>
+  <nav id="nav" role="tablist">
+    <button role="tab" data-tab="ceo" aria-selected="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-5a8.4 8.4 0 0 1-.9-4 8.5 8.5 0 0 1 8.5-8.5A8.4 8.4 0 0 1 21 11.5Z"/></svg>
+      <span>CEO</span></button>
+    <button role="tab" data-tab="board" aria-selected="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Board</span><span class="pip" id="pipBoard" hidden></span></button>
+    <button role="tab" data-tab="work" aria-selected="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Work</span><span class="pip" id="pipWork" hidden></span></button>
+    <button role="tab" data-tab="metrics" aria-selected="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+      <span>Metrics</span></button>
+  </nav>
+</header>
+
+<main>
+  <section class="panel" id="p-ceo">
+    <h2>The CEO</h2>
+    <p class="lede">Ask anything. He runs the business day to day and brings the others in when a question needs them.</p>
+    <div class="pulse" id="pulse"></div>
+    <div id="aiBanner"></div>
+    <div class="starters" id="starters"></div>
+    <div class="turns" id="turns"></div>
+    <div class="composer">
+      <textarea id="q" rows="2" placeholder="Ask the CEO…"></textarea>
+      <div class="crow">
+        <button class="btn ghost" id="convene">Convene</button>
+        <button class="btn" id="send">Ask</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-board" hidden></section>
+
+  <section class="panel" id="p-work" hidden>
+    <div class="subnav" id="worknav"></div>
+    <div id="workBody"></div>
+  </section>
+
+  <section class="panel" id="p-metrics" hidden>
+    <h2>Metrics</h2>
+    <p class="lede">Everything a running web app needs watched. A panel is lit when it has a reading and unlit when nothing is measuring it.</p>
+    <div class="subnav" id="subnav"></div>
+    <div id="metricBody"></div>
+  </section>
+</main>
+</div>
+<script>
+/* xFPL Executive HQ
+   SIGNAL → ANALYSIS → RECOMMENDATION → DECISION → TASK → OUTCOME → LEARNING */
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+var db=null,sample=null,who="",busy=false;
+var MEM={},DEC={},MTG={},TASK={},ATT={},ANA={},EVT=[],THREAD=[];
+var tab="ceo",work="attention",sub="traffic",openKind=null,openId=null,draftPrio="MEDIUM",draftSeat={};
+try{who=localStorage.getItem("hq_who")||""}catch(e){}
+
+var SNAP={at:"2026-09-05T08:17:04Z",
+ api:[{p:"/api/accuracy",ms:216,kb:1.9},{p:"/api/season-status",ms:263,kb:0.1},{p:"/api/fixtures/schedule",ms:318,kb:147},
+      {p:"/api/health",ms:500,kb:0},{p:"/api/data-status",ms:509,kb:0.2},{p:"/api/players",ms:869,kb:902}],
+ fe:{ttfb:1840,total:1863,kb:70},
+ data:{source:"database",ageH:3.8,stale:false,nextEvent:4,deadline:"2026-09-12T12:30:00Z"},
+ acc:{graded:2,frozen:0,rankCorr:0.259,capAvg:12.5,capBest:20,topTen:4.9,field:2.96,
+      cats:[{c:"Blanks",n:206,m:0.999,b:1.762},{c:"Tickers",n:43,m:1.561,b:2.744},{c:"Haulers",n:63,m:5.44,b:4.984},{c:"All",n:312,m:1.973,b:2.548}]},
+ eng:{commits:77,beLoc:9692,feLoc:18813,tests:141,routes:32,workflows:6,posts:21,frozen:1,deps:57},
+ infra:{host:"Vercel",region:"iad1",api:"Render free",db:"Neon free",instanceHrs:730,instanceCap:750,monthly:0}};
+
+/* ---------- utils ---------- */
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function rich(s){return esc(s).split(/\n{2,}/).map(function(p){return "<p>"+p.replace(/\n/g,"<br>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")+"</p>"}).join("")}
+function when(i){if(!i)return"";var d=new Date(i);return isNaN(d)?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}
+function day(i){if(!i)return"";var d=new Date(i);return isNaN(d)?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}
+function hoursTo(i){var d=new Date(i);return isNaN(d)?null:(d-new Date())/36e5}
+function now(){return new Date().toISOString()}
+function vals(o){return Object.keys(o).map(function(k){return o[k]})}
+function median(){var a=SNAP.api.map(function(x){return x.ms}).sort(function(p,q){return p-q});return a[Math.floor(a.length/2)]}
+function actor(){return who||"An owner"}
+function pad(n){return n<10?"00"+n:n<100?"0"+n:""+n}
+function nextId(st,p){var n=0;Object.keys(st).forEach(function(k){var m=/(\d+)$/.exec(k);if(m)n=Math.max(n,+m[1])});return p+"-"+pad(n+1)}
+function chip(t,c){return '<span class="chip '+(c||"")+'">'+esc(t)+'</span>'}
+function put(c,i,d){if(db)db.doc(c+"/"+i).set(d)["catch"](function(){})}
+function logEvent(kind,subj,detail){var e={kind:kind,subject:subj,detail:detail||"",actor:actor(),at:now()};
+  EVT.push(e); if(db)db.collection("events").add(e)["catch"](function(){}); return e}
+
+/* ================= SIGNALS ================= */
+function signals(){
+  var o=[],d=SNAP.data,a=SNAP.acc,inf=SNAP.infra,pct=inf.instanceHrs/inf.instanceCap;
+  if(pct>0.9)o.push({id:"sig-infra",sev:"HIGH",exec:"CTO",title:"Free hosting is nearly used up",
+    src:"Render free tier: "+inf.instanceHrs+" of "+inf.instanceCap+" monthly instance-hours consumed by the 10-minute keep-alive ("+Math.round(pct*100)+"%).",
+    why:"The ping exists to stop a 35-second cold start, and it spends almost the whole free allowance doing it. There is no margin left if anything else needs hosting.",
+    act:"Weigh three options: accept cold starts and drop the ping, lengthen the interval, or pay for hosting. The owners set the ceiling at £0, so the third is currently closed."});
+  if(d.stale)o.push({id:"sig-stale",sev:"CRITICAL",exec:"CTO",title:"The FPL data the site serves is out of date",
+    src:"/api/data-status reports stale=true, snapshot "+d.ageH+"h old.",
+    why:"Every projection on the site is built from this snapshot. Stale data means visitors are being given advice about a gameweek that has already moved on.",
+    act:"Check the last few runs of the hourly ingest. A missing DATABASE_URL shows only as a warning on a green run."});
+  var played=(d.nextEvent||1)-1;
+  if(played>a.graded)o.push({id:"sig-ungraded",sev:"HIGH",exec:"ANALYTICS",title:"Gameweek "+played+" was played but has not been graded",
+    src:"/api/accuracy reports "+a.graded+" gameweeks graded; GW"+played+" has finished and GW"+d.nextEvent+" is next.",
+    why:"The public accuracy record is the product's main trust argument. A played-but-ungraded week is a hole in it, and the projection frozen for that week proves nothing until it is graded.",
+    act:"Confirm whether the weekly refresh ran, and grade the outstanding gameweek."});
+  if(a.frozen===0)o.push({id:"sig-frozen",sev:"MEDIUM",exec:"ANALYTICS",title:"No week is yet graded as a genuine pre-commitment",
+    src:"/api/accuracy reports events_frozen = 0.",
+    why:"A projection written before a deadline and tied to a commit is the difference between a claim and a promise kept. Until one is graded the whole record reads as reconstruction.",
+    act:"Grade GW3, which was frozen before its deadline, and the first pre-committed week enters the record."});
+  var h=a.cats.filter(function(c){return c.c==="Haulers"})[0];
+  if(h&&h.m>h.b)o.push({id:"sig-haulers",sev:"HIGH",exec:"ANALYTICS",title:"On the players who win a week, a simple average beats our model",
+    src:"Average error on Haulers is "+h.m+" points against "+h.b+" for a last-five-games baseline, over "+h.n+" cases.",
+    why:"Blanks and Tickers are the easy majority and the model wins those comfortably. Haulers decide a gameweek, and there it is behind the crudest possible alternative.",
+    act:"A tail-specific model for haul probability is named in the OpenFPL evaluation as the most promising untested path. It should be evaluated, not adopted."});
+  if(!SNAP.traffic)o.push({id:"sig-analytics",sev:"HIGH",exec:"CMO",title:"Nothing has ever measured a visitor",
+    src:"No analytics is installed on the frontend. No traffic, user or retention figure exists anywhere.",
+    why:"Every product and growth decision is being made without a single recorded page view. The owners answered “not sure” when asked whether any measurement already exists.",
+    act:"The site is on Vercel and the partner has access. Vercel Analytics is free on the hobby tier and is one toggle. Confirm first whether it is already collecting."});
+  if(!SNAP.seo)o.push({id:"sig-seo",sev:"HIGH",exec:"CMO",title:"Search engines are given no map of the site",
+    src:"robots.txt and sitemap.xml both return 404. Every page shares one title and description. No OpenGraph tags anywhere.",
+    why:"Twenty-one blog posts and a public accuracy record already exist and cannot be found. Every share is a bare link with no preview. This is the only channel that costs nothing.",
+    act:"One pull request: sitemap, robots, per-page metadata, social cards. No application logic changes. Days 4–14 of the plan the owners approved."});
+  if(!SNAP.errors)o.push({id:"sig-obs",sev:"MEDIUM",exec:"CTO",title:"A failure between freshness checks would leave no trace",
+    src:"No error tracking on either half of the app and no uptime monitor. The only alarm is a data-freshness workflow every six hours.",
+    why:"An outage starting at 09:00 and clearing at 14:00 is invisible. So is every 500 the API returns and every exception a visitor hits.",
+    act:"A free-tier error tracker on both halves is the cheapest item on this board and needs no new spend."});
+  var aw=vals(DEC).filter(function(x){return x.status==="AWAITING DECISION"});
+  if(aw.length)o.push({id:"sig-await",sev:"HIGH",exec:"CEO",title:aw.length+" decision"+(aw.length>1?"s are":" is")+" waiting on a human",
+    src:"Register: "+aw.map(function(x){return x.id}).join(", ")+".",
+    why:"Analysis is finished and the work behind them cannot start. Nothing in this system advances without one of you.",
+    act:"Open the register and approve, reject, defer, or ask for more analysis."});
+  var bl=vals(TASK).filter(function(t){return t.status==="BLOCKED"});
+  if(bl.length)o.push({id:"sig-blocked",sev:"MEDIUM",exec:"CEO",title:bl.length+" task"+(bl.length>1?"s are":" is")+" blocked",
+    src:"Tasks: "+bl.map(function(t){return t.id}).join(", ")+".",
+    why:"Blocked work does not resolve itself, and usually waits on a decision or a fact only an owner has.",
+    act:"Review each one and either unblock it or record what it is waiting for."});
+  var rv=vals(DEC).filter(function(x){return x.status==="REVIEW REQUIRED"});
+  if(rv.length)o.push({id:"sig-review",sev:"MEDIUM",exec:"CEO",title:rv.length+" decision"+(rv.length>1?"s need":" needs")+" an outcome review",
+    src:"Register: "+rv.map(function(x){return x.id}).join(", ")+".",
+    why:"A decision nobody scores teaches nothing. Recording what actually happened is how the executives find out whether their advice was any good.",
+    act:"Record the actual outcome and one line on what was learned."});
+  return o.map(function(s){var st=ATT[s.id]||{};
+    s.status=st.status||"NEEDS ANALYSIS"; s.by=st.by||""; s.at=st.at||"";
+    s.finding=(ANA[s.id]||{}).finding||""; s.analysis=ANA[s.id]||null;
+    s.needsHuman=(s.sev==="CRITICAL"||s.sev==="HIGH"); return s;
+  }).filter(function(s){return s.status!=="DISMISSED"&&s.status!=="RESOLVED"});
+}
+var SEV={CRITICAL:0,HIGH:1,MEDIUM:2,LOW:3,INFORMATIONAL:4};
+var SEVCLS={CRITICAL:"crit",HIGH:"crit",MEDIUM:"warn",LOW:"",INFORMATIONAL:""};
+function sevSorted(){return signals().sort(function(a,b){return SEV[a.sev]-SEV[b.sev]})}
+function sigById(id){return signals().filter(function(s){return s.id===id})[0]}
+
+/* ================= MEMORY ================= */
+var STOP={this:1,that:1,with:1,from:1,have:1,what:1,should:1,would:1,about:1,there:1,their:1,been:1,were:1,into:1,them:1,they:1,will:1,does:1,than:1,then:1,when:1,which:1,where:1,could:1,here:1};
+function toks(s){return (String(s||"").toLowerCase().match(/[a-z]{4,}/g)||[]).filter(function(w){return !STOP[w]})}
+function ov(text,terms){var set={},n=0;toks(text).forEach(function(w){set[w]=1});terms.forEach(function(w){if(set[w])n++});return n}
+function retrieve(q,lim){
+  var t=toks(q),hits=[];
+  vals(DEC).forEach(function(d){var s=ov(d.title+" "+d.question+" "+d.context+" "+(d.lessons||""),t);
+    if(s)hits.push({s:s,kind:"DECISION",txt:"["+d.id+"] "+d.title+" — "+d.status+(d.humanDecision?(", owners "+d.humanDecision+" on "+day(d.decidedAt)):"")+(d.lessons?(". Learned: "+d.lessons):"")})});
+  vals(MTG).forEach(function(mt){var s=ov(mt.title+" "+mt.question+" "+mt.context,t);
+    if(s)hits.push({s:s,kind:"MEETING",txt:"["+mt.id+"] "+mt.title+" — "+(mt.synthesis&&mt.synthesis.recommendation?mt.synthesis.recommendation:"not yet concluded")})});
+  vals(TASK).forEach(function(x){var s=ov(x.title+" "+x.desc,t);
+    if(s)hits.push({s:s,kind:"TASK",txt:"["+x.id+"] "+x.title+" — "+x.status+", owned by "+x.exec})});
+  return hits.sort(function(a,b){return b.s-a.s}).slice(0,lim||6);
+}
+function m(k){return (MEM[k]&&MEM[k].body)||""}
+function factsBlock(){var d=SNAP.data,a=SNAP.acc,h=a.cats.filter(function(c){return c.c==="Haulers"})[0]||{};
+ return "== CURRENT FACTS — measured, safe to rely on (read "+SNAP.at+") ==\n"
+ +"Site up. API up, from "+d.source+", snapshot "+d.ageH+"h old, stale="+d.stale+". Next deadline GW"+d.nextEvent+" on "+d.deadline+".\n"
+ +"API median "+median()+" ms, slowest /api/players 869 ms. Frontend first byte "+SNAP.fe.ttfb+" ms cold (Vercel, iad1).\n"
+ +"Accuracy: "+a.graded+" weeks graded, "+a.frozen+" pre-committed, rank correlation "+a.rankCorr+", captain average "+a.capAvg+" against best possible "+a.capBest+".\n"
+ +"Haulers average error "+h.m+" against a baseline "+h.b+" — the model is WORSE than the baseline there.\n"
+ +"No analytics, no error tracking, no uptime monitor. robots.txt and sitemap.xml both 404. Keep-alive uses "+SNAP.infra.instanceHrs+" of "+SNAP.infra.instanceCap+" free instance-hours.\n"
+ +"CI green, 178 tests, "+SNAP.eng.routes+" routes, 6 scheduled workflows. Monthly spend £0.\n"
+ +m("owner-answers");}
+function bindingBlock(){var o=vals(DEC).filter(function(d){return d.humanDecision}).map(function(d){
+  return "- ["+d.id+"] "+d.title+" => owners "+d.humanDecision+" on "+day(d.decidedAt)+(d.humanWhy?(" — \""+d.humanWhy+"\""):"")});
+  return o.length?("== DECISIONS THE OWNERS HAVE ALREADY MADE — binding. Do not re-litigate unless new evidence contradicts them ==\n"+o.join("\n")):""}
+function opinionBlock(q){var r=retrieve(q,5).filter(function(x){return x.kind!=="DECISION"});
+  return r.length?("== RELATED PAST EXECUTIVE WORK — these are OPINIONS, not facts. Challenge them if the evidence has moved ==\n"+r.map(function(x){return "- "+x.txt}).join("\n")):""}
+function relatedBlock(q){var r=retrieve(q,6).filter(function(x){return x.kind==="DECISION"});
+  return r.length?("== RELATED DECISIONS ON RECORD ==\n"+r.map(function(x){return "- "+x.txt}).join("\n")):""}
+function openBlock(){var s=sevSorted().slice(0,5);
+  return s.length?("== WHAT THE BOARD IS FLAGGING RIGHT NOW ==\n"+s.map(function(x){return "- "+x.sev+" ("+x.exec+"): "+x.title+" — "+x.src}).join("\n")):""}
+function pack(q){return "== COMPANY CONTEXT ==\n"+m("context")+"\n\n== OPERATING PRINCIPLES ==\n"+m("principles")
+  +"\n\n"+factsBlock()+"\n\n"+bindingBlock()+"\n\n"+openBlock()+"\n\n"+relatedBlock(q)+"\n\n"+opinionBlock(q)}
+
+var ROLEKEY={CTO:"mandate-cto",CPO:"mandate-cpo",ANALYTICS:"mandate-analytics",CMO:"mandate-cmo",CEO:"mandate-ceo"};
+var ROLENAME={CEO:"CEO",CTO:"CTO",CPO:"CPO",ANALYTICS:"Head of FPL Analytics",CMO:"CMO"};
+var TONE="HOW YOU TALK — this matters as much as what you say:\n"
+ +"Steven owns this business. He is sharp, but he is NOT a statistician, a developer or a marketer. You are. Talk the way a trusted advisor talks to an owner over a coffee, not the way a consultant writes a deck.\n"
+ +"- Lead with what it MEANS, then the number. Not 'Haulers MAE is 5.44 against a 4.98 baseline' but 'on the big-scoring players our projections are actually a bit worse than just averaging a player's last five games — and those are the players who win you a week'.\n"
+ +"- Never use a technical term without explaining it in the same breath. No bare jargon, no acronym you have not just spelled out.\n"
+ +"- Short sentences. Explain the SO WHAT — a number with no consequence attached is not worth his time.\n"
+ +"- Plain does not mean vague. Keep every figure and every caveat; just say them so anyone can follow. Clearer, not softer.\n";
+var RULES=TONE+"\nRULES:\n"
+ +"- Label every claim: FACT (measured, say where), INFERENCE (a fair read of the facts), ASSUMPTION (asserted, untested), SPECULATION (an idea, nothing behind it).\n"
+ +"- Never invent a figure. If something is unknown, say so and what it would take to find out.\n"
+ +"- Never call something an improvement if it has not been tested.\n"
+ +"- Spending, going live, major product changes, changes to how predictions work, and anything affecting users need an owner's say-so. Never assume it.\n"
+ +"- 'There is nothing worth doing here' is a valid and often correct answer.\n"
+ +"- He is usually on a phone. Two or three short paragraphs.\n";
+
+/* ================= AI ================= */
+function jc(p,t){if(!sample)return Promise.reject({code:"not_granted"});return sample.json(p,{modelTier:t||"default"})}
+function errText(e){var c=(e&&e.code)||"";
+  return c==="rate_limited"?"Claude usage limit reached for now — nothing was lost, try again shortly."
+   :c==="not_granted"?"This view cannot reach the executives. Open the page from your own Claude account."
+   :"That did not come back ("+(c||"error")+"). Nothing was saved."}
+var EVSCHEMA='{"claim" (plain English),"label" (FACT|INFERENCE|ASSUMPTION|SPECULATION),"source"}';
+
+function askCEO(q,tail){
+  return jc("You are the CEO of xFPL, a Fantasy Premier League decision-support company owned by Steven and his partner.\n\n"
+   +"You coordinate four other executives and may draw on their mandates, but YOU are answering.\n\n"+RULES
+   +"\n== YOUR MANDATE ==\n"+m("mandate-ceo")
+   +"\n\n== THE OTHER MANDATES (summarised) ==\nCTO: "+m("mandate-cto").slice(0,600)+"\nCPO: "+m("mandate-cpo").slice(0,600)
+   +"\nANALYTICS: "+m("mandate-analytics").slice(0,600)+"\nCMO: "+m("mandate-cmo").slice(0,600)
+   +"\n\n== THE CODEBASE, AS THE CTO KNOWS IT ==\n"+m("codebase")+"\n\n"+pack(q)+(tail||"")
+   +"\n\n== THE QUESTION ==\n"+q
+   +"\n\nReturn JSON only: {\"answer\": string (2-3 short paragraphs, ** for bold), \"consulted\": array of role names, \"evidence\": array of at most 4 "+EVSCHEMA+", \"confidence\": \"High\"|\"Medium\"|\"Low\", \"confidence_why\": short plain clause, \"needs_human\": boolean, \"risks\": string or \"\", \"suggest_meeting\": boolean (true ONLY if this genuinely needs independent positions rather than your answer)}","default")}
+
+function analyseSignal(s){
+  return jc("You are xFPL's "+(ROLENAME[s.exec]||s.exec)+". The monitoring has raised something in your area and an owner has asked you to look at it.\n\n"+RULES
+   +"\n== YOUR MANDATE ==\n"+m(ROLEKEY[s.exec]||"mandate-ceo")
+   +(s.exec==="CTO"?("\n\n== THE CODEBASE ==\n"+m("codebase")):"")
+   +"\n\n"+pack(s.title+" "+s.src)
+   +"\n\n== THE SIGNAL ==\n"+s.sev+" — "+s.title+"\nObserved: "+s.src+"\nWhy raised: "+s.why
+   +"\n\nGive your read. You are free to say it matters less than the board thinks, or less than something else already flagged."
+   +"\n\nReturn JSON only: {\"finding\": string (2-3 short paragraphs), \"severity_should_be\": \"CRITICAL\"|\"HIGH\"|\"MEDIUM\"|\"LOW\"|\"INFORMATIONAL\", \"evidence\": array of at most 3 "+EVSCHEMA+", \"recommendation\": one sentence, \"needs_decision\": boolean (true only if an owner must choose between real options), \"proposed_task\": {\"title\",\"expected\",\"metric\"} or null, \"confidence\": \"High\"|\"Medium\"|\"Low\"}","default")}
+
+function suggestRoster(q,ctx){
+  return jc("You are the CEO of xFPL. An owner wants a meeting on: \""+q+"\"\n"+(ctx?("Context they gave: "+ctx+"\n"):"")
+   +"\nChoose the MINIMUM executives who should give an independent position. Two is normal, three the maximum. Seating someone who adds nothing is a failure.\n"
+   +"Available: CTO (engineering, infrastructure, the codebase), CPO (product, users, retention), ANALYTICS (the prediction model, data, evidence standards), CMO (growth, SEO, content, community).\n\n"+pack(q)
+   +"\n\nReturn JSON only: {\"seat\": array of 2-3 of CTO/CPO/ANALYTICS/CMO, \"why\": one sentence, \"why_not\": one sentence naming who you left out and why}","quick")}
+
+function positionCall(role,q,ctx){
+  return jc("You are xFPL's "+(ROLENAME[role]||role)+", giving an independent position in an executive meeting.\n\n"
+   +"You have NOT seen the other executives' answers and must not guess at them. Answer from your own mandate and your own interest. If your honest view is that the others are likely wrong, say so.\n\n"+RULES
+   +"\n== YOUR MANDATE ==\n"+m(ROLEKEY[role]||"mandate-ceo")
+   +(role==="CTO"?("\n\n== THE CODEBASE ==\n"+m("codebase")):"")
+   +"\n\n"+pack(q+" "+(ctx||""))+"\n\n== THE QUESTION ==\n"+q+(ctx?("\n\nContext from the owners: "+ctx):"")
+   +"\n\nReturn JSON only: {\"position\": one sentence stating your recommendation, \"reasoning\": 2-3 sentences, \"evidence\": array of at most 3 "+EVSCHEMA+", \"opportunities\": string, \"risks\": string, \"impact\": short, \"cost\": short, \"effort\": short, \"confidence\": \"High\"|\"Medium\"|\"Low\"}","default")}
+
+function synthesise(q,ctx,pos,whyNot){
+  return jc("You are the CEO of xFPL. Your executives answered this independently, without seeing each other:\n\n\""+q+"\"\n"
+   +(ctx?("\nContext the owners gave: "+ctx+"\n"):"")+"\n"
+   +pos.map(function(x){return "== "+(ROLENAME[x.role]||x.role)+" ==\n"+x.position+"\n"+x.reasoning
+     +"\nOpportunities: "+(x.opportunities||"—")+"\nRisks: "+(x.risks||"—")
+     +"\n(impact "+x.impact+", cost "+x.cost+", effort "+x.effort+", confidence "+x.confidence+")"}).join("\n\n")
+   +"\n\n"+RULES+"\n== YOUR MANDATE ==\n"+m("mandate-ceo")+"\n\n"+pack(q)
+   +"\n\nDO NOT COUNT VOTES. Two executives agreeing on weak evidence lose to one holding a measured fact. Say which evidence you weighted and why.\n"
+   +"Pick one path. Record any position you did NOT take in that executive's own terms, with what would reopen it.\n"
+   +(whyNot?("You left out: "+whyNot+"\n"):"")
+   +"\nReturn JSON only: {\"answer\": string (executive summary, 2-3 short paragraphs), \"agreement\": string, \"disagreement\": string (say plainly if they did not really disagree, and whether that is suspicious), \"risks\": string, \"alternatives\": string, \"inaction\": string (what happens if we do nothing), \"dissent\": string (a position not taken, in that executive's terms, plus its reopening trigger), \"recommendation\": one sentence — the decision you recommend, \"evidence\": array of at most 4 "+EVSCHEMA+", \"confidence\": \"High\"|\"Medium\"|\"Low\", \"confidence_why\": short clause, \"proposed_tasks\": array of at most 3 {\"title\",\"exec\" (CEO|CTO|CPO|ANALYTICS|CMO),\"expected\",\"metric\"}}","complex")}
+
+/* ================= MUTATIONS ================= */
+function createDecision(f){var id=nextId(DEC,"D");
+  var d={id:id,status:"DRAFT",createdAt:now(),createdBy:actor(),title:"",question:"",context:"",signalId:"",meetingId:"",
+    ceoRec:null,proposedTasks:[],humanDecision:"",humanWhy:"",decidedAt:"",decidedBy:"",tasks:[],
+    outcome:"",actual:"",lessons:"",reviewedAt:""};
+  Object.keys(f||{}).forEach(function(k){d[k]=f[k]});
+  DEC[id]=d;put("decisions",id,d);logEvent("DECISION_OPENED",id,d.title);return d}
+function saveDecision(d){DEC[d.id]=d;put("decisions",d.id,d)}
+function createMeeting(f){var id=nextId(MTG,"M");
+  var x={id:id,status:"DRAFT",createdAt:now(),createdBy:actor(),title:"",question:"",context:"",priority:"MEDIUM",
+    signalId:"",seat:[],rosterWhy:"",rosterWhyNot:"",positions:[],synthesis:null,decisionId:""};
+  Object.keys(f||{}).forEach(function(k){x[k]=f[k]});
+  MTG[id]=x;put("meetings",id,x);logEvent("MEETING_CALLED",id,x.title);return x}
+function saveMeeting(x){MTG[x.id]=x;put("meetings",x.id,x)}
+function createTask(f){var id=nextId(TASK,"T");
+  var t={id:id,status:"PROPOSED",createdAt:now(),createdBy:actor(),title:"",desc:"",exec:"CEO",priority:"MEDIUM",
+    decisionId:"",meetingId:"",expected:"",metric:"",due:"",completedAt:"",actual:""};
+  Object.keys(f||{}).forEach(function(k){t[k]=f[k]});
+  TASK[id]=t;put("tasks",id,t);logEvent("TASK_CREATED",id,t.title);return t}
+function saveTask(t){TASK[t.id]=t;put("tasks",t.id,t)}
+function setAtt(id,status,note){ATT[id]={status:status,note:note||"",by:actor(),at:now()};
+  put("attention",id,ATT[id]);logEvent("SIGNAL_"+status.replace(/ /g,"_"),id,note||"")}
+
+/* ================= SHARED RENDER BITS ================= */
+var LAB={FACT:["var(--s1)","var(--live)"],INFERENCE:["var(--s2)","var(--s2)"],ASSUMPTION:["var(--warn)","var(--warn)"],SPECULATION:["var(--crit)","var(--crit)"]};
+function evHtml(l,t){if(!l||!l.length)return"";
+  return '<div class="sect"><div class="h">'+esc(t||"Evidence")+'</div>'+l.slice(0,5).map(function(e){
+    var k=String(e.label||"").toUpperCase(),c=LAB[k]||["var(--line)","var(--tx3)"];
+    return '<div class="ev"><span class="lab" style="border-color:'+c[0]+';color:'+c[1]+'">'+esc(k||"—")+'</span><span>'+esc(e.claim||"")+(e.source?' <span style="color:var(--tx3)">— '+esc(e.source)+'</span>':"")+'</span></div>'}).join("")+'</div>'}
+function sect(t,b,tone){if(!b)return"";
+  return '<div class="sect"><div class="h"'+(tone?' style="color:var(--'+tone+')"':"")+'>'+esc(t)+'</div><div style="font-size:12px;color:var(--tx2);line-height:1.55">'+rich(b)+'</div></div>'}
+function cell(o){var lit=o.v!=null,cls="m "+(lit?(o.tone||"live"):"off");
+  return '<div class="'+cls+'"><div class="k"><span class="sig'+(lit?"":" dead")+'"></span>'+esc(o.k)+'</div>'
+   +'<div class="v">'+(lit?esc(o.v)+(o.u?'<span class="u">'+esc(o.u)+'</span>':""):"NO SIGNAL")+'</div><div class="s">'+esc(o.s||"")+'</div></div>'}
+
+/* ================= ATTENTION ================= */
+function renderAttention(){
+  var L=sevSorted();
+  var h='<p class="lede">Derived from live readings. A signal is here only while its condition is true, and disappears when it stops being true. Nothing is invented to fill the screen.</p>';
+  if(!L.length)return h+'<div class="box" style="color:var(--tx3);font-size:12.5px">Nothing is flagging. That is a real state, not an empty screen.</div>';
+  return h+'<div class="stack">'+L.map(function(s){
+    var a=s.analysis;
+    return '<div class="item '+(SEVCLS[s.sev]==="crit"?"dec":"que")+'">'
+      +'<div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center">'+chip(s.sev,SEVCLS[s.sev])+chip(ROLENAME[s.exec]||s.exec)+chip(s.status)+(s.needsHuman?chip("Needs a human","crit"):"")+'</div>'
+      +'<h4>'+esc(s.title)+'</h4>'
+      +'<div class="sub" style="margin-bottom:6px"><strong style="color:var(--tx2)">Signal.</strong> '+esc(s.src)+'</div>'
+      +'<div class="sub" style="margin-bottom:6px"><strong style="color:var(--tx2)">Why it matters.</strong> '+esc(s.why)+'</div>'
+      +'<div class="sub"><strong style="color:var(--tx2)">Recommended next.</strong> '+esc(s.act)+'</div>'
+      +(a?('<div class="analysis"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--s2);margin-bottom:6px">'+esc(ROLENAME[s.exec]||s.exec)+' REPORTED</div>'
+          +rich(a.finding||"")+'<div style="margin-top:7px;font-family:var(--mono);font-size:10px;color:var(--tx3)">RECOMMENDS: '+esc(a.recommendation||"—")+' · CONFIDENCE '+esc(a.confidence||"—")
+          +(a.severity_should_be&&a.severity_should_be!==s.sev?(' · SAYS SEVERITY IS '+esc(a.severity_should_be)):"")+'</div></div>'):"")
+      +'<div class="opts">'
+        +'<button class="opt" data-act="analyse" data-sig="'+s.id+'">'+(a?"Re-ask":"Ask")+' the '+esc(s.exec)+'</button>'
+        +'<button class="opt" data-act="meet" data-sig="'+s.id+'">Convene</button>'
+        +'<button class="opt" data-act="decide" data-sig="'+s.id+'">Make a decision</button>'
+        +(a&&a.proposed_task?'<button class="opt" data-act="task" data-sig="'+s.id+'">Create the task</button>':"")
+        +'<button class="opt" data-act="resolve" data-sig="'+s.id+'">Resolved</button>'
+        +'<button class="opt" data-act="dismiss" data-sig="'+s.id+'">Dismiss</button>'
+      +'</div></div>'}).join("")+'</div>';
+}
+
+/* ================= MEETINGS ================= */
+function renderMeetings(){
+  if(openKind==="meeting"&&MTG[openId])return meetingDetail(MTG[openId]);
+  var L=vals(MTG).sort(function(a,b){return a.createdAt<b.createdAt?1:-1});
+  var h='<div class="box" style="margin-bottom:12px"><div class="h2">Call a meeting</div>'
+   +'<input class="fld" id="mTitle" placeholder="Title — e.g. Should we build user accounts?">'
+   +'<textarea class="fld" id="mQuestion" rows="2" placeholder="The actual question the executives must answer"></textarea>'
+   +'<textarea class="fld" id="mContext" rows="2" placeholder="Anything they should know that is not already on the record (optional)"></textarea>'
+   +'<div class="opts">'+["LOW","MEDIUM","HIGH","CRITICAL"].map(function(p){return '<button class="opt prio'+(p===draftPrio?" on":"")+'" data-prio="'+p+'">'+p+'</button>'}).join("")+'</div>'
+   +'<div class="opts"><button class="opt go" id="mCreate">Ask the CEO who should be in the room</button></div></div>';
+  return h+(L.length?('<div class="stack">'+L.map(function(x){
+    return '<div class="item" data-open="meeting" data-id="'+x.id+'"><div style="display:flex;gap:5px;flex-wrap:wrap">'
+      +chip(x.id)+chip(x.status,x.status==="COMPLETE"?"ok":"warn")+chip(x.priority)+(x.seat.length?chip(x.seat.join(" · ")):"")+'</div>'
+      +'<h4>'+esc(x.title||x.question)+'</h4><div class="sub">'+esc(when(x.createdAt))+' · '+esc(x.createdBy)+(x.decisionId?(" · became "+esc(x.decisionId)):"")+'</div></div>'}).join("")+'</div>')
+   :'<div class="box" style="color:var(--tx3);font-size:12.5px">No meetings yet.</div>');
+}
+function meetingDetail(x){
+  var h='<button class="back" data-back="1">‹ All meetings</button>'
+   +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">'+chip(x.id)+chip(x.status,x.status==="COMPLETE"?"ok":"warn")+chip(x.priority)+'</div>'
+   +'<div style="font-size:17px;font-weight:600;line-height:1.3;margin-bottom:5px">'+esc(x.title||x.question)+'</div>'
+   +'<p class="lede">'+esc(x.question)+(x.context?(" — "+esc(x.context)):"")+'</p>';
+  if(x.status==="DRAFT"||x.status==="ROSTER"){
+    h+='<div class="box"><div class="h2">Who is in the room</div>'
+     +(x.rosterWhy?'<div class="sub" style="margin-bottom:8px">'+esc(x.rosterWhy)+'</div>':"")
+     +'<div class="opts">'+["CTO","CPO","ANALYTICS","CMO"].map(function(r){
+        return '<button class="opt seat'+(x.seat.indexOf(r)>=0?" on":"")+'" data-seat="'+r+'" data-mid="'+x.id+'">'+esc(ROLENAME[r])+'</button>'}).join("")+'</div>'
+     +(x.rosterWhyNot?'<div class="sub" style="margin-top:8px"><strong style="color:var(--tx2)">Left out.</strong> '+esc(x.rosterWhyNot)+'</div>':"")
+     +'<div class="opts"><button class="opt go" data-run="'+x.id+'"'+(x.seat.length?"":" disabled")+'>Run the meeting — '+x.seat.length+' independent position'+(x.seat.length===1?"":"s")+'</button></div></div>';
+  }
+  if(x.positions&&x.positions.length){
+    h+='<div class="h2 sep">Independent positions</div><div class="sub" style="margin-bottom:9px">Each written without sight of the others.</div>'
+     +x.positions.map(function(p){
+      return '<div class="box" style="margin-bottom:8px"><span class="pos-role">'+esc(ROLENAME[p.role]||p.role)+'</span>'
+       +'<div class="pos-line">'+esc(p.position||"")+'</div><div class="pos-body">'+esc(p.reasoning||"")+'</div>'
+       +(p.opportunities?'<div class="pos-body" style="margin-top:6px"><strong style="color:var(--tx2)">Opportunity.</strong> '+esc(p.opportunities)+'</div>':"")
+       +(p.risks?'<div class="pos-body" style="margin-top:4px"><strong style="color:var(--tx2)">Risk.</strong> '+esc(p.risks)+'</div>':"")
+       +'<div class="metrics"><span>impact '+esc(p.impact||"—")+'</span><span>effort '+esc(p.effort||"—")+'</span><span>cost '+esc(p.cost||"—")+'</span><span>conf '+esc(p.confidence||"—")+'</span></div>'
+       +evHtml(p.evidence)+'</div>'}).join("");
+  }
+  if(x.synthesis){var s=x.synthesis;
+    h+='<div class="h2 sep">CEO synthesis</div><div class="ans"><div class="ans-hd"><span class="role">CEO</span>'+chip("Weighs evidence, not votes")+'</div>'
+     +'<div class="ans-body">'+rich(s.answer||"")+'</div>'
+     +sect("Where they agreed",s.agreement)+sect("Where they genuinely differed",s.disagreement,"warn")
+     +sect("Position not taken",s.dissent,"warn")+sect("Risks",s.risks)+sect("Alternatives",s.alternatives)
+     +sect("If we do nothing",s.inaction,"crit")+evHtml(s.evidence)
+     +'<div class="foot"><span>RECOMMENDS <b style="color:var(--tx)">'+esc(s.recommendation||"—")+'</b></span><span>CONFIDENCE <b style="color:var(--tx)">'+esc(s.confidence||"—")+'</b></span></div></div>';
+    h+=x.decisionId?('<div class="opts"><button class="opt" data-open="decision" data-id="'+x.decisionId+'">Open '+esc(x.decisionId)+' ›</button></div>')
+      :('<div class="opts"><button class="opt go" data-mkdec="'+x.id+'">Put this to the owners as a decision</button></div>');
+  }
+  return h;
+}
+
+/* ================= DECISIONS ================= */
+var DSTAT={DRAFT:"","UNDER ANALYSIS":"warn","AWAITING DECISION":"crit",APPROVED:"ok",REJECTED:"",DEFERRED:"warn","IN PROGRESS":"warn",COMPLETED:"ok","REVIEW REQUIRED":"warn"};
+function decRow(d){return '<div class="item '+(d.status==="AWAITING DECISION"?"dec":d.reviewedAt?"done":"")+'" data-open="decision" data-id="'+d.id+'">'
+  +'<div style="display:flex;gap:5px;flex-wrap:wrap">'+chip(d.id)+chip(d.status,DSTAT[d.status])+(d.humanDecision?chip(d.humanDecision+" · "+d.decidedBy,"ok"):"")+'</div>'
+  +'<h4>'+esc(d.title)+'</h4><div class="sub">'+esc(day(d.createdAt))+(d.meetingId?(" · from "+esc(d.meetingId)):"")+(d.signalId?" · from a signal":"")
+  +(d.tasks&&d.tasks.length?(" · "+d.tasks.length+" task"+(d.tasks.length>1?"s":"")):"")+'</div></div>'}
+function renderDecisions(){
+  if(openKind==="decision"&&DEC[openId])return decisionDetail(DEC[openId]);
+  var L=vals(DEC).sort(function(a,b){return a.createdAt<b.createdAt?1:-1});
+  var aw=L.filter(function(d){return d.status==="AWAITING DECISION"});
+  var h='<p class="lede">Every decision of consequence, permanently. What we decided, why, what we considered instead, and whether it worked.</p>';
+  if(aw.length)h+='<div class="h2">Waiting on you</div><div class="stack" style="margin-bottom:16px">'+aw.map(decRow).join("")+'</div><div class="h2 sep">The register</div>';
+  return h+'<div class="stack">'+(L.length?L.map(decRow).join(""):'<div class="box" style="color:var(--tx3);font-size:12.5px">Nothing on the register yet.</div>')+'</div>';
+}
+function timeline(d){
+  var st=[];
+  if(d.signalId)st.push(["Signal detected",d.createdAt,d.signalId]);
+  st.push(["Decision opened",d.createdAt,d.createdBy]);
+  if(d.meetingId&&MTG[d.meetingId]){var x=MTG[d.meetingId];
+    st.push(["Executive meeting",x.createdAt,(x.seat||[]).join(", ")+" — independent positions"]);
+    if(x.synthesis)st.push(["CEO recommendation",x.createdAt,x.synthesis.recommendation||""])}
+  else if(d.ceoRec)st.push(["CEO recommendation",d.createdAt,d.ceoRec.recommendation||""]);
+  if(d.humanDecision)st.push(["Human decision",d.decidedAt,d.humanDecision+" — "+d.decidedBy]);
+  (d.tasks||[]).forEach(function(id){if(TASK[id])st.push(["Task "+id+" — "+TASK[id].status,TASK[id].createdAt,TASK[id].title])});
+  if(d.reviewedAt)st.push(["Outcome recorded",d.reviewedAt,d.actual||""]);
+  return '<div class="tl">'+st.map(function(s,i){return '<div class="tl-i'+(i===st.length-1?" last":"")+'"><div class="tl-d"></div>'
+    +'<div><div class="tl-t">'+esc(s[0])+'</div><div class="tl-m">'+esc(when(s[1]))+(s[2]?" · "+esc(s[2]):"")+'</div></div></div>'}).join("")+'</div>'}
+function decisionDetail(d){
+  var h='<button class="back" data-back="1">‹ Register</button>'
+   +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">'+chip(d.id)+chip(d.status,DSTAT[d.status])+'</div>'
+   +'<div style="font-size:18px;font-weight:600;line-height:1.3;margin-bottom:5px">'+esc(d.title)+'</div>'
+   +(d.question?'<p class="lede">'+esc(d.question)+'</p>':"");
+  if(d.context)h+='<div class="box" style="margin-bottom:10px"><div class="h2">Context</div><div class="sub">'+esc(d.context)+'</div></div>';
+  if(d.ceoRec){var s=d.ceoRec;
+    h+='<div class="ans" style="margin-bottom:10px"><div class="ans-hd"><span class="role">CEO RECOMMENDS</span></div>'
+     +'<div class="ans-body">'+rich(s.answer||"")+'</div>'
+     +sect("Where they agreed",s.agreement)+sect("Where they differed",s.disagreement,"warn")
+     +sect("Position not taken",s.dissent,"warn")+sect("Alternatives",s.alternatives)+sect("If we do nothing",s.inaction,"crit")
+     +evHtml(s.evidence)
+     +'<div class="foot"><span>RECOMMENDS <b style="color:var(--tx)">'+esc(s.recommendation||"—")+'</b></span><span>CONFIDENCE <b style="color:var(--tx)">'+esc(s.confidence||"—")+'</b></span></div></div>'}
+  if(!d.humanDecision){
+    h+='<div class="box approve"><div class="h2" style="color:var(--live)">Your decision</div>'
+     +'<div class="sub" style="margin-bottom:9px">Nothing happens until one of you chooses. No task is created and no work starts.</div>'
+     +'<div class="opts">'+["APPROVE","REJECT","REQUEST MORE ANALYSIS","DEFER"].map(function(a){
+        return '<button class="opt'+(a==="APPROVE"?" go":"")+'" data-dec="'+d.id+'" data-choice="'+a+'">'+a+'</button>'}).join("")+'</div>'
+     +'<textarea class="fld" id="dw-'+d.id+'" rows="2" placeholder="Your reasoning — optional, but it is what makes this worth reading in six months"></textarea>'
+     +'<div class="sub" style="margin-top:7px">Deciding as <strong style="color:var(--tx)">'+esc(actor())+'</strong> · recorded with a timestamp</div></div>';
+  }else{
+    h+='<div class="box" style="margin-bottom:10px;border-color:var(--s1)"><div class="h2" style="color:var(--live)">Decided</div>'
+     +'<div style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--live);margin-bottom:5px">'+esc(d.humanDecision)+'</div>'
+     +'<div class="sub">'+esc(d.decidedBy)+' · '+esc(when(d.decidedAt))+'</div>'
+     +(d.humanWhy?'<div class="sub" style="margin-top:7px">“'+esc(d.humanWhy)+'”</div>':"")+'</div>'}
+  if(d.tasks&&d.tasks.length)h+='<div class="h2 sep">Work this created</div><div class="stack">'+d.tasks.map(function(i){return TASK[i]?taskRow(TASK[i]):""}).join("")+'</div>';
+  else if(d.humanDecision==="APPROVE"&&d.proposedTasks&&d.proposedTasks.length)
+    h+='<div class="h2 sep">Proposed work — not created yet</div><div class="stack">'+d.proposedTasks.map(function(t){
+      return '<div class="item"><div style="display:flex;gap:5px">'+chip(ROLENAME[t.exec]||t.exec)+chip("PROPOSED","warn")+'</div><h4>'+esc(t.title)+'</h4>'
+       +'<div class="sub">Expected: '+esc(t.expected||"—")+'<br>Measured by: '+esc(t.metric||"—")+'</div></div>'}).join("")
+     +'</div><div class="opts"><button class="opt go" data-mktasks="'+d.id+'">Create these '+d.proposedTasks.length+' tasks</button></div>';
+  if(d.status==="REVIEW REQUIRED"||d.reviewedAt){
+    h+='<div class="h2 sep">Did it work?</div><div class="box'+(d.reviewedAt?"":" approve")+'">'
+     +(d.reviewedAt?('<div class="sub" style="margin-bottom:8px"><strong style="color:var(--tx2)">Expected.</strong> '+esc(d.outcome||"—")+'</div>'
+        +'<div class="sub" style="margin-bottom:8px"><strong style="color:var(--tx2)">Actually happened.</strong> '+esc(d.actual||"—")+'</div>'
+        +'<div class="sub"><strong style="color:var(--tx2)">Learned.</strong> '+esc(d.lessons||"—")+'</div>')
+      :('<textarea class="fld" id="oa-'+d.id+'" rows="2" placeholder="What actually happened?"></textarea>'
+        +'<textarea class="fld" id="ol-'+d.id+'" rows="2" placeholder="What did we learn? Be blunt — this is the only part that improves the next decision."></textarea>'
+        +'<div class="opts"><button class="opt go" data-review="'+d.id+'">Record the outcome</button></div>'))+'</div>'}
+  return h+'<div class="h2 sep">How this got here</div>'+timeline(d);
+}
+
+/* ================= TASKS ================= */
+var TSTAT={PROPOSED:"warn","AWAITING APPROVAL":"crit",APPROVED:"ok","IN PROGRESS":"warn",BLOCKED:"crit","REVIEW REQUIRED":"warn",COMPLETED:"ok",CANCELLED:""};
+var TFLOW=["PROPOSED","APPROVED","IN PROGRESS","BLOCKED","REVIEW REQUIRED","COMPLETED","CANCELLED"];
+function taskRow(t){return '<div class="item" data-open="task" data-id="'+t.id+'"><div style="display:flex;gap:5px;flex-wrap:wrap">'
+  +chip(t.id)+chip(ROLENAME[t.exec]||t.exec)+chip(t.status,TSTAT[t.status])+chip(t.priority)+'</div>'
+  +'<h4>'+esc(t.title)+'</h4><div class="sub">'+(t.decisionId?("from "+esc(t.decisionId)+" · "):"")+esc(day(t.createdAt))
+  +(t.expected?(" · expects: "+esc(t.expected)):"")+'</div></div>'}
+function renderTasks(){
+  if(openKind==="task"&&TASK[openId])return taskDetail(TASK[openId]);
+  var L=vals(TASK),by={},h='<p class="lede">Work an executive owns. The executive owns the objective and reports on it — it does not do the technical work, and nothing here runs on its own.</p>',any=false;
+  TFLOW.forEach(function(s){by[s]=[]});
+  L.forEach(function(t){(by[t.status]||(by[t.status]=[])).push(t)});
+  TFLOW.forEach(function(s){if(!by[s].length)return;any=true;
+    h+='<div class="h2 sep">'+esc(s)+' <span style="color:var(--tx3)">'+by[s].length+'</span></div><div class="stack">'+by[s].map(taskRow).join("")+'</div>'});
+  return any?h:h+'<div class="box" style="color:var(--tx3);font-size:12.5px">No tasks. They come from an approved decision, never automatically.</div>';
+}
+function taskDetail(t){
+  var h='<button class="back" data-back="1">‹ Tasks</button>'
+   +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">'+chip(t.id)+chip(ROLENAME[t.exec]||t.exec)+chip(t.status,TSTAT[t.status])+chip(t.priority)+'</div>'
+   +'<div style="font-size:17px;font-weight:600;line-height:1.3;margin-bottom:8px">'+esc(t.title)+'</div>'
+   +(t.desc?'<p class="lede">'+esc(t.desc)+'</p>':"")
+   +'<div class="box"><div class="row"><span class="lbl"><b>Owned by</b><i>'+esc(ROLENAME[t.exec]||t.exec)+'</i></span></div>'
+   +(t.decisionId?'<div class="row"><span class="lbl"><b>From decision</b><i>'+esc(t.decisionId)+(DEC[t.decisionId]?" — "+esc(DEC[t.decisionId].title):"")+'</i></span></div>':"")
+   +'<div class="row"><span class="lbl"><b>Expected outcome</b><i>'+esc(t.expected||"not stated")+'</i></span></div>'
+   +'<div class="row"><span class="lbl"><b>How we would know</b><i>'+esc(t.metric||"no success metric set")+'</i></span></div>'
+   +'<div class="row"><span class="lbl"><b>Created</b><i>'+esc(when(t.createdAt))+' by '+esc(t.createdBy)+'</i></span></div>'
+   +(t.completedAt?'<div class="row"><span class="lbl"><b>Completed</b><i>'+esc(when(t.completedAt))+'</i></span></div>':"")+'</div>'
+   +'<div class="h2 sep">Move it</div><div class="opts">'+TFLOW.map(function(s){
+      return '<button class="opt'+(t.status===s?" on":"")+'" data-task="'+t.id+'" data-status="'+esc(s)+'">'+esc(s)+'</button>'}).join("")+'</div>';
+  if(t.status==="COMPLETED"&&!t.actual)h+='<div class="box approve"><div class="h2" style="color:var(--live)">What actually happened?</div>'
+   +'<textarea class="fld" id="ta-'+t.id+'" rows="2" placeholder="The real result — including if it did not work"></textarea>'
+   +'<div class="opts"><button class="opt go" data-tout="'+t.id+'">Record it</button></div></div>';
+  else if(t.actual)h+='<div class="box"><div class="h2">Result</div><div class="sub">'+esc(t.actual)+'</div></div>';
+  return h;
+}
+
+/* ================= BOARD ================= */
+function renderBoard(){
+  var sig=sevSorted(),d=SNAP.data,hrs=hoursTo(d.deadline);
+  var act=vals(DEC).filter(function(x){return x.status==="APPROVED"||x.status==="IN PROGRESS"});
+  var live=vals(TASK).filter(function(t){return t.status==="IN PROGRESS"||t.status==="APPROVED"});
+  var learn=vals(DEC).filter(function(x){return x.reviewedAt}).sort(function(a,b){return a.reviewedAt<b.reviewedAt?1:-1});
+  var aw=vals(DEC).filter(function(x){return x.status==="AWAITING DECISION"});
+  var h='<h2>Briefing</h2><p class="lede">Readings taken '+esc(when(SNAP.at))+'. An unlit panel means nothing is measuring it — not that it is fine.</p>';
+  h+='<div class="h2">What needs our attention</div>';
+  h+=sig.length?('<div class="stack">'+sig.slice(0,3).map(function(s){
+      return '<div class="item '+(SEVCLS[s.sev]==="crit"?"dec":"que")+'" data-goto="attention"><div style="display:flex;gap:5px;flex-wrap:wrap">'
+       +chip(s.sev,SEVCLS[s.sev])+chip(ROLENAME[s.exec]||s.exec)+'</div><h4>'+esc(s.title)+'</h4>'
+       +'<div class="sub">'+esc(s.why.slice(0,140))+'…</div></div>'}).join("")+'</div>'
+     +(sig.length>3?'<div class="opts"><button class="opt" data-goto="attention">All '+sig.length+' signals ›</button></div>':""))
+   :'<div class="box" style="color:var(--tx3);font-size:12.5px">Nothing flagging.</div>';
+  if(aw.length)h+='<div class="stack" style="margin-top:8px">'+aw.map(decRow).join("")+'</div>';
+  h+='<div class="h2 sep">What is healthy</div><div class="grid">'
+   +cell({k:"Site",v:"UP",s:"xfpl.co.uk · Vercel"})
+   +cell({k:"API",v:"UP",s:"from "+d.source+", "+d.ageH+"h old"})
+   +cell({k:"Data",v:d.stale?"STALE":"FRESH",s:"GW"+d.nextEvent+" next",tone:d.stale?"crit":"live"})
+   +cell({k:"Next deadline",v:hrs!=null?(hrs>48?Math.round(hrs/24)+"":Math.round(hrs)+""):null,u:hrs>48?"d":"h",s:when(d.deadline),tone:"live"})
+   +cell({k:"Visitors",v:null,s:"no analytics installed"})
+   +cell({k:"Revenue",v:null,s:"no monetisation"})
+   +cell({k:"Errors",v:null,s:"no error tracking"})
+   +cell({k:"Monthly cost",v:"£0",s:"owners set the ceiling at £0"})+'</div>';
+  h+='<div class="h2 sep">What we are doing</div>'
+   +((act.length||live.length)?('<div class="stack">'+act.map(decRow).join("")+live.map(taskRow).join("")+'</div>')
+     :'<div class="box" style="color:var(--tx3);font-size:12.5px">No approved work in flight. Decisions create tasks; nothing creates itself.</div>');
+  h+='<div class="h2 sep">What we have learned</div>'
+   +(learn.length?('<div class="stack">'+learn.slice(0,3).map(function(x){
+      return '<div class="item done" data-open="decision" data-id="'+x.id+'"><div style="display:flex;gap:5px">'+chip(x.id)+chip("REVIEWED","ok")+'</div>'
+       +'<h4>'+esc(x.title)+'</h4><div class="sub"><strong style="color:var(--tx2)">Learned.</strong> '+esc(x.lessons||"—")+'</div></div>'}).join("")+'</div>')
+     :'<div class="box" style="color:var(--tx3);font-size:12.5px">Nothing reviewed yet. A decision earns its place here once someone records whether it actually worked.</div>');
+  return h;
+}
+
+/* ================= METRICS (unchanged domains) ================= */
+var TABS=[{id:"traffic",n:"Traffic"},{id:"perf",n:"Performance"},{id:"rel",n:"Reliability"},{id:"product",n:"Product"},
+          {id:"accuracy",n:"Accuracy"},{id:"pipeline",n:"Pipeline"},{id:"eng",n:"Engineering"},{id:"cost",n:"Cost"}];
+function barChart(rows,o){o=o||{};
+  var W=680,L=o.labelW||132,R=54,top=6,rh=26,gap=8,H=top+rows.length*(rh+gap);
+  var max=Math.max.apply(null,rows.map(function(r){return r.v}))*1.12||1,x=function(v){return L+(v/max)*(W-L-R)};
+  var s='<svg viewBox="0 0 '+W+' '+(H+22)+'" role="img" aria-label="'+esc(o.alt||"")+'">';
+  [0,max/2,max].forEach(function(t){var xx=x(t);s+='<line class="gl" x1="'+xx+'" y1="'+top+'" x2="'+xx+'" y2="'+H+'"/>'
+    +'<text class="tk" x="'+xx+'" y="'+(H+14)+'" text-anchor="middle">'+(Math.round(t*10)/10)+'</text>'});
+  rows.forEach(function(r,i){var y=top+i*(rh+gap),w=Math.max(2,x(r.v)-L);
+    s+='<text class="lb" x="'+(L-9)+'" y="'+(y+rh/2+3.5)+'" text-anchor="end">'+esc(r.k)+'</text>'
+     +'<rect x="'+L+'" y="'+y+'" width="'+w+'" height="'+rh+'" rx="3" fill="'+(r.c||"var(--s1)")+'"/>'
+     +'<text class="vl" x="'+(L+w+7)+'" y="'+(y+rh/2+3.5)+'">'+esc(r.t||r.v)+'</text>'});
+  return s+'<line class="ax" x1="'+L+'" y1="'+top+'" x2="'+L+'" y2="'+H+'"/></svg>'}
+function groupChart(){
+  var d=SNAP.acc.cats.filter(function(c){return c.c!=="All"});
+  var W=680,L=92,R=52,top=6,gh=54,bh=20,gb=4,H=top+d.length*(gh+10);
+  var max=Math.max.apply(null,d.map(function(c){return Math.max(c.m,c.b)}))*1.14,x=function(v){return L+(v/max)*(W-L-R)};
+  var s='<svg viewBox="0 0 '+W+' '+(H+22)+'" role="img" aria-label="Average error by return category, model against a last-five-games baseline. Lower is better. On Haulers the model is worse than the baseline.">';
+  [0,max/2,max].forEach(function(t){var xx=x(t);s+='<line class="gl" x1="'+xx+'" y1="'+top+'" x2="'+xx+'" y2="'+H+'"/>'
+    +'<text class="tk" x="'+xx+'" y="'+(H+14)+'" text-anchor="middle">'+(Math.round(t*10)/10)+'</text>'});
+  d.forEach(function(c,i){var y=top+i*(gh+10),w1=Math.max(2,x(c.m)-L),w2=Math.max(2,x(c.b)-L);
+    s+='<text class="lb" x="'+(L-9)+'" y="'+(y+bh+2)+'" text-anchor="end">'+esc(c.c)+'</text>'
+     +'<text class="tk" x="'+(L-9)+'" y="'+(y+bh+16)+'" text-anchor="end">n='+c.n+'</text>'
+     +'<rect x="'+L+'" y="'+y+'" width="'+w1+'" height="'+bh+'" rx="3" fill="var(--s1)"/>'
+     +'<text class="vl" x="'+(L+w1+7)+'" y="'+(y+bh/2+3.5)+'">'+c.m.toFixed(2)+'</text>'
+     +'<rect x="'+L+'" y="'+(y+bh+gb)+'" width="'+w2+'" height="'+bh+'" rx="3" fill="var(--s2)"/>'
+     +'<text class="vl" x="'+(L+w2+7)+'" y="'+(y+bh+gb+bh/2+3.5)+'">'+c.b.toFixed(2)+'</text>'});
+  return s+'<line class="ax" x1="'+L+'" y1="'+top+'" x2="'+L+'" y2="'+H+'"/></svg>'}
+function connect(t,x){return '<div class="connect"><b>'+esc(t)+'</b>'+esc(x)+'</div>'}
+function renderMetrics(){
+  $("#subnav").innerHTML=TABS.map(function(t){return '<button data-sub="'+t.id+'" aria-pressed="'+(sub===t.id?"true":"false")+'">'+esc(t.n)+'</button>'}).join("");
+  var e=SNAP.eng,f=SNAP.fe,a=SNAP.acc,i=SNAP.infra,d=SNAP.data,h="";
+  if(sub==="traffic")h='<div class="grid">'+cell({k:"Visitors 30d",v:null,s:"no analytics installed"})+cell({k:"Sessions",v:null,s:"no analytics installed"})
+    +cell({k:"Bounce rate",v:null,s:"no analytics installed"})+cell({k:"Top sources",v:null,s:"no analytics installed"})
+    +cell({k:"robots.txt",v:"404",s:"crawlers get no guidance",tone:"crit"})+cell({k:"sitemap.xml",v:"404",s:"nothing submitted to search",tone:"crit"})
+    +cell({k:"Indexable pages",v:(e.posts+13)+"",s:e.posts+" posts + 13 routes, all live",tone:"live"})+cell({k:"OpenGraph tags",v:"0",s:"every share is a bare link",tone:"crit"})
+    +'</div><div class="h2 sep">What would light this up</div>'
+    +connect("One toggle","The frontend is on Vercel and the partner has access. Vercel Analytics is free on the hobby tier and needs no new script, vendor or DNS change. That alone lights the first four panels.")
+    +'<div style="height:8px"></div>'+connect("One pull request","sitemap.ts, robots.ts, per-page metadata and social cards. No application logic changes.");
+  if(sub==="perf")h='<div class="grid">'+cell({k:"API median",v:median()+"",u:"ms",s:"across 6 endpoints, warm",tone:"live"})
+    +cell({k:"Slowest route",v:"869",u:"ms",s:"/api/players — 902 kB uncompressed",tone:"warn"})
+    +cell({k:"Frontend TTFB",v:f.ttfb+"",u:"ms",s:"cold — Vercel, iad1",tone:"warn"})
+    +cell({k:"HTML weight",v:f.kb+"",u:"kB",s:"homepage document",tone:"live"})
+    +cell({k:"LCP",v:null,s:"needs field data"})+cell({k:"INP",v:null,s:"needs field data"})+cell({k:"CLS",v:null,s:"needs field data"})
+    +cell({k:"Cold start",v:"~35",u:"s",s:"Render free spins down after 15 min",tone:"crit"})+'</div>'
+    +'<div class="h2 sep">Response time by endpoint</div><div class="box"><figure>'
+    +barChart(SNAP.api.map(function(r){return {k:r.p,v:r.ms,t:r.ms+" ms"}}),{alt:"Response time in milliseconds for six API endpoints, warm."})
+    +'<figcaption>Measured warm, one sample each, from outside the network. The free tier spins down after fifteen quiet minutes and a cold start is roughly 35 seconds — the keep-alive ping is what stops a visitor sitting through it.</figcaption></figure></div>';
+  if(sub==="rel")h='<div class="grid">'+cell({k:"Site",v:"UP",s:"HTTP 200",tone:"live"})+cell({k:"API",v:"UP",s:"/api/health 200",tone:"live"})
+    +cell({k:"Data freshness",v:d.ageH+"",u:"h",s:d.stale?"STALE":"inside tolerance",tone:d.stale?"crit":"live"})
+    +cell({k:"Fallback",v:"ARMED",s:"serves committed snapshots if the DB dies",tone:"live"})
+    +cell({k:"Error rate",v:null,s:"no error tracking"})+cell({k:"Uptime 30d",v:null,s:"no uptime monitor"})
+    +cell({k:"Failed requests",v:null,s:"no error tracking"})+cell({k:"Open incidents",v:"0",s:"none recorded",tone:"live"})+'</div>'
+    +'<div class="h2 sep">What is actually watching</div><div class="box">'
+    +'<div class="row">'+chip("Live","ok")+'<span class="lbl"><b>Data freshness check</b><i>every 6 hours — emails on failure</i></span></div>'
+    +'<div class="row">'+chip("Live","ok")+'<span class="lbl"><b>Keep-alive ping</b><i>every 10 minutes — prevents the cold start</i></span></div>'
+    +'<div class="row">'+chip("No signal","off")+'<span class="lbl"><b>Error tracking</b><i>a 500 or a frontend exception is invisible</i></span></div>'
+    +'<div class="row">'+chip("No signal","off")+'<span class="lbl"><b>Uptime monitoring</b><i>an outage between checks goes unnoticed</i></span></div></div>';
+  if(sub==="product")h='<div class="grid">'+cell({k:"Teams connected",v:null,s:"no analytics installed"})+cell({k:"Return rate",v:null,s:"no analytics installed"})
+    +cell({k:"Weekly actives",v:null,s:"no analytics installed"})+cell({k:"Feature usage",v:null,s:"no analytics installed"})
+    +cell({k:"Accounts",v:"0",s:"none exist — team id in localStorage",tone:"warn"})
+    +cell({k:"Retention hooks",v:"0",s:"no email, reminder or notification",tone:"crit"})
+    +cell({k:"Shareable output",v:"0",s:"nothing to post in a mini-league chat",tone:"warn"})
+    +cell({k:"Discord",v:"INACTIVE",s:"owners report it empty",tone:"warn"})+'</div>'
+    +'<div class="h2 sep">The CPO’s standing position</div><div class="box" style="font-size:12.5px;color:var(--tx2);line-height:1.6">'
+    +'The journey is: land, paste a team id, work the squad — and then <strong>nothing brings the manager back</strong>. FPL is a weekly ritual with a hard deadline and this tool never prompts the habit it depends on. That is the largest product gap, and it cannot be designed until someone can see who leaves and when.</div>';
+  if(sub==="accuracy")h='<div class="grid">'+cell({k:"Weeks graded",v:a.graded+"",s:"GW1–2 · GW3 played, not graded",tone:"warn"})
+    +cell({k:"Pre-committed",v:a.frozen+"",s:"frozen before a deadline and graded",tone:"warn"})
+    +cell({k:"Rank correlation",v:a.rankCorr.toFixed(3),s:"players who appeared only",tone:"live"})
+    +cell({k:"Captain average",v:a.capAvg+"",u:"pts",s:"best possible was "+a.capBest,tone:"live"})
+    +cell({k:"Top ten average",v:a.topTen+"",u:"pts",s:"field average "+a.field,tone:"live"})
+    +cell({k:"Edge over field",v:"+"+(a.topTen-a.field).toFixed(2),u:"pts",s:"per player, per gameweek",tone:"live"})+'</div>'
+    +'<div class="h2 sep">Error by return category — model against baseline</div><div class="box">'
+    +'<div class="legend"><span><i class="sw" style="background:var(--s1)"></i>xFPL model</span><span><i class="sw" style="background:var(--s2)"></i>Last-five-games baseline</span></div>'
+    +'<figure>'+groupChart()+'<figcaption>Average error in points. <strong>Lower is better.</strong> The model beats the baseline comfortably on Blanks and Tickers and <strong>loses to it on Haulers</strong> — the players who actually decide a gameweek.</figcaption></figure></div>'
+    +'<div class="h2 sep">Health warning</div>'+connect("Two gameweeks is not evidence","The Head of FPL Analytics holds that no conclusion should be drawn from this record before roughly GW8–10, which the calendar puts in November.");
+  if(sub==="pipeline")h='<div class="grid">'+cell({k:"Source",v:d.source.toUpperCase(),s:"file fallback armed behind it",tone:"live"})
+    +cell({k:"Snapshot age",v:d.ageH+"",u:"h",s:"hourly ingest via Actions",tone:"live"})
+    +cell({k:"Stale",v:d.stale?"YES":"NO",s:"deadline-aware, not just age",tone:d.stale?"crit":"live"})
+    +cell({k:"Next gameweek",v:"GW"+d.nextEvent,s:when(d.deadline),tone:"live"})
+    +cell({k:"Frozen projections",v:e.frozen+"",s:"GW3 only — the streak starts here",tone:"warn"})
+    +cell({k:"Scheduled jobs",v:e.workflows+"",s:"all GitHub Actions, all free",tone:"live"})+'</div>'
+    +'<div class="h2 sep">The schedule</div><div class="box">'
+    +[["Ingest FPL data","hourly — snapshots bootstrap and fixtures","17 * * * *"],
+      ["Freeze projections","4× daily — writes before a deadline, never after","0 6,11,16,21 * * *"],
+      ["Check data freshness","every 6 hours — fails loudly if stale","0 */6 * * *"],
+      ["Keep backend alive","every 10 minutes — stops the cold start","*/10 * * * *"],
+      ["Refresh fallback snapshot","weekly — PR, regrade, replay the season","0 4 * * 1"]].map(function(r){
+      return '<div class="row"><span class="lbl"><b>'+esc(r[0])+'</b><i>'+esc(r[1])+'</i></span><span class="val" style="color:var(--live)">'+esc(r[2])+'</span></div>'}).join("")+'</div>';
+  if(sub==="eng")h='<div class="grid">'+cell({k:"CI on main",v:"GREEN",s:"backend, typecheck, lint, build",tone:"live"})
+    +cell({k:"Backend tests",v:"178",s:e.tests+" functions, some parametrised",tone:"live"})
+    +cell({k:"API routes",v:e.routes+"",s:"across 7 routers",tone:"live"})
+    +cell({k:"Commits",v:e.commits+"",s:"on this branch",tone:"live"})
+    +cell({k:"Backend",v:(e.beLoc/1000).toFixed(1)+"k",u:"loc",s:"69 modules, cleanly layered",tone:"live"})
+    +cell({k:"Frontend",v:(e.feLoc/1000).toFixed(1)+"k",u:"loc",s:"Next.js 16, React 19",tone:"live"})
+    +cell({k:"Dependencies",v:e.deps+"",s:"42 backend, 15 frontend",tone:"live"})
+    +cell({k:"Test coverage %",v:null,s:"not measured"})+'</div>'
+    +'<div class="h2 sep">Known debt</div><div class="box">'
+    +'<div class="row">'+chip("High","crit")+'<span class="lbl"><b>README describes four modules that do not exist</b><i>and claims the app has no dark mode</i></span></div>'
+    +'<div class="row">'+chip("Medium","warn")+'<span class="lbl"><b>Refactor plan says “not executed”</b><i>it is fully executed</i></span></div>'
+    +'<div class="row">'+chip("Low")+'<span class="lbl"><b>Two dead entries</b><i>anthropic in requirements.txt, API_FOOTBALL_KEY in render.yaml</i></span></div>'
+    +'<div class="row">'+chip("Medium","warn")+'<span class="lbl"><b>recommendation_score shown to 3 decimals</b><i>hand-set weights, never backtested</i></span></div></div>'
+    +'<div class="h2 sep">Do not touch without care</div>'
+    +connect("Three trip-wires","Season transitions — FPL reassigns team and player ids every year and mixing an archive with a live file fails silently. Determinism — golden tests pin responses byte-for-byte. And alembic’s metadata target, which would propose dropping a second app’s tables.");
+  if(sub==="cost"){var pct=Math.round(i.instanceHrs/i.instanceCap*100);
+    h='<div class="grid">'+cell({k:"Monthly spend",v:"£0",s:"every tier free",tone:"live"})
+    +cell({k:"Frontend",v:"FREE",s:i.host+" hobby",tone:"live"})+cell({k:"Backend",v:"FREE",s:"Render — sleeps after 15 min",tone:"warn"})
+    +cell({k:"Database",v:"FREE",s:"Neon",tone:"live"})+cell({k:"CI + cron",v:"FREE",s:"GitHub Actions, 6 workflows",tone:"live"})
+    +cell({k:"AI spend",v:"£0",s:"HQ runs on your Claude usage",tone:"live"})
+    +cell({k:"Instance hours",v:pct+"",u:"%",s:i.instanceHrs+" of "+i.instanceCap+" used by keep-alive",tone:"crit"})
+    +cell({k:"Headroom",v:(i.instanceCap-i.instanceHrs)+"",u:"h",s:"no room for a second free service",tone:"crit"})+'</div>'
+    +'<div class="h2 sep">Free-tier budget</div><div class="box"><figure>'
+    +barChart([{k:"Keep-alive ping",v:i.instanceHrs,t:i.instanceHrs+" h",c:"var(--crit)"},{k:"Everything else",v:i.instanceCap-i.instanceHrs,t:(i.instanceCap-i.instanceHrs)+" h"}],{alt:"Monthly free instance hours: 730 consumed by the keep-alive ping, 20 remaining.",labelW:120})
+    +'<figcaption>Of 750 free instance-hours a month the ten-minute keep-alive consumes about 730, to buy away a 35-second cold start. The owners have set the spending ceiling at £0, so the paid alternative is currently closed.</figcaption></figure></div>'}
+  $("#metricBody").innerHTML=h;
+}
+
+/* ================= CHAT ================= */
+var STARTERS=["What should I be doing this week?","What is the biggest problem right now?",
+ "Explain our accuracy numbers like I'm not a statistician","Is anything about to break?",
+ "What is the cheapest thing that would make a real difference?"];
+function renderPulse(){
+  var d=SNAP.data,sig=sevSorted(),hrs=hoursTo(d.deadline);
+  var aw=vals(DEC).filter(function(x){return x.status==="AWAITING DECISION"}).length;
+  var dark=4;
+  $("#pulse").innerHTML=[{k:"Deadline",v:hrs!=null?(hrs>48?Math.round(hrs/24)+"d":Math.round(hrs)+"h"):"—",c:"ok"},
+   {k:"Site + API",v:"UP",c:"ok"},{k:"Flagging",v:sig.length+"",c:sig.length?"crit":"ok"},
+   {k:"Needs you",v:aw+"",c:aw?"crit":"ok"},{k:"Blind spots",v:dark+"",c:"off"}]
+   .map(function(c){return '<div><div class="k">'+esc(c.k)+'</div><div class="v '+c.c+'">'+esc(c.v)+'</div></div>'}).join("");
+}
+function renderStarters(){
+  $("#starters").innerHTML=THREAD.filter(function(t){return t.role==="human"}).length?""
+   :STARTERS.map(function(q){return '<button data-q="'+esc(q)+'">'+esc(q)+'</button>'}).join("");
+}
+function renderTurns(){
+  $("#turns").innerHTML=THREAD.map(function(t){
+    if(t.role==="human")return '<div class="ask">'+esc(t.text)+'</div>';
+    if(t.role==="pending")return '<div class="ans"><div class="thinking"><span class="sig"></span>'+esc(t.text)+'</div></div>';
+    if(t.role==="error")return '<div class="ans"><div class="ans-body" style="color:var(--crit)">'+esc(t.text)+'</div></div>';
+    var a=t.data||{};
+    return '<div class="ans"><div class="ans-hd"><span class="role">CEO</span>'
+     +(a.consulted&&a.consulted.length?chip(a.consulted.join(" · ")):"")+'</div>'
+     +'<div class="ans-body">'+rich(a.answer||"")+'</div>'+evHtml(a.evidence)
+     +(a.risks?sect("Risks",a.risks):"")
+     +'<div class="foot"><span>CONFIDENCE <b style="color:var(--tx)">'+esc(a.confidence||"—")+'</b>'+(a.confidence_why?" · "+esc(a.confidence_why):"")+'</span>'
+     +(a.needs_human?chip("Needs your decision","crit"):"")
+     +(a.suggest_meeting?'<button class="opt" data-fromchat="'+esc((t.q||"").slice(0,300))+'">Convene on this ›</button>':"")+'</div></div>'}).join("");
+  var l=$("#turns").lastElementChild;if(l&&l.scrollIntoView)l.scrollIntoView({block:"nearest"});
+}
+function tail(){var t=THREAD.filter(function(x){return x.role==="human"||x.role==="exec"}).slice(-4);
+  return t.length?("\n\n== EARLIER IN THIS CONVERSATION ==\n"+t.map(function(x){
+    return x.role==="human"?("OWNER: "+x.text):("CEO: "+((x.data&&x.data.answer)||"").slice(0,500))}).join("\n")):""}
+function setBusy(b){busy=b;$("#send").disabled=b;$("#convene").disabled=b}
+function chatAsk(q){
+  setBusy(true);THREAD.push({role:"human",text:q});THREAD.push({role:"pending",text:"CEO PROCESSING…"});renderTurns();
+  askCEO(q,tail()).then(function(d){THREAD.pop();THREAD.push({role:"exec",data:d,q:q});save();renderTurns();renderStarters()})
+   ["catch"](function(e){THREAD.pop();THREAD.push({role:"error",text:errText(e)});renderTurns()})
+   .then(function(){setBusy(false)});
+}
+
+/* ================= RENDER SWITCH ================= */
+var WORKTABS=[{id:"attention",n:"Attention"},{id:"meetings",n:"Meetings"},{id:"decisions",n:"Decisions"},{id:"tasks",n:"Tasks"}];
+function renderWork(){
+  $("#worknav").innerHTML=WORKTABS.map(function(t){
+    var n=t.id==="attention"?sevSorted().length:t.id==="decisions"?vals(DEC).filter(function(d){return d.status==="AWAITING DECISION"}).length:0;
+    return '<button data-work="'+t.id+'" aria-pressed="'+(work===t.id?"true":"false")+'">'+esc(t.n)+(n?' <span style="color:var(--crit)">'+n+'</span>':"")+'</button>'}).join("");
+  $("#workBody").innerHTML=work==="attention"?renderAttention():work==="meetings"?renderMeetings():work==="decisions"?renderDecisions():renderTasks();
+}
+function paint(){
+  renderPulse();
+  if(tab==="board")$("#p-board").innerHTML=renderBoard();
+  if(tab==="work")renderWork();
+  if(tab==="metrics")renderMetrics();
+  var sig=sevSorted().length,aw=vals(DEC).filter(function(d){return d.status==="AWAITING DECISION"}).length;
+  var pb=$("#pipBoard"),pw=$("#pipWork");
+  pb.hidden=!sig;pb.textContent=sig;pw.hidden=!(sig+aw);pw.textContent=sig+aw;
+}
+function go(t){tab=t;openKind=null;openId=null;
+  Array.prototype.forEach.call(document.querySelectorAll("#nav button"),function(x){x.setAttribute("aria-selected",x.getAttribute("data-tab")===t?"true":"false")});
+  ["ceo","board","work","metrics"].forEach(function(k){$("#p-"+k).hidden=(k!==t)});
+  paint();window.scrollTo(0,0)}
+
+/* ================= PERSISTENCE ================= */
+function save(){try{localStorage.setItem("hq_thread",JSON.stringify(THREAD.filter(function(t){return t.role!=="pending"})))}catch(e){}}
+function load(){try{THREAD=JSON.parse(localStorage.getItem("hq_thread")||"[]")||[]}catch(e){THREAD=[]}}
+
+/* ================= EVENTS ================= */
+document.addEventListener("click",function(e){
+  var t=e.target,b;
+  if((b=t.closest("#nav button[data-tab]"))){go(b.getAttribute("data-tab"));return}
+  if((b=t.closest("#worknav button[data-work]"))){work=b.getAttribute("data-work");openKind=null;openId=null;paint();return}
+  if((b=t.closest("#subnav button[data-sub]"))){sub=b.getAttribute("data-sub");renderMetrics();return}
+  if((b=t.closest("[data-goto]"))){tab="work";work=b.getAttribute("data-goto");go("work");return}
+  if((b=t.closest(".back"))){openKind=null;openId=null;paint();return}
+  if((b=t.closest("[data-open]"))){openKind=b.getAttribute("data-open");openId=b.getAttribute("data-id");
+    work=openKind==="decision"?"decisions":openKind==="meeting"?"meetings":"tasks";go("work");return}
+  if((b=t.closest("#starters button[data-q]"))){if(!busy&&sample)chatAsk(b.getAttribute("data-q"));return}
+  if((b=t.closest("[data-fromchat]"))){openMeetingFrom(b.getAttribute("data-fromchat"),"");return}
+
+  /* attention actions */
+  if((b=t.closest("[data-act]"))){
+    var id=b.getAttribute("data-sig"),act=b.getAttribute("data-act"),s=sigById(id);if(!s)return;
+    if(act==="dismiss"){setAtt(id,"DISMISSED");paint();return}
+    if(act==="resolve"){setAtt(id,"RESOLVED");paint();return}
+    if(act==="meet"){openMeetingFrom(s.title+" — what should we do?",s.src+" "+s.why,id);return}
+    if(act==="decide"){var d=createDecision({title:s.title,question:"What should we do about this?",context:s.src+" — "+s.why,
+        signalId:id,status:"AWAITING DECISION",ceoRec:s.analysis?{answer:s.analysis.finding,recommendation:s.analysis.recommendation,
+        evidence:s.analysis.evidence,confidence:s.analysis.confidence}:null});
+      setAtt(id,"DECISION OPEN");openKind="decision";openId=d.id;work="decisions";go("work");return}
+    if(act==="task"&&s.analysis&&s.analysis.proposed_task){var pt=s.analysis.proposed_task;
+      var tk=createTask({title:pt.title,exec:s.exec,expected:pt.expected,metric:pt.metric,desc:s.title,priority:s.sev==="HIGH"?"HIGH":"MEDIUM"});
+      setAtt(id,"TASK OPEN");openKind="task";openId=tk.id;work="tasks";go("work");return}
+    if(act==="analyse"){
+      if(busy||!sample)return;setBusy(true);setAtt(id,"UNDER ANALYSIS");
+      b.textContent="Asking…";b.disabled=true;
+      analyseSignal(s).then(function(r){ANA[id]=r;put("analysis",id,{json:JSON.stringify(r),at:now()});
+        setAtt(id,r.needs_decision?"NEEDS A DECISION":"ANALYSED");logEvent("ANALYSIS_DONE",id,r.recommendation||"");paint()})
+       ["catch"](function(err){setAtt(id,"NEEDS ANALYSIS");alert(errText(err));paint()})
+       .then(function(){setBusy(false)});
+      return}
+  }
+  /* meeting flow */
+  if((b=t.closest("[data-prio]"))){draftPrio=b.getAttribute("data-prio");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-prio]"),function(x){x.classList.toggle("on",x===b)});return}
+  if(t.id==="mCreate"||t.closest("#mCreate")){
+    var ti=($("#mTitle")||{}).value||"",qu=($("#mQuestion")||{}).value||"",cx=($("#mContext")||{}).value||"";
+    if(!qu.trim()&&!ti.trim()){alert("Give the meeting a question to answer.");return}
+    openMeetingFrom(qu.trim()||ti.trim(),cx.trim(),"",ti.trim());return}
+  if((b=t.closest("[data-seat]"))){var mid=b.getAttribute("data-mid"),r=b.getAttribute("data-seat"),mt=MTG[mid];if(!mt)return;
+    var k=mt.seat.indexOf(r);if(k>=0)mt.seat.splice(k,1);else if(mt.seat.length<3)mt.seat.push(r);
+    saveMeeting(mt);paint();return}
+  if((b=t.closest("[data-run]"))){runMeeting(MTG[b.getAttribute("data-run")]);return}
+  if((b=t.closest("[data-mkdec]"))){var mm=MTG[b.getAttribute("data-mkdec")];if(!mm||!mm.synthesis)return;
+    var dd=createDecision({title:mm.title||mm.question,question:mm.question,context:mm.context,meetingId:mm.id,
+      signalId:mm.signalId,status:"AWAITING DECISION",ceoRec:mm.synthesis,proposedTasks:mm.synthesis.proposed_tasks||[]});
+    mm.decisionId=dd.id;saveMeeting(mm);openKind="decision";openId=dd.id;work="decisions";go("work");return}
+  /* decision actions */
+  if((b=t.closest("[data-dec]"))){
+    var did=b.getAttribute("data-dec"),ch=b.getAttribute("data-choice"),D=DEC[did];if(!D)return;
+    var whyEl=$("#dw-"+did);D.humanWhy=whyEl?whyEl.value.trim():"";
+    D.humanDecision=ch;D.decidedAt=now();D.decidedBy=actor();
+    D.status=ch==="APPROVE"?"APPROVED":ch==="REJECT"?"REJECTED":ch==="DEFER"?"DEFERRED":"UNDER ANALYSIS";
+    if(ch==="APPROVE"&&(!D.proposedTasks||!D.proposedTasks.length))D.status="APPROVED";
+    saveDecision(D);logEvent("HUMAN_"+ch.replace(/ /g,"_"),did,D.humanWhy);paint();return}
+  if((b=t.closest("[data-mktasks]"))){var D2=DEC[b.getAttribute("data-mktasks")];if(!D2)return;
+    D2.tasks=D2.tasks||[];
+    (D2.proposedTasks||[]).forEach(function(p){var tk=createTask({title:p.title,exec:p.exec||"CEO",expected:p.expected,
+      metric:p.metric,decisionId:D2.id,meetingId:D2.meetingId,status:"APPROVED",priority:"MEDIUM"});D2.tasks.push(tk.id)});
+    D2.proposedTasks=[];D2.status="IN PROGRESS";saveDecision(D2);paint();return}
+  if((b=t.closest("[data-review]"))){var D3=DEC[b.getAttribute("data-review")];if(!D3)return;
+    D3.actual=(($("#oa-"+D3.id)||{}).value||"").trim();D3.lessons=(($("#ol-"+D3.id)||{}).value||"").trim();
+    if(!D3.actual){alert("Say what actually happened — that is the whole point of this step.");return}
+    D3.reviewedAt=now();D3.status="COMPLETED";saveDecision(D3);logEvent("OUTCOME_RECORDED",D3.id,D3.lessons);paint();return}
+  /* task actions */
+  if((b=t.closest("[data-task]"))){var T=TASK[b.getAttribute("data-task")],st=b.getAttribute("data-status");if(!T)return;
+    T.status=st;if(st==="COMPLETED")T.completedAt=now();saveTask(T);logEvent("TASK_"+st.replace(/ /g,"_"),T.id,"");
+    if(st==="COMPLETED"&&T.decisionId&&DEC[T.decisionId]){
+      var pd=DEC[T.decisionId],all=(pd.tasks||[]).every(function(i){return TASK[i]&&TASK[i].status==="COMPLETED"});
+      if(all&&pd.status!=="COMPLETED"){pd.status="REVIEW REQUIRED";
+        pd.outcome=(pd.proposedTasks&&pd.proposedTasks[0]&&pd.proposedTasks[0].expected)||(TASK[pd.tasks[0]]||{}).expected||"";
+        saveDecision(pd);logEvent("REVIEW_DUE",pd.id,"")}}
+    paint();return}
+  if((b=t.closest("[data-tout]"))){var T2=TASK[b.getAttribute("data-tout")];if(!T2)return;
+    T2.actual=(($("#ta-"+T2.id)||{}).value||"").trim();if(!T2.actual){alert("Record what actually happened.");return}
+    saveTask(T2);logEvent("TASK_OUTCOME",T2.id,T2.actual);paint();return}
+});
+
+function openMeetingFrom(question,context,signalId,title){
+  var mt=createMeeting({title:title||question,question:question,context:context||"",priority:draftPrio,signalId:signalId||"",status:"ROSTER"});
+  openKind="meeting";openId=mt.id;work="meetings";go("work");
+  if(!sample)return;
+  suggestRoster(question,context).then(function(r){
+    mt.seat=(r.seat||[]).filter(function(x){return ["CTO","CPO","ANALYTICS","CMO"].indexOf(x)>=0}).slice(0,3);
+    if(!mt.seat.length)mt.seat=["CPO","CMO"];
+    mt.rosterWhy=r.why||"";mt.rosterWhyNot=r.why_not||"";saveMeeting(mt);paint();
+  })["catch"](function(){mt.seat=["CPO","CMO"];mt.rosterWhy="The CEO could not be reached; this is a fallback roster you should change.";saveMeeting(mt);paint()});
+}
+function runMeeting(mt){
+  if(!mt||busy||!sample)return;setBusy(true);mt.status="IN SESSION";mt.positions=[];saveMeeting(mt);
+  var body=$("#workBody");
+  function note(x){var el=document.getElementById("runlog");if(el)el.innerHTML='<span class="sig"></span>'+esc(x)}
+  body.insertAdjacentHTML("afterbegin",'<div class="runlog" id="runlog"><span class="sig"></span>Starting…</div>');
+  note("Asking "+mt.seat.map(function(r){return ROLENAME[r]||r}).join(", ")+" — independently");
+  mt.seat.reduce(function(ch,role){return ch.then(function(){
+    return positionCall(role,mt.question,mt.context).then(function(p){p.role=role;mt.positions.push(p);saveMeeting(mt);
+      note(mt.positions.length+" of "+mt.seat.length+" in…")})})},Promise.resolve())
+  .then(function(){note("The CEO is weighing them up…");
+    return synthesise(mt.question,mt.context,mt.positions,mt.rosterWhyNot)})
+  .then(function(s){mt.synthesis=s;mt.status="COMPLETE";saveMeeting(mt);
+    logEvent("MEETING_COMPLETE",mt.id,s.recommendation||"");paint()})
+  ["catch"](function(e){mt.status="ROSTER";saveMeeting(mt);alert(errText(e));paint()})
+  .then(function(){setBusy(false)});
+}
+
+$("#whoS").addEventListener("click",function(){who=who==="Steven"?"":"Steven";try{localStorage.setItem("hq_who",who)}catch(e){}renderWho()});
+$("#whoP").addEventListener("click",function(){who=who==="Partner"?"":"Partner";try{localStorage.setItem("hq_who",who)}catch(e){}renderWho()});
+function renderWho(){$("#whoS").setAttribute("aria-pressed",who==="Steven"?"true":"false");$("#whoP").setAttribute("aria-pressed",who==="Partner"?"true":"false")}
+$("#send").addEventListener("click",function(){var q=$("#q").value.trim();if(q&&!busy&&sample){$("#q").value="";chatAsk(q)}});
+$("#convene").addEventListener("click",function(){var q=$("#q").value.trim();if(q&&!busy&&sample){$("#q").value="";openMeetingFrom(q,"")}});
+$("#q").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();$("#send").click()}});
+
+/* ================= BOOT ================= */
+load();renderWho();renderTurns();renderStarters();paint();
+function banner(c,h){$("#aiBanner").innerHTML='<div class="banner '+c+'">'+h+'</div>'}
+banner("warn","<b>LINKING</b> — checking whether this view can reach the executives.");
+function watch(coll,store,parse){
+  db.collection(coll).onSnapshot(function(s){s.docs.forEach(function(d){
+    var v=d.data()||{};store[d.id]=parse?parse(v):v});paint()},function(){});
+}
+if(window.claude&&typeof window.claude.use==="function"){
+  window.claude.use("db").then(function(ns){if(!ns)return;db=ns;
+    watch("memory",MEM);watch("decisions",DEC);watch("meetings",MTG);watch("tasks",TASK);watch("attention",ATT);
+    watch("analysis",ANA,function(v){try{return JSON.parse(v.json||"{}")}catch(e){return {}}});
+    db.collection("metrics").onSnapshot(function(s){s.docs.forEach(function(d){var v=d.data()||{};
+      if(v.json){try{var o=JSON.parse(v.json);if(o&&o.at&&o.at>SNAP.at)SNAP=o}catch(e){}}});paint()},function(){});
+    db.collection("events").onSnapshot(function(s){EVT=s.docs.map(function(d){return d.data()||{}})},function(){});
+  })["catch"](function(){});
+  window.claude.use("sample").then(function(ns){
+    if(!ns){banner("crit","<b>EXECUTIVES OFFLINE</b> — this view cannot reach Claude. Every metric, decision and task still works.");
+      $("#send").disabled=true;$("#convene").disabled=true;return}
+    sample=ns;$("#aiBanner").innerHTML="";
+    if(!THREAD.length){THREAD.push({role:"exec",data:{answer:"Morning. I can see everything you can — how the site is running, what the board is flagging, and what is still sitting with you.\n\nAsk me anything in your own words and I will give you a straight answer with an honest read on how sure I am.\n\nIf it is a real decision rather than a question, press **Convene** and I will get two or three of the others to argue it out properly first — separately, so they cannot just agree with each other — then tell you what I think and what I decided against.",confidence:"",evidence:[]}});renderTurns()}
+  })["catch"](function(){banner("crit","<b>EXECUTIVES OFFLINE</b> — everything else still works.")});
+}else{banner("crit","<b>OUTSIDE CLAUDE</b> — nothing will save and the executives cannot be reached.");
+  $("#send").disabled=true;$("#convene").disabled=true}
+})();
+</script>

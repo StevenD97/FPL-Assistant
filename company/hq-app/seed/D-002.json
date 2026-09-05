@@ -1,0 +1,22 @@
+{
+ "id": "D-002",
+ "status": "DEFERRED",
+ "createdAt": "2026-09-03T18:00:00.000Z",
+ "createdBy": "AI executive team",
+ "title": "The “Premium” gate — remove it, or build behind it?",
+ "question": "The squad page blocks a fourth tracked rival behind a Premium tier that does not exist. Remove it, or commit to monetising this season?",
+ "context": "Raised by the CPO in the September audit. There is no Premium tier, no accounts system and nothing to buy, so a working feature is withheld for zero revenue in a product whose positioning is honesty. Removing it is roughly an hour and reversible.",
+ "signalId": "",
+ "meetingId": "",
+ "ceoRec": null,
+ "proposedTasks": [],
+ "humanDecision": "DEFER",
+ "humanWhy": "",
+ "decidedAt": "2026-09-04T12:06:49.860Z",
+ "decidedBy": "Steven",
+ "tasks": [],
+ "outcome": "",
+ "actual": "",
+ "lessons": "",
+ "reviewedAt": ""
+}
