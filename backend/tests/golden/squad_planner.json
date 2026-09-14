@@ -833,7 +833,7 @@
         "web_name": "Calvert-Lewin"
       },
       {
-        "average_predicted_points": 2.96,
+        "average_predicted_points": 2.29,
         "id": 423,
         "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/106760.png",
         "position": "DEF",
@@ -841,7 +841,7 @@
         "team_short": "MUN",
         "trajectory": [
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 10,
             "fixture_count": 1,
             "flags": [],
@@ -852,10 +852,10 @@
                 "team": "AVL"
               }
             ],
-            "predicted_points": 4.04
+            "predicted_points": 3.11
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 11,
             "fixture_count": 1,
             "flags": [
@@ -868,10 +868,10 @@
                 "team": "LIV"
               }
             ],
-            "predicted_points": 2.27
+            "predicted_points": 1.76
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 12,
             "fixture_count": 1,
             "flags": [],
@@ -882,10 +882,10 @@
                 "team": "BRE"
               }
             ],
-            "predicted_points": 3.45
+            "predicted_points": 2.66
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 13,
             "fixture_count": 1,
             "flags": [],
@@ -896,7 +896,7 @@
                 "team": "NEW"
               }
             ],
-            "predicted_points": 2.09
+            "predicted_points": 1.64
           }
         ],
         "web_name": "Shaw"
