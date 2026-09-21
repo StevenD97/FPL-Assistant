@@ -3,11 +3,145 @@
     "coverage": {
       "graded": [
         1,
-        2
+        2,
+        3,
+        4
       ],
       "pending": []
     },
     "events": [
+      {
+        "captain": {
+          "actual": 2,
+          "best_actual": 17,
+          "best_actual_player": "Gro\u00df",
+          "pick": "B.Fernandes",
+          "pick_team": "MUN",
+          "predicted": 8.0,
+          "rank_of_pick": 138
+        },
+        "categories": [
+          {
+            "baseline_mae": 1.617,
+            "baseline_rmse": 2.412,
+            "category": "Blanks",
+            "mae": 1.117,
+            "n": 183,
+            "rmse": 1.529
+          },
+          {
+            "baseline_mae": 1.771,
+            "baseline_rmse": 2.135,
+            "category": "Tickers",
+            "mae": 1.554,
+            "n": 40,
+            "rmse": 1.864
+          },
+          {
+            "baseline_mae": 4.613,
+            "baseline_rmse": 5.294,
+            "category": "Haulers",
+            "mae": 5.596,
+            "n": 68,
+            "rmse": 6.235
+          },
+          {
+            "baseline_mae": 2.338,
+            "baseline_rmse": 3.292,
+            "category": "All",
+            "mae": 2.224,
+            "n": 291,
+            "rmse": 3.322
+          }
+        ],
+        "event": 4,
+        "frozen_at": "2026-09-11T10:49:36Z",
+        "players_graded": 291,
+        "rank_correlation": 0.278,
+        "source": "frozen",
+        "top_ten": {
+          "average_actual": 6.7,
+          "field_average": 3.02,
+          "names": [
+            "B.Fernandes",
+            "Szoboszlai",
+            "Palmer",
+            "Mbeumo",
+            "Calvert-Lewin",
+            "Rogers",
+            "Gibbs-White",
+            "Tavernier",
+            "Haaland",
+            "Jo\u00e3o Pedro"
+          ]
+        }
+      },
+      {
+        "captain": {
+          "actual": 2,
+          "best_actual": 15,
+          "best_actual_player": "Mitchell",
+          "pick": "B.Fernandes",
+          "pick_team": "MUN",
+          "predicted": 6.1,
+          "rank_of_pick": 166
+        },
+        "categories": [
+          {
+            "baseline_mae": 1.732,
+            "baseline_rmse": 2.707,
+            "category": "Blanks",
+            "mae": 1.099,
+            "n": 179,
+            "rmse": 1.423
+          },
+          {
+            "baseline_mae": 2.204,
+            "baseline_rmse": 2.674,
+            "category": "Tickers",
+            "mae": 1.745,
+            "n": 54,
+            "rmse": 1.97
+          },
+          {
+            "baseline_mae": 4.683,
+            "baseline_rmse": 5.393,
+            "category": "Haulers",
+            "mae": 5.069,
+            "n": 63,
+            "rmse": 5.658
+          },
+          {
+            "baseline_mae": 2.446,
+            "baseline_rmse": 3.453,
+            "category": "All",
+            "mae": 2.062,
+            "n": 296,
+            "rmse": 2.958
+          }
+        ],
+        "event": 3,
+        "frozen_at": "2026-09-03T19:10:40Z",
+        "players_graded": 296,
+        "rank_correlation": 0.207,
+        "source": "frozen",
+        "top_ten": {
+          "average_actual": 3.5,
+          "field_average": 3.0,
+          "names": [
+            "B.Fernandes",
+            "Haaland",
+            "Gibbs-White",
+            "Saka",
+            "Gu\u00e9hi",
+            "Thiago",
+            "Szoboszlai",
+            "Gro\u00df",
+            "Cherki",
+            "Kelleher"
+          ]
+        }
+      },
       {
         "captain": {
           "actual": 23,
@@ -109,47 +243,47 @@
       }
     ],
     "summary": {
-      "captain_average": 12.5,
-      "captain_best_possible_average": 20.0,
+      "captain_average": 7.25,
+      "captain_best_possible_average": 18.0,
       "categories": [
         {
-          "baseline_mae": 1.762,
-          "baseline_rmse": 3.081,
+          "baseline_mae": 1.706,
+          "baseline_rmse": 2.762,
           "category": "Blanks",
-          "mae": 0.999,
-          "n": 206,
-          "rmse": 1.293
+          "mae": 1.069,
+          "n": 568,
+          "rmse": 1.413
         },
         {
-          "baseline_mae": 2.744,
-          "baseline_rmse": 3.517,
+          "baseline_mae": 2.247,
+          "baseline_rmse": 2.834,
           "category": "Tickers",
-          "mae": 1.561,
-          "n": 43,
-          "rmse": 1.805
+          "mae": 1.631,
+          "n": 137,
+          "rmse": 1.889
         },
         {
-          "baseline_mae": 4.984,
-          "baseline_rmse": 6.149,
+          "baseline_mae": 4.756,
+          "baseline_rmse": 5.617,
           "category": "Haulers",
-          "mae": 5.44,
-          "n": 63,
-          "rmse": 6.134
+          "mae": 5.374,
+          "n": 194,
+          "rmse": 6.02
         },
         {
-          "baseline_mae": 2.548,
-          "baseline_rmse": 3.95,
+          "baseline_mae": 2.446,
+          "baseline_rmse": 3.584,
           "category": "All",
-          "mae": 1.973,
-          "n": 312,
-          "rmse": 3.025
+          "mae": 2.084,
+          "n": 899,
+          "rmse": 3.103
         }
       ],
-      "events_frozen": 0,
-      "events_graded": 2,
-      "field_average": 2.96,
-      "rank_correlation": 0.259,
-      "top_ten_average": 4.9
+      "events_frozen": 2,
+      "events_graded": 4,
+      "field_average": 2.98,
+      "rank_correlation": 0.251,
+      "top_ten_average": 5.0
     }
   },
   "status": 200

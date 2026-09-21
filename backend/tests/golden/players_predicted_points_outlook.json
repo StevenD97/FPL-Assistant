@@ -230,6 +230,44 @@
     },
     {
       "fixture_count": 5,
+      "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
+      "fixtures": [
+        {
+          "is_home": true,
+          "opponent": "HUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        }
+      ],
+      "id": 5,
+      "live_id": 5,
+      "position": "DEF",
+      "predicted_points": 25.181,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+      "team_short": "ARS",
+      "web_name": "J.Timber"
+    },
+    {
+      "fixture_count": 5,
       "fixture_ticker": "NFO(A) | FUL(H) | ARS(A) | LEE(H) | BRE(A)",
       "fixtures": [
         {
@@ -268,82 +306,6 @@
     },
     {
       "fixture_count": 5,
-      "fixture_ticker": "SUN(A) | LEE(H) | NFO(A) | CRY(H) | LIV(H)",
-      "fixtures": [
-        {
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        }
-      ],
-      "id": 155,
-      "live_id": 155,
-      "position": "MID",
-      "predicted_points": 24.497,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-      "team_short": "CHE",
-      "web_name": "Enzo"
-    },
-    {
-      "fixture_count": 5,
-      "fixture_ticker": "COV(H) | BRE(A) | LIV(H) | AVL(A) | FUL(H)",
-      "fixtures": [
-        {
-          "is_home": true,
-          "opponent": "COV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "BRE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "AVL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        }
-      ],
-      "id": 237,
-      "live_id": 237,
-      "position": "MID",
-      "predicted_points": 24.394,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
-      "team_short": "EVE",
-      "web_name": "Ndiaye"
-    },
-    {
-      "fixture_count": 5,
       "fixture_ticker": "LEE(A) | IPS(H) | SUN(A) | FUL(H) | ARS(H)",
       "fixtures": [
         {
@@ -379,6 +341,44 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png",
       "team_short": "TOT",
       "web_name": "Senesi"
+    },
+    {
+      "fixture_count": 5,
+      "fixture_ticker": "NFO(A) | FUL(H) | ARS(A) | LEE(H) | BRE(A)",
+      "fixtures": [
+        {
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
+      "id": 237,
+      "live_id": 237,
+      "position": "MID",
+      "predicted_points": 23.961,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
+      "team_short": "MCI",
+      "web_name": "Ndiaye"
     },
     {
       "fixture_count": 5,
@@ -496,6 +496,44 @@
     },
     {
       "fixture_count": 5,
+      "fixture_ticker": "NFO(A) | FUL(H) | ARS(A) | LEE(H) | BRE(A)",
+      "fixtures": [
+        {
+          "is_home": false,
+          "opponent": "NFO",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "ARS",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "LEE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        }
+      ],
+      "id": 155,
+      "live_id": 155,
+      "position": "MID",
+      "predicted_points": 23.349,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
+      "team_short": "MCI",
+      "web_name": "Enzo"
+    },
+    {
+      "fixture_count": 5,
       "fixture_ticker": "COV(H) | BRE(A) | LIV(H) | AVL(A) | FUL(H)",
       "fixtures": [
         {
@@ -531,44 +569,6 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
       "team_short": "EVE",
       "web_name": "Keane"
-    },
-    {
-      "fixture_count": 5,
-      "fixture_ticker": "LIV(H) | COV(A) | HUL(H) | CHE(A) | AVL(A)",
-      "fixtures": [
-        {
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "COV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "HUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t88.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "CHE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "AVL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
-        }
-      ],
-      "id": 201,
-      "live_id": 201,
-      "position": "DEF",
-      "predicted_points": 22.781,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png",
-      "team_short": "CRY",
-      "web_name": "Mu\u00f1oz"
     },
     {
       "fixture_count": 5,
@@ -648,44 +648,6 @@
     },
     {
       "fixture_count": 5,
-      "fixture_ticker": "FUL(A) | ARS(H) | BHA(A) | MUN(H) | SUN(H)",
-      "fixtures": [
-        {
-          "is_home": false,
-          "opponent": "FUL",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        }
-      ],
-      "id": 463,
-      "live_id": 463,
-      "position": "FWD",
-      "predicted_points": 22.574,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png",
-      "team_short": "NEW",
-      "web_name": "Woltemade"
-    },
-    {
-      "fixture_count": 5,
       "fixture_ticker": "IPS(A) | NFO(H) | FUL(A) | BHA(H) | HUL(H)",
       "fixtures": [
         {
@@ -762,44 +724,6 @@
     },
     {
       "fixture_count": 5,
-      "fixture_ticker": "SUN(A) | LEE(H) | NFO(A) | CRY(H) | LIV(H)",
-      "fixtures": [
-        {
-          "is_home": false,
-          "opponent": "SUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "LEE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t2.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "NFO",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t17.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "CRY",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "LIV",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
-        }
-      ],
-      "id": 165,
-      "live_id": 165,
-      "position": "FWD",
-      "predicted_points": 22.287,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-      "team_short": "CHE",
-      "web_name": "Jo\u00e3o Pedro"
-    },
-    {
-      "fixture_count": 5,
       "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
       "fixtures": [
         {
@@ -835,44 +759,6 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
       "team_short": "ARS",
       "web_name": "Calafiori"
-    },
-    {
-      "fixture_count": 5,
-      "fixture_ticker": "BHA(A) | EVE(H) | MUN(A) | ARS(H) | MCI(H)",
-      "fixtures": [
-        {
-          "is_home": false,
-          "opponent": "BHA",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t36.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "EVE",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
-        },
-        {
-          "is_home": false,
-          "opponent": "MUN",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "ARS",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png"
-        },
-        {
-          "is_home": true,
-          "opponent": "MCI",
-          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
-        }
-      ],
-      "id": 84,
-      "live_id": 84,
-      "position": "DEF",
-      "predicted_points": 21.925,
-      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png",
-      "team_short": "BRE",
-      "web_name": "Collins"
     },
     {
       "fixture_count": 5,
@@ -949,6 +835,120 @@
       "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
       "team_short": "CHE",
       "web_name": "Neto"
+    },
+    {
+      "fixture_count": 5,
+      "fixture_ticker": "NEW(H) | MCI(A) | BOU(H) | TOT(A) | EVE(A)",
+      "fixtures": [
+        {
+          "is_home": true,
+          "opponent": "NEW",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t4.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "MCI",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "BOU",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t91.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "TOT",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t6.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        }
+      ],
+      "id": 253,
+      "live_id": 253,
+      "position": "DEF",
+      "predicted_points": 21.278,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png",
+      "team_short": "FUL",
+      "web_name": "Andersen"
+    },
+    {
+      "fixture_count": 5,
+      "fixture_ticker": "COV(H) | BRE(A) | LIV(H) | AVL(A) | FUL(H)",
+      "fixtures": [
+        {
+          "is_home": true,
+          "opponent": "COV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t9.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "BRE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "LIV",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "AVL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t7.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "FUL",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t54.png"
+        }
+      ],
+      "id": 226,
+      "live_id": 226,
+      "position": "GKP",
+      "predicted_points": 21.097,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png",
+      "team_short": "EVE",
+      "web_name": "Pickford"
+    },
+    {
+      "fixture_count": 5,
+      "fixture_ticker": "CRY(A) | MUN(H) | EVE(A) | SUN(H) | CHE(A)",
+      "fixtures": [
+        {
+          "is_home": false,
+          "opponent": "CRY",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t31.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "MUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "EVE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t11.png"
+        },
+        {
+          "is_home": true,
+          "opponent": "SUN",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t56.png"
+        },
+        {
+          "is_home": false,
+          "opponent": "CHE",
+          "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png"
+        }
+      ],
+      "id": 367,
+      "live_id": 367,
+      "position": "MID",
+      "predicted_points": 20.997,
+      "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
+      "team_short": "LIV",
+      "web_name": "Gakpo"
     }
   ],
   "status": 200

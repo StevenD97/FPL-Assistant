@@ -216,73 +216,6 @@
         "web_name": "Szoboszlai"
       },
       {
-        "average_predicted_points": 4.46,
-        "id": 165,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/475168.png",
-        "position": "FWD",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-        "team_short": "CHE",
-        "trajectory": [
-          {
-            "appearance_points": 2.0,
-            "event": 10,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "SUN"
-              }
-            ],
-            "predicted_points": 4.35
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 11,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "LEE"
-              }
-            ],
-            "predicted_points": 4.77
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 12,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "NFO"
-              }
-            ],
-            "predicted_points": 4.41
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 13,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": true,
-                "team": "CRY"
-              }
-            ],
-            "predicted_points": 4.33
-          }
-        ],
-        "web_name": "Jo\u00e3o Pedro"
-      },
-      {
         "average_predicted_points": 4.32,
         "id": 8,
         "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
@@ -624,6 +557,73 @@
           }
         ],
         "web_name": "Raya"
+      },
+      {
+        "average_predicted_points": 3.76,
+        "id": 165,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/475168.png",
+        "position": "FWD",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+        "team_short": "CHE",
+        "trajectory": [
+          {
+            "appearance_points": 1.5,
+            "event": 10,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "SUN"
+              }
+            ],
+            "predicted_points": 3.64
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 11,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 2,
+                "is_home": true,
+                "team": "LEE"
+              }
+            ],
+            "predicted_points": 4.07
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 12,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "NFO"
+              }
+            ],
+            "predicted_points": 3.71
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": true,
+                "team": "CRY"
+              }
+            ],
+            "predicted_points": 3.62
+          }
+        ],
+        "web_name": "Jo\u00e3o Pedro"
       },
       {
         "average_predicted_points": 3.73,

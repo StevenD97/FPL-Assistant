@@ -1,6 +1,6 @@
 {
   "body": {
-    "cost": 6.0,
+    "cost": 6.1,
     "first_name": "David",
     "fixtures": [
       {
@@ -50,6 +50,22 @@
         "goals_scored": 0,
         "minutes": 90,
         "total_points": 6
+      },
+      {
+        "GW": 3,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 3
+      },
+      {
+        "GW": 4,
+        "assists": 0,
+        "bonus": 3,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 14
       }
     ],
     "id": 1,
@@ -83,30 +99,30 @@
     },
     "season_stats": {
       "assists": 0,
-      "bonus": 0,
-      "clean_sheets": 1,
+      "bonus": 3,
+      "clean_sheets": 3,
       "defensive_contribution_per_90": 0.0,
-      "expected_assists": "0.00",
+      "expected_assists": "0.01",
       "expected_assists_per_90": 0.0,
-      "expected_goal_involvements": "0.00",
+      "expected_goal_involvements": "0.01",
       "expected_goal_involvements_per_90": 0.0,
       "expected_goals": "0.00",
-      "expected_goals_conceded_per_90": 0.2,
+      "expected_goals_conceded_per_90": 0.81,
       "expected_goals_per_90": 0.0,
-      "goals_conceded": 0,
+      "goals_conceded": 4,
       "goals_scored": 0,
-      "ict_index": "1.2",
-      "minutes": 90,
+      "ict_index": "10.6",
+      "minutes": 450,
       "red_cards": 0,
-      "saves": 1,
-      "starts": 1,
+      "saves": 9,
+      "starts": 5,
       "starts_per_90": 1.0,
       "threat": "0.0",
-      "total_points": 6,
+      "total_points": 30,
       "yellow_cards": 0
     },
     "second_name": "Raya Mart\u00edn",
-    "selected_by_percent": 38.0,
+    "selected_by_percent": 42.1,
     "status": "a",
     "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
     "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3_1-66.png",
