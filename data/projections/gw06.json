@@ -1,0 +1,6268 @@
+{
+ "deadline": "2026-10-10T10:00:00Z",
+ "event": 6,
+ "frozen_at": "2026-10-09T12:47:41Z",
+ "model_commit": "b23ea225471f40074086378e9a28a9f2e809aac0",
+ "players": [
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.3134,
+   "id": 1,
+   "position": "GKP",
+   "predicted_points": 3.854,
+   "team_short": "ARS",
+   "web_name": "Raya"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0165,
+   "id": 2,
+   "position": "GKP",
+   "predicted_points": 0.136,
+   "team_short": "ARS",
+   "web_name": "Arrizabalaga"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 3,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "ARS",
+   "web_name": "Meslier"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.3431,
+   "id": 4,
+   "position": "DEF",
+   "predicted_points": 4.288,
+   "team_short": "ARS",
+   "web_name": "Gabriel"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 5,
+   "position": "DEF",
+   "predicted_points": 0.395,
+   "team_short": "ARS",
+   "web_name": "J.Timber"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 6,
+   "position": "DEF",
+   "predicted_points": 0.245,
+   "team_short": "ARS",
+   "web_name": "Saliba"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0796,
+   "id": 7,
+   "position": "MID",
+   "predicted_points": 1.605,
+   "team_short": "ARS",
+   "web_name": "Lewis-Skelly"
+  },
+  {
+   "ceiling": 9,
+   "floor": 0,
+   "haul_probability": 0.3098,
+   "id": 8,
+   "position": "DEF",
+   "predicted_points": 3.668,
+   "team_short": "ARS",
+   "web_name": "Calafiori"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1699,
+   "id": 9,
+   "position": "DEF",
+   "predicted_points": 1.705,
+   "team_short": "ARS",
+   "web_name": "Hincapie"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2715,
+   "id": 10,
+   "position": "DEF",
+   "predicted_points": 2.897,
+   "team_short": "ARS",
+   "web_name": "White"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2535,
+   "id": 11,
+   "position": "DEF",
+   "predicted_points": 2.214,
+   "team_short": "ARS",
+   "web_name": "Mosquera"
+  },
+  {
+   "ceiling": 13,
+   "floor": 0,
+   "haul_probability": 0.3401,
+   "id": 12,
+   "position": "MID",
+   "predicted_points": 5.574,
+   "team_short": "ARS",
+   "web_name": "Saka"
+  },
+  {
+   "ceiling": 8,
+   "floor": 2,
+   "haul_probability": 0.2992,
+   "id": 13,
+   "position": "MID",
+   "predicted_points": 3.753,
+   "team_short": "ARS",
+   "web_name": "Rice"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1415,
+   "id": 14,
+   "position": "MID",
+   "predicted_points": 2.094,
+   "team_short": "ARS",
+   "web_name": "Eze"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.1948,
+   "id": 15,
+   "position": "MID",
+   "predicted_points": 2.667,
+   "team_short": "ARS",
+   "web_name": "\u00d8degaard"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.095,
+   "id": 16,
+   "position": "MID",
+   "predicted_points": 1.394,
+   "team_short": "ARS",
+   "web_name": "Madueke"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.087,
+   "id": 17,
+   "position": "MID",
+   "predicted_points": 1.273,
+   "team_short": "ARS",
+   "web_name": "Merino"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0839,
+   "id": 18,
+   "position": "MID",
+   "predicted_points": 1.088,
+   "team_short": "ARS",
+   "web_name": "Martinelli"
+  },
+  {
+   "ceiling": 4,
+   "floor": 1,
+   "haul_probability": 0.0917,
+   "id": 19,
+   "position": "MID",
+   "predicted_points": 1.95,
+   "team_short": "ARS",
+   "web_name": "Zubimendi"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0393,
+   "id": 20,
+   "position": "MID",
+   "predicted_points": 0.432,
+   "team_short": "ARS",
+   "web_name": "Dowman"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0138,
+   "id": 22,
+   "position": "MID",
+   "predicted_points": 0.158,
+   "team_short": "ARS",
+   "web_name": "Nwaneri"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 23,
+   "position": "MID",
+   "predicted_points": 0.104,
+   "team_short": "ARS",
+   "web_name": "F\u00e1bio Vieira"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 24,
+   "position": "MID",
+   "predicted_points": 0.168,
+   "team_short": "ARS",
+   "web_name": "Nelson"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.206,
+   "id": 25,
+   "position": "FWD",
+   "predicted_points": 2.045,
+   "team_short": "ARS",
+   "web_name": "Gy\u00f6keres"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1887,
+   "id": 26,
+   "position": "FWD",
+   "predicted_points": 2.144,
+   "team_short": "ARS",
+   "web_name": "Havertz"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0766,
+   "id": 27,
+   "position": "FWD",
+   "predicted_points": 0.679,
+   "team_short": "ARS",
+   "web_name": "G.Jesus"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2428,
+   "id": 31,
+   "position": "DEF",
+   "predicted_points": 2.199,
+   "team_short": "ARS",
+   "web_name": "Konsa"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1854,
+   "id": 452,
+   "position": "MID",
+   "predicted_points": 1.859,
+   "team_short": "ARS",
+   "web_name": "Bruno G."
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0682,
+   "id": 557,
+   "position": "MID",
+   "predicted_points": 0.884,
+   "team_short": "ARS",
+   "web_name": "Tzolis"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0891,
+   "id": 29,
+   "position": "GKP",
+   "predicted_points": 0.931,
+   "team_short": "AVL",
+   "web_name": "M.Bizot"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 30,
+   "position": "DEF",
+   "predicted_points": 0.418,
+   "team_short": "AVL",
+   "web_name": "Digne"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2875,
+   "id": 32,
+   "position": "DEF",
+   "predicted_points": 3.433,
+   "team_short": "AVL",
+   "web_name": "Cash"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1234,
+   "id": 33,
+   "position": "DEF",
+   "predicted_points": 1.292,
+   "team_short": "AVL",
+   "web_name": "Mings"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2531,
+   "id": 34,
+   "position": "DEF",
+   "predicted_points": 2.318,
+   "team_short": "AVL",
+   "web_name": "Pau"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0358,
+   "id": 35,
+   "position": "MID",
+   "predicted_points": 0.994,
+   "team_short": "AVL",
+   "web_name": "Bogarde"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2471,
+   "id": 36,
+   "position": "DEF",
+   "predicted_points": 2.803,
+   "team_short": "AVL",
+   "web_name": "Maatsen"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1805,
+   "id": 37,
+   "position": "DEF",
+   "predicted_points": 1.898,
+   "team_short": "AVL",
+   "web_name": "Lindel\u00f6f"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0116,
+   "id": 38,
+   "position": "DEF",
+   "predicted_points": 0.259,
+   "team_short": "AVL",
+   "web_name": "A.Garc\u00eda"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 39,
+   "position": "DEF",
+   "predicted_points": 0.109,
+   "team_short": "AVL",
+   "web_name": "Nedeljkovic"
+  },
+  {
+   "ceiling": 9,
+   "floor": 1,
+   "haul_probability": 0.2961,
+   "id": 41,
+   "position": "MID",
+   "predicted_points": 3.851,
+   "team_short": "AVL",
+   "web_name": "Buend\u00eda"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0591,
+   "id": 44,
+   "position": "MID",
+   "predicted_points": 0.806,
+   "team_short": "AVL",
+   "web_name": "Bailey"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2471,
+   "id": 45,
+   "position": "MID",
+   "predicted_points": 2.397,
+   "team_short": "AVL",
+   "web_name": "McGinn"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.185,
+   "id": 46,
+   "position": "MID",
+   "predicted_points": 2.441,
+   "team_short": "AVL",
+   "web_name": "Barkley"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0825,
+   "id": 47,
+   "position": "MID",
+   "predicted_points": 1.446,
+   "team_short": "AVL",
+   "web_name": "Kamara"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 48,
+   "position": "MID",
+   "predicted_points": 0.434,
+   "team_short": "AVL",
+   "web_name": "Onana"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 49,
+   "position": "MID",
+   "predicted_points": 0.204,
+   "team_short": "AVL",
+   "web_name": "Iling Jr"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.005,
+   "id": 50,
+   "position": "MID",
+   "predicted_points": 0.209,
+   "team_short": "AVL",
+   "web_name": "Burrowes"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0551,
+   "id": 51,
+   "position": "MID",
+   "predicted_points": 1.056,
+   "team_short": "AVL",
+   "web_name": "George Hemmings"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0222,
+   "id": 52,
+   "position": "MID",
+   "predicted_points": 0.596,
+   "team_short": "AVL",
+   "web_name": "Alysson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 53,
+   "position": "MID",
+   "predicted_points": 0.175,
+   "team_short": "AVL",
+   "web_name": "Manzambi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 54,
+   "position": "MID",
+   "predicted_points": 0.576,
+   "team_short": "AVL",
+   "web_name": "Gomes"
+  },
+  {
+   "ceiling": 9,
+   "floor": 0,
+   "haul_probability": 0.2694,
+   "id": 55,
+   "position": "FWD",
+   "predicted_points": 3.026,
+   "team_short": "AVL",
+   "web_name": "Watkins"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1004,
+   "id": 56,
+   "position": "FWD",
+   "predicted_points": 0.9,
+   "team_short": "AVL",
+   "web_name": "Abraham"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0946,
+   "id": 160,
+   "position": "MID",
+   "predicted_points": 1.563,
+   "team_short": "AVL",
+   "web_name": "Garnacho"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1007,
+   "id": 166,
+   "position": "FWD",
+   "predicted_points": 0.891,
+   "team_short": "AVL",
+   "web_name": "N.Jackson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 582,
+   "position": "FWD",
+   "predicted_points": 0.276,
+   "team_short": "AVL",
+   "web_name": "Madjo"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0099,
+   "id": 596,
+   "position": "DEF",
+   "predicted_points": 0.303,
+   "team_short": "AVL",
+   "web_name": "Ruggeri"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0633,
+   "id": 597,
+   "position": "GKP",
+   "predicted_points": 0.59,
+   "team_short": "AVL",
+   "web_name": "Suzuki"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 606,
+   "position": "DEF",
+   "predicted_points": 0.125,
+   "team_short": "AVL",
+   "web_name": "Rowe"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 607,
+   "position": "MID",
+   "predicted_points": 0.175,
+   "team_short": "AVL",
+   "web_name": "Lynch"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1344,
+   "id": 611,
+   "position": "DEF",
+   "predicted_points": 1.596,
+   "team_short": "AVL",
+   "web_name": "Wan-Bissaka"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 618,
+   "position": "MID",
+   "predicted_points": 0.175,
+   "team_short": "AVL",
+   "web_name": "Goretzka"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.1327,
+   "id": 57,
+   "position": "GKP",
+   "predicted_points": 2.921,
+   "team_short": "BOU",
+   "web_name": "Petrovi\u0107"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 58,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "BOU",
+   "web_name": "Forster"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 59,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "BOU",
+   "web_name": "Dennis"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1956,
+   "id": 60,
+   "position": "DEF",
+   "predicted_points": 2.585,
+   "team_short": "BOU",
+   "web_name": "Hill"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2415,
+   "id": 61,
+   "position": "DEF",
+   "predicted_points": 2.961,
+   "team_short": "BOU",
+   "web_name": "Truffert"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0226,
+   "id": 62,
+   "position": "DEF",
+   "predicted_points": 0.3,
+   "team_short": "BOU",
+   "web_name": "Diakit\u00e9"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 63,
+   "position": "DEF",
+   "predicted_points": 0.058,
+   "team_short": "BOU",
+   "web_name": "Milosavljevi\u0107"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0804,
+   "id": 64,
+   "position": "DEF",
+   "predicted_points": 1.2,
+   "team_short": "BOU",
+   "web_name": "Smith"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 65,
+   "position": "DEF",
+   "predicted_points": 0.047,
+   "team_short": "BOU",
+   "web_name": "J.Araujo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0043,
+   "id": 66,
+   "position": "DEF",
+   "predicted_points": 0.075,
+   "team_short": "BOU",
+   "web_name": "Soler"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.1755,
+   "id": 67,
+   "position": "MID",
+   "predicted_points": 2.839,
+   "team_short": "BOU",
+   "web_name": "Rayan"
+  },
+  {
+   "ceiling": 10,
+   "floor": 2,
+   "haul_probability": 0.2929,
+   "id": 68,
+   "position": "MID",
+   "predicted_points": 4.1,
+   "team_short": "BOU",
+   "web_name": "Tavernier"
+  },
+  {
+   "ceiling": 8,
+   "floor": 2,
+   "haul_probability": 0.3046,
+   "id": 69,
+   "position": "MID",
+   "predicted_points": 3.719,
+   "team_short": "BOU",
+   "web_name": "Scott"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1448,
+   "id": 70,
+   "position": "MID",
+   "predicted_points": 1.874,
+   "team_short": "BOU",
+   "web_name": "Kluivert"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0269,
+   "id": 71,
+   "position": "MID",
+   "predicted_points": 1.258,
+   "team_short": "BOU",
+   "web_name": "Cook"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0122,
+   "id": 72,
+   "position": "MID",
+   "predicted_points": 0.457,
+   "team_short": "BOU",
+   "web_name": "Gannon-Doak"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0267,
+   "id": 73,
+   "position": "MID",
+   "predicted_points": 1.144,
+   "team_short": "BOU",
+   "web_name": "Adams"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0839,
+   "id": 74,
+   "position": "MID",
+   "predicted_points": 1.323,
+   "team_short": "BOU",
+   "web_name": "Brooks"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0394,
+   "id": 75,
+   "position": "MID",
+   "predicted_points": 0.948,
+   "team_short": "BOU",
+   "web_name": "Christie"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0095,
+   "id": 76,
+   "position": "MID",
+   "predicted_points": 0.639,
+   "team_short": "BOU",
+   "web_name": "T\u00f3th.A"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 77,
+   "position": "MID",
+   "predicted_points": 0.303,
+   "team_short": "BOU",
+   "web_name": "Adli"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 78,
+   "position": "MID",
+   "predicted_points": 1.318,
+   "team_short": "BOU",
+   "web_name": "Kroupi.Jr"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.2569,
+   "id": 79,
+   "position": "FWD",
+   "predicted_points": 2.905,
+   "team_short": "BOU",
+   "web_name": "Evanilson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 80,
+   "position": "FWD",
+   "predicted_points": 0.212,
+   "team_short": "BOU",
+   "web_name": "Enes \u00dcnal"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0167,
+   "id": 81,
+   "position": "FWD",
+   "predicted_points": 0.289,
+   "team_short": "BOU",
+   "web_name": "Rodr\u00edguez"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0855,
+   "id": 566,
+   "position": "DEF",
+   "predicted_points": 0.914,
+   "team_short": "BOU",
+   "web_name": "Silva"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 573,
+   "position": "DEF",
+   "predicted_points": 0.036,
+   "team_short": "BOU",
+   "web_name": "Sanchez"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0288,
+   "id": 608,
+   "position": "FWD",
+   "predicted_points": 0.334,
+   "team_short": "BOU",
+   "web_name": "Jebbison"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 615,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "BOU",
+   "web_name": "Di Gregorio"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.1994,
+   "id": 82,
+   "position": "GKP",
+   "predicted_points": 3.462,
+   "team_short": "BRE",
+   "web_name": "Kelleher"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.004,
+   "id": 83,
+   "position": "GKP",
+   "predicted_points": 0.045,
+   "team_short": "BRE",
+   "web_name": "Valdimarsson"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2433,
+   "id": 84,
+   "position": "DEF",
+   "predicted_points": 2.747,
+   "team_short": "BRE",
+   "web_name": "Collins"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 85,
+   "position": "DEF",
+   "predicted_points": 0.356,
+   "team_short": "BRE",
+   "web_name": "Van den Berg"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2113,
+   "id": 86,
+   "position": "MID",
+   "predicted_points": 3.446,
+   "team_short": "BRE",
+   "web_name": "Lewis-Potter"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1456,
+   "id": 87,
+   "position": "DEF",
+   "predicted_points": 2.127,
+   "team_short": "BRE",
+   "web_name": "Ajer"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.259,
+   "id": 88,
+   "position": "DEF",
+   "predicted_points": 2.917,
+   "team_short": "BRE",
+   "web_name": "Kayode"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0444,
+   "id": 89,
+   "position": "DEF",
+   "predicted_points": 0.778,
+   "team_short": "BRE",
+   "web_name": "Henry"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.025,
+   "id": 90,
+   "position": "DEF",
+   "predicted_points": 0.878,
+   "team_short": "BRE",
+   "web_name": "Hickey"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 92,
+   "position": "DEF",
+   "predicted_points": 0.033,
+   "team_short": "BRE",
+   "web_name": "Ji-soo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 93,
+   "position": "DEF",
+   "predicted_points": 0.022,
+   "team_short": "BRE",
+   "web_name": "Schuster"
+  },
+  {
+   "ceiling": 9,
+   "floor": 1,
+   "haul_probability": 0.2097,
+   "id": 94,
+   "position": "MID",
+   "predicted_points": 3.456,
+   "team_short": "BRE",
+   "web_name": "Schade"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2113,
+   "id": 95,
+   "position": "MID",
+   "predicted_points": 2.73,
+   "team_short": "BRE",
+   "web_name": "O.Dango"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1437,
+   "id": 96,
+   "position": "MID",
+   "predicted_points": 2.28,
+   "team_short": "BRE",
+   "web_name": "Damsgaard"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.2024,
+   "id": 97,
+   "position": "MID",
+   "predicted_points": 1.972,
+   "team_short": "BRE",
+   "web_name": "Jensen"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0738,
+   "id": 98,
+   "position": "MID",
+   "predicted_points": 1.564,
+   "team_short": "BRE",
+   "web_name": "Janelt"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 99,
+   "position": "MID",
+   "predicted_points": 0.055,
+   "team_short": "BRE",
+   "web_name": "Milambo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0086,
+   "id": 100,
+   "position": "MID",
+   "predicted_points": 0.108,
+   "team_short": "BRE",
+   "web_name": "Carvalho"
+  },
+  {
+   "ceiling": 2,
+   "floor": 1,
+   "haul_probability": 0.0404,
+   "id": 102,
+   "position": "MID",
+   "predicted_points": 1.548,
+   "team_short": "BRE",
+   "web_name": "Yarmoliuk"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0069,
+   "id": 103,
+   "position": "MID",
+   "predicted_points": 0.142,
+   "team_short": "BRE",
+   "web_name": "Dasilva"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2087,
+   "id": 105,
+   "position": "MID",
+   "predicted_points": 2.539,
+   "team_short": "BRE",
+   "web_name": "Anthony"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.3011,
+   "id": 106,
+   "position": "FWD",
+   "predicted_points": 3.745,
+   "team_short": "BRE",
+   "web_name": "Thiago"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0123,
+   "id": 107,
+   "position": "FWD",
+   "predicted_points": 0.118,
+   "team_short": "BRE",
+   "web_name": "Furo"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.1221,
+   "id": 108,
+   "position": "FWD",
+   "predicted_points": 1.634,
+   "team_short": "BRE",
+   "web_name": "Wilson"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0743,
+   "id": 565,
+   "position": "MID",
+   "predicted_points": 1.321,
+   "team_short": "BRE",
+   "web_name": "M.Sangar\u00e9"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.11,
+   "id": 620,
+   "position": "DEF",
+   "predicted_points": 1.373,
+   "team_short": "BRE",
+   "web_name": "Diouf"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.1972,
+   "id": 109,
+   "position": "GKP",
+   "predicted_points": 2.885,
+   "team_short": "BHA",
+   "web_name": "Verbruggen"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 111,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "BHA",
+   "web_name": "Steele"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1923,
+   "id": 113,
+   "position": "DEF",
+   "predicted_points": 2.209,
+   "team_short": "BHA",
+   "web_name": "F.Kad\u0131o\u011flu"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1192,
+   "id": 114,
+   "position": "DEF",
+   "predicted_points": 1.409,
+   "team_short": "BHA",
+   "web_name": "Boscagli"
+  },
+  {
+   "ceiling": 9,
+   "floor": 0,
+   "haul_probability": 0.2741,
+   "id": 115,
+   "position": "DEF",
+   "predicted_points": 3.264,
+   "team_short": "BHA",
+   "web_name": "De Cuyper"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1874,
+   "id": 116,
+   "position": "DEF",
+   "predicted_points": 1.969,
+   "team_short": "BHA",
+   "web_name": "Dunk"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0101,
+   "id": 117,
+   "position": "DEF",
+   "predicted_points": 0.106,
+   "team_short": "BHA",
+   "web_name": "Coppola"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0061,
+   "id": 118,
+   "position": "DEF",
+   "predicted_points": 0.079,
+   "team_short": "BHA",
+   "web_name": "Igor"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0112,
+   "id": 119,
+   "position": "DEF",
+   "predicted_points": 0.4,
+   "team_short": "BHA",
+   "web_name": "Costinha"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 120,
+   "position": "DEF",
+   "predicted_points": 0.025,
+   "team_short": "BHA",
+   "web_name": "Svoboda"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 121,
+   "position": "MID",
+   "predicted_points": 0.466,
+   "team_short": "BHA",
+   "web_name": "Mitoma"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 122,
+   "position": "MID",
+   "predicted_points": 0.503,
+   "team_short": "BHA",
+   "web_name": "Minteh"
+  },
+  {
+   "ceiling": 9,
+   "floor": 0,
+   "haul_probability": 0.1934,
+   "id": 123,
+   "position": "MID",
+   "predicted_points": 2.14,
+   "team_short": "BHA",
+   "web_name": "Hinshelwood"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.2782,
+   "id": 124,
+   "position": "MID",
+   "predicted_points": 4.193,
+   "team_short": "BHA",
+   "web_name": "Gro\u00df"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1118,
+   "id": 125,
+   "position": "FWD",
+   "predicted_points": 1.387,
+   "team_short": "BHA",
+   "web_name": "Georginio"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0105,
+   "id": 126,
+   "position": "MID",
+   "predicted_points": 0.2,
+   "team_short": "BHA",
+   "web_name": "O'Riley"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2153,
+   "id": 127,
+   "position": "MID",
+   "predicted_points": 2.628,
+   "team_short": "BHA",
+   "web_name": "Gomez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 128,
+   "position": "MID",
+   "predicted_points": 0.098,
+   "team_short": "BHA",
+   "web_name": "Buonanotte"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0559,
+   "id": 129,
+   "position": "MID",
+   "predicted_points": 0.983,
+   "team_short": "BHA",
+   "web_name": "Ayari"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.183,
+   "id": 130,
+   "position": "DEF",
+   "predicted_points": 2.164,
+   "team_short": "BHA",
+   "web_name": "Wieffer"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 132,
+   "position": "MID",
+   "predicted_points": 0.061,
+   "team_short": "BHA",
+   "web_name": "Howell"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 133,
+   "position": "MID",
+   "predicted_points": 0.061,
+   "team_short": "BHA",
+   "web_name": "Watson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0056,
+   "id": 134,
+   "position": "MID",
+   "predicted_points": 0.068,
+   "team_short": "BHA",
+   "web_name": "Oriola"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0034,
+   "id": 135,
+   "position": "MID",
+   "predicted_points": 0.248,
+   "team_short": "BHA",
+   "web_name": "Yohanna"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 137,
+   "position": "FWD",
+   "predicted_points": 0.089,
+   "team_short": "BHA",
+   "web_name": "Tzimas"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.077,
+   "id": 138,
+   "position": "FWD",
+   "predicted_points": 1.366,
+   "team_short": "BHA",
+   "web_name": "Kostoulas"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 139,
+   "position": "FWD",
+   "predicted_points": 0.077,
+   "team_short": "BHA",
+   "web_name": "Ferguson"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1209,
+   "id": 328,
+   "position": "DEF",
+   "predicted_points": 1.414,
+   "team_short": "BHA",
+   "web_name": "Struijk"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0912,
+   "id": 504,
+   "position": "DEF",
+   "predicted_points": 1.026,
+   "team_short": "BHA",
+   "web_name": "Vuskovic"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0099,
+   "id": 594,
+   "position": "FWD",
+   "predicted_points": 0.257,
+   "team_short": "BHA",
+   "web_name": "David"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0034,
+   "id": 600,
+   "position": "MID",
+   "predicted_points": 0.467,
+   "team_short": "BHA",
+   "web_name": "Osman"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0837,
+   "id": 605,
+   "position": "MID",
+   "predicted_points": 1.126,
+   "team_short": "BHA",
+   "web_name": "Yalcouy\u00e9"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 614,
+   "position": "DEF",
+   "predicted_points": 0.025,
+   "team_short": "BHA",
+   "web_name": "Hadjam"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 624,
+   "position": "MID",
+   "predicted_points": 0.04,
+   "team_short": "BHA",
+   "web_name": "Cozier-Duberry"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2011,
+   "id": 28,
+   "position": "GKP",
+   "predicted_points": 2.632,
+   "team_short": "CHE",
+   "web_name": "Martinez"
+  },
+  {
+   "ceiling": 11,
+   "floor": 2,
+   "haul_probability": 0.3586,
+   "id": 40,
+   "position": "MID",
+   "predicted_points": 5.144,
+   "team_short": "CHE",
+   "web_name": "Rogers"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.048,
+   "id": 101,
+   "position": "MID",
+   "predicted_points": 0.734,
+   "team_short": "CHE",
+   "web_name": "Henderson"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2281,
+   "id": 136,
+   "position": "FWD",
+   "predicted_points": 2.245,
+   "team_short": "CHE",
+   "web_name": "Welbeck"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2072,
+   "id": 140,
+   "position": "GKP",
+   "predicted_points": 2.59,
+   "team_short": "CHE",
+   "web_name": "S\u00e1nchez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 141,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "CHE",
+   "web_name": "J\u00f6rgensen"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2588,
+   "id": 142,
+   "position": "DEF",
+   "predicted_points": 2.513,
+   "team_short": "CHE",
+   "web_name": "James"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 143,
+   "position": "DEF",
+   "predicted_points": 0.233,
+   "team_short": "CHE",
+   "web_name": "Chalobah"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.233,
+   "id": 144,
+   "position": "DEF",
+   "predicted_points": 2.789,
+   "team_short": "CHE",
+   "web_name": "Gusto"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1514,
+   "id": 145,
+   "position": "DEF",
+   "predicted_points": 1.537,
+   "team_short": "CHE",
+   "web_name": "Fofana"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 146,
+   "position": "DEF",
+   "predicted_points": 0.062,
+   "team_short": "CHE",
+   "web_name": "B.Badiashile"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0304,
+   "id": 147,
+   "position": "DEF",
+   "predicted_points": 0.429,
+   "team_short": "CHE",
+   "web_name": "Tosin"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2237,
+   "id": 148,
+   "position": "DEF",
+   "predicted_points": 2.057,
+   "team_short": "CHE",
+   "web_name": "Hato"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.13,
+   "id": 149,
+   "position": "DEF",
+   "predicted_points": 1.337,
+   "team_short": "CHE",
+   "web_name": "Colwill"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 150,
+   "position": "DEF",
+   "predicted_points": 0.108,
+   "team_short": "CHE",
+   "web_name": "M.Sarr"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0972,
+   "id": 151,
+   "position": "DEF",
+   "predicted_points": 1.322,
+   "team_short": "CHE",
+   "web_name": "Acheampong"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 152,
+   "position": "DEF",
+   "predicted_points": 0.04,
+   "team_short": "CHE",
+   "web_name": "Palestra"
+  },
+  {
+   "ceiling": 13,
+   "floor": 0,
+   "haul_probability": 0.346,
+   "id": 154,
+   "position": "MID",
+   "predicted_points": 5.489,
+   "team_short": "CHE",
+   "web_name": "Palmer"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2671,
+   "id": 155,
+   "position": "MID",
+   "predicted_points": 2.968,
+   "team_short": "CHE",
+   "web_name": "Enzo"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2726,
+   "id": 156,
+   "position": "MID",
+   "predicted_points": 3.123,
+   "team_short": "CHE",
+   "web_name": "Neto"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0528,
+   "id": 157,
+   "position": "MID",
+   "predicted_points": 0.875,
+   "team_short": "CHE",
+   "web_name": "Est\u00eav\u00e3o"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.022,
+   "id": 158,
+   "position": "MID",
+   "predicted_points": 0.345,
+   "team_short": "CHE",
+   "web_name": "Gittens"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.095,
+   "id": 159,
+   "position": "MID",
+   "predicted_points": 1.309,
+   "team_short": "CHE",
+   "web_name": "Caicedo"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1374,
+   "id": 161,
+   "position": "MID",
+   "predicted_points": 1.678,
+   "team_short": "CHE",
+   "web_name": "Lavia"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0092,
+   "id": 163,
+   "position": "MID",
+   "predicted_points": 0.187,
+   "team_short": "CHE",
+   "web_name": "D.Essugo"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0053,
+   "id": 164,
+   "position": "MID",
+   "predicted_points": 0.26,
+   "team_short": "CHE",
+   "web_name": "Quenda"
+  },
+  {
+   "ceiling": 10,
+   "floor": 0,
+   "haul_probability": 0.3326,
+   "id": 165,
+   "position": "FWD",
+   "predicted_points": 4.843,
+   "team_short": "CHE",
+   "web_name": "Jo\u00e3o Pedro"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0351,
+   "id": 168,
+   "position": "FWD",
+   "predicted_points": 0.314,
+   "team_short": "CHE",
+   "web_name": "Marc Guiu"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0234,
+   "id": 169,
+   "position": "FWD",
+   "predicted_points": 0.419,
+   "team_short": "CHE",
+   "web_name": "Mheuka"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 170,
+   "position": "FWD",
+   "predicted_points": 0.084,
+   "team_short": "CHE",
+   "web_name": "Emegha"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.283,
+   "id": 200,
+   "position": "DEF",
+   "predicted_points": 3.629,
+   "team_short": "CHE",
+   "web_name": "Lacroix"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 560,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "CHE",
+   "web_name": "Penders"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 561,
+   "position": "DEF",
+   "predicted_points": 0.058,
+   "team_short": "CHE",
+   "web_name": "Anselmino"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0106,
+   "id": 568,
+   "position": "MID",
+   "predicted_points": 0.296,
+   "team_short": "CHE",
+   "web_name": "Barco"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 578,
+   "position": "MID",
+   "predicted_points": 0.163,
+   "team_short": "CHE",
+   "web_name": "Mudryk"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0028,
+   "id": 583,
+   "position": "DEF",
+   "predicted_points": 0.456,
+   "team_short": "CHE",
+   "web_name": "Chavarria"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0261,
+   "id": 91,
+   "position": "DEF",
+   "predicted_points": 0.432,
+   "team_short": "COV",
+   "web_name": "Pinnock"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0327,
+   "id": 104,
+   "position": "MID",
+   "predicted_points": 0.559,
+   "team_short": "COV",
+   "web_name": "Onyeka"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1483,
+   "id": 110,
+   "position": "GKP",
+   "predicted_points": 1.28,
+   "team_short": "COV",
+   "web_name": "Rushworth"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 171,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "COV",
+   "web_name": "Dovin"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 172,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "COV",
+   "web_name": "Wilson"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1615,
+   "id": 173,
+   "position": "DEF",
+   "predicted_points": 1.539,
+   "team_short": "COV",
+   "web_name": "Thomas"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 174,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Kitching"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1919,
+   "id": 175,
+   "position": "DEF",
+   "predicted_points": 1.523,
+   "team_short": "COV",
+   "web_name": "van Ewijk"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.194,
+   "id": 176,
+   "position": "DEF",
+   "predicted_points": 1.676,
+   "team_short": "COV",
+   "web_name": "Dasilva"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 177,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Kesler-Hayden"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 178,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Bidwell"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 179,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Latibeaudiere"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 180,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Woolfenden"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 181,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "COV",
+   "web_name": "Brau"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1675,
+   "id": 182,
+   "position": "DEF",
+   "predicted_points": 1.323,
+   "team_short": "COV",
+   "web_name": "Amenda"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1137,
+   "id": 183,
+   "position": "MID",
+   "predicted_points": 1.272,
+   "team_short": "COV",
+   "web_name": "Rudoni"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0905,
+   "id": 184,
+   "position": "MID",
+   "predicted_points": 1.132,
+   "team_short": "COV",
+   "web_name": "Grimes"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0153,
+   "id": 185,
+   "position": "MID",
+   "predicted_points": 0.35,
+   "team_short": "COV",
+   "web_name": "Sakamoto"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.012,
+   "id": 186,
+   "position": "MID",
+   "predicted_points": 0.363,
+   "team_short": "COV",
+   "web_name": "Mason-Clark"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 187,
+   "position": "MID",
+   "predicted_points": 0.098,
+   "team_short": "COV",
+   "web_name": "Eccles"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0126,
+   "id": 188,
+   "position": "MID",
+   "predicted_points": 0.61,
+   "team_short": "COV",
+   "web_name": "Torp"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 189,
+   "position": "MID",
+   "predicted_points": 0.098,
+   "team_short": "COV",
+   "web_name": "Shepherd"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.124,
+   "id": 190,
+   "position": "MID",
+   "predicted_points": 1.927,
+   "team_short": "COV",
+   "web_name": "Tchaouna"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 191,
+   "position": "MID",
+   "predicted_points": 0.098,
+   "team_short": "COV",
+   "web_name": "Borges Rodrigues"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 192,
+   "position": "MID",
+   "predicted_points": 0.098,
+   "team_short": "COV",
+   "web_name": "Andrews"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 193,
+   "position": "FWD",
+   "predicted_points": 0.608,
+   "team_short": "COV",
+   "web_name": "Wright"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0366,
+   "id": 194,
+   "position": "FWD",
+   "predicted_points": 0.762,
+   "team_short": "COV",
+   "web_name": "Thomas-Asante"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0382,
+   "id": 195,
+   "position": "FWD",
+   "predicted_points": 0.547,
+   "team_short": "COV",
+   "web_name": "Simms"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 196,
+   "position": "FWD",
+   "predicted_points": 0.15,
+   "team_short": "COV",
+   "web_name": "Markelo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 197,
+   "position": "FWD",
+   "predicted_points": 0.15,
+   "team_short": "COV",
+   "web_name": "Bassette"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2741,
+   "id": 492,
+   "position": "FWD",
+   "predicted_points": 2.719,
+   "team_short": "COV",
+   "web_name": "Awoniyi"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0701,
+   "id": 575,
+   "position": "MID",
+   "predicted_points": 0.988,
+   "team_short": "COV",
+   "web_name": "Yirenkyi"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.01,
+   "id": 584,
+   "position": "MID",
+   "predicted_points": 0.518,
+   "team_short": "COV",
+   "web_name": "Hamer"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 599,
+   "position": "FWD",
+   "predicted_points": 0.15,
+   "team_short": "COV",
+   "web_name": "Cherif"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0351,
+   "id": 623,
+   "position": "GKP",
+   "predicted_points": 0.314,
+   "team_short": "COV",
+   "web_name": "Bentley"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0423,
+   "id": 42,
+   "position": "MID",
+   "predicted_points": 1.09,
+   "team_short": "CRY",
+   "web_name": "Guessand"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2071,
+   "id": 153,
+   "position": "DEF",
+   "predicted_points": 2.055,
+   "team_short": "CRY",
+   "web_name": "Disasi"
+  },
+  {
+   "ceiling": 7,
+   "floor": 3,
+   "haul_probability": 0.2642,
+   "id": 198,
+   "position": "GKP",
+   "predicted_points": 3.83,
+   "team_short": "CRY",
+   "web_name": "Henderson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0064,
+   "id": 199,
+   "position": "GKP",
+   "predicted_points": 0.061,
+   "team_short": "CRY",
+   "web_name": "Benitez"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2163,
+   "id": 201,
+   "position": "DEF",
+   "predicted_points": 2.107,
+   "team_short": "CRY",
+   "web_name": "Mu\u00f1oz"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2821,
+   "id": 202,
+   "position": "DEF",
+   "predicted_points": 3.356,
+   "team_short": "CRY",
+   "web_name": "Richards"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2581,
+   "id": 203,
+   "position": "DEF",
+   "predicted_points": 2.617,
+   "team_short": "CRY",
+   "web_name": "Canvot"
+  },
+  {
+   "ceiling": 8,
+   "floor": 2,
+   "haul_probability": 0.302,
+   "id": 204,
+   "position": "DEF",
+   "predicted_points": 3.357,
+   "team_short": "CRY",
+   "web_name": "Mitchell"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.007,
+   "id": 205,
+   "position": "DEF",
+   "predicted_points": 0.192,
+   "team_short": "CRY",
+   "web_name": "Sosa"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 206,
+   "position": "DEF",
+   "predicted_points": 0.152,
+   "team_short": "CRY",
+   "web_name": "Chadi Riad"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0043,
+   "id": 207,
+   "position": "DEF",
+   "predicted_points": 0.256,
+   "team_short": "CRY",
+   "web_name": "Mingueza"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 208,
+   "position": "MID",
+   "predicted_points": 1.204,
+   "team_short": "CRY",
+   "web_name": "Sarr"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2563,
+   "id": 210,
+   "position": "MID",
+   "predicted_points": 2.919,
+   "team_short": "CRY",
+   "web_name": "Wharton"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2489,
+   "id": 211,
+   "position": "MID",
+   "predicted_points": 2.847,
+   "team_short": "CRY",
+   "web_name": "Yeremy"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0517,
+   "id": 212,
+   "position": "MID",
+   "predicted_points": 0.894,
+   "team_short": "CRY",
+   "web_name": "Hughes"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0827,
+   "id": 213,
+   "position": "MID",
+   "predicted_points": 1.116,
+   "team_short": "CRY",
+   "web_name": "Lerma"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1787,
+   "id": 214,
+   "position": "MID",
+   "predicted_points": 2.139,
+   "team_short": "CRY",
+   "web_name": "Kamada"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0467,
+   "id": 215,
+   "position": "MID",
+   "predicted_points": 0.647,
+   "team_short": "CRY",
+   "web_name": "Devenny"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0118,
+   "id": 216,
+   "position": "MID",
+   "predicted_points": 0.153,
+   "team_short": "CRY",
+   "web_name": "Esse"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 217,
+   "position": "MID",
+   "predicted_points": 0.109,
+   "team_short": "CRY",
+   "web_name": "M.Fran\u00e7a"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 218,
+   "position": "MID",
+   "predicted_points": 0.109,
+   "team_short": "CRY",
+   "web_name": "Doucour\u00e9"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 219,
+   "position": "MID",
+   "predicted_points": 0.109,
+   "team_short": "CRY",
+   "web_name": "J.Rak-Sakyi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 220,
+   "position": "DEF",
+   "predicted_points": 0.113,
+   "team_short": "CRY",
+   "web_name": "Cardines"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0116,
+   "id": 221,
+   "position": "MID",
+   "predicted_points": 0.139,
+   "team_short": "CRY",
+   "web_name": "Drakes-Thomas"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1899,
+   "id": 222,
+   "position": "FWD",
+   "predicted_points": 2.384,
+   "team_short": "CRY",
+   "web_name": "Strand Larsen"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 223,
+   "position": "FWD",
+   "predicted_points": 2.041,
+   "team_short": "CRY",
+   "web_name": "Mateta"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.244,
+   "id": 224,
+   "position": "FWD",
+   "predicted_points": 2.237,
+   "team_short": "CRY",
+   "web_name": "Nketiah"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 225,
+   "position": "FWD",
+   "predicted_points": 0.185,
+   "team_short": "CRY",
+   "web_name": "Uche"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1082,
+   "id": 241,
+   "position": "MID",
+   "predicted_points": 1.752,
+   "team_short": "CRY",
+   "web_name": "McNeil"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 555,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "CRY",
+   "web_name": "Matthews"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0679,
+   "id": 577,
+   "position": "DEF",
+   "predicted_points": 0.822,
+   "team_short": "CRY",
+   "web_name": "Tomiyasu"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0883,
+   "id": 588,
+   "position": "DEF",
+   "predicted_points": 0.886,
+   "team_short": "CRY",
+   "web_name": "Khalaili"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0081,
+   "id": 595,
+   "position": "MID",
+   "predicted_points": 0.286,
+   "team_short": "CRY",
+   "web_name": "Gozo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 21,
+   "position": "MID",
+   "predicted_points": 0.105,
+   "team_short": "EVE",
+   "web_name": "N\u00f8rgaard"
+  },
+  {
+   "ceiling": 2,
+   "floor": 1,
+   "haul_probability": 0.053,
+   "id": 209,
+   "position": "MID",
+   "predicted_points": 1.463,
+   "team_short": "EVE",
+   "web_name": "Johnson"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.2316,
+   "id": 226,
+   "position": "GKP",
+   "predicted_points": 3.48,
+   "team_short": "EVE",
+   "web_name": "Pickford"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 227,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "EVE",
+   "web_name": "Travers"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 228,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "EVE",
+   "web_name": "King"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2978,
+   "id": 229,
+   "position": "DEF",
+   "predicted_points": 3.834,
+   "team_short": "EVE",
+   "web_name": "Tarkowski"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1536,
+   "id": 230,
+   "position": "DEF",
+   "predicted_points": 1.555,
+   "team_short": "EVE",
+   "web_name": "Branthwaite"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1126,
+   "id": 231,
+   "position": "DEF",
+   "predicted_points": 1.406,
+   "team_short": "EVE",
+   "web_name": "Keane"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1537,
+   "id": 232,
+   "position": "DEF",
+   "predicted_points": 1.565,
+   "team_short": "EVE",
+   "web_name": "O'Brien"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.2256,
+   "id": 233,
+   "position": "DEF",
+   "predicted_points": 2.615,
+   "team_short": "EVE",
+   "web_name": "Mykolenko"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0176,
+   "id": 234,
+   "position": "DEF",
+   "predicted_points": 0.24,
+   "team_short": "EVE",
+   "web_name": "Patterson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 235,
+   "position": "DEF",
+   "predicted_points": 0.061,
+   "team_short": "EVE",
+   "web_name": "Aznou"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.2626,
+   "id": 236,
+   "position": "MID",
+   "predicted_points": 3.761,
+   "team_short": "EVE",
+   "web_name": "Dewsbury-Hall"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.29,
+   "id": 237,
+   "position": "MID",
+   "predicted_points": 3.993,
+   "team_short": "EVE",
+   "web_name": "Ndiaye"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2418,
+   "id": 239,
+   "position": "MID",
+   "predicted_points": 2.615,
+   "team_short": "EVE",
+   "web_name": "Garner"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0352,
+   "id": 240,
+   "position": "MID",
+   "predicted_points": 1.088,
+   "team_short": "EVE",
+   "web_name": "Iroegbunam"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1017,
+   "id": 242,
+   "position": "MID",
+   "predicted_points": 1.657,
+   "team_short": "EVE",
+   "web_name": "George"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0333,
+   "id": 243,
+   "position": "MID",
+   "predicted_points": 0.827,
+   "team_short": "EVE",
+   "web_name": "Alcaraz"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0553,
+   "id": 244,
+   "position": "MID",
+   "predicted_points": 1.37,
+   "team_short": "EVE",
+   "web_name": "Armstrong"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0145,
+   "id": 245,
+   "position": "MID",
+   "predicted_points": 0.302,
+   "team_short": "EVE",
+   "web_name": "Dibling"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0627,
+   "id": 246,
+   "position": "MID",
+   "predicted_points": 1.574,
+   "team_short": "EVE",
+   "web_name": "R\u00f6hl"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0189,
+   "id": 247,
+   "position": "MID",
+   "predicted_points": 0.698,
+   "team_short": "EVE",
+   "web_name": "Hackney"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.1608,
+   "id": 248,
+   "position": "FWD",
+   "predicted_points": 2.242,
+   "team_short": "EVE",
+   "web_name": "Beto"
+  },
+  {
+   "ceiling": 9,
+   "floor": 1,
+   "haul_probability": 0.302,
+   "id": 249,
+   "position": "FWD",
+   "predicted_points": 4.096,
+   "team_short": "EVE",
+   "web_name": "Barry"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.2061,
+   "id": 250,
+   "position": "GKP",
+   "predicted_points": 3.299,
+   "team_short": "FUL",
+   "web_name": "Leno"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 251,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "FUL",
+   "web_name": "Lecomte"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 252,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "FUL",
+   "web_name": "McNally"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1516,
+   "id": 253,
+   "position": "DEF",
+   "predicted_points": 1.571,
+   "team_short": "FUL",
+   "web_name": "Andersen"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.193,
+   "id": 254,
+   "position": "DEF",
+   "predicted_points": 2.249,
+   "team_short": "FUL",
+   "web_name": "Robinson"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0569,
+   "id": 255,
+   "position": "DEF",
+   "predicted_points": 0.887,
+   "team_short": "FUL",
+   "web_name": "J.Cuenca"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.075,
+   "id": 256,
+   "position": "DEF",
+   "predicted_points": 0.715,
+   "team_short": "FUL",
+   "web_name": "Tete"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.2005,
+   "id": 257,
+   "position": "DEF",
+   "predicted_points": 2.096,
+   "team_short": "FUL",
+   "web_name": "Bassey"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1884,
+   "id": 258,
+   "position": "DEF",
+   "predicted_points": 2.227,
+   "team_short": "FUL",
+   "web_name": "Castagne"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2518,
+   "id": 261,
+   "position": "MID",
+   "predicted_points": 2.81,
+   "team_short": "FUL",
+   "web_name": "Iwobi"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0855,
+   "id": 262,
+   "position": "MID",
+   "predicted_points": 1.609,
+   "team_short": "FUL",
+   "web_name": "Smith Rowe"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0263,
+   "id": 263,
+   "position": "MID",
+   "predicted_points": 1.082,
+   "team_short": "FUL",
+   "web_name": "Kevin"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1054,
+   "id": 264,
+   "position": "MID",
+   "predicted_points": 1.876,
+   "team_short": "FUL",
+   "web_name": "Bobb"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.1091,
+   "id": 265,
+   "position": "MID",
+   "predicted_points": 2.14,
+   "team_short": "FUL",
+   "web_name": "Berge"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 266,
+   "position": "MID",
+   "predicted_points": 0.231,
+   "team_short": "FUL",
+   "web_name": "Cairney"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1499,
+   "id": 268,
+   "position": "MID",
+   "predicted_points": 2.25,
+   "team_short": "FUL",
+   "web_name": "King"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1103,
+   "id": 269,
+   "position": "DEF",
+   "predicted_points": 1.567,
+   "team_short": "FUL",
+   "web_name": "Sessegnon"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0177,
+   "id": 270,
+   "position": "MID",
+   "predicted_points": 0.281,
+   "team_short": "FUL",
+   "web_name": "Reed"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0823,
+   "id": 271,
+   "position": "FWD",
+   "predicted_points": 1.163,
+   "team_short": "FUL",
+   "web_name": "Muniz"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0218,
+   "id": 272,
+   "position": "FWD",
+   "predicted_points": 0.243,
+   "team_short": "FUL",
+   "web_name": "Kusi-Asare"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.195,
+   "id": 569,
+   "position": "FWD",
+   "predicted_points": 1.861,
+   "team_short": "FUL",
+   "web_name": "Gonzalo"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.042,
+   "id": 570,
+   "position": "MID",
+   "predicted_points": 0.916,
+   "team_short": "FUL",
+   "web_name": "Palacios"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0192,
+   "id": 580,
+   "position": "MID",
+   "predicted_points": 0.546,
+   "team_short": "FUL",
+   "web_name": "Charles"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 610,
+   "position": "DEF",
+   "predicted_points": 0.036,
+   "team_short": "FUL",
+   "web_name": "De Fougerolles"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 626,
+   "position": "MID",
+   "predicted_points": 0.058,
+   "team_short": "FUL",
+   "web_name": "Zepa"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 273,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "HUL",
+   "web_name": "Phillips"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 274,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "HUL",
+   "web_name": "Butland"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 275,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "HUL",
+   "web_name": "Cartwright"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 276,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "HUL",
+   "web_name": "Lo-Tutala"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1392,
+   "id": 277,
+   "position": "DEF",
+   "predicted_points": 1.382,
+   "team_short": "HUL",
+   "web_name": "Egan"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 278,
+   "position": "DEF",
+   "predicted_points": 0.07,
+   "team_short": "HUL",
+   "web_name": "Hughes"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2012,
+   "id": 279,
+   "position": "DEF",
+   "predicted_points": 2.076,
+   "team_short": "HUL",
+   "web_name": "Ajayi"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0541,
+   "id": 280,
+   "position": "DEF",
+   "predicted_points": 0.581,
+   "team_short": "HUL",
+   "web_name": "Coyle"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0165,
+   "id": 281,
+   "position": "DEF",
+   "predicted_points": 0.541,
+   "team_short": "HUL",
+   "web_name": "Drameh"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2237,
+   "id": 282,
+   "position": "DEF",
+   "predicted_points": 1.847,
+   "team_short": "HUL",
+   "web_name": "Giles"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 283,
+   "position": "DEF",
+   "predicted_points": 0.07,
+   "team_short": "HUL",
+   "web_name": "Jacob"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 284,
+   "position": "DEF",
+   "predicted_points": 0.07,
+   "team_short": "HUL",
+   "web_name": "McCarthy"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0052,
+   "id": 285,
+   "position": "DEF",
+   "predicted_points": 0.264,
+   "team_short": "HUL",
+   "web_name": "McNair"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0843,
+   "id": 286,
+   "position": "MID",
+   "predicted_points": 1.185,
+   "team_short": "HUL",
+   "web_name": "Belloumi"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1281,
+   "id": 287,
+   "position": "MID",
+   "predicted_points": 1.159,
+   "team_short": "HUL",
+   "web_name": "Millar"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 288,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Dowell"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0283,
+   "id": 289,
+   "position": "MID",
+   "predicted_points": 0.376,
+   "team_short": "HUL",
+   "web_name": "Crooks"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1689,
+   "id": 290,
+   "position": "MID",
+   "predicted_points": 1.394,
+   "team_short": "HUL",
+   "web_name": "Slater"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 291,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Matazo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 292,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "\u00d6m\u00fcr"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 293,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Kamara"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 294,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Zambrano"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1624,
+   "id": 295,
+   "position": "FWD",
+   "predicted_points": 1.532,
+   "team_short": "HUL",
+   "web_name": "McBurnie"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 296,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Akintola"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 297,
+   "position": "MID",
+   "predicted_points": 0.141,
+   "team_short": "HUL",
+   "web_name": "Gyabi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 298,
+   "position": "FWD",
+   "predicted_points": 0.152,
+   "team_short": "HUL",
+   "web_name": "Destan"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 299,
+   "position": "FWD",
+   "predicted_points": 0.152,
+   "team_short": "HUL",
+   "web_name": "Burstow"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 340,
+   "position": "MID",
+   "predicted_points": 0.141,
+   "team_short": "HUL",
+   "web_name": "Gelhardt"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0065,
+   "id": 556,
+   "position": "DEF",
+   "predicted_points": 0.279,
+   "team_short": "HUL",
+   "web_name": "Targett"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0099,
+   "id": 563,
+   "position": "MID",
+   "predicted_points": 0.318,
+   "team_short": "HUL",
+   "web_name": "Morita"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1169,
+   "id": 572,
+   "position": "GKP",
+   "predicted_points": 1.805,
+   "team_short": "HUL",
+   "web_name": "Tzolakis"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 574,
+   "position": "MID",
+   "predicted_points": 0.112,
+   "team_short": "HUL",
+   "web_name": "Hjert\u00f8-Dahl"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0325,
+   "id": 576,
+   "position": "MID",
+   "predicted_points": 0.688,
+   "team_short": "HUL",
+   "web_name": "Stroud"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.005,
+   "id": 585,
+   "position": "DEF",
+   "predicted_points": 0.47,
+   "team_short": "HUL",
+   "web_name": "Herrington"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1207,
+   "id": 586,
+   "position": "DEF",
+   "predicted_points": 1.307,
+   "team_short": "HUL",
+   "web_name": "Mendy"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0103,
+   "id": 589,
+   "position": "MID",
+   "predicted_points": 0.331,
+   "team_short": "HUL",
+   "web_name": "Gourna-Douath"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0095,
+   "id": 617,
+   "position": "MID",
+   "predicted_points": 0.512,
+   "team_short": "HUL",
+   "web_name": "Cho"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2142,
+   "id": 259,
+   "position": "DEF",
+   "predicted_points": 2.048,
+   "team_short": "IPS",
+   "web_name": "Diop"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1036,
+   "id": 267,
+   "position": "MID",
+   "predicted_points": 1.668,
+   "team_short": "IPS",
+   "web_name": "Luki\u0107"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 300,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "IPS",
+   "web_name": "Walton"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 301,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "IPS",
+   "web_name": "Palmer"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 302,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "IPS",
+   "web_name": "Button"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 303,
+   "position": "DEF",
+   "predicted_points": 0.041,
+   "team_short": "IPS",
+   "web_name": "Kipr\u00e9"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1684,
+   "id": 304,
+   "position": "DEF",
+   "predicted_points": 1.408,
+   "team_short": "IPS",
+   "web_name": "O'Shea"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2002,
+   "id": 305,
+   "position": "DEF",
+   "predicted_points": 1.784,
+   "team_short": "IPS",
+   "web_name": "Davis"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1304,
+   "id": 306,
+   "position": "DEF",
+   "predicted_points": 0.978,
+   "team_short": "IPS",
+   "web_name": "Greaves"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 307,
+   "position": "DEF",
+   "predicted_points": 0.041,
+   "team_short": "IPS",
+   "web_name": "Johnson"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0029,
+   "id": 308,
+   "position": "DEF",
+   "predicted_points": 0.247,
+   "team_short": "IPS",
+   "web_name": "Furlong"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1226,
+   "id": 309,
+   "position": "MID",
+   "predicted_points": 1.352,
+   "team_short": "IPS",
+   "web_name": "N\u00fa\u00f1ez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 310,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Matusiwa"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 311,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Burns"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 312,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Taylor"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1034,
+   "id": 313,
+   "position": "MID",
+   "predicted_points": 0.998,
+   "team_short": "IPS",
+   "web_name": "Clarke"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 314,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Ogbene"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.145,
+   "id": 315,
+   "position": "MID",
+   "predicted_points": 1.268,
+   "team_short": "IPS",
+   "web_name": "Fatawu"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1155,
+   "id": 316,
+   "position": "FWD",
+   "predicted_points": 1.193,
+   "team_short": "IPS",
+   "web_name": "Emersonn"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 317,
+   "position": "FWD",
+   "predicted_points": 0.087,
+   "team_short": "IPS",
+   "web_name": "Hirst"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 318,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Philogene"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 319,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Szmodics"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1291,
+   "id": 320,
+   "position": "FWD",
+   "predicted_points": 1.042,
+   "team_short": "IPS",
+   "web_name": "Akpom"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0164,
+   "id": 321,
+   "position": "FWD",
+   "predicted_points": 0.281,
+   "team_short": "IPS",
+   "web_name": "Walle Egeli"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 322,
+   "position": "FWD",
+   "predicted_points": 0.087,
+   "team_short": "IPS",
+   "web_name": "Al-Hamadi"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0053,
+   "id": 323,
+   "position": "MID",
+   "predicted_points": 0.466,
+   "team_short": "IPS",
+   "web_name": "McAteer"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 324,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Mehmeti"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 554,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "IPS",
+   "web_name": "Van Oevelen"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0976,
+   "id": 562,
+   "position": "MID",
+   "predicted_points": 1.327,
+   "team_short": "IPS",
+   "web_name": "Maeda"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.131,
+   "id": 564,
+   "position": "GKP",
+   "predicted_points": 1.352,
+   "team_short": "IPS",
+   "web_name": "Scherpen"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0521,
+   "id": 571,
+   "position": "MID",
+   "predicted_points": 0.867,
+   "team_short": "IPS",
+   "web_name": "Florentino"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1984,
+   "id": 591,
+   "position": "MID",
+   "predicted_points": 1.814,
+   "team_short": "IPS",
+   "web_name": "Enciso"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0028,
+   "id": 592,
+   "position": "DEF",
+   "predicted_points": 0.441,
+   "team_short": "IPS",
+   "web_name": "Ouattara"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 602,
+   "position": "MID",
+   "predicted_points": 0.066,
+   "team_short": "IPS",
+   "web_name": "Humphreys"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0054,
+   "id": 619,
+   "position": "MID",
+   "predicted_points": 0.474,
+   "team_short": "IPS",
+   "web_name": "Palacios"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.1472,
+   "id": 260,
+   "position": "MID",
+   "predicted_points": 2.423,
+   "team_short": "LEE",
+   "web_name": "Wilson"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.027,
+   "id": 326,
+   "position": "GKP",
+   "predicted_points": 0.341,
+   "team_short": "LEE",
+   "web_name": "Perri"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1972,
+   "id": 327,
+   "position": "DEF",
+   "predicted_points": 2.395,
+   "team_short": "LEE",
+   "web_name": "Bijol"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0632,
+   "id": 329,
+   "position": "DEF",
+   "predicted_points": 1.036,
+   "team_short": "LEE",
+   "web_name": "Rodon"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1597,
+   "id": 330,
+   "position": "DEF",
+   "predicted_points": 2.105,
+   "team_short": "LEE",
+   "web_name": "Bogle"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0711,
+   "id": 331,
+   "position": "DEF",
+   "predicted_points": 0.993,
+   "team_short": "LEE",
+   "web_name": "Gudmundsson"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2508,
+   "id": 332,
+   "position": "DEF",
+   "predicted_points": 2.835,
+   "team_short": "LEE",
+   "web_name": "Justin"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 333,
+   "position": "DEF",
+   "predicted_points": 0.076,
+   "team_short": "LEE",
+   "web_name": "Bornauw"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0819,
+   "id": 334,
+   "position": "DEF",
+   "predicted_points": 0.954,
+   "team_short": "LEE",
+   "web_name": "Muharemovi\u0107"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2933,
+   "id": 335,
+   "position": "MID",
+   "predicted_points": 3.519,
+   "team_short": "LEE",
+   "web_name": "Stach"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1248,
+   "id": 336,
+   "position": "MID",
+   "predicted_points": 1.994,
+   "team_short": "LEE",
+   "web_name": "Okafor"
+  },
+  {
+   "ceiling": 4,
+   "floor": 1,
+   "haul_probability": 0.0928,
+   "id": 337,
+   "position": "MID",
+   "predicted_points": 2.041,
+   "team_short": "LEE",
+   "web_name": "Aaronson"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.2104,
+   "id": 338,
+   "position": "MID",
+   "predicted_points": 2.899,
+   "team_short": "LEE",
+   "web_name": "Ampadu"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0323,
+   "id": 339,
+   "position": "MID",
+   "predicted_points": 0.838,
+   "team_short": "LEE",
+   "web_name": "Longstaff"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0111,
+   "id": 341,
+   "position": "MID",
+   "predicted_points": 0.541,
+   "team_short": "LEE",
+   "web_name": "Gnonto"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 342,
+   "position": "MID",
+   "predicted_points": 0.092,
+   "team_short": "LEE",
+   "web_name": "Harrison"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0457,
+   "id": 343,
+   "position": "MID",
+   "predicted_points": 0.868,
+   "team_short": "LEE",
+   "web_name": "James"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0256,
+   "id": 344,
+   "position": "MID",
+   "predicted_points": 0.274,
+   "team_short": "LEE",
+   "web_name": "Gruev"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0505,
+   "id": 345,
+   "position": "MID",
+   "predicted_points": 1.194,
+   "team_short": "LEE",
+   "web_name": "Tanaka"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.2837,
+   "id": 346,
+   "position": "FWD",
+   "predicted_points": 3.916,
+   "team_short": "LEE",
+   "web_name": "Calvert-Lewin"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1009,
+   "id": 347,
+   "position": "FWD",
+   "predicted_points": 1.379,
+   "team_short": "LEE",
+   "web_name": "Nmecha"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 348,
+   "position": "FWD",
+   "predicted_points": 0.133,
+   "team_short": "LEE",
+   "web_name": "Piroe"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 349,
+   "position": "FWD",
+   "predicted_points": 0.103,
+   "team_short": "LEE",
+   "web_name": "Mateo Joseph"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0796,
+   "id": 385,
+   "position": "GKP",
+   "predicted_points": 1.351,
+   "team_short": "LEE",
+   "web_name": "Trafford"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0027,
+   "id": 598,
+   "position": "DEF",
+   "predicted_points": 0.247,
+   "team_short": "LEE",
+   "web_name": "Elvedi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 603,
+   "position": "DEF",
+   "predicted_points": 0.05,
+   "team_short": "LEE",
+   "web_name": "Lienou"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 604,
+   "position": "MID",
+   "predicted_points": 0.082,
+   "team_short": "LEE",
+   "web_name": "Cresswell"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 625,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "LEE",
+   "web_name": "Cairns"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.192,
+   "id": 350,
+   "position": "GKP",
+   "predicted_points": 2.182,
+   "team_short": "LIV",
+   "web_name": "A.Becker"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0408,
+   "id": 351,
+   "position": "GKP",
+   "predicted_points": 0.499,
+   "team_short": "LIV",
+   "web_name": "Mamardashvili"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0163,
+   "id": 352,
+   "position": "GKP",
+   "predicted_points": 0.202,
+   "team_short": "LIV",
+   "web_name": "Woodman"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 353,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "LIV",
+   "web_name": "Pecsi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 354,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "LIV",
+   "web_name": "Jaros"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 355,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "LIV",
+   "web_name": "Davies"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2933,
+   "id": 356,
+   "position": "DEF",
+   "predicted_points": 3.731,
+   "team_short": "LIV",
+   "web_name": "Virgil"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.14,
+   "id": 357,
+   "position": "DEF",
+   "predicted_points": 1.886,
+   "team_short": "LIV",
+   "web_name": "Frimpong"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1769,
+   "id": 358,
+   "position": "DEF",
+   "predicted_points": 2.154,
+   "team_short": "LIV",
+   "web_name": "Kerkez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 359,
+   "position": "DEF",
+   "predicted_points": 0.106,
+   "team_short": "LIV",
+   "web_name": "Gomez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 360,
+   "position": "DEF",
+   "predicted_points": 0.091,
+   "team_short": "LIV",
+   "web_name": "Bradley"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 361,
+   "position": "DEF",
+   "predicted_points": 0.048,
+   "team_short": "LIV",
+   "web_name": "Lucky"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1192,
+   "id": 362,
+   "position": "DEF",
+   "predicted_points": 1.108,
+   "team_short": "LIV",
+   "web_name": "Jacquet"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 363,
+   "position": "DEF",
+   "predicted_points": 0.048,
+   "team_short": "LIV",
+   "web_name": "Leoni"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0086,
+   "id": 364,
+   "position": "DEF",
+   "predicted_points": 0.289,
+   "team_short": "LIV",
+   "web_name": "Tsimikas"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 365,
+   "position": "DEF",
+   "predicted_points": 0.048,
+   "team_short": "LIV",
+   "web_name": "Ramsay"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2614,
+   "id": 366,
+   "position": "MID",
+   "predicted_points": 3.091,
+   "team_short": "LIV",
+   "web_name": "Wirtz"
+  },
+  {
+   "ceiling": 10,
+   "floor": 2,
+   "haul_probability": 0.2906,
+   "id": 367,
+   "position": "MID",
+   "predicted_points": 4.11,
+   "team_short": "LIV",
+   "web_name": "Gakpo"
+  },
+  {
+   "ceiling": 12,
+   "floor": 2,
+   "haul_probability": 0.3662,
+   "id": 368,
+   "position": "MID",
+   "predicted_points": 5.431,
+   "team_short": "LIV",
+   "web_name": "Szoboszlai"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0964,
+   "id": 369,
+   "position": "MID",
+   "predicted_points": 1.692,
+   "team_short": "LIV",
+   "web_name": "Ngumoha"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 370,
+   "position": "MID",
+   "predicted_points": 0.19,
+   "team_short": "LIV",
+   "web_name": "Chiesa"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1116,
+   "id": 371,
+   "position": "MID",
+   "predicted_points": 2.303,
+   "team_short": "LIV",
+   "web_name": "Gravenberch"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.1762,
+   "id": 372,
+   "position": "MID",
+   "predicted_points": 2.512,
+   "team_short": "LIV",
+   "web_name": "Mac Allister"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 373,
+   "position": "MID",
+   "predicted_points": 0.481,
+   "team_short": "LIV",
+   "web_name": "C.Jones"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0118,
+   "id": 374,
+   "position": "MID",
+   "predicted_points": 0.185,
+   "team_short": "LIV",
+   "web_name": "Endo"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0143,
+   "id": 375,
+   "position": "MID",
+   "predicted_points": 0.457,
+   "team_short": "LIV",
+   "web_name": "Nyoni"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 376,
+   "position": "MID",
+   "predicted_points": 0.08,
+   "team_short": "LIV",
+   "web_name": "Bajcetic"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0807,
+   "id": 377,
+   "position": "MID",
+   "predicted_points": 0.977,
+   "team_short": "LIV",
+   "web_name": "Munoz"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 378,
+   "position": "MID",
+   "predicted_points": 0.08,
+   "team_short": "LIV",
+   "web_name": "McConnell"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2477,
+   "id": 379,
+   "position": "FWD",
+   "predicted_points": 2.684,
+   "team_short": "LIV",
+   "web_name": "Isak"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 380,
+   "position": "FWD",
+   "predicted_points": 0.763,
+   "team_short": "LIV",
+   "web_name": "Ekitik\u00e9"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0081,
+   "id": 381,
+   "position": "MID",
+   "predicted_points": 0.267,
+   "team_short": "LIV",
+   "web_name": "Koumas"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 382,
+   "position": "FWD",
+   "predicted_points": 0.108,
+   "team_short": "LIV",
+   "web_name": "Danns"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0112,
+   "id": 383,
+   "position": "MID",
+   "predicted_points": 0.141,
+   "team_short": "LIV",
+   "web_name": "Elliott"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0026,
+   "id": 579,
+   "position": "DEF",
+   "predicted_points": 0.376,
+   "team_short": "LIV",
+   "web_name": "Araujo"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0564,
+   "id": 238,
+   "position": "MID",
+   "predicted_points": 0.852,
+   "team_short": "MCI",
+   "web_name": "Grealish"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.1881,
+   "id": 384,
+   "position": "GKP",
+   "predicted_points": 2.353,
+   "team_short": "MCI",
+   "web_name": "Donnarumma"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 386,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "MCI",
+   "web_name": "Bettinelli"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2504,
+   "id": 387,
+   "position": "DEF",
+   "predicted_points": 2.853,
+   "team_short": "MCI",
+   "web_name": "O'Reilly"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2796,
+   "id": 388,
+   "position": "DEF",
+   "predicted_points": 3.565,
+   "team_short": "MCI",
+   "web_name": "Gu\u00e9hi"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.102,
+   "id": 389,
+   "position": "DEF",
+   "predicted_points": 1.195,
+   "team_short": "MCI",
+   "web_name": "Matheus N."
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1412,
+   "id": 390,
+   "position": "DEF",
+   "predicted_points": 1.809,
+   "team_short": "MCI",
+   "web_name": "R\u00faben"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1319,
+   "id": 391,
+   "position": "DEF",
+   "predicted_points": 1.663,
+   "team_short": "MCI",
+   "web_name": "Gvardiol"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0678,
+   "id": 392,
+   "position": "DEF",
+   "predicted_points": 0.747,
+   "team_short": "MCI",
+   "web_name": "A\u00eft-Nouri"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1402,
+   "id": 393,
+   "position": "DEF",
+   "predicted_points": 1.877,
+   "team_short": "MCI",
+   "web_name": "Khusanov"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 394,
+   "position": "DEF",
+   "predicted_points": 0.047,
+   "team_short": "MCI",
+   "web_name": "Alleyne"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0363,
+   "id": 395,
+   "position": "DEF",
+   "predicted_points": 0.568,
+   "team_short": "MCI",
+   "web_name": "Lewis"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0028,
+   "id": 396,
+   "position": "DEF",
+   "predicted_points": 0.235,
+   "team_short": "MCI",
+   "web_name": "Vitor Reis"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.2004,
+   "id": 397,
+   "position": "MID",
+   "predicted_points": 2.911,
+   "team_short": "MCI",
+   "web_name": "Semenyo"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2526,
+   "id": 398,
+   "position": "MID",
+   "predicted_points": 3.004,
+   "team_short": "MCI",
+   "web_name": "Foden"
+  },
+  {
+   "ceiling": 9,
+   "floor": 1,
+   "haul_probability": 0.2909,
+   "id": 399,
+   "position": "MID",
+   "predicted_points": 3.856,
+   "team_short": "MCI",
+   "web_name": "Cherki"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 400,
+   "position": "MID",
+   "predicted_points": 0.455,
+   "team_short": "MCI",
+   "web_name": "Doku"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 402,
+   "position": "MID",
+   "predicted_points": 0.268,
+   "team_short": "MCI",
+   "web_name": "Rodrigo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 404,
+   "position": "MID",
+   "predicted_points": 0.342,
+   "team_short": "MCI",
+   "web_name": "Reijnders"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0089,
+   "id": 406,
+   "position": "MID",
+   "predicted_points": 0.686,
+   "team_short": "MCI",
+   "web_name": "Kova\u010di\u0107"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 407,
+   "position": "MID",
+   "predicted_points": 0.051,
+   "team_short": "MCI",
+   "web_name": "Echeverri"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 408,
+   "position": "MID",
+   "predicted_points": 0.051,
+   "team_short": "MCI",
+   "web_name": "Phillips"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0061,
+   "id": 409,
+   "position": "MID",
+   "predicted_points": 0.084,
+   "team_short": "MCI",
+   "web_name": "Mukasa"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 410,
+   "position": "MID",
+   "predicted_points": 0.033,
+   "team_short": "MCI",
+   "web_name": "Monga"
+  },
+  {
+   "ceiling": 11,
+   "floor": 1,
+   "haul_probability": 0.3132,
+   "id": 411,
+   "position": "FWD",
+   "predicted_points": 4.907,
+   "team_short": "MCI",
+   "web_name": "Haaland"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.2915,
+   "id": 481,
+   "position": "MID",
+   "predicted_points": 3.603,
+   "team_short": "MCI",
+   "web_name": "Anderson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 587,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "MCI",
+   "web_name": "Rulli"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.004,
+   "id": 616,
+   "position": "MID",
+   "predicted_points": 0.467,
+   "team_short": "MCI",
+   "web_name": "Bouaddi"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0154,
+   "id": 621,
+   "position": "MID",
+   "predicted_points": 0.502,
+   "team_short": "MCI",
+   "web_name": "McAidoo"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.002,
+   "id": 622,
+   "position": "DEF",
+   "predicted_points": 0.421,
+   "team_short": "MCI",
+   "web_name": "Braithwaite"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.2215,
+   "id": 43,
+   "position": "MID",
+   "predicted_points": 2.597,
+   "team_short": "MUN",
+   "web_name": "Tielemans"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 131,
+   "position": "MID",
+   "predicted_points": 0.278,
+   "team_short": "MUN",
+   "web_name": "Baleba"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1007,
+   "id": 162,
+   "position": "MID",
+   "predicted_points": 1.747,
+   "team_short": "MUN",
+   "web_name": "Andrey Santos"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1736,
+   "id": 325,
+   "position": "GKP",
+   "predicted_points": 1.719,
+   "team_short": "MUN",
+   "web_name": "Darlow"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.3012,
+   "id": 412,
+   "position": "GKP",
+   "predicted_points": 4.151,
+   "team_short": "MUN",
+   "web_name": "Lammens"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 413,
+   "position": "GKP",
+   "predicted_points": 0.001,
+   "team_short": "MUN",
+   "web_name": "Bayindir"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 414,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "MUN",
+   "web_name": "Heaton"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.151,
+   "id": 415,
+   "position": "MID",
+   "predicted_points": 1.736,
+   "team_short": "MUN",
+   "web_name": "Dorgu"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 416,
+   "position": "DEF",
+   "predicted_points": 0.153,
+   "team_short": "MUN",
+   "web_name": "De Ligt"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2854,
+   "id": 417,
+   "position": "DEF",
+   "predicted_points": 3.081,
+   "team_short": "MUN",
+   "web_name": "Dalot"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.3049,
+   "id": 418,
+   "position": "DEF",
+   "predicted_points": 3.124,
+   "team_short": "MUN",
+   "web_name": "Maguire"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2019,
+   "id": 419,
+   "position": "DEF",
+   "predicted_points": 1.698,
+   "team_short": "MUN",
+   "web_name": "Martinez"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1192,
+   "id": 420,
+   "position": "DEF",
+   "predicted_points": 1.421,
+   "team_short": "MUN",
+   "web_name": "Yoro"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1689,
+   "id": 421,
+   "position": "DEF",
+   "predicted_points": 1.523,
+   "team_short": "MUN",
+   "web_name": "Heaven"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1909,
+   "id": 422,
+   "position": "DEF",
+   "predicted_points": 1.984,
+   "team_short": "MUN",
+   "web_name": "Mazraoui"
+  },
+  {
+   "ceiling": 7,
+   "floor": 2,
+   "haul_probability": 0.3341,
+   "id": 423,
+   "position": "DEF",
+   "predicted_points": 3.632,
+   "team_short": "MUN",
+   "web_name": "Shaw"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 424,
+   "position": "DEF",
+   "predicted_points": 0.05,
+   "team_short": "MUN",
+   "web_name": "Amass"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 425,
+   "position": "DEF",
+   "predicted_points": 0.05,
+   "team_short": "MUN",
+   "web_name": "Fredricson"
+  },
+  {
+   "ceiling": 16,
+   "floor": 2,
+   "haul_probability": 0.4336,
+   "id": 426,
+   "position": "MID",
+   "predicted_points": 8.184,
+   "team_short": "MUN",
+   "web_name": "B.Fernandes"
+  },
+  {
+   "ceiling": 13,
+   "floor": 2,
+   "haul_probability": 0.3553,
+   "id": 427,
+   "position": "MID",
+   "predicted_points": 5.443,
+   "team_short": "MUN",
+   "web_name": "Mbeumo"
+  },
+  {
+   "ceiling": 9,
+   "floor": 1,
+   "haul_probability": 0.2655,
+   "id": 428,
+   "position": "MID",
+   "predicted_points": 3.458,
+   "team_short": "MUN",
+   "web_name": "Cunha"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0602,
+   "id": 429,
+   "position": "MID",
+   "predicted_points": 0.928,
+   "team_short": "MUN",
+   "web_name": "Rashford"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0467,
+   "id": 430,
+   "position": "MID",
+   "predicted_points": 0.625,
+   "team_short": "MUN",
+   "web_name": "Mount"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 431,
+   "position": "MID",
+   "predicted_points": 0.966,
+   "team_short": "MUN",
+   "web_name": "Amad"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1447,
+   "id": 432,
+   "position": "MID",
+   "predicted_points": 2.183,
+   "team_short": "MUN",
+   "web_name": "Mainoo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 433,
+   "position": "MID",
+   "predicted_points": 0.175,
+   "team_short": "MUN",
+   "web_name": "Ugarte"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0091,
+   "id": 434,
+   "position": "MID",
+   "predicted_points": 0.124,
+   "team_short": "MUN",
+   "web_name": "J.Fletcher"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0097,
+   "id": 435,
+   "position": "MID",
+   "predicted_points": 0.364,
+   "team_short": "MUN",
+   "web_name": "Lacey"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 436,
+   "position": "MID",
+   "predicted_points": 0.084,
+   "team_short": "MUN",
+   "web_name": "Collyer"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0085,
+   "id": 437,
+   "position": "MID",
+   "predicted_points": 0.1,
+   "team_short": "MUN",
+   "web_name": "Bendito Mantato"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0082,
+   "id": 438,
+   "position": "MID",
+   "predicted_points": 0.156,
+   "team_short": "MUN",
+   "web_name": "Fletcher"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1954,
+   "id": 439,
+   "position": "FWD",
+   "predicted_points": 2.167,
+   "team_short": "MUN",
+   "web_name": "\u0160e\u0161ko"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0698,
+   "id": 440,
+   "position": "FWD",
+   "predicted_points": 0.81,
+   "team_short": "MUN",
+   "web_name": "Zirkzee"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 441,
+   "position": "FWD",
+   "predicted_points": 0.109,
+   "team_short": "MUN",
+   "web_name": "Obi"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0514,
+   "id": 405,
+   "position": "MID",
+   "predicted_points": 1.009,
+   "team_short": "NEW",
+   "web_name": "N.Gonzalez"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0994,
+   "id": 442,
+   "position": "GKP",
+   "predicted_points": 1.231,
+   "team_short": "NEW",
+   "web_name": "Pope"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 443,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "NEW",
+   "web_name": "Gillespie"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 444,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "NEW",
+   "web_name": "Jaouen"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2651,
+   "id": 445,
+   "position": "DEF",
+   "predicted_points": 3.364,
+   "team_short": "NEW",
+   "web_name": "Thiaw"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0376,
+   "id": 446,
+   "position": "DEF",
+   "predicted_points": 0.593,
+   "team_short": "NEW",
+   "web_name": "Sch\u00e4r"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.2008,
+   "id": 447,
+   "position": "DEF",
+   "predicted_points": 2.26,
+   "team_short": "NEW",
+   "web_name": "Botman"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 448,
+   "position": "DEF",
+   "predicted_points": 0.156,
+   "team_short": "NEW",
+   "web_name": "Burn"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.3008,
+   "id": 449,
+   "position": "DEF",
+   "predicted_points": 4.012,
+   "team_short": "NEW",
+   "web_name": "Hall"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 450,
+   "position": "DEF",
+   "predicted_points": 0.081,
+   "team_short": "NEW",
+   "web_name": "Livramento"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 451,
+   "position": "DEF",
+   "predicted_points": 0.041,
+   "team_short": "NEW",
+   "web_name": "A.Murphy"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1233,
+   "id": 453,
+   "position": "MID",
+   "predicted_points": 2.349,
+   "team_short": "NEW",
+   "web_name": "Barnes"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1233,
+   "id": 454,
+   "position": "MID",
+   "predicted_points": 2.341,
+   "team_short": "NEW",
+   "web_name": "Elanga"
+  },
+  {
+   "ceiling": 3,
+   "floor": 1,
+   "haul_probability": 0.0677,
+   "id": 456,
+   "position": "MID",
+   "predicted_points": 1.341,
+   "team_short": "NEW",
+   "web_name": "J.Ramsey"
+  },
+  {
+   "ceiling": 3,
+   "floor": 1,
+   "haul_probability": 0.0743,
+   "id": 457,
+   "position": "MID",
+   "predicted_points": 1.423,
+   "team_short": "NEW",
+   "web_name": "J.Murphy"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 458,
+   "position": "MID",
+   "predicted_points": 0.236,
+   "team_short": "NEW",
+   "web_name": "Joelinton"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0646,
+   "id": 459,
+   "position": "MID",
+   "predicted_points": 1.518,
+   "team_short": "NEW",
+   "web_name": "L.Miley"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0768,
+   "id": 460,
+   "position": "MID",
+   "predicted_points": 1.585,
+   "team_short": "NEW",
+   "web_name": "Willock"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0051,
+   "id": 461,
+   "position": "MID",
+   "predicted_points": 0.255,
+   "team_short": "NEW",
+   "web_name": "Tour\u00e9"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0051,
+   "id": 462,
+   "position": "MID",
+   "predicted_points": 0.45,
+   "team_short": "NEW",
+   "web_name": "Steur"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1528,
+   "id": 463,
+   "position": "FWD",
+   "predicted_points": 1.867,
+   "team_short": "NEW",
+   "web_name": "Woltemade"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.219,
+   "id": 464,
+   "position": "FWD",
+   "predicted_points": 2.371,
+   "team_short": "NEW",
+   "web_name": "Wissa"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 465,
+   "position": "FWD",
+   "predicted_points": 0.554,
+   "team_short": "NEW",
+   "web_name": "Osula"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0167,
+   "id": 466,
+   "position": "FWD",
+   "predicted_points": 0.142,
+   "team_short": "NEW",
+   "web_name": "Neave"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0051,
+   "id": 559,
+   "position": "MID",
+   "predicted_points": 0.245,
+   "team_short": "NEW",
+   "web_name": "Bamba"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0954,
+   "id": 567,
+   "position": "GKP",
+   "predicted_points": 1.15,
+   "team_short": "NEW",
+   "web_name": "Horn\u00ed\u010dek"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1113,
+   "id": 593,
+   "position": "DEF",
+   "predicted_points": 1.237,
+   "team_short": "NEW",
+   "web_name": "Dedi\u0107"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 609,
+   "position": "DEF",
+   "predicted_points": 0.041,
+   "team_short": "NEW",
+   "web_name": "Shahar"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0801,
+   "id": 167,
+   "position": "FWD",
+   "predicted_points": 1.172,
+   "team_short": "NFO",
+   "web_name": "Delap"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1735,
+   "id": 467,
+   "position": "GKP",
+   "predicted_points": 2.615,
+   "team_short": "NFO",
+   "web_name": "Sels"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0123,
+   "id": 468,
+   "position": "GKP",
+   "predicted_points": 0.139,
+   "team_short": "NFO",
+   "web_name": "John"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2557,
+   "id": 469,
+   "position": "DEF",
+   "predicted_points": 3.084,
+   "team_short": "NFO",
+   "web_name": "N.Williams"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0801,
+   "id": 470,
+   "position": "DEF",
+   "predicted_points": 0.872,
+   "team_short": "NFO",
+   "web_name": "Morato"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.2167,
+   "id": 471,
+   "position": "DEF",
+   "predicted_points": 2.829,
+   "team_short": "NFO",
+   "web_name": "Milenkovi\u0107"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.171,
+   "id": 472,
+   "position": "DEF",
+   "predicted_points": 2.016,
+   "team_short": "NFO",
+   "web_name": "Murillo"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1699,
+   "id": 473,
+   "position": "DEF",
+   "predicted_points": 1.77,
+   "team_short": "NFO",
+   "web_name": "Aina"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0851,
+   "id": 474,
+   "position": "DEF",
+   "predicted_points": 1.223,
+   "team_short": "NFO",
+   "web_name": "Jair Cunha"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 475,
+   "position": "DEF",
+   "predicted_points": 0.126,
+   "team_short": "NFO",
+   "web_name": "Savona"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 476,
+   "position": "DEF",
+   "predicted_points": 0.045,
+   "team_short": "NFO",
+   "web_name": "O.Richards"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0088,
+   "id": 477,
+   "position": "DEF",
+   "predicted_points": 0.127,
+   "team_short": "NFO",
+   "web_name": "Abbott"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0405,
+   "id": 478,
+   "position": "DEF",
+   "predicted_points": 1.02,
+   "team_short": "NFO",
+   "web_name": "Netz"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 479,
+   "position": "DEF",
+   "predicted_points": 0.031,
+   "team_short": "NFO",
+   "web_name": "Bindon"
+  },
+  {
+   "ceiling": 11,
+   "floor": 2,
+   "haul_probability": 0.3123,
+   "id": 480,
+   "position": "MID",
+   "predicted_points": 5.275,
+   "team_short": "NFO",
+   "web_name": "Gibbs-White"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0782,
+   "id": 482,
+   "position": "MID",
+   "predicted_points": 1.29,
+   "team_short": "NFO",
+   "web_name": "Hudson-Odoi"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1726,
+   "id": 483,
+   "position": "MID",
+   "predicted_points": 2.193,
+   "team_short": "NFO",
+   "web_name": "Ndoye"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0872,
+   "id": 484,
+   "position": "MID",
+   "predicted_points": 1.292,
+   "team_short": "NFO",
+   "web_name": "Hutchinson"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 485,
+   "position": "MID",
+   "predicted_points": 0.18,
+   "team_short": "NFO",
+   "web_name": "Bakwa"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0949,
+   "id": 486,
+   "position": "MID",
+   "predicted_points": 1.532,
+   "team_short": "NFO",
+   "web_name": "McAtee"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.044,
+   "id": 487,
+   "position": "MID",
+   "predicted_points": 1.098,
+   "team_short": "NFO",
+   "web_name": "Dominguez"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 488,
+   "position": "MID",
+   "predicted_points": 0.264,
+   "team_short": "NFO",
+   "web_name": "I.Sangar\u00e9"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0222,
+   "id": 489,
+   "position": "MID",
+   "predicted_points": 0.565,
+   "team_short": "NFO",
+   "web_name": "Yates"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0915,
+   "id": 490,
+   "position": "FWD",
+   "predicted_points": 1.089,
+   "team_short": "NFO",
+   "web_name": "Wood"
+  },
+  {
+   "ceiling": 8,
+   "floor": 1,
+   "haul_probability": 0.2502,
+   "id": 491,
+   "position": "FWD",
+   "predicted_points": 2.964,
+   "team_short": "NFO",
+   "web_name": "Igor Jesus"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0233,
+   "id": 493,
+   "position": "FWD",
+   "predicted_points": 0.382,
+   "team_short": "NFO",
+   "web_name": "Kalimuendo"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0159,
+   "id": 558,
+   "position": "MID",
+   "predicted_points": 0.688,
+   "team_short": "NFO",
+   "web_name": "Schlager"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 581,
+   "position": "DEF",
+   "predicted_points": 0.031,
+   "team_short": "NFO",
+   "web_name": "Diomande"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 590,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "NFO",
+   "web_name": "Benda"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.1792,
+   "id": 112,
+   "position": "DEF",
+   "predicted_points": 2.12,
+   "team_short": "TOT",
+   "web_name": "Van Hecke"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.081,
+   "id": 401,
+   "position": "FWD",
+   "predicted_points": 1.204,
+   "team_short": "TOT",
+   "web_name": "Marmoush"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0382,
+   "id": 403,
+   "position": "MID",
+   "predicted_points": 0.615,
+   "team_short": "TOT",
+   "web_name": "S\u00e1vio"
+  },
+  {
+   "ceiling": 4,
+   "floor": 1,
+   "haul_probability": 0.0954,
+   "id": 455,
+   "position": "MID",
+   "predicted_points": 2.071,
+   "team_short": "TOT",
+   "web_name": "Tonali"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 494,
+   "position": "GKP",
+   "predicted_points": 0.002,
+   "team_short": "TOT",
+   "web_name": "Vicario"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 495,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "TOT",
+   "web_name": "Austin"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0756,
+   "id": 496,
+   "position": "GKP",
+   "predicted_points": 1.301,
+   "team_short": "TOT",
+   "web_name": "Kinsky"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0596,
+   "id": 497,
+   "position": "GKP",
+   "predicted_points": 1.134,
+   "team_short": "TOT",
+   "web_name": "Dubravka"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.181,
+   "id": 498,
+   "position": "DEF",
+   "predicted_points": 2.441,
+   "team_short": "TOT",
+   "web_name": "Senesi"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.1949,
+   "id": 499,
+   "position": "DEF",
+   "predicted_points": 2.175,
+   "team_short": "TOT",
+   "web_name": "Pedro Porro"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 500,
+   "position": "DEF",
+   "predicted_points": 0.181,
+   "team_short": "TOT",
+   "web_name": "Romero"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0473,
+   "id": 501,
+   "position": "DEF",
+   "predicted_points": 0.735,
+   "team_short": "TOT",
+   "web_name": "Danso"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0947,
+   "id": 502,
+   "position": "DEF",
+   "predicted_points": 1.659,
+   "team_short": "TOT",
+   "web_name": "Robertson"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1085,
+   "id": 503,
+   "position": "DEF",
+   "predicted_points": 1.196,
+   "team_short": "TOT",
+   "web_name": "Van de Ven"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 505,
+   "position": "DEF",
+   "predicted_points": 0.191,
+   "team_short": "TOT",
+   "web_name": "Spence"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0661,
+   "id": 506,
+   "position": "DEF",
+   "predicted_points": 1.122,
+   "team_short": "TOT",
+   "web_name": "Udogie"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 507,
+   "position": "DEF",
+   "predicted_points": 0.051,
+   "team_short": "TOT",
+   "web_name": "Phillips"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0121,
+   "id": 508,
+   "position": "DEF",
+   "predicted_points": 0.131,
+   "team_short": "TOT",
+   "web_name": "Davies"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0049,
+   "id": 509,
+   "position": "DEF",
+   "predicted_points": 0.068,
+   "team_short": "TOT",
+   "web_name": "Byfield"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0048,
+   "id": 510,
+   "position": "DEF",
+   "predicted_points": 0.076,
+   "team_short": "TOT",
+   "web_name": "Rowswell"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0046,
+   "id": 511,
+   "position": "DEF",
+   "predicted_points": 0.175,
+   "team_short": "TOT",
+   "web_name": "Souza"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0426,
+   "id": 512,
+   "position": "MID",
+   "predicted_points": 0.759,
+   "team_short": "TOT",
+   "web_name": "Kudus"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 513,
+   "position": "MID",
+   "predicted_points": 0.492,
+   "team_short": "TOT",
+   "web_name": "Xavi"
+  },
+  {
+   "ceiling": 6,
+   "floor": 1,
+   "haul_probability": 0.1485,
+   "id": 514,
+   "position": "MID",
+   "predicted_points": 2.373,
+   "team_short": "TOT",
+   "web_name": "Tel"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0142,
+   "id": 515,
+   "position": "MID",
+   "predicted_points": 0.356,
+   "team_short": "TOT",
+   "web_name": "Maddison"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0454,
+   "id": 516,
+   "position": "MID",
+   "predicted_points": 1.471,
+   "team_short": "TOT",
+   "web_name": "Bentancur"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 517,
+   "position": "MID",
+   "predicted_points": 0.215,
+   "team_short": "TOT",
+   "web_name": "Odobert"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0405,
+   "id": 518,
+   "position": "MID",
+   "predicted_points": 0.771,
+   "team_short": "TOT",
+   "web_name": "P.M.Sarr"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0736,
+   "id": 519,
+   "position": "MID",
+   "predicted_points": 1.448,
+   "team_short": "TOT",
+   "web_name": "Gallagher"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0229,
+   "id": 520,
+   "position": "MID",
+   "predicted_points": 0.768,
+   "team_short": "TOT",
+   "web_name": "Bergvall"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 521,
+   "position": "MID",
+   "predicted_points": 0.084,
+   "team_short": "TOT",
+   "web_name": "Kulusevski"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0657,
+   "id": 522,
+   "position": "MID",
+   "predicted_points": 1.733,
+   "team_short": "TOT",
+   "web_name": "Gray"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0718,
+   "id": 523,
+   "position": "MID",
+   "predicted_points": 0.998,
+   "team_short": "TOT",
+   "web_name": "Moore"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0089,
+   "id": 524,
+   "position": "MID",
+   "predicted_points": 0.107,
+   "team_short": "TOT",
+   "web_name": "Olusesi"
+  },
+  {
+   "ceiling": 5,
+   "floor": 1,
+   "haul_probability": 0.144,
+   "id": 525,
+   "position": "MID",
+   "predicted_points": 2.394,
+   "team_short": "TOT",
+   "web_name": "Fernandes"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1706,
+   "id": 526,
+   "position": "FWD",
+   "predicted_points": 1.736,
+   "team_short": "TOT",
+   "web_name": "Solanke"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1536,
+   "id": 527,
+   "position": "FWD",
+   "predicted_points": 2.032,
+   "team_short": "TOT",
+   "web_name": "Richarlison"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0168,
+   "id": 528,
+   "position": "FWD",
+   "predicted_points": 0.149,
+   "team_short": "TOT",
+   "web_name": "Scarlett"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 601,
+   "position": "MID",
+   "predicted_points": 0.084,
+   "team_short": "TOT",
+   "web_name": "Williams-Barnett"
+  },
+  {
+   "ceiling": 6,
+   "floor": 2,
+   "haul_probability": 0.2615,
+   "id": 529,
+   "position": "GKP",
+   "predicted_points": 3.23,
+   "team_short": "SUN",
+   "web_name": "Roefs"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 530,
+   "position": "GKP",
+   "predicted_points": 0.0,
+   "team_short": "SUN",
+   "web_name": "Patterson"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0326,
+   "id": 531,
+   "position": "GKP",
+   "predicted_points": 0.329,
+   "team_short": "SUN",
+   "web_name": "Ellborg"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.2321,
+   "id": 532,
+   "position": "DEF",
+   "predicted_points": 2.345,
+   "team_short": "SUN",
+   "web_name": "Ballard"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.2834,
+   "id": 533,
+   "position": "DEF",
+   "predicted_points": 3.117,
+   "team_short": "SUN",
+   "web_name": "Mukiele"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2696,
+   "id": 534,
+   "position": "DEF",
+   "predicted_points": 3.342,
+   "team_short": "SUN",
+   "web_name": "Hume"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1907,
+   "id": 535,
+   "position": "DEF",
+   "predicted_points": 1.917,
+   "team_short": "SUN",
+   "web_name": "Alderete"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.2696,
+   "id": 536,
+   "position": "DEF",
+   "predicted_points": 2.553,
+   "team_short": "SUN",
+   "web_name": "Reinildo"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 537,
+   "position": "DEF",
+   "predicted_points": 0.069,
+   "team_short": "SUN",
+   "web_name": "Seelt"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 538,
+   "position": "DEF",
+   "predicted_points": 0.068,
+   "team_short": "SUN",
+   "web_name": "Hjelde"
+  },
+  {
+   "ceiling": 5,
+   "floor": 0,
+   "haul_probability": 0.1037,
+   "id": 539,
+   "position": "DEF",
+   "predicted_points": 1.184,
+   "team_short": "SUN",
+   "web_name": "O'Nien"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 540,
+   "position": "DEF",
+   "predicted_points": 0.075,
+   "team_short": "SUN",
+   "web_name": "Masuaku"
+  },
+  {
+   "ceiling": 6,
+   "floor": 0,
+   "haul_probability": 0.1617,
+   "id": 541,
+   "position": "DEF",
+   "predicted_points": 1.389,
+   "team_short": "SUN",
+   "web_name": "Meunier"
+  },
+  {
+   "ceiling": 10,
+   "floor": 2,
+   "haul_probability": 0.3236,
+   "id": 542,
+   "position": "MID",
+   "predicted_points": 4.305,
+   "team_short": "SUN",
+   "web_name": "E.Le F\u00e9e"
+  },
+  {
+   "ceiling": 7,
+   "floor": 0,
+   "haul_probability": 0.227,
+   "id": 543,
+   "position": "MID",
+   "predicted_points": 2.251,
+   "team_short": "SUN",
+   "web_name": "Diarra"
+  },
+  {
+   "ceiling": 9,
+   "floor": 2,
+   "haul_probability": 0.2995,
+   "id": 544,
+   "position": "MID",
+   "predicted_points": 4.228,
+   "team_short": "SUN",
+   "web_name": "Xhaka"
+  },
+  {
+   "ceiling": 5,
+   "floor": 2,
+   "haul_probability": 0.1419,
+   "id": 545,
+   "position": "MID",
+   "predicted_points": 2.34,
+   "team_short": "SUN",
+   "web_name": "Sadiki"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 546,
+   "position": "MID",
+   "predicted_points": 0.169,
+   "team_short": "SUN",
+   "web_name": "Adingra"
+  },
+  {
+   "ceiling": 1,
+   "floor": 0,
+   "haul_probability": 0.0599,
+   "id": 547,
+   "position": "MID",
+   "predicted_points": 0.823,
+   "team_short": "SUN",
+   "web_name": "Mundle"
+  },
+  {
+   "ceiling": 2,
+   "floor": 0,
+   "haul_probability": 0.0503,
+   "id": 548,
+   "position": "MID",
+   "predicted_points": 1.185,
+   "team_short": "SUN",
+   "web_name": "Rigg"
+  },
+  {
+   "ceiling": 4,
+   "floor": 0,
+   "haul_probability": 0.0794,
+   "id": 549,
+   "position": "MID",
+   "predicted_points": 1.312,
+   "team_short": "SUN",
+   "web_name": "Talbi"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0123,
+   "id": 550,
+   "position": "MID",
+   "predicted_points": 0.146,
+   "team_short": "SUN",
+   "web_name": "Jocelin.T"
+  },
+  {
+   "ceiling": 3,
+   "floor": 0,
+   "haul_probability": 0.0854,
+   "id": 551,
+   "position": "MID",
+   "predicted_points": 1.407,
+   "team_short": "SUN",
+   "web_name": "Angulo"
+  },
+  {
+   "ceiling": 7,
+   "floor": 1,
+   "haul_probability": 0.2575,
+   "id": 552,
+   "position": "FWD",
+   "predicted_points": 3.12,
+   "team_short": "SUN",
+   "web_name": "Brobbey"
+  },
+  {
+   "ceiling": 8,
+   "floor": 0,
+   "haul_probability": 0.282,
+   "id": 553,
+   "position": "FWD",
+   "predicted_points": 3.155,
+   "team_short": "SUN",
+   "web_name": "Isidor"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 612,
+   "position": "DEF",
+   "predicted_points": 0.049,
+   "team_short": "SUN",
+   "web_name": "Methalie"
+  },
+  {
+   "ceiling": 0,
+   "floor": 0,
+   "haul_probability": 0.0,
+   "id": 613,
+   "position": "MID",
+   "predicted_points": 0.078,
+   "team_short": "SUN",
+   "web_name": "Ahoka"
+  }
+ ]
+}
