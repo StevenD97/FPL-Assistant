@@ -67,7 +67,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -147,7 +147,7 @@
         "web_name": "B.Fernandes"
       },
       {
-        "average_predicted_points": 5.53,
+        "average_predicted_points": 4.74,
         "id": 368,
         "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/424876.png",
         "position": "MID",
@@ -155,7 +155,7 @@
         "team_short": "LIV",
         "trajectory": [
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 10,
             "fixture_count": 1,
             "flags": [],
@@ -166,10 +166,10 @@
                 "team": "CRY"
               }
             ],
-            "predicted_points": 5.32
+            "predicted_points": 4.53
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 11,
             "fixture_count": 1,
             "flags": [
@@ -182,10 +182,10 @@
                 "team": "MUN"
               }
             ],
-            "predicted_points": 5.76
+            "predicted_points": 4.97
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 12,
             "fixture_count": 1,
             "flags": [],
@@ -196,21 +196,21 @@
                 "team": "EVE"
               }
             ],
-            "predicted_points": 5.55
+            "predicted_points": 4.76
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 1.5,
             "event": 13,
             "fixture_count": 1,
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "SUN"
               }
             ],
-            "predicted_points": 5.47
+            "predicted_points": 4.69
           }
         ],
         "web_name": "Szoboszlai"
@@ -244,7 +244,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -272,7 +272,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "CRY"
               }
@@ -410,7 +410,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "SUN"
               }
@@ -479,7 +479,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -532,7 +532,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "NEW"
               }
@@ -684,7 +684,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -723,7 +723,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -751,7 +751,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "CRY"
               }
@@ -776,7 +776,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "TOT"
               }
@@ -934,7 +934,7 @@
             ],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -966,7 +966,7 @@
             ],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "CRY"
               }

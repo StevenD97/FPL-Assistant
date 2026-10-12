@@ -35,7 +35,7 @@ export type AccuracyResponseEvent = {
   captain: AccuracyResponseEventCaptain;
   categories: ReturnCategory[];
   event: number;
-  frozen_at: null;
+  frozen_at: string | null;
   players_graded: number;
   rank_correlation: number;
   source: string;
@@ -300,7 +300,7 @@ export type SeasonRunGameweek = {
   chips_played: unknown[];
   event: number;
   free_transfers: number;
-  frozen_at: null;
+  frozen_at: string | null;
   net_points: number;
   points: number;
   points_hit: number;
