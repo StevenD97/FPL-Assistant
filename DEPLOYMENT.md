@@ -12,6 +12,7 @@ to tell — quickly — whether the live site is serving current data.
 | Database (Postgres) | **you choose — see below** | free |
 | Hourly ingest | GitHub Actions, `ingest-data.yml` | free |
 | Freshness alarm | GitHub Actions, `check-data-freshness.yml` | free |
+| Freshness alarm (external) | UptimeRobot keyword monitor | free |
 | Weekly fallback refresh | GitHub Actions, `refresh-fallback-snapshot.yml` | free |
 
 There is deliberately no Render cron job. There used to be one, on the paid
@@ -130,6 +131,43 @@ the workflow when it trips, so GitHub emails you.
 The other two endpoints answer narrower questions: `/api/health` is liveness
 only (it stayed green through the entire outage — do not read it as "fine"),
 and `/api/ready` is database connectivity specifically.
+
+### The external monitor, and why it is not optional
+
+`check-data-freshness.yml` and `ingest-data.yml` are both GitHub `schedule:`
+workflows, and GitHub disables scheduled workflows after 60 days without
+repository activity. They would stop together — the ingest silently, and the
+alarm along with it, so nothing would be left to notice. An alarm that dies
+with the thing it watches is not an alarm, which is why there is a second one
+outside GitHub.
+
+Set up as an UptimeRobot monitor (free tier):
+
+| Setting | Value |
+|---|---|
+| Monitor type | Keyword |
+| URL | `https://fpl-assistant-backend-wxtz.onrender.com/api/data-status` |
+| Keyword type | **Keyword not exists** |
+| Keyword value | `"stale":false` |
+| Interval | 5 minutes |
+| Timeout | 60 seconds |
+
+Three details that matter:
+
+- **The keyword is compact — no space after the colon.** FastAPI serialises
+  without one, so `"stale": false` never matches and the monitor would alert
+  forever.
+- **"Not exists", not "exists".** Alerting on `"stale":true` appearing would
+  only catch stale data; if the backend 500s or times out that string is
+  absent too, and you would hear nothing. Keying on the absence of
+  `"stale":false` catches both failures with one rule.
+- **60-second timeout.** On Render's free plan the service sleeps after ~15
+  minutes idle and a cold start takes ~35s, which would trip UptimeRobot's
+  30-second default.
+
+A side effect worth knowing: a 5-minute external check keeps the free instance
+permanently awake, which is exactly what `keep-backend-alive.yml` exists to do.
+Once you trust the monitor, that workflow is redundant and can go.
 
 ## Storage, and why the last database filled up
 
