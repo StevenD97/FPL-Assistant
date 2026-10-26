@@ -3,11 +3,11 @@
     "periods": [
       {
         "bench_boost": {
-          "bench_score": 16.136,
+          "bench_score": 15.676,
           "double_count": 0,
           "event": 12,
-          "reason": "Your bench projects 16.1 pts in GW12, the most of any week scanned.",
-          "why_not_now": "Bench Boost is worth 15.3 this week and 16.1 in GW12. Holding it gains you 0.8, and it is only playable once."
+          "reason": "Your bench projects 15.7 pts in GW12, the most of any week scanned.",
+          "why_not_now": "This is the week - nothing scanned beats it for Bench Boost."
         },
         "end_event": 14,
         "free_hit": {
@@ -19,11 +19,11 @@
         "label": "Before the reset",
         "start_event": 10,
         "triple_captain": {
-          "event": 14,
-          "player": "B.Fernandes",
-          "reason": "B.Fernandes projects 8.6 pts in GW14, the highest single-gameweek score in your squad across the scan.",
-          "score": 8.638,
-          "why_not_now": "Triple Captain is worth 8.1 this week and 8.6 in GW14. Holding it gains you 0.6, and it is only playable once."
+          "event": 13,
+          "player": "Haaland",
+          "reason": "Haaland projects 7.1 pts in GW13, the highest single-gameweek score in your squad across the scan.",
+          "score": 7.092,
+          "why_not_now": "Triple Captain is worth 6.2 this week and 7.1 in GW13. Holding it gains you 0.9, and it is only playable once."
         },
         "wildcard": null
       }
@@ -33,49 +33,49 @@
     "scan_start_event": 10,
     "table": [
       {
-        "bench_score": 15.347,
+        "bench_score": 15.658,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 8.077,
+        "best_captain_score": 6.224,
         "blank_count": 0,
         "double_count": 0,
         "event": 10,
-        "squad_total_score": 61.102
+        "squad_total_score": 53.421
       },
       {
-        "bench_score": 13.937,
-        "best_captain_name": "B.Fernandes",
-        "best_captain_score": 6.064,
+        "bench_score": 14.942,
+        "best_captain_name": "Haaland",
+        "best_captain_score": 6.85,
         "blank_count": 0,
         "double_count": 0,
         "event": 11,
-        "squad_total_score": 59.472
+        "squad_total_score": 52.919
       },
       {
-        "bench_score": 16.136,
+        "bench_score": 15.676,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 8.024,
+        "best_captain_score": 6.556,
         "blank_count": 0,
         "double_count": 0,
         "event": 12,
-        "squad_total_score": 59.742
+        "squad_total_score": 51.353
       },
       {
-        "bench_score": 13.272,
-        "best_captain_name": "B.Fernandes",
-        "best_captain_score": 6.409,
+        "bench_score": 14.517,
+        "best_captain_name": "Haaland",
+        "best_captain_score": 7.092,
         "blank_count": 0,
         "double_count": 0,
         "event": 13,
-        "squad_total_score": 58.946
+        "squad_total_score": 53.426
       },
       {
-        "bench_score": 15.317,
+        "bench_score": 15.539,
         "best_captain_name": "B.Fernandes",
-        "best_captain_score": 8.638,
+        "best_captain_score": 6.664,
         "blank_count": 0,
         "double_count": 0,
         "event": 14,
-        "squad_total_score": 60.635
+        "squad_total_score": 51.602
       }
     ]
   },

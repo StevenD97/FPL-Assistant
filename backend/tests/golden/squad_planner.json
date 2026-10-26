@@ -67,7 +67,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -147,211 +147,6 @@
         "web_name": "B.Fernandes"
       },
       {
-        "average_predicted_points": 5.53,
-        "id": 368,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/424876.png",
-        "position": "MID",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
-        "team_short": "LIV",
-        "trajectory": [
-          {
-            "appearance_points": 2.0,
-            "event": 10,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "CRY"
-              }
-            ],
-            "predicted_points": 5.32
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 11,
-            "fixture_count": 1,
-            "flags": [
-              "Tough fixture vs MUN (FDR 4)"
-            ],
-            "opponents": [
-              {
-                "difficulty": 4,
-                "is_home": true,
-                "team": "MUN"
-              }
-            ],
-            "predicted_points": 5.76
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 12,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "EVE"
-              }
-            ],
-            "predicted_points": 5.55
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 13,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "SUN"
-              }
-            ],
-            "predicted_points": 5.47
-          }
-        ],
-        "web_name": "Szoboszlai"
-      },
-      {
-        "average_predicted_points": 4.46,
-        "id": 165,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/475168.png",
-        "position": "FWD",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
-        "team_short": "CHE",
-        "trajectory": [
-          {
-            "appearance_points": 2.0,
-            "event": 10,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "SUN"
-              }
-            ],
-            "predicted_points": 4.35
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 11,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "LEE"
-              }
-            ],
-            "predicted_points": 4.77
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 12,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "NFO"
-              }
-            ],
-            "predicted_points": 4.41
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 13,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": true,
-                "team": "CRY"
-              }
-            ],
-            "predicted_points": 4.33
-          }
-        ],
-        "web_name": "Jo\u00e3o Pedro"
-      },
-      {
-        "average_predicted_points": 4.32,
-        "id": 8,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
-        "position": "DEF",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
-        "team_short": "ARS",
-        "trajectory": [
-          {
-            "appearance_points": 2.0,
-            "event": 10,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "HUL"
-              }
-            ],
-            "predicted_points": 5.25
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 11,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "NEW"
-              }
-            ],
-            "predicted_points": 3.91
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 12,
-            "fixture_count": 1,
-            "flags": [
-              "Tough fixture vs MCI (FDR 4)"
-            ],
-            "opponents": [
-              {
-                "difficulty": 4,
-                "is_home": true,
-                "team": "MCI"
-              }
-            ],
-            "predicted_points": 4.42
-          },
-          {
-            "appearance_points": 2.0,
-            "event": 13,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "BRE"
-              }
-            ],
-            "predicted_points": 3.71
-          }
-        ],
-        "web_name": "Calafiori"
-      },
-      {
         "average_predicted_points": 4.26,
         "id": 356,
         "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/97032.png",
@@ -410,7 +205,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "SUN"
               }
@@ -419,75 +214,6 @@
           }
         ],
         "web_name": "Virgil"
-      },
-      {
-        "average_predicted_points": 4.0,
-        "id": 397,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/437730.png",
-        "position": "MID",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
-        "team_short": "MCI",
-        "trajectory": [
-          {
-            "appearance_points": 1.79,
-            "event": 10,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 3,
-                "is_home": false,
-                "team": "NFO"
-              }
-            ],
-            "predicted_points": 3.82
-          },
-          {
-            "appearance_points": 1.79,
-            "event": 11,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "FUL"
-              }
-            ],
-            "predicted_points": 4.25
-          },
-          {
-            "appearance_points": 1.79,
-            "event": 12,
-            "fixture_count": 1,
-            "flags": [
-              "Tough fixture vs ARS (FDR 5)"
-            ],
-            "opponents": [
-              {
-                "difficulty": 5,
-                "is_home": false,
-                "team": "ARS"
-              }
-            ],
-            "predicted_points": 3.0
-          },
-          {
-            "appearance_points": 1.79,
-            "event": 13,
-            "fixture_count": 1,
-            "flags": [],
-            "opponents": [
-              {
-                "difficulty": 2,
-                "is_home": true,
-                "team": "LEE"
-              }
-            ],
-            "predicted_points": 4.95
-          }
-        ],
-        "web_name": "Semenyo"
       },
       {
         "average_predicted_points": 3.86,
@@ -532,7 +258,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "NEW"
               }
@@ -626,6 +352,73 @@
         "web_name": "Raya"
       },
       {
+        "average_predicted_points": 3.76,
+        "id": 165,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/475168.png",
+        "position": "FWD",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t8.png",
+        "team_short": "CHE",
+        "trajectory": [
+          {
+            "appearance_points": 1.5,
+            "event": 10,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "SUN"
+              }
+            ],
+            "predicted_points": 3.64
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 11,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": true,
+                "team": "LEE"
+              }
+            ],
+            "predicted_points": 4.07
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 12,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "NFO"
+              }
+            ],
+            "predicted_points": 3.71
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 2,
+                "is_home": true,
+                "team": "CRY"
+              }
+            ],
+            "predicted_points": 3.62
+          }
+        ],
+        "web_name": "Jo\u00e3o Pedro"
+      },
+      {
         "average_predicted_points": 3.73,
         "id": 387,
         "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/472769.png",
@@ -684,7 +477,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -723,7 +516,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -751,7 +544,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "CRY"
               }
@@ -760,6 +553,75 @@
           }
         ],
         "web_name": "Rogers"
+      },
+      {
+        "average_predicted_points": 3.5,
+        "id": 8,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/466075.png",
+        "position": "DEF",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
+        "team_short": "ARS",
+        "trajectory": [
+          {
+            "appearance_points": 1.5,
+            "event": 10,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 2,
+                "is_home": true,
+                "team": "HUL"
+              }
+            ],
+            "predicted_points": 4.23
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 11,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "NEW"
+              }
+            ],
+            "predicted_points": 3.18
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 12,
+            "fixture_count": 1,
+            "flags": [
+              "Tough fixture vs MCI (FDR 4)"
+            ],
+            "opponents": [
+              {
+                "difficulty": 4,
+                "is_home": true,
+                "team": "MCI"
+              }
+            ],
+            "predicted_points": 3.56
+          },
+          {
+            "appearance_points": 1.5,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "BRE"
+              }
+            ],
+            "predicted_points": 3.02
+          }
+        ],
+        "web_name": "Calafiori"
       },
       {
         "average_predicted_points": 3.21,
@@ -776,7 +638,7 @@
             "flags": [],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "TOT"
               }
@@ -833,73 +695,157 @@
         "web_name": "Calvert-Lewin"
       },
       {
-        "average_predicted_points": 2.96,
-        "id": 423,
-        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/106760.png",
-        "position": "DEF",
-        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
-        "team_short": "MUN",
+        "average_predicted_points": 2.39,
+        "id": 368,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/424876.png",
+        "position": "MID",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t14.png",
+        "team_short": "LIV",
         "trajectory": [
           {
-            "appearance_points": 2.0,
+            "appearance_points": 0.0,
             "event": 10,
             "fixture_count": 1,
-            "flags": [],
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
             "opponents": [
               {
                 "difficulty": 3,
-                "is_home": true,
-                "team": "AVL"
+                "is_home": false,
+                "team": "CRY"
               }
             ],
-            "predicted_points": 4.04
+            "predicted_points": 2.18
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 0.0,
             "event": 11,
             "fixture_count": 1,
             "flags": [
-              "Tough fixture vs LIV (FDR 4)"
+              "Tough fixture vs MUN (FDR 4)",
+              "Rotation risk - not a guaranteed starter"
             ],
             "opponents": [
               {
                 "difficulty": 4,
-                "is_home": false,
-                "team": "LIV"
+                "is_home": true,
+                "team": "MUN"
               }
             ],
-            "predicted_points": 2.27
+            "predicted_points": 2.62
           },
           {
-            "appearance_points": 2.0,
+            "appearance_points": 0.0,
             "event": 12,
             "fixture_count": 1,
-            "flags": [],
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "EVE"
+              }
+            ],
+            "predicted_points": 2.41
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
             "opponents": [
               {
                 "difficulty": 3,
                 "is_home": true,
-                "team": "BRE"
+                "team": "SUN"
               }
             ],
-            "predicted_points": 3.45
-          },
+            "predicted_points": 2.33
+          }
+        ],
+        "web_name": "Szoboszlai"
+      },
+      {
+        "average_predicted_points": 2.05,
+        "id": 397,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/437730.png",
+        "position": "MID",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png",
+        "team_short": "MCI",
+        "trajectory": [
           {
-            "appearance_points": 2.0,
-            "event": 13,
+            "appearance_points": 0.0,
+            "event": 10,
             "fixture_count": 1,
-            "flags": [],
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
             "opponents": [
               {
                 "difficulty": 3,
                 "is_home": false,
-                "team": "NEW"
+                "team": "NFO"
               }
             ],
-            "predicted_points": 2.09
+            "predicted_points": 1.87
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 11,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 2,
+                "is_home": true,
+                "team": "FUL"
+              }
+            ],
+            "predicted_points": 2.29
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 12,
+            "fixture_count": 1,
+            "flags": [
+              "Tough fixture vs ARS (FDR 5)",
+              "Rotation risk - not a guaranteed starter",
+              "Well below this player's own average across this window"
+            ],
+            "opponents": [
+              {
+                "difficulty": 5,
+                "is_home": false,
+                "team": "ARS"
+              }
+            ],
+            "predicted_points": 1.05
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": true,
+                "team": "LEE"
+              }
+            ],
+            "predicted_points": 3.0
           }
         ],
-        "web_name": "Shaw"
+        "web_name": "Semenyo"
       },
       {
         "average_predicted_points": 1.31,
@@ -934,7 +880,7 @@
             ],
             "opponents": [
               {
-                "difficulty": 2,
+                "difficulty": 3,
                 "is_home": true,
                 "team": "LEE"
               }
@@ -966,7 +912,7 @@
             ],
             "opponents": [
               {
-                "difficulty": 3,
+                "difficulty": 2,
                 "is_home": true,
                 "team": "CRY"
               }
@@ -1050,6 +996,82 @@
           }
         ],
         "web_name": "Diop"
+      },
+      {
+        "average_predicted_points": 0.28,
+        "id": 423,
+        "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/106760.png",
+        "position": "DEF",
+        "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t1.png",
+        "team_short": "MUN",
+        "trajectory": [
+          {
+            "appearance_points": 0.0,
+            "event": 10,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": true,
+                "team": "AVL"
+              }
+            ],
+            "predicted_points": 0.32
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 11,
+            "fixture_count": 1,
+            "flags": [
+              "Tough fixture vs LIV (FDR 4)",
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 4,
+                "is_home": false,
+                "team": "LIV"
+              }
+            ],
+            "predicted_points": 0.23
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 12,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": true,
+                "team": "BRE"
+              }
+            ],
+            "predicted_points": 0.28
+          },
+          {
+            "appearance_points": 0.0,
+            "event": 13,
+            "fixture_count": 1,
+            "flags": [
+              "Rotation risk - not a guaranteed starter"
+            ],
+            "opponents": [
+              {
+                "difficulty": 3,
+                "is_home": false,
+                "team": "NEW"
+              }
+            ],
+            "predicted_points": 0.27
+          }
+        ],
+        "web_name": "Shaw"
       }
     ]
   },

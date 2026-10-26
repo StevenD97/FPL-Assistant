@@ -1,8 +1,16 @@
 {
   "body": {
-    "available": false,
-    "event": 1,
-    "reason": "GW1's projections weren't frozen before the deadline, so there is nothing to hold ourselves to. Weeks from here on will have one."
+    "agreed": false,
+    "available": true,
+    "event": 7,
+    "model_pick": "Haaland",
+    "model_points": 13,
+    "multiplier": 2,
+    "points_delta": 4,
+    "source": "frozen",
+    "verdict": "Following the model would have gained you 4 points.",
+    "your_pick": "Raya",
+    "your_points": 9
   },
   "status": 200
 }

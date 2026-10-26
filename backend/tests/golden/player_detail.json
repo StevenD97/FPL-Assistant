@@ -1,6 +1,6 @@
 {
   "body": {
-    "cost": 6.0,
+    "cost": 6.2,
     "first_name": "David",
     "fixtures": [
       {
@@ -50,6 +50,46 @@
         "goals_scored": 0,
         "minutes": 90,
         "total_points": 6
+      },
+      {
+        "GW": 3,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 3
+      },
+      {
+        "GW": 4,
+        "assists": 0,
+        "bonus": 3,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 14
+      },
+      {
+        "GW": 5,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 1
+      },
+      {
+        "GW": 6,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 3
+      },
+      {
+        "GW": 7,
+        "assists": 0,
+        "bonus": 3,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 9
       }
     ],
     "id": 1,
@@ -83,30 +123,30 @@
     },
     "season_stats": {
       "assists": 0,
-      "bonus": 0,
-      "clean_sheets": 1,
+      "bonus": 6,
+      "clean_sheets": 5,
       "defensive_contribution_per_90": 0.0,
-      "expected_assists": "0.00",
+      "expected_assists": "0.01",
       "expected_assists_per_90": 0.0,
-      "expected_goal_involvements": "0.00",
+      "expected_goal_involvements": "0.01",
       "expected_goal_involvements_per_90": 0.0,
       "expected_goals": "0.00",
-      "expected_goals_conceded_per_90": 0.2,
+      "expected_goals_conceded_per_90": 0.77,
       "expected_goals_per_90": 0.0,
-      "goals_conceded": 0,
+      "goals_conceded": 5,
       "goals_scored": 0,
-      "ict_index": "1.2",
-      "minutes": 90,
+      "ict_index": "16.7",
+      "minutes": 720,
       "red_cards": 0,
-      "saves": 1,
-      "starts": 1,
+      "saves": 18,
+      "starts": 8,
       "starts_per_90": 1.0,
       "threat": "0.0",
-      "total_points": 6,
+      "total_points": 49,
       "yellow_cards": 0
     },
     "second_name": "Raya Mart\u00edn",
-    "selected_by_percent": 38.0,
+    "selected_by_percent": 45.7,
     "status": "a",
     "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
     "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3_1-66.png",

@@ -35,7 +35,7 @@ export type AccuracyResponseEvent = {
   captain: AccuracyResponseEventCaptain;
   categories: ReturnCategory[];
   event: number;
-  frozen_at: null;
+  frozen_at: string | null;
   players_graded: number;
   rank_correlation: number;
   source: string;
