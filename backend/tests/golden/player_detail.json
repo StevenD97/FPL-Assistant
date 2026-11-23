@@ -1,6 +1,6 @@
 {
   "body": {
-    "cost": 6.0,
+    "cost": 6.3,
     "first_name": "David",
     "fixtures": [
       {
@@ -22,7 +22,7 @@
         "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t43.png"
       },
       {
-        "difficulty": 3,
+        "difficulty": 4,
         "is_home": false,
         "opponent": "BRE",
         "opponent_badge": "https://resources.premierleague.com/premierleague/badges/70/t94.png"
@@ -50,25 +50,89 @@
         "goals_scored": 0,
         "minutes": 90,
         "total_points": 6
+      },
+      {
+        "GW": 3,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 3
+      },
+      {
+        "GW": 4,
+        "assists": 0,
+        "bonus": 3,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 14
+      },
+      {
+        "GW": 5,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 1
+      },
+      {
+        "GW": 6,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 3
+      },
+      {
+        "GW": 7,
+        "assists": 0,
+        "bonus": 3,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 9
+      },
+      {
+        "GW": 8,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 7
+      },
+      {
+        "GW": 9,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 5
+      },
+      {
+        "GW": 10,
+        "assists": 0,
+        "bonus": 0,
+        "goals_scored": 0,
+        "minutes": 90,
+        "total_points": 6
       }
     ],
     "id": 1,
-    "news": "",
+    "news": "Shoulder injury - 75% chance of playing",
     "penalties_order": 0,
     "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
     "position": "GKP",
     "prediction": {
-      "appearance_points": 10.0,
+      "appearance_points": 7.5,
       "assist_points": 0.06,
-      "bonus_points": 0.85,
-      "card_points": -0.285,
-      "clean_sheet_points": 8.253,
+      "bonus_points": 0.635,
+      "card_points": -0.21,
+      "clean_sheet_points": 6.189,
       "clean_sheet_prob": 0.413,
       "defensive_contribution_points": 0.0,
       "fixture_count": 5,
       "fixture_ticker": "HUL(H) | NEW(A) | MCI(H) | BRE(A) | TOT(A)",
       "goal_points": 0.0,
-      "goals_conceded_points": -1.263,
+      "goals_conceded_points": -0.947,
       "id": 1,
       "own_goal_points": 0.0,
       "penalty_miss_points": 0.0,
@@ -76,38 +140,38 @@
       "position": "GKP",
       "predicted_assists": 0.021,
       "predicted_goals": 0.0,
-      "predicted_points": 19.567,
-      "save_points": 1.955,
+      "predicted_points": 14.692,
+      "save_points": 1.465,
       "team_short": "ARS",
       "web_name": "Raya"
     },
     "season_stats": {
       "assists": 0,
-      "bonus": 0,
-      "clean_sheets": 1,
+      "bonus": 6,
+      "clean_sheets": 7,
       "defensive_contribution_per_90": 0.0,
-      "expected_assists": "0.00",
+      "expected_assists": "0.01",
       "expected_assists_per_90": 0.0,
-      "expected_goal_involvements": "0.00",
+      "expected_goal_involvements": "0.01",
       "expected_goal_involvements_per_90": 0.0,
       "expected_goals": "0.00",
-      "expected_goals_conceded_per_90": 0.2,
+      "expected_goals_conceded_per_90": 0.84,
       "expected_goals_per_90": 0.0,
-      "goals_conceded": 0,
+      "goals_conceded": 7,
       "goals_scored": 0,
-      "ict_index": "1.2",
-      "minutes": 90,
+      "ict_index": "19.7",
+      "minutes": 969,
       "red_cards": 0,
-      "saves": 1,
-      "starts": 1,
-      "starts_per_90": 1.0,
+      "saves": 21,
+      "starts": 11,
+      "starts_per_90": 1.02,
       "threat": "0.0",
-      "total_points": 6,
-      "yellow_cards": 0
+      "total_points": 61,
+      "yellow_cards": 1
     },
     "second_name": "Raya Mart\u00edn",
-    "selected_by_percent": 38.0,
-    "status": "a",
+    "selected_by_percent": 46.6,
+    "status": "d",
     "team_badge": "https://resources.premierleague.com/premierleague/badges/70/t3.png",
     "team_kit": "https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_3_1-66.png",
     "team_name": "Arsenal",

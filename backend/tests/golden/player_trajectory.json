@@ -1,6 +1,6 @@
 {
   "body": {
-    "average_predicted_points": 3.91,
+    "average_predicted_points": 2.94,
     "id": 1,
     "player_photo": "https://resources.premierleague.com/premierleague25/photos/players/110x140/154561.png",
     "position": "GKP",
@@ -8,7 +8,7 @@
     "team_short": "ARS",
     "trajectory": [
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 10,
         "fixture_count": 1,
         "flags": [],
@@ -19,10 +19,10 @@
             "team": "HUL"
           }
         ],
-        "predicted_points": 4.57
+        "predicted_points": 3.43
       },
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 11,
         "fixture_count": 1,
         "flags": [],
@@ -33,10 +33,10 @@
             "team": "NEW"
           }
         ],
-        "predicted_points": 3.42
+        "predicted_points": 2.57
       },
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 12,
         "fixture_count": 1,
         "flags": [
@@ -49,24 +49,26 @@
             "team": "MCI"
           }
         ],
-        "predicted_points": 3.96
+        "predicted_points": 2.98
       },
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 13,
         "fixture_count": 1,
-        "flags": [],
+        "flags": [
+          "Tough fixture vs BRE (FDR 4)"
+        ],
         "opponents": [
           {
-            "difficulty": 3,
+            "difficulty": 4,
             "is_home": false,
             "team": "BRE"
           }
         ],
-        "predicted_points": 3.28
+        "predicted_points": 2.46
       },
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 14,
         "fixture_count": 1,
         "flags": [],
@@ -77,10 +79,10 @@
             "team": "TOT"
           }
         ],
-        "predicted_points": 4.33
+        "predicted_points": 3.25
       },
       {
-        "appearance_points": 2.0,
+        "appearance_points": 1.5,
         "event": 15,
         "fixture_count": 1,
         "flags": [],
@@ -91,7 +93,7 @@
             "team": "BOU"
           }
         ],
-        "predicted_points": 3.89
+        "predicted_points": 2.92
       }
     ],
     "web_name": "Raya"
